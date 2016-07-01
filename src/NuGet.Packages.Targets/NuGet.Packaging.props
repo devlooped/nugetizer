@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" 
+          Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+
+    <OutputPath Condition="'$(OutputPath)'==''">bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoPackageAnalysis Condition=" '$(NoPackageAnalysis)' == '' ">False</NoPackageAnalysis>
+    <NoDefaultExcludes Condition=" '$(NoDefaultExcludes)' == '' ">False</NoDefaultExcludes>
+    <GenerateSymbolPackage Condition=" '$(GenerateSymbolPackage)' == '' ">True</GenerateSymbolPackage>
+    <EmbedSourceFiles Condition=" '$(EmbedSourceFiles)' == '' ">False</EmbedSourceFiles>
+    <RequireLicenseAcceptance Condition=" '$(RequireLicenseAcceptance)' == '' ">False</RequireLicenseAcceptance>
+    <DevelopmentDependency Condition=" '$(DevelopmentDependency)' == '' ">False</DevelopmentDependency>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NuProjToolPath Condition=" '$(NuProjToolPath)' == '' ">$(MSBuildThisFileDirectory)</NuProjToolPath>
+    <NuGetToolPath Condition=" '$(NuGetToolPath)' == '' ">$(NuProjToolPath)</NuGetToolPath>
+    <NuGetToolExe Condition=" '$(NuGetToolExe)' == '' ">NuGet.exe</NuGetToolExe>
+  </PropertyGroup>
+
+  <!--
+      OUTPUT GROUPS
+
+      These are the groups we are using to discover outputs from our project references.
+  -->
+
+  <PropertyGroup>
+    <PackageOutputGroups>
+      BuiltProjectOutputGroup;
+      BuiltProjectOutputGroupDependencies;
+      DebugSymbolsProjectOutputGroup;
+      DebugSymbolsProjectOutputGroupDependencies;
+      DocumentationProjectOutputGroup;
+      DocumentationProjectOutputGroupDependencies;
+      SatelliteDllsProjectOutputGroup;
+      SatelliteDllsProjectOutputGroupDependencies;
+      SGenFilesOutputGroup;
+      SGenFilesOutputGroupDependencies;
+    </PackageOutputGroups>
+  </PropertyGroup>
+
+</Project>
