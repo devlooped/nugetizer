@@ -15,7 +15,7 @@
     <AssemblyName>$safeprojectname$</AssemblyName>
     <DefaultLanguage>$currentuiculturename$</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>$projectypeguid$;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{267351FF-295D-442E-9F4C-B541870C8060};$projectypeguid$;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     $if$ ('$targetplatformidentifier$' != '')<TargetPlatformIdentifier>$targetplatformidentifier$</TargetPlatformIdentifier>$else$<TargetFrameworkProfile>$targetframeworkprofile$</TargetFrameworkProfile>$endif$
     $if$ ('$targetplatformversion$' != '')<TargetPlatformVersion>$targetplatformversion$</TargetPlatformVersion>$else$<TargetFrameworkVersion>$targetframeworkversion$</TargetFrameworkVersion>$endif$
   </PropertyGroup>

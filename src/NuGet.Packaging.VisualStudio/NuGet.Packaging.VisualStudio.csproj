@@ -9,11 +9,10 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -143,12 +142,15 @@
     <Compile Include="Guids.cs" />
     <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
+    <Compile Include="ProjectSystem\NuProjFlavoredProject.cs" />
+    <Compile Include="ProjectSystem\NuProjFlavoredProjectFactory.cs" />
     <Compile Include="ProjectSystem\NuProjProjectCapabilitiesProvider.cs" />
     <Compile Include="ProjectSystem\NuProjProjectProperties.cs" />
     <Compile Include="ProjectSystem\NuProjProjectTreeModifier.cs" />
     <Compile Include="ProjectSystem\NuProjUnconfiguredProject.cs" />
     <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
     <Compile Include="ProjectSystem\ProjectProperties.cs" />
+    <None Include="key.snk" />
     <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />
     <Compile Include="VsPackage.cs" />
