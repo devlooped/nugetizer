@@ -141,14 +141,16 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="NuProjCapabilities.cs" />
-    <Compile Include="NuProjConfiguredProject.cs" />
-    <Compile Include="NuProjProjectCapabilitiesProvider.cs" />
-    <Compile Include="NuProjProjectProperties.cs" />
-    <Compile Include="NuProjProjectTreeModifier.cs" />
-    <Compile Include="NuProjUnconfiguredProject.cs" />
-    <Compile Include="NuProjValidProjectReferenceChecker.cs" />
-    <Compile Include="ProjectProperties.cs" />
+    <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
+    <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
+    <Compile Include="ProjectSystem\NuProjProjectCapabilitiesProvider.cs" />
+    <Compile Include="ProjectSystem\NuProjProjectProperties.cs" />
+    <Compile Include="ProjectSystem\NuProjProjectTreeModifier.cs" />
+    <Compile Include="ProjectSystem\NuProjUnconfiguredProject.cs" />
+    <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
+    <Compile Include="ProjectSystem\ProjectProperties.cs" />
+    <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
+    <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />
     <Compile Include="VsPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -186,6 +188,10 @@
     <None Include="Templates\Projects\Package\Package.vstemplate">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\Projects\PortableClassLibrary\csPortableClassLibrary.vstemplate" />
+    <None Include="Templates\Projects\PortableClassLibrary\PortableClassLibrary.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" />

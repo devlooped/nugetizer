@@ -129,9 +129,16 @@
   <data name="201" xml:space="preserve">
     <value>A project template for creating NuGet packages (*.nupkg files)</value>
   </data>
+  <data name="202" xml:space="preserve">
+    <value>NuGet Package (Portable)</value>
+  </data>
+  <data name="203" xml:space="preserve">
+    <value>A project template for creating NuGet packages (*.nupkg files)</value>
+  </data>
   <data name="3" xml:space="preserve">
     <value>NuGet.Packaging Items</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\NuGet.Packaging.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
