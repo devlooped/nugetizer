@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A01FD172-656F-4283-AA14-AA5FBCC9782C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PropertyPageBaseTest</RootNamespace>
+    <AssemblyName>PropertyPageBaseTest</AssemblyName>
+    <WarningLevel>4</WarningLevel>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>.\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Developer|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Developer\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleAssemblies>D:\Program Files\Microsoft Visual Studio 8\Team Tools\Static Analysis Tools\FxCop\\rules</CodeAnalysisRuleAssemblies>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EnvDTE" />
+    <Reference Include="EnvDTE80" />
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+    <Reference Include="Microsoft.VisualStudio.Shell.10.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0" />
+    <Reference Include="Microsoft.VisualStudio.VSHelp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Mocks\AbstractConfiguration.cs" />
+    <Compile Include="Mocks\AbstractConfigurationManager.cs" />
+    <Compile Include="Mocks\AbstractDTEProject.cs" />
+    <Compile Include="Mocks\AbstractDTEProperties.cs" />
+    <Compile Include="Mocks\AbstractDTEProperty.cs" />
+    <Compile Include="Mocks\AbstractHelp.cs" />
+    <Compile Include="Mocks\AbstractIPageViewSite.cs" />
+    <Compile Include="Mocks\AbstractIPropertyPageSite.cs" />
+    <Compile Include="Mocks\AbstractIPropertyPageUI.cs" />
+    <Compile Include="Mocks\AbstractIPropertyStore.cs" />
+    <Compile Include="Mocks\AbstractIVsBrowseObject.cs" />
+    <Compile Include="Mocks\AbstractIVsCfg.cs" />
+    <Compile Include="Mocks\AbstractIVsCfgBrowseObject.cs" />
+    <Compile Include="Mocks\AbstractIVsHierarchy.cs" />
+    <Compile Include="Mocks\MockIPropertyPageSite.cs" />
+    <Compile Include="Mocks\MockPageView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Mocks\TestConfiguration.cs" />
+    <Compile Include="Mocks\TestConfigurationManager.cs" />
+    <Compile Include="Mocks\TestDTEProject.cs" />
+    <Compile Include="Mocks\TestDTEProperties.cs" />
+    <Compile Include="Mocks\TestDTEProperty.cs" />
+    <Compile Include="Mocks\TestHelp.cs" />
+    <Compile Include="Mocks\TestHostingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mocks\TestHostingForm.Designer.cs">
+      <DependentUpon>TestHostingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mocks\TestIPageViewSite.cs" />
+    <Compile Include="Mocks\TestIPropertyPageSite.cs" />
+    <Compile Include="Mocks\TestIPropertyPageUI.cs" />
+    <Compile Include="Mocks\TestIPropertyStore.cs" />
+    <Compile Include="Mocks\TestIVsBrowseObject.cs" />
+    <Compile Include="Mocks\TestIVsCfg.cs" />
+    <Compile Include="Mocks\TestIVsCfgBrowseObject.cs" />
+    <Compile Include="Mocks\TestIVsHierarchy.cs" />
+    <Compile Include="Mocks\TestPageView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Mocks\TestPageViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Mocks\TestPageViewControl.Designer.cs">
+      <DependentUpon>TestPageViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mocks\TestControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Mocks\TestTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PageViewTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyControlMapTest.cs" />
+    <Compile Include="PropertyControlTableTest.cs" />
+    <Compile Include="PropertyPageTest.cs" />
+    <Compile Include="PropertyStoreTest.cs" />
+    <Compile Include="SimplePageViewTest.cs" />
+    <Compile Include="TestPage.cs" />
+    <Compile Include="TestPageView.cs">
+    </Compile>
+    <Compile Include="VSCodeGenAccessors.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PropertyPageBase.csproj">
+      <Project>{86E04F6C-274F-4329-9F2F-47EE82A7EE51}</Project>
+      <Name>PropertyPageBase</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mocks\TestPageView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestPageView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mocks\TestPageViewControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestPageViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+</Project>

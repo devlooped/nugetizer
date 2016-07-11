@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule Name="ConfigurationGeneral"
+      DisplayName="General"
+      PageTemplate="generic"
+      Description="General"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+    <Rule.Categories>
+        <Category Name="General" DisplayName="Build" Description="General" />
+        <Category Name="NuSpec" DisplayName="NuSpec" Description="Properties defined in the nuspec file" />
+    </Rule.Categories>
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" Label="Configuration" />
+    </Rule.DataSource>
+
+    <!-- Fixed properties -->
+
+    <StringListProperty Name="ProjectTypeGuids" Visible="False" />
+    <StringProperty Name="ProjectGuid" Visible="False">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty Name="TargetFrameworkIdentifier" Visible="False" />
+    <StringProperty Name="TargetFrameworkVersion" Visible="False" />
+    <StringProperty Name="TargetFrameworkProfile" Visible="False" />
+    <StringProperty Name="MSBuildProjectDirectory" Visible="false"/>
+    <StringProperty Name="DefaultPlatform" Visible="false" />
+    <StringProperty Name="PackageAction" Visible="false" Description="The MSBuild target to use when packaging a project." />
+    <StringProperty Name="DefaultContentType" Visible="false" Description="The default content type name to use when adding files." />
+    <StringProperty Name="DebuggerSymbolsPath" Visible="false" />
+    <StringProperty Name="TargetPlatformWinMDLocation" Visible="false" />
+    <StringProperty Name="SDKReferenceDirectoryRoot" Visible="false" />
+    <StringProperty Name="SDKReferenceRegistryRoot" Visible="false" />
+    <StringProperty Name="TargetPlatformIdentifier" Visible="false" />
+    <StringProperty Name="TargetPlatformVersion" Visible="false" />
+    <BoolProperty Name="WindowsAppContainer" Visible="false" />
+    <BoolProperty Name="WinMDAssembly" Visible="false" />
+    <EnumProperty Name="TargetRuntime" Visible="false">
+        <EnumValue Name="Managed" />
+        <EnumValue Name="Native" />
+        <EnumValue Name="AppHost" DisplayName="Windows app" />
+    </EnumProperty>
+    <StringProperty Name="AssemblySearchPaths" Visible="false" />
+    <StringProperty Name="WinRTReferenceTabs" Visible="false" />
+    <StringProperty Name="AssemblyReferenceTabs" Visible="false" />
+    <BoolProperty Name="SuppressOutOfDateMessageOnBuild" Visible="false" Description="True to just build out-of-date projects without ever prompting the user to confirm." />
+    <BoolProperty Name="ShowAllFiles" Visible="False">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="UserFile" HasConfigurationCondition="False" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+    <BoolProperty Name="AutoRefresh" Visible="False">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="UserFile" HasConfigurationCondition="False" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <!-- NuGet Package Section -->
+    
+    <StringProperty Name="Id" DisplayName="Package ID" Description="The unique identifier for the package. This is the package name that is shown when packages are listed using the Package Manager Console. These are also used when installing a package using the Install-Package command within the Package Manager Console."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="Version" DisplayName="Package Version" Description="The version of the package, in Semantic Versioning format."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="Title" DisplayName="Title" Description="The human-friendly title of the package displayed in the Manage NuGet Packages dialog. If none is specified, the Package ID is used instead."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="Authors" DisplayName="Authors" Description="A comma-separated list of authors of the package code."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="Owners" DisplayName="Owners" Description="A comma-separated list of the package creators. This is often the same list as in authors. This is ignored when uploading the package to the NuGet.org Gallery."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="Copyright" DisplayName="Copyright" Description="Copyright details for the package."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="IconUrl" DisplayName="Icon URL" Description="A URL for the image to use as the icon for the package in the Manage NuGet Packages dialog box. This should be a 32x32-pixel .png file that has a transparent background."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="ProjectUrl" DisplayName="Project URL" Description="A URL for the home page of the package."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="LicenseUrl" DisplayName="License URL" Description="A link to the license that the package is under."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="RequireLicenseAcceptance" DisplayName="Require License Acceptance" Description="Specifies whether the client needs to ensure that the package license (described by License URL) is accepted before the package is installed."
+                  Category="NuSpec">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <StringProperty Name="Summary" DisplayName="Summary" Description="A short description of the package. If specified, this shows up in the middle pane of the Add Package Dialog. If not specified, a truncated version of the Description is used instead. "
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="Description" DisplayName="Description" Description="A long description of the package. This shows up in the right pane of the Add Package Dialog as well as in the Package Manager Console when listing packages using the Get-Package command. "
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="Tags" DisplayName="Tags" Description="A space-delimited list of tags and keywords that describe the package. This information is used to help make sure users can find the package using searches in the Add Package Reference dialog box or filtering in the Package Manager Console window."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="ReleaseNotes" DisplayName="Release Notes" Description="A description of the changes made in each release of the package. This field only shows up when the Updates tab is selected and the package is an update to a previously installed package. It is displayed where the Description would normally be displayed. "
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="MinClientVersion" DisplayName="Minimum NuGet Version" Description="Specifies the minimum version of the NuGet client that can install this package. This requirement is enforced by both the NuGet Visual Studio extension and nuget.exe program."
+                    Category="NuSpec">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="GenerateSymbolPackage" DisplayName="Generate Symbol Package" Description="Determines if a package containing sources and symbols should be created. When specified, creates a regular NuGet package file and the corresponding symbols package."
+                  Category="Build">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty Name="EmbedSourceFiles" DisplayName="Embed Source Files" Description="Embeds source code files into symbol package."
+                  Category="Build">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty Name="NoPackageAnalysis" DisplayName="No Package Analysis" Description="Specify if the build should not run package analysis."
+                  Category="Build">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty Name="NoDefaultExcludes" DisplayName="No Default Excludes"
+                  Description="Prevent default exclusion of NuGet package files and files and folders starting with a dot e.g. .svn."
+                  Category="Build">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <StringProperty Name="NuSpecProperties" DisplayName="Macro properties"
+                    Description="Value for the -Properties switch passed to the nuget pack command."
+                    Category="Build">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="DevelopmentDependency" DisplayName="Development dependency"
+                  Description="Specifies whether the package will be marked as a development-only dependency in the packages.config. This will cause the package to be excluded from the dependency list when the referencing project itself is later packaged."
+                  Category="NuSpec">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <StringProperty Name="OutputPath" DisplayName="Output path"
+                    Description="The directory to write the NuPkg to."
+                    Category="Build">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+        </StringProperty.DataSource>
+    </StringProperty>
+</Rule>
