@@ -46,6 +46,18 @@ namespace NuGet.Packaging.VisualStudio
 					{
 						InitializeComponent();
 					}
+
+					propertyControlTable.Add("Authors", textBoxAuthors);
+					propertyControlTable.Add("Copyright", textBoxCopyright);
+					propertyControlTable.Add("Description", textBoxDescription);
+					propertyControlTable.Add("Id", textBoxId);
+					propertyControlTable.Add("LicenseUrl", textBoxLicenseUrl);
+					propertyControlTable.Add("Owners", textBoxOwners);
+					propertyControlTable.Add("ProjectUrl", textBoxProjectUrl);
+					propertyControlTable.Add("Summary", textBoxSummary);
+					propertyControlTable.Add("Tags", textBoxTags);
+					propertyControlTable.Add("Title", textBoxTitle);
+					propertyControlTable.Add("Version", textBoxVersion);
 				}
 
 				return propertyControlTable;
