@@ -105,6 +105,7 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Threading.14.1.131\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.VSHelp" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -129,8 +130,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ProjectSystem\NuGetPropertyPageView.resx">
+      <DependentUpon>NuGetPropertyPageView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
@@ -138,8 +144,47 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\PropertyPageBase\Constants.cs">
+      <Link>PropertyPageBase\Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\IPageView.cs">
+      <Link>PropertyPageBase\IPageView.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\IPageViewSite.cs">
+      <Link>PropertyPageBase\IPageViewSite.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\IPropertyPageUI.cs">
+      <Link>PropertyPageBase\IPropertyPageUI.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\IPropertyStore.cs">
+      <Link>PropertyPageBase\IPropertyStore.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\PageView.cs">
+      <Link>PropertyPageBase\PageView.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\PropertyControlMap.cs">
+      <Link>PropertyPageBase\PropertyControlMap.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\PropertyControlTable.cs">
+      <Link>PropertyPageBase\PropertyControlTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\PropertyPage.cs">
+      <Link>PropertyPageBase\PropertyPage.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\UserEditCompleteHandler.cs">
+      <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
+    </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="ProjectSystem\NuGetPropertyPage.cs" />
+    <Compile Include="ProjectSystem\NuGetPropertyPageView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProjectSystem\NuGetPropertyPageView.Designer.cs">
+      <DependentUpon>NuGetPropertyPageView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectSystem\NuGetPropertyStore.cs" />
     <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
     <Compile Include="ProjectSystem\NuProjFlavoredProject.cs" />
@@ -153,6 +198,11 @@
     <None Include="key.snk" />
     <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="VsPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -195,6 +245,7 @@
     <None Include="Templates\Projects\PortableClassLibrary\csPortableClassLibrary.vstemplate" />
     <None Include="Templates\Projects\PortableClassLibrary\PortableClassLibrary.csproj" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" />
   <Target Name="AfterBuild">
