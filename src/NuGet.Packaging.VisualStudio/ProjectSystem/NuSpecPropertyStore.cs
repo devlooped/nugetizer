@@ -7,7 +7,7 @@ using PropertyPageBase;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	class NuGetPropertyStore : PropertyPageBase.IPropertyStore
+	class NuSpecPropertyStore : PropertyPageBase.IPropertyStore
 	{
 		public event StoreChangedDelegate StoreChanged;
 

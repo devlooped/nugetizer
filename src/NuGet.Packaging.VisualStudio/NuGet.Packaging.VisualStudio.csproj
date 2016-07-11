@@ -131,8 +131,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ProjectSystem\NuGetPropertyPageView.resx">
-      <DependentUpon>NuGetPropertyPageView.cs</DependentUpon>
+    <EmbeddedResource Include="ProjectSystem\NuSpecPropertyPageView.resx">
+      <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
@@ -179,14 +179,14 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\DteProjectExtensions.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="ProjectSystem\NuGetPropertyPage.cs" />
-    <Compile Include="ProjectSystem\NuGetPropertyPageView.cs">
+    <Compile Include="ProjectSystem\NuSpecPropertyPage.cs" />
+    <Compile Include="ProjectSystem\NuSpecPropertyPageView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProjectSystem\NuGetPropertyPageView.Designer.cs">
-      <DependentUpon>NuGetPropertyPageView.cs</DependentUpon>
+    <Compile Include="ProjectSystem\NuSpecPropertyPageView.Designer.cs">
+      <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProjectSystem\NuGetPropertyStore.cs" />
+    <Compile Include="ProjectSystem\NuSpecPropertyStore.cs" />
     <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
     <Compile Include="ProjectSystem\NuProjFlavoredProject.cs" />

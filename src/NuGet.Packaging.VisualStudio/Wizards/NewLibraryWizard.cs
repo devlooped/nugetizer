@@ -24,7 +24,7 @@ namespace NuGet.Packaging.VisualStudio
 
 		public void RunFinished()
 		{
-			targetProject.OpenPropertyPage(Guids.NuGetPropertyPageGuid);
+			targetProject.OpenPropertyPage(Guids.NuSpecPropertyPageGuid);
 		}
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)

@@ -141,8 +141,8 @@
   <data name="GeneralCaption" xml:space="preserve">
     <value>General</value>
   </data>
-  <data name="NuGetPropertyPageTitle" xml:space="preserve">
-    <value>NuGet Package</value>
+  <data name="NuSpecPropertyPageTitle" xml:space="preserve">
+    <value>NuSpec</value>
   </data>
   <data name="OutputFile" xml:space="preserve">
     <value>Output File</value>

@@ -1,6 +1,6 @@
 ﻿namespace NuGet.Packaging.VisualStudio
 {
-	partial class NuGetPropertyPageView
+	partial class NuSpecPropertyPageView
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -30,11 +30,11 @@
 		{
 			this.SuspendLayout();
 			// 
-			// NuGetPropertyPageView
+			// NuSpecPropertyPageView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Name = "NuGetPropertyPageView";
+			this.Name = "NuSpecPropertyPageView";
 			this.ResumeLayout(false);
 
 		}

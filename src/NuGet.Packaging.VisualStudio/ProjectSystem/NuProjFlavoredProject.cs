@@ -33,7 +33,7 @@ namespace NuGet.Packaging.VisualStudio
 						ErrorHandler.ThrowOnFailure(base.GetProperty(itemId, propId, out property));
 
 						// Add our NuGet Property Page
-						property += ';' + typeof(NuGetPropertyPage).GUID.ToString("B");
+						property += ';' + typeof(NuSpecPropertyPage).GUID.ToString("B");
 
 						return VSConstants.S_OK;
 					}
