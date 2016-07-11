@@ -100,6 +100,7 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.$(VisualStudioVersion)" />
+    <Reference Include="Microsoft.VisualStudio.TemplateWizardInterface, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Threading, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Threading.14.1.131\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
@@ -130,8 +131,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ProjectSystem\NuGetPropertyPageView.resx">
-      <DependentUpon>NuGetPropertyPageView.cs</DependentUpon>
+    <EmbeddedResource Include="LegacyProjectSystem\NuSpecPropertyPageView.resx">
+      <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
@@ -176,25 +177,27 @@
       <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
     </Compile>
     <Compile Include="Constants.cs" />
+    <Compile Include="Extensions\DteProjectExtensions.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="ProjectSystem\NuGetPropertyPage.cs" />
-    <Compile Include="ProjectSystem\NuGetPropertyPageView.cs">
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProjectSystem\NuGetPropertyPageView.Designer.cs">
-      <DependentUpon>NuGetPropertyPageView.cs</DependentUpon>
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.Designer.cs">
+      <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProjectSystem\NuGetPropertyStore.cs" />
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyStore.cs" />
     <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
-    <Compile Include="ProjectSystem\NuProjFlavoredProject.cs" />
-    <Compile Include="ProjectSystem\NuProjFlavoredProjectFactory.cs" />
+    <Compile Include="LegacyProjectSystem\NuProjFlavoredProject.cs" />
+    <Compile Include="LegacyProjectSystem\NuProjFlavoredProjectFactory.cs" />
     <Compile Include="ProjectSystem\NuProjProjectCapabilitiesProvider.cs" />
     <Compile Include="ProjectSystem\NuProjProjectProperties.cs" />
     <Compile Include="ProjectSystem\NuProjProjectTreeModifier.cs" />
     <Compile Include="ProjectSystem\NuProjUnconfiguredProject.cs" />
     <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
     <Compile Include="ProjectSystem\ProjectProperties.cs" />
+    <Compile Include="Wizards\NewLibraryWizard.cs" />
     <None Include="key.snk" />
     <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />

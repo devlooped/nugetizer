@@ -6,7 +6,7 @@
 
 	[Guid(Guids.PackageGuid)]
 	[PackageRegistration(UseManagedResourcesOnly = true)]
-	[ProvideObject(typeof(NuGetPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
+	[ProvideObject(typeof(NuSpecPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
 	[ProvideProjectFactory(
 		typeof(NuProjFlavoredProjectFactory),
 		"NuProj.Packaging",

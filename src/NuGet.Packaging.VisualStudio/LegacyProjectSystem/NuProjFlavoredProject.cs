@@ -27,13 +27,13 @@ namespace NuGet.Packaging.VisualStudio
 		{
 			switch (propId)
 			{
-				case (int)__VSHPROPID2.VSHPROPID_CfgPropertyPagesCLSIDList:
+				case (int)__VSHPROPID2.VSHPROPID_PropertyPagesCLSIDList:
 					{
 						// Get the list from the base class
 						ErrorHandler.ThrowOnFailure(base.GetProperty(itemId, propId, out property));
 
 						// Add our NuGet Property Page
-						property += ';' + typeof(NuGetPropertyPage).GUID.ToString("B");
+						property += ';' + typeof(NuSpecPropertyPage).GUID.ToString("B");
 
 						return VSConstants.S_OK;
 					}

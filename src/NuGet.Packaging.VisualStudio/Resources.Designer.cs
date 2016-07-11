@@ -133,11 +133,11 @@ namespace NuGet.Packaging.VisualStudio {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NuGet Package.
+        ///   Looks up a localized string similar to NuSpec.
         /// </summary>
-        internal static string NuGetPropertyPageTitle {
+        internal static string NuSpecPropertyPageTitle {
             get {
-                return ResourceManager.GetString("NuGetPropertyPageTitle", resourceCulture);
+                return ResourceManager.GetString("NuSpecPropertyPageTitle", resourceCulture);
             }
         }
         

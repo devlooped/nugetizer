@@ -11,7 +11,7 @@ using PropertyPageBase;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	public partial class NuGetPropertyPageView : PropertyPageBase.PageView
+	public partial class NuSpecPropertyPageView : PropertyPageBase.PageView
 	{
 		PropertyPageBase.PropertyControlTable propertyControlTable;
 
@@ -19,7 +19,7 @@ namespace NuGet.Packaging.VisualStudio
 		/// This is the runtime constructor
 		/// </summary>
 		/// <param name="site">Site for the page</param>
-		public NuGetPropertyPageView(PropertyPageBase.IPageViewSite site)
+		public NuSpecPropertyPageView(PropertyPageBase.IPageViewSite site)
 			: base(site)
 		{
 			InitializeComponent();
@@ -28,7 +28,7 @@ namespace NuGet.Packaging.VisualStudio
 		/// <summary>
 		/// This constructor is only to enable winform designers
 		/// </summary>
-		public NuGetPropertyPageView()
+		public NuSpecPropertyPageView()
 		{
 			InitializeComponent();
 		}
@@ -46,6 +46,18 @@ namespace NuGet.Packaging.VisualStudio
 					{
 						InitializeComponent();
 					}
+
+					propertyControlTable.Add("Authors", textBoxAuthors);
+					propertyControlTable.Add("Copyright", textBoxCopyright);
+					propertyControlTable.Add("Description", textBoxDescription);
+					propertyControlTable.Add("Id", textBoxId);
+					propertyControlTable.Add("LicenseUrl", textBoxLicenseUrl);
+					propertyControlTable.Add("Owners", textBoxOwners);
+					propertyControlTable.Add("ProjectUrl", textBoxProjectUrl);
+					propertyControlTable.Add("Summary", textBoxSummary);
+					propertyControlTable.Add("Tags", textBoxTags);
+					propertyControlTable.Add("Title", textBoxTitle);
+					propertyControlTable.Add("Version", textBoxVersion);
 				}
 
 				return propertyControlTable;
