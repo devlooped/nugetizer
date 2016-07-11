@@ -131,7 +131,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ProjectSystem\NuSpecPropertyPageView.resx">
+    <EmbeddedResource Include="LegacyProjectSystem\NuSpecPropertyPageView.resx">
       <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
@@ -179,18 +179,18 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\DteProjectExtensions.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="ProjectSystem\NuSpecPropertyPage.cs" />
-    <Compile Include="ProjectSystem\NuSpecPropertyPageView.cs">
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProjectSystem\NuSpecPropertyPageView.Designer.cs">
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.Designer.cs">
       <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProjectSystem\NuSpecPropertyStore.cs" />
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyStore.cs" />
     <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
-    <Compile Include="ProjectSystem\NuProjFlavoredProject.cs" />
-    <Compile Include="ProjectSystem\NuProjFlavoredProjectFactory.cs" />
+    <Compile Include="LegacyProjectSystem\NuProjFlavoredProject.cs" />
+    <Compile Include="LegacyProjectSystem\NuProjFlavoredProjectFactory.cs" />
     <Compile Include="ProjectSystem\NuProjProjectCapabilitiesProvider.cs" />
     <Compile Include="ProjectSystem\NuProjProjectProperties.cs" />
     <Compile Include="ProjectSystem\NuProjProjectTreeModifier.cs" />
