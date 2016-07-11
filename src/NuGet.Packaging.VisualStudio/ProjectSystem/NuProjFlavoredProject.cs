@@ -27,7 +27,7 @@ namespace NuGet.Packaging.VisualStudio
 		{
 			switch (propId)
 			{
-				case (int)__VSHPROPID2.VSHPROPID_CfgPropertyPagesCLSIDList:
+				case (int)__VSHPROPID2.VSHPROPID_PropertyPagesCLSIDList:
 					{
 						// Get the list from the base class
 						ErrorHandler.ThrowOnFailure(base.GetProperty(itemId, propId, out property));
