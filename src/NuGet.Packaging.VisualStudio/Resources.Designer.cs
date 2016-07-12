@@ -61,6 +61,15 @@ namespace NuGet.Packaging.VisualStudio {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The NuProj targets need to be added to the selected project before being able to build a NuGet package. Do you want to continue?.
+        /// </summary>
+        internal static string AddNuProjToLibrary {
+            get {
+                return ResourceManager.GetString("AddNuProjToLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application.
         /// </summary>
         internal static string Application {
@@ -102,6 +111,15 @@ namespace NuGet.Packaging.VisualStudio {
         internal static string AssemblyNameDescription {
             get {
                 return ResourceManager.GetString("AssemblyNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NuGet Packaging.
+        /// </summary>
+        internal static string DefaultDialogCaption {
+            get {
+                return ResourceManager.GetString("DefaultDialogCaption", resourceCulture);
             }
         }
         

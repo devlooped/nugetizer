@@ -70,7 +70,7 @@ namespace NuGet.Packaging.VisualStudio
 
 		private static bool IsNuProj(string path)
 		{
-			return HasExtension(path, "." + Constants.ProjectExtension);
+			return HasExtension(path, Constants.ProjectFileExtension);
 		}
 
 		private static bool HasGetNuGetOutputAndTargetFrameworkInformationTarget(string path)
