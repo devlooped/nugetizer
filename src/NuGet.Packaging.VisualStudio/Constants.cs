@@ -12,6 +12,7 @@ namespace NuGet.Packaging.VisualStudio
 		/// The file extension of this project type.  No preceding period.
 		/// </summary>
 		public const string ProjectExtension = "nuproj";
+		public const string ProjectFileExtension = "." + ProjectExtension;
 
 		internal const string Language = "NuGet.Packaging";
 	}

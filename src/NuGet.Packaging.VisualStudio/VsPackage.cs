@@ -3,7 +3,8 @@
 	using System;
 	using System.Runtime.InteropServices;
 	using Microsoft.VisualStudio.Shell;
-
+	using System.ComponentModel.Design;
+	using Microsoft.VisualStudio.ComponentModelHost;
 	[Guid(Guids.PackageGuid)]
 	[PackageRegistration(UseManagedResourcesOnly = true)]
 	[ProvideObject(typeof(NuSpecPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
@@ -16,6 +17,7 @@
 		, @"\..\NullPath",
 		LanguageVsTemplate = "CSharp",
 		ShowOnlySpecifiedTemplatesVsTemplate = true)]
+	[ProvideMenuResource("2000", 1)]
 	public sealed class VsPackage : Package
 	{
 		protected override void Initialize()
@@ -23,6 +25,16 @@
 			base.Initialize();
 
 			RegisterProjectFactory(new NuProjFlavoredProjectFactory(this));
+			RegisterCommands();
+		}
+
+		void RegisterCommands()
+		{
+			var componentModel = this.GetService(typeof(SComponentModel)) as IComponentModel;
+			var menuCommandService = this.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+			foreach (var command in componentModel.DefaultExportProvider.GetExportedValues<DynamicCommand>())
+				menuCommandService.AddCommand(command);
 		}
 	}
 }

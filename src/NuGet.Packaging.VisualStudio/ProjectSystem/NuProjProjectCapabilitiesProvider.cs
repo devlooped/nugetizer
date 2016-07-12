@@ -10,7 +10,7 @@ namespace NuGet.Packaging.VisualStudio
 {
 	[Export(ExportContractNames.Scopes.UnconfiguredProject, typeof(IProjectCapabilitiesProvider))]
 	[AppliesTo(ProjectCapabilities.AlwaysApplicable)]
-	[SupportsFileExtension("." + Constants.ProjectExtension)]
+	[SupportsFileExtension(Constants.ProjectFileExtension)]
 	internal sealed class NuProjProjectCapabilitiesProvider : IProjectCapabilitiesProvider
 	{
 		/// <summary>
