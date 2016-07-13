@@ -4,6 +4,7 @@
   <Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).Before.targets" 
     Condition="Exists('$(MSBuildThisFileDirectory)$(MSBuildThisFileName).Before.targets')"/>
 
+  <UsingTask TaskName="NuGet.Packaging.Tasks.AssignTargetFramework" AssemblyFile="$(NuGetTasksPath)" />
   <UsingTask TaskName="NuGet.Packaging.Tasks.GenerateNuSpec" AssemblyFile="$(NuGetTasksPath)" />
   <UsingTask TaskName="NuGet.Packaging.Tasks.NuGetPack" AssemblyFile="$(NuGetTasksPath)" />
 
@@ -28,7 +29,8 @@
   <Target
     Name="_GenerateNuSpec"
     Inputs="@(NuGetFile);AlwaysRunEvenIfPackageFileIsEmpty"
-    Outputs="$(NuSpecPath)">
+    Outputs="$(NuSpecPath)"
+    DependsOnTargets="_GetNuGetFiles">
     <!-- Please Note:
          In order to avoid incremental build issues this target will always run.
          However, the task will make sure that it doesn't touch the file if the
@@ -56,8 +58,7 @@
       Dependencies="@(NuGetDependency)"
       References="@(NuGetAssemblyReference)"
       FrameworkReferences="@(NuGetFrameworkReference)"
-      Files="@(NuGetFile)">
-    </GenerateNuSpec>
+      Files="@(NuGetFile)" />
   </Target>
 
   <Target
@@ -78,6 +79,28 @@
       ToolExe="$(NuGetToolExe)"
       NuSpecPath="$(NuSpecPath)">
     </NuGetPack>
+  </Target>
+
+  <Target
+    Name="_GetNuGetFiles"
+    Returns="@(NuGetFile)">
+    <ItemGroup>
+      <_MainNuGetFile Include="$(TargetPath)" />
+    </ItemGroup>
+
+    <CreateItem
+      Include="@(_MainNuGetFile)"
+      AdditionalMetadata="TargetFrameworkMoniker=$(TargetFrameworkMoniker)">
+      <Output
+        TaskParameter="Include"
+        ItemName="_MainNuGetFileWithTargetFramework" />
+    </CreateItem>
+
+    <AssignTargetFramework OutputsWithTargetFrameworkInformation="@(_MainNuGetFileWithTargetFramework)">
+      <Output
+        TaskParameter="PackageFiles"
+        ItemName="NuGetFile" />
+    </AssignTargetFramework>
   </Target>
 
   <Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets"

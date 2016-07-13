@@ -42,6 +42,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="PackageDirectory.cs" />
     <Compile Include="Metadata.cs" />
+    <Compile Include="AssignTargetFramework.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Global.NuGet.Packaging.Targets\NuGet.Packaging.props">
