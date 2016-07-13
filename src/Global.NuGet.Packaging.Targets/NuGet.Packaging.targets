@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).Before.targets" 
+    Condition="Exists('$(MSBuildThisFileDirectory)$(MSBuildThisFileName).Before.targets')"/>
+
+  <UsingTask TaskName="NuGet.Packaging.Tasks.GenerateNuSpec" AssemblyFile="$(NuGetTasksPath)" />
+  <UsingTask TaskName="NuGet.Packaging.Tasks.NuGetPack" AssemblyFile="$(NuGetTasksPath)" />
+
+  <PropertyGroup>
+    <NuGetId Condition=" '$(NuGetId)' == '' ">$(AssemblyName)</NuGetId>
+    <NuGetVersion Condition=" '$(NuGetVersion)' == '' ">1.0.0</NuGetVersion>
+    <NuGetInfoPath>$(IntermediateOutputPath)_$(NuGetId).nuspec</NuGetInfoPath>
+    <NuSpecPath>$(NuGetInfoPath)</NuSpecPath>
+    <NuGetOutputPath Condition=" '$(NuGetOutputPath)' == '' ">$(OutDir)$(NuGetId).$(NuGetVersion).nupkg</NuGetOutputPath>
+  </PropertyGroup>
+
+   <PropertyGroup Condition=" '$(BuildNuGet)' == 'True' ">
+    <BuildDependsOn>$(BuildDependsOn);BuildNuGet</BuildDependsOn>
+  </PropertyGroup>
+
+  <Target
+    Name="GetNuGetInfo"
+    Outputs="$(NuGetInfoPath)"
+    DependsOnTargets="_GenerateNuSpec">
+  </Target>
+
+  <Target
+    Name="_GenerateNuSpec"
+    Inputs="@(NuGetFile);AlwaysRunEvenIfPackageFileIsEmpty"
+    Outputs="$(NuSpecPath)">
+    <!-- Please Note:
+         In order to avoid incremental build issues this target will always run.
+         However, the task will make sure that it doesn't touch the file if the
+         contents it would generate are identical to a previously generated
+         nuspec. -->
+    <GenerateNuSpec
+      OutputFileName="$(NuSpecPath)"
+      MinClientVersion="$(MinClientVersion)"
+      Id="$(NuGetId)"
+      Version="$(NuGetVersion)"
+      Title="$(NuGetTitle)"
+      Authors="$(NuGetAuthors)"
+      Owners="$(NuGetOwners)"
+      Description="$(NuGetDescription)"
+      ReleaseNotes="$(NuGetReleaseNotes)"
+      Summary="$(NuGetSummary)"
+      Language="$(NuGetLanguage)"
+      ProjectUrl="$(NuGetProjectUrl)"
+      IconUrl="$(NuGetIconUrl)"
+      LicenseUrl="$(NuGetLicenseUrl)"
+      Copyright="$(NuGetCopyright)"
+      RequireLicenseAcceptance="$(NuGetRequireLicenseAcceptance)"
+      Tags="$(NuGetTags)"
+      DevelopmentDependency="$(NuGetDevelopmentDependency)"
+      Dependencies="@(NuGetDependency)"
+      References="@(NuGetAssemblyReference)"
+      FrameworkReferences="@(NuGetFrameworkReference)"
+      Files="@(NuGetFile)">
+    </GenerateNuSpec>
+  </Target>
+
+  <Target
+    Name="BuildNuGet"
+    Inputs="$(MSBuildAllProjects);$(NuSpecPath)"
+    Outputs="$(NuGetOutputPath)"
+    DependsOnTargets="GetNuGetInfo">
+
+    <MakeDir
+      Directories="$(OutDir)"
+      Condition="!Exists('$(OutDir)')" />
+
+    <NuGetPack
+      OutputDirectory="$(OutDir)"
+      NoPackageAnalysis="$(NoPackageAnalysis)"
+      Symbols="$(GenerateSymbolPackage)"
+      ToolPath="$(NuGetToolPath)"
+      ToolExe="$(NuGetToolExe)"
+      NuSpecPath="$(NuSpecPath)">
+    </NuGetPack>
+  </Target>
+
+  <Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets"
+    Condition="Exists('$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets')"/>
+</Project>
