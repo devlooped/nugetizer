@@ -70,7 +70,12 @@ namespace NuGet.Packaging.Tasks
         public static VersionRange GetVersion(this ITaskItem taskItem)
         {
             VersionRange result = null;
-            var metadataValue = taskItem.GetMetadata(Metadata.Version);
+            var metadataValue = taskItem.GetMetadata(Metadata.VersionConstraint);
+            if (string.IsNullOrEmpty(metadataValue))
+            {
+                metadataValue = taskItem.GetMetadata(Metadata.Version);
+            }
+
             if (!string.IsNullOrEmpty(metadataValue))
             {
                 VersionRange.TryParse(metadataValue, out result);

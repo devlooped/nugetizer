@@ -6,6 +6,7 @@
 
   <UsingTask TaskName="NuGet.Packaging.Tasks.AssignTargetFramework" AssemblyFile="$(NuGetTasksPath)" />
   <UsingTask TaskName="NuGet.Packaging.Tasks.GenerateNuSpec" AssemblyFile="$(NuGetTasksPath)" />
+  <UsingTask TaskName="NuGet.Packaging.Tasks.ReadPackagesConfig" AssemblyFile="$(NuGetTasksPath)" />
   <UsingTask TaskName="NuGet.Packaging.Tasks.NuGetPack" AssemblyFile="$(NuGetTasksPath)" />
 
   <PropertyGroup>
@@ -45,7 +46,7 @@
     Name="_GenerateNuSpec"
     Inputs="@(NuGetFile);AlwaysRunEvenIfPackageFileIsEmpty"
     Outputs="$(NuSpecPath)"
-    DependsOnTargets="_GetNuGetFiles">
+    DependsOnTargets="_GetNuGetDependencies;_GetNuGetFiles">
     <!-- Please Note:
          In order to avoid incremental build issues this target will always run.
          However, the task will make sure that it doesn't touch the file if the
@@ -98,6 +99,7 @@
 
   <Target
     Name="_GetNuGetFiles"
+    DependsOnTargets="_GetNuGetDependencies"
     Returns="@(NuGetFile)">
     <ItemGroup>
       <_NuGetLibFile Include="$(TargetPath)" />
@@ -106,10 +108,19 @@
 
     <ItemGroup>
       <_NuGetLibFile
-        Include="@(ReferencePath)"
+        Include="%(ReferencePath.FullPath)"
         Condition=" '%(ReferencePath.FrameworkFile)' != 'true'
           AND '%(ReferencePath.CopyLocal)' != 'false'
           AND Exists('%(ReferencePath.FullPath)')" />
+    </ItemGroup>
+
+    <!-- Remove files that were local copied from NuGet packages -->
+    <ItemGroup>
+      <_NuGetFileDependency
+        Include="%(NuGetDependency.PackageDirectoryPath)\**\*"
+        Condition="'%(NuGetDependency.PackageDirectoryPath)' != ''" />
+
+      <_NuGetLibFile Remove="@(_NuGetFileDependency)" />
     </ItemGroup>
 
     <CreateItem
@@ -125,6 +136,24 @@
         TaskParameter="PackageFiles"
         ItemName="NuGetFile" />
     </AssignTargetFramework>
+  </Target>
+
+  <Target
+    Name="_GetNuGetDependencies"
+    Returns="@(NuGetDependency)">
+    <ReadPackagesConfig Projects="$(MSBuildProjectFullPath)">
+      <Output
+        TaskParameter="PackageReferences"
+        ItemName="_NuGetPackageReference" />
+    </ReadPackagesConfig>
+
+      <ItemGroup Condition="'@(_NuGetPackageReference)' != ''">
+        <NuGetDependency
+          Include="@(_NuGetPackageReference)"
+          Condition="'%(IsDevelopmentDependency)' != 'True'"
+          RemoveMetadata="IsDevelopmentDependency;RequireReinstallation">
+        </NuGetDependency>
+      </ItemGroup>
   </Target>
 
   <Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets"

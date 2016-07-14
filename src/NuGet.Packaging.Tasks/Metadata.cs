@@ -15,5 +15,7 @@
         public const string TargetFrameworkMoniker = "TargetFrameworkMoniker";
         
         public const string Version = "Version";
+
+        public const string VersionConstraint = "VersionConstraint";
     }
 }
