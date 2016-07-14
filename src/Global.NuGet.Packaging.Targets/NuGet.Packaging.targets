@@ -100,18 +100,26 @@
     Name="_GetNuGetFiles"
     Returns="@(NuGetFile)">
     <ItemGroup>
-      <_MainNuGetFile Include="$(TargetPath)" />
+      <_NuGetLibFile Include="$(TargetPath)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_NuGetLibFile
+        Include="@(ReferencePath)"
+        Condition=" '%(ReferencePath.FrameworkFile)' != 'true'
+          AND '%(ReferencePath.CopyLocal)' != 'false'
+          AND Exists('%(ReferencePath.FullPath)')" />
     </ItemGroup>
 
     <CreateItem
-      Include="@(_MainNuGetFile)"
+      Include="@(_NuGetLibFile)"
       AdditionalMetadata="TargetFrameworkMoniker=$(TargetFrameworkMoniker)">
       <Output
         TaskParameter="Include"
-        ItemName="_MainNuGetFileWithTargetFramework" />
+        ItemName="_NuGetLibFileWithTargetFramework" />
     </CreateItem>
 
-    <AssignTargetFramework OutputsWithTargetFrameworkInformation="@(_MainNuGetFileWithTargetFramework)">
+    <AssignTargetFramework OutputsWithTargetFrameworkInformation="@(_NuGetLibFileWithTargetFramework)">
       <Output
         TaskParameter="PackageFiles"
         ItemName="NuGetFile" />
