@@ -101,6 +101,7 @@
     Returns="@(NuGetFile)">
     <ItemGroup>
       <_NuGetLibFile Include="$(TargetPath)" />
+      <_NuGetLibFile Include="@(DocFileItem)" Condition="Exists('%(DocFileItem.FullPath)')" />
     </ItemGroup>
 
     <ItemGroup>
