@@ -20,6 +20,21 @@
     <BuildDependsOn>$(BuildDependsOn);BuildNuGet</BuildDependsOn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(BuildNuGet)' == 'True'">
+    <PrepareResourcesDependsOn>
+      _CollectOutputFiles;
+      $(PrepareResourcesDependsOn)
+    </PrepareResourcesDependsOn>
+  </PropertyGroup>
+
+  <Target
+    Name="_CollectOutputFiles">
+    <ItemGroup>
+      <FileWrites Include="$(NuGetInfoPath)" />
+      <FileWrites Include="$(NuGetOutputPath)" />
+    </ItemGroup>
+  </Target>
+
   <Target
     Name="GetNuGetInfo"
     Outputs="$(NuGetInfoPath)"
