@@ -11,18 +11,18 @@
   <UsingTask TaskName="NuGet.Packaging.Tasks.NuGetPack" AssemblyFile="$(NuGetTasksPath)" />
 
   <PropertyGroup>
-    <NuGetId Condition=" '$(NuGetId)' == '' ">$(AssemblyName)</NuGetId>
+    <IsNuGetMetadataAvailable Condition=" '$(NuGetId)' != '' ">True</IsNuGetMetadataAvailable>
     <NuGetVersion Condition=" '$(NuGetVersion)' == '' ">1.0.0</NuGetVersion>
     <NuGetInfoPath>$(IntermediateOutputPath)_$(NuGetId).nuspec</NuGetInfoPath>
     <NuSpecPath>$(NuGetInfoPath)</NuSpecPath>
     <NuGetOutputPath Condition=" '$(NuGetOutputPath)' == '' ">$(OutDir)$(NuGetId).$(NuGetVersion).nupkg</NuGetOutputPath>
   </PropertyGroup>
 
-   <PropertyGroup Condition=" '$(BuildNuGet)' == 'True' ">
+   <PropertyGroup Condition=" '$(BuildNuGet)' == 'True' AND '$(IsNuGetMetadataAvailable)' == 'True' ">
     <BuildDependsOn>$(BuildDependsOn);BuildNuGet</BuildDependsOn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(BuildNuGet)' == 'True'">
+  <PropertyGroup Condition="'$(BuildNuGet)' == 'True' AND '$(IsNuGetMetadataAvailable)' == 'True'">
     <PrepareResourcesDependsOn>
       _CollectOutputFiles;
       $(PrepareResourcesDependsOn)
