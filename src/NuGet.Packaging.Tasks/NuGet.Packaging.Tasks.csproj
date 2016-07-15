@@ -46,6 +46,7 @@
     <Compile Include="Metadata.cs" />
     <Compile Include="AssignTargetFramework.cs" />
     <Compile Include="ReadPackagesConfig.cs" />
+    <Compile Include="ReadProjectJson.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Global.NuGet.Packaging.Targets\NuGet.Packaging.props">

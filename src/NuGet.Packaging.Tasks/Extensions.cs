@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Versioning;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using NuGet.Versioning;
 
 namespace NuGet.Packaging.Tasks
@@ -185,6 +186,35 @@ namespace NuGet.Packaging.Tasks
                 default:
                     return fileName;
             }
+        }
+
+        public static ITaskItem CreatePackageReferenceTaskItem(this PackageReference packageReference, ITaskItem project)
+        {
+            var id = packageReference.PackageIdentity.Id;
+            var version = packageReference.PackageIdentity.Version;
+            var targetFramework = packageReference.TargetFramework;
+            var isDevelopmentDependency = packageReference.IsDevelopmentDependency;
+            var requireReinstallation = packageReference.RequireReinstallation;
+            var versionConstraint = packageReference.AllowedVersions;
+
+            var item = new TaskItem(id);
+            project.CopyMetadataTo(item);
+
+            item.SetMetadata("ProjectPath", project.GetMetadata("FullPath"));
+
+            item.SetMetadata("IsDevelopmentDependency", isDevelopmentDependency.ToString());
+            item.SetMetadata("RequireReinstallation", requireReinstallation.ToString());
+
+            if (version != null)
+                item.SetMetadata(Metadata.Version, version.ToString());
+
+            if (targetFramework != null)
+                item.SetMetadata(Metadata.TargetFramework, targetFramework.GetShortFolderName());
+
+            if (versionConstraint != null)
+                item.SetMetadata("VersionConstraint", versionConstraint.ToString());
+
+            return item;
         }
     }
 }

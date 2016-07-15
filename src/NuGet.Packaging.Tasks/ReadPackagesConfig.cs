@@ -5,6 +5,8 @@ using System.Xml.Linq;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using NuGet.Common;
+using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
 namespace NuGet.Packaging.Tasks
@@ -46,6 +48,14 @@ namespace NuGet.Packaging.Tasks
             string packagesConfigPath = Path.Combine(projectDirectory, "packages.config");
             string packagesProjectNameConfigPath = Path.Combine(projectDirectory, "packages." + projectName + ".config");
 
+            string projectJsonPath = Path.Combine(projectDirectory, ProjectJsonPathUtilities.ProjectConfigFileName);
+            if (File.Exists (projectJsonPath))
+            {
+                // If there is a packages.config file and a project.json file then
+                // the project.json should be used.
+                return null;
+            }
+
             if (File.Exists(packagesProjectNameConfigPath))
             {
                 packagesConfigPath = packagesProjectNameConfigPath;
@@ -61,38 +71,17 @@ namespace NuGet.Packaging.Tasks
 
         protected ITaskItem ConvertPackageElement(ITaskItem project, PackageReference packageReference)
         {
-            var id = packageReference.PackageIdentity.Id;
-            var version = packageReference.PackageIdentity.Version;
-            var targetFramework = packageReference.TargetFramework;
-            var isDevelopmentDependency = packageReference.IsDevelopmentDependency;
-            var requireReinstallation = packageReference.RequireReinstallation;
-            var versionConstraint = packageReference.AllowedVersions;
+            var item = packageReference.CreatePackageReferenceTaskItem(project);
 
-            var item = new TaskItem(id);
-            project.CopyMetadataTo(item);
-
-            var packageDirectoryPath = GetPackageDirectoryPath(project.GetMetadata("FullPath"), id, version);
+            var packageDirectoryPath = GetPackageDirectoryPath(project.GetMetadata("FullPath"), packageReference.PackageIdentity);
             item.SetMetadata("PackageDirectoryPath", packageDirectoryPath);
-            item.SetMetadata("ProjectPath", project.GetMetadata("FullPath"));
-
-            item.SetMetadata("IsDevelopmentDependency", isDevelopmentDependency.ToString());
-            item.SetMetadata("RequireReinstallation", requireReinstallation.ToString());
-
-            if (version != null)
-                item.SetMetadata(Metadata.Version, version.ToString());
-
-            if (targetFramework != null)
-                item.SetMetadata(Metadata.TargetFramework, targetFramework.GetShortFolderName());
-
-            if (versionConstraint != null)
-                item.SetMetadata("VersionConstraint", versionConstraint.ToString());
 
             return item;
         }
 
-        private static string GetPackageDirectoryPath(string packagesConfigPath, string packageId, NuGetVersion packageVersion)
+        private static string GetPackageDirectoryPath(string packagesConfigPath, PackageIdentity identity)
         {
-            var packageDirectoryName = packageId + "." + packageVersion;
+            var packageDirectoryName = identity.Id + "." + identity.Version;
             var candidateFolder = Path.GetDirectoryName(packagesConfigPath);
             while (candidateFolder != null)
             {
