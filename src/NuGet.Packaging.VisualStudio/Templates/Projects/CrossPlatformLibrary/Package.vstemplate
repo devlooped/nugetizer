@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0"
+            Type="ProjectGroup"
+            xmlns="http://schemas.microsoft.com/developer/vstemplate/2005"
+            xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Cross Platform Library</Name>
+    <Description>A project template for creating cross platform library projects and its corresponding NuGet packages</Description>
+    <Icon Package="{e57e2daf-a455-45db-962e-31b1c9c70860}" ID="400" />
+    <TemplateID>NuGet.Packaging.VisualStudio.CrossPlatformLibrary</TemplateID>
+    <ProjectType>CSharp</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>700</SortOrder>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>Library</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectCollection />
+    <CustomParameters>
+      <!-- Platform templates -->
+      <!-- Value is '$(TemplateId)|$(DisplayName)' -->
+      <CustomParameter Name="$PlatformTemplate.iOS$" Value="Xamarin.iOS.Library|Xamarin.iOS"  />
+      <CustomParameter Name="$PlatformTemplate.Android$" Value="Xamarin.Android.ClassLibrary|Xamarin.Android"  />
+      <CustomParameter Name="$PlatformTemplate.Mac$" Value="TBD|Xamarin.Mac"  />
+      <CustomParameter Name="$PlatformTemplate.UWP$" Value="TBD|UWP"  />
+      <CustomParameter Name="$PlatformTemplate.Net46$" Value="TBD|.Net 4.6"  />
+    </CustomParameters>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>NuGet.Packaging.VisualStudio, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5ae9beea16a2da9a</Assembly>
+    <FullClassName>NuGet.Packaging.VisualStudio.CrossPlatformWizard</FullClassName>
+  </WizardExtension>
+</VSTemplate>
