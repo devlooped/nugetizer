@@ -10,12 +10,21 @@
           <ButtonText>Build NuGet Package</ButtonText>
         </Strings>
       </Button>
+
+      <Button guid="guidCommandSet" id="cmdidAddPlatformImplementation" priority="0x0100" type="Button">
+        <Strings>
+          <ButtonText>Add Platform Implementation</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
   </Commands>
 
   <CommandPlacements>
     <CommandPlacement guid="guidCommandSet" id="cmdidBuildNugetPackage" priority="0xF000">
       <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidCommandSet" id="cmdidAddPlatformImplementation" priority="0xF000">
+      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
     </CommandPlacement>
   </CommandPlacements>
   
@@ -26,6 +35,7 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidCommandSet" value="{589286D3-5755-4E34-A8E4-0A7B670AF60A}">
       <IDSymbol name="cmdidBuildNugetPackage" value="0x0100" />
+      <IDSymbol name="cmdidAddPlatformImplementation" value="0x0101" />
     </GuidSymbol>
   </Symbols>
   

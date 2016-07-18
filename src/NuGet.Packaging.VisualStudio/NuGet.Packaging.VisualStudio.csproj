@@ -222,6 +222,7 @@
     <Compile Include="..\PropertyPageBase\UserEditCompleteHandler.cs">
       <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
     </Compile>
+    <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
     <Compile Include="Commands\BuildNuGetPackageCommand.cs" />
     <Compile Include="Commands\DynamicCommand.cs" />
     <Compile Include="Constants.cs" />
