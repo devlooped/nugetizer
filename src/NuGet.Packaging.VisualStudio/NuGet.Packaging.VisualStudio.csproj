@@ -274,7 +274,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="source.extension.vsixmanifest" />
-    <None Include="Templates\Spikes\Package\Package.nuproj" />
+    <None Include="Templates\Projects\Package\Package.nuproj" />
   </ItemGroup>
   <!-- 
   These are the parts of the custom project system which will be deployed as part of the 
@@ -324,7 +324,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\Spikes\Package\Package.vstemplate">
+    <None Include="Templates\Projects\Package\Package.vstemplate">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -342,7 +342,7 @@
     <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\Projects\CrossPlatformLibrary\Package.vstemplate">
+    <None Include="Templates\Projects\CrossPlatformLibrary\CrossPlatformLibrary.vstemplate">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

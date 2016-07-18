@@ -8,8 +8,8 @@ namespace NuGet.Packaging.VisualStudio
 {
 	interface IUnfoldTemplateService
 	{
-		bool IsTemplateInstalled(string templateId);
-		void UnfoldTemplate(string templateId, string path);
+		bool IsTemplateInstalled(string templateId, string language = "");
+		void UnfoldTemplate(string templateId, string path, string language = "");
 	}
 
 	interface IUnfoldProjectTemplateService : IUnfoldTemplateService { }

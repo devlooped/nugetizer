@@ -42,8 +42,8 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 				new PlatformTemplate { DisplayName = "Bar", TemplateId = "UninstalledBar" }
 			});
 
-			unfoldTemplateService.Setup(x => x.IsTemplateInstalled("InstalledFoo")).Returns(true);
-			unfoldTemplateService.Setup(x => x.IsTemplateInstalled("UninstalledBar")).Returns(false);
+			unfoldTemplateService.Setup(x => x.IsTemplateInstalled("InstalledFoo", It.IsAny<string>())).Returns(true);
+			unfoldTemplateService.Setup(x => x.IsTemplateInstalled("UninstalledBar", It.IsAny<string>())).Returns(false);
 
 			wizard.RunStarted(null, new Dictionary<string, string>(), WizardRunKind.AsNewProject, null);
 
@@ -82,8 +82,8 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 
 			wizard.RunFinished();
 
-			unfoldTemplateService.Verify(x => x.UnfoldTemplate("Xamarin.iOS.Library", @"c:\src\MySolution\MySolution.iOS"));
-			unfoldTemplateService.Verify(x => x.UnfoldTemplate("Xamarin.iOS.Android", It.IsAny<string>()), Times.Never);
+			unfoldTemplateService.Verify(x => x.UnfoldTemplate("Xamarin.iOS.Library", @"c:\src\MySolution\MySolution.iOS", It.IsAny<string>()));
+			unfoldTemplateService.Verify(x => x.UnfoldTemplate("Xamarin.iOS.Android", It.IsAny<string>(), It.IsAny<string>()), Times.Never);
 		}
 
 		class TestCrossPlatformWizardModel : CrossPlatformWizardModel

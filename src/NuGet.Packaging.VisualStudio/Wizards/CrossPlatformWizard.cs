@@ -56,6 +56,13 @@ namespace NuGet.Packaging.VisualStudio
 						platformTemplate.TemplateId, targetPlatformPath);
 				}
 			}
+
+			unfoldTemplateService.UnfoldTemplate(
+				Constants.NuGetPackageProjectTemplateId,
+				Path.Combine(
+					WizardModel.SolutionDirectory,
+					WizardModel.SafeProjectName + ".Package"),
+				Constants.Language);
 		}
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)

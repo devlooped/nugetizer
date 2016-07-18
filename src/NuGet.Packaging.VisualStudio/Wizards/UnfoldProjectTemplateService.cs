@@ -21,11 +21,14 @@ namespace NuGet.Packaging.VisualStudio
 			this.solution = solution;
 		}
 
-		public bool IsTemplateInstalled(string templateId)
+		public bool IsTemplateInstalled(string templateId, string language = "")
 		{
 			try
 			{
-				return !string.IsNullOrEmpty(solution.GetProjectTemplate(templateId, DefaultLanguage));
+				if (string.IsNullOrEmpty(language))
+					language = DefaultLanguage;
+
+				return !string.IsNullOrEmpty(solution.GetProjectTemplate(templateId, language));
 			}
 			catch
 			{
@@ -33,9 +36,12 @@ namespace NuGet.Packaging.VisualStudio
 			}
 		}
 
-		public void UnfoldTemplate(string templateId, string path)
+		public void UnfoldTemplate(string templateId, string path, string language = "")
 		{
-			var projectTemplatePath = solution.GetProjectTemplate(templateId, DefaultLanguage);
+			if (string.IsNullOrEmpty(language))
+				language = DefaultLanguage;
+
+			var projectTemplatePath = solution.GetProjectTemplate(templateId, language);
 
 			if (!string.IsNullOrEmpty(projectTemplatePath))
 			{
