@@ -120,6 +120,12 @@
   <data name="AddNuProjToLibrary" xml:space="preserve">
     <value>The NuProj targets need to be added to the selected project before being able to build a NuGet package. Do you want to continue?</value>
   </data>
+  <data name="Android_DisplayName" xml:space="preserve">
+    <value>Xamarin.Android</value>
+  </data>
+  <data name="Android_Suffix" xml:space="preserve">
+    <value>Android</value>
+  </data>
   <data name="Application" xml:space="preserve">
     <value>Application</value>
   </data>
@@ -146,6 +152,12 @@
   </data>
   <data name="GeneralCaption" xml:space="preserve">
     <value>General</value>
+  </data>
+  <data name="IOS_DisplayName" xml:space="preserve">
+    <value>Xamarin.iOS</value>
+  </data>
+  <data name="IOS_Suffix" xml:space="preserve">
+    <value>iOS</value>
   </data>
   <data name="NuSpecPropertyPageTitle" xml:space="preserve">
     <value>NuSpec</value>

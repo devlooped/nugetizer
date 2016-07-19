@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	interface IDialogService
+	interface IProject
 	{
-		bool ShowConfirmationMessage(string message);
-		bool? ShowDialog<T>(T dialog) where T : Window;
+		string Name { get; }
+
+		string Path { get; }
+
+		bool IsNuProj { get; }
+
+		void BuildNuGetPackage();
+
+		void OpenNuSpecPropertyPage();
 	}
 }

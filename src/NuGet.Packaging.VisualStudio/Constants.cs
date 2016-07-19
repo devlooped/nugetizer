@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	internal class Constants
+	class Constants
 	{
 		/// <summary>
 		/// The file extension of this project type.  No preceding period.
@@ -14,6 +14,20 @@ namespace NuGet.Packaging.VisualStudio
 		public const string ProjectExtension = "nuproj";
 		public const string ProjectFileExtension = "." + ProjectExtension;
 
-		internal const string Language = "NuGet.Packaging";
+		public const string Language = "NuGet.Packaging";
+
+		public class Platforms
+		{
+			public const string IOS = "Xamarin.iOS";
+			public const string Android = "Xamarin.Android";
+		}
+
+		public class Templates
+		{
+			public const string IOS = "Xamarin.iOS.Library";
+			public const string Android = "Xamarin.Android.ClassLibrary";
+			public const string NuGetPackage = "NuGet.Packaging.VisualStudio.Package";
+			public const string SharedProject = "Microsoft.CS.SharedProject";
+		}
 	}
 }

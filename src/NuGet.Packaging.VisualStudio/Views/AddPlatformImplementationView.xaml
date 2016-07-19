@@ -1,0 +1,40 @@
+﻿<Window x:Class="NuGet.Packaging.VisualStudio.AddPlatformImplementationView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NuGet.Packaging.VisualStudio"
+        mc:Ignorable="d"
+        Title="Add Platform Implementation" Width="500">
+    <Window.Resources>
+        <local:AddPlatformImplementationViewModel x:Key="DesignDataContext"
+                                                  IsSharedProjectEnabled="False" UseSharedProject="True">
+            <local:AddPlatformImplementationViewModel.Platforms>
+                <local:PlatformViewModel DisplayName="Xamarin.iOS" IsEnabled="false" />
+                <local:PlatformViewModel DisplayName="Xamarin.Android" IsSelected="false" />
+            </local:AddPlatformImplementationViewModel.Platforms>
+        </local:AddPlatformImplementationViewModel>
+    </Window.Resources>
+    <StackPanel d:DataContext="{StaticResource DesignDataContext}">
+        <Label>Select the platform implementation you would like to add:</Label>
+        <ListView ItemsSource="{Binding Platforms}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding DisplayName}"
+                              IsChecked="{Binding IsSelected}" 
+                              IsEnabled="{Binding IsEnabled}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <CheckBox Content="Use Shared Project"
+                  IsChecked="{Binding UseSharedProject}"  
+                  IsEnabled="{Binding IsSharedProjectEnabled}"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="5" Content="Accept" IsDefault="True" Click="OnAcceptButtonClick" />
+            <Button Margin="5" Content="Cancel" IsCancel="True" Click="OnCancelButtonClick" />
+        </StackPanel>
+    </StackPanel>
+
+</Window>

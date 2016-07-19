@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	interface IProject
+	interface IPlatformProvider
 	{
-		bool IsNuProjProject { get; }
-
-		void BuildNuGetPackage();
-
-		void OpenNuSpecPropertyPage();
+		IEnumerable<PlatformViewModel> GetSupportedPlatforms();
 	}
 }

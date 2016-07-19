@@ -1,5 +1,7 @@
 ﻿using EnvDTE;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -9,16 +11,22 @@ using System.Threading.Tasks;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	[Export(typeof(ISelectionService))]
-	class SelectionService : ISelectionService
+	[Export(typeof(ISolution))]
+	class Solution : ISolution
 	{
 		readonly DTE dte;
+		readonly IVsHierarchyItemManager hierarchyManager;
 
 		[ImportingConstructor]
-		public SelectionService([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
+		public Solution(
+			[Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider,
+			IVsHierarchyItemManager hierarchyManager)
 		{
-			this.dte = serviceProvider.GetService(typeof(DTE)) as DTE;
+			this.dte = (DTE)serviceProvider.GetService(typeof(DTE));
+			this.hierarchyManager = hierarchyManager;
 		}
+
+		public string Path => dte.Solution.FileName;
 
 		public IProject SelectedProject
 		{
