@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	interface ISelectionService
+	interface ISolution
 	{
+		string Path { get; }
+
 		IProject SelectedProject { get; }
 	}
 }

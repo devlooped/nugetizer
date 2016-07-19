@@ -7,25 +7,25 @@ namespace NuGet.Packaging.VisualStudio
 	[Export(typeof(DynamicCommand))]
 	class BuildNuGetPackageCommand : DynamicCommand
 	{
-		readonly ISelectionService selectionService;
+		readonly ISolution solution;
 		readonly IDialogService dialogService;
 
 		[ImportingConstructor]
-		public BuildNuGetPackageCommand(ISelectionService selectionService, IDialogService dialogService)
+		public BuildNuGetPackageCommand(ISolution solution, IDialogService dialogService)
 			: base(Commands.BuildNuGetPackageCommandId)
 		{
-			this.selectionService = selectionService;
+			this.solution = solution;
 			this.dialogService = dialogService;
 		}
 
 		protected override void Execute()
 		{
-			var selectedProject = selectionService.SelectedProject;
+			var selectedProject = solution.SelectedProject;
 
 			var buildNuGetPackage = true;
 			var openNuSpecPropertyPage = false;
 
-			if (!selectedProject.IsNuProjProject)
+			if (!selectedProject.IsNuProj)
 				buildNuGetPackage = openNuSpecPropertyPage =
 					dialogService.ShowConfirmationMessage(Resources.AddNuProjToLibrary);
 

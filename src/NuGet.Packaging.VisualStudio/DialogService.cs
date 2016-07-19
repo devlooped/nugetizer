@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -15,5 +16,10 @@ namespace NuGet.Packaging.VisualStudio
 				message,
 				Resources.DefaultDialogCaption,
 				System.Windows.Forms.MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK;
+
+		public bool? ShowDialog<T>(T dialog) where T : Window
+		{
+			return dialog.ShowDialog();
+		}
 	}
 }

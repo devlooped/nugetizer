@@ -7,19 +7,19 @@ using System.Linq;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	class VsProject : IProject
+	class Project : IProject
 	{
 		readonly IVsHierarchy project;
 
-		public VsProject(IVsHierarchy project)
+		public Project(IVsHierarchy project)
 		{
 			this.project = project;
 		}
 
-		public bool IsNuProjProject => IsProjectSubtype(new Guid(Guids.FlavoredProjectTypeGuid)) ||
+		public bool IsNuProj => IsProjectSubtype(new Guid(Guids.FlavoredProjectTypeGuid)) ||
 			DteProject.FullName.EndsWith(Constants.ProjectFileExtension, StringComparison.OrdinalIgnoreCase);
 
-		Project DteProject
+		EnvDTE.Project DteProject
 		{
 			get
 			{
@@ -30,9 +30,13 @@ namespace NuGet.Packaging.VisualStudio
 						(int)__VSHPROPID.VSHPROPID_ExtObject,
 						out dteProject));
 
-				return dteProject as Project;
+				return dteProject as EnvDTE.Project;
 			}
 		}
+
+		public string Name => DteProject.Name;
+
+		public string Path => DteProject.FullName;
 
 		bool IsProjectSubtype(Guid projectTypeGuid) =>
 			GetProjectSubtypes().Any(type => type == projectTypeGuid);
@@ -63,7 +67,7 @@ namespace NuGet.Packaging.VisualStudio
 
 		public void BuildNuGetPackage()
 		{
-			if (!IsNuProjProject)
+			if (!IsNuProj)
 			{
 				// TODO: Add NuProj type guid and targets
 			}

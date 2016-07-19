@@ -19,15 +19,6 @@
   </TemplateData>
   <TemplateContent>
     <ProjectCollection />
-    <CustomParameters>
-      <!-- Platform templates -->
-      <!-- Value is '$(TemplateId)|$(DisplayName)' -->
-      <CustomParameter Name="$PlatformTemplate.iOS$" Value="Xamarin.iOS.Library|Xamarin.iOS"  />
-      <CustomParameter Name="$PlatformTemplate.Android$" Value="Xamarin.Android.ClassLibrary|Xamarin.Android"  />
-      <CustomParameter Name="$PlatformTemplate.Mac$" Value="TBD|Xamarin.Mac"  />
-      <CustomParameter Name="$PlatformTemplate.UWP$" Value="TBD|UWP"  />
-      <CustomParameter Name="$PlatformTemplate.Net46$" Value="TBD|.Net 4.6"  />
-    </CustomParameters>
   </TemplateContent>
   <WizardExtension>
     <Assembly>NuGet.Packaging.VisualStudio, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5ae9beea16a2da9a</Assembly>

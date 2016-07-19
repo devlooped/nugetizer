@@ -14,13 +14,20 @@ namespace NuGet.Packaging.VisualStudio
 	public class CrossPlatformWizard : IWizard
 	{
 		IUnfoldTemplateService unfoldTemplateService;
+		IUnfoldPlatformTemplateService unfoldPlatformTemplateService;
+		IPlatformProvider platformProvider;
 
 		public CrossPlatformWizard()
 		{ }
 
-		internal CrossPlatformWizard(IUnfoldTemplateService unfoldTemplateService)
+		internal CrossPlatformWizard(
+			IUnfoldTemplateService unfoldTemplateService,
+			IUnfoldPlatformTemplateService unfoldPlatformTemplateService,
+			IPlatformProvider platformProvider)
 		{
 			this.unfoldTemplateService = unfoldTemplateService;
+			this.unfoldPlatformTemplateService = unfoldPlatformTemplateService;
+			this.platformProvider = platformProvider;
 		}
 
 		internal CrossPlatformWizardModel WizardModel { get; set; }
@@ -31,7 +38,7 @@ namespace NuGet.Packaging.VisualStudio
 		{
 		}
 
-		public void ProjectFinishedGenerating(Project project)
+		public void ProjectFinishedGenerating(EnvDTE.Project project)
 		{
 		}
 
@@ -41,34 +48,27 @@ namespace NuGet.Packaging.VisualStudio
 
 		public void RunFinished()
 		{
+			var baseTargetPath = Path.Combine(
+					WizardModel.SolutionDirectory,
+					WizardModel.SafeProjectName);
+
 			foreach (var selectedPlatform in ViewModel.Platforms.Where(x => x.IsSelected))
-			{
-				var platformTemplate = WizardModel.PlatformTemplates.FirstOrDefault(x =>
-						x.DisplayName == selectedPlatform.DisplayName);
-
-				if (platformTemplate != null)
-				{
-					var targetPlatformPath = Path.Combine(
-							WizardModel.SolutionDirectory,
-							WizardModel.SafeProjectName + "." + platformTemplate.Suffix);
-
-					unfoldTemplateService.UnfoldTemplate(
-						platformTemplate.TemplateId, targetPlatformPath);
-				}
-			}
+				unfoldPlatformTemplateService.UnfoldTemplate(
+					selectedPlatform.Id, baseTargetPath);
 
 			unfoldTemplateService.UnfoldTemplate(
-				Constants.NuGetPackageProjectTemplateId,
-				Path.Combine(
-					WizardModel.SolutionDirectory,
-					WizardModel.SafeProjectName + ".Package"),
+				Constants.Templates.SharedProject,
+				baseTargetPath + ".Shared");
+
+			unfoldTemplateService.UnfoldTemplate(
+				Constants.Templates.NuGetPackage,
+				baseTargetPath + ".Package",
 				Constants.Language);
 		}
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
 		{
-			if (unfoldTemplateService == null)
-				unfoldTemplateService = GetExportedValue<IUnfoldProjectTemplateService>();
+			SatifyDependencies();
 
 			if (WizardModel == null)
 				WizardModel = new CrossPlatformWizardModel();
@@ -78,22 +78,29 @@ namespace NuGet.Packaging.VisualStudio
 			if (ViewModel == null)
 				ViewModel = new CrossPlatformViewModel();
 
-			foreach (var template in WizardModel.PlatformTemplates
-				.Where(x => unfoldTemplateService.IsTemplateInstalled(x.TemplateId)))
+			foreach (var template in platformProvider.GetSupportedPlatforms())
 			{
 				ViewModel.Platforms.Add(
 					new PlatformViewModel
 					{
-						DisplayName = template.DisplayName
+						DisplayName = template.DisplayName,
+						Id = template.Id
 					});
 			}
 		}
 
-		T GetExportedValue<T>()
+		void SatifyDependencies()
 		{
 			var componentModel = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
 
-			return componentModel.DefaultExportProvider.GetExportedValue<T>();
+			if (unfoldPlatformTemplateService == null)
+				unfoldPlatformTemplateService = componentModel.DefaultExportProvider.GetExportedValue<IUnfoldPlatformTemplateService>();
+
+			if (unfoldTemplateService == null)
+				unfoldTemplateService = componentModel.DefaultExportProvider.GetExportedValue<IUnfoldProjectTemplateService>();
+
+			if (platformProvider == null)
+				platformProvider = componentModel.DefaultExportProvider.GetExportedValue<IPlatformProvider>();
 		}
 
 		public bool ShouldAddProjectItem(string filePath) => true;

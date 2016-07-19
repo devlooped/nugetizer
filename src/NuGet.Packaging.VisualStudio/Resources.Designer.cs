@@ -70,6 +70,24 @@ namespace NuGet.Packaging.VisualStudio {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Xamarin.Android.
+        /// </summary>
+        internal static string Android_DisplayName {
+            get {
+                return ResourceManager.GetString("Android_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Android.
+        /// </summary>
+        internal static string Android_Suffix {
+            get {
+                return ResourceManager.GetString("Android_Suffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application.
         /// </summary>
         internal static string Application {
@@ -147,6 +165,24 @@ namespace NuGet.Packaging.VisualStudio {
         internal static string GeneralCaption {
             get {
                 return ResourceManager.GetString("GeneralCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xamarin.iOS.
+        /// </summary>
+        internal static string IOS_DisplayName {
+            get {
+                return ResourceManager.GetString("IOS_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to iOS.
+        /// </summary>
+        internal static string IOS_Suffix {
+            get {
+                return ResourceManager.GetString("IOS_Suffix", resourceCulture);
             }
         }
         

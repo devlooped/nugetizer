@@ -9,7 +9,7 @@ namespace EnvDTE
 	static class DteProjectExtensions
 	{
 		internal static IProject AsProject(this Project project) =>
-			new NuGet.Packaging.VisualStudio.VsProject(project.GetIVsHierarchy());
+			new NuGet.Packaging.VisualStudio.Project(project.GetIVsHierarchy());
 
 		static IVsHierarchy GetIVsHierarchy(this Project project)
 		{
