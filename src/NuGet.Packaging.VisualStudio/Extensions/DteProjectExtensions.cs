@@ -13,8 +13,6 @@ namespace EnvDTE
 
 		static IVsHierarchy GetIVsHierarchy(this Project project)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
-
 			var solution = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
 
 			IVsHierarchy projectHierarchy;
