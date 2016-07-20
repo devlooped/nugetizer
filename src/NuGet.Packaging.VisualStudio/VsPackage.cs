@@ -5,6 +5,7 @@
 	using Microsoft.VisualStudio.Shell;
 	using System.ComponentModel.Design;
 	using Microsoft.VisualStudio.ComponentModelHost;
+
 	[Guid(Guids.PackageGuid)]
 	[PackageRegistration(UseManagedResourcesOnly = true)]
 	[ProvideObject(typeof(NuSpecPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]

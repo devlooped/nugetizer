@@ -1,21 +1,22 @@
-﻿using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.ProjectSystem;
-using Microsoft.VisualStudio.ProjectSystem.Properties;
-
 namespace NuGet.Packaging.VisualStudio
 {
-    /// <summary>
-    /// Provides rule-based property access.
-    /// </summary>
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Microsoft.VisualStudio.ProjectSystem;
+    using Microsoft.VisualStudio.ProjectSystem.Properties;
+
     [Export]
-    [AppliesTo(NuProjCapabilities.NuProj)]
-    internal partial class NuProjProjectProperties : StronglyTypedPropertyAccess
+    internal partial class ProjectProperties : StronglyTypedPropertyAccess
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectProperties"/> class.
         /// </summary>
         [ImportingConstructor]
-        public NuProjProjectProperties([Import] ConfiguredProject configuredProject)
+        public ProjectProperties(ConfiguredProject configuredProject)
             : base(configuredProject)
         {
         }
@@ -23,7 +24,7 @@ namespace NuGet.Packaging.VisualStudio
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectProperties"/> class.
         /// </summary>
-        public NuProjProjectProperties(ConfiguredProject configuredProject, string file, string itemType, string itemName)
+        public ProjectProperties(ConfiguredProject configuredProject, string file, string itemType, string itemName)
             : base(configuredProject, file, itemType, itemName)
         {
         }
@@ -31,7 +32,7 @@ namespace NuGet.Packaging.VisualStudio
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectProperties"/> class.
         /// </summary>
-        public NuProjProjectProperties(ConfiguredProject configuredProject, IProjectPropertiesContext projectPropertiesContext)
+        public ProjectProperties(ConfiguredProject configuredProject, IProjectPropertiesContext projectPropertiesContext)
             : base(configuredProject, projectPropertiesContext)
         {
         }
@@ -39,7 +40,7 @@ namespace NuGet.Packaging.VisualStudio
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectProperties"/> class.
         /// </summary>
-        public NuProjProjectProperties(ConfiguredProject configuredProject, UnconfiguredProject unconfiguredProject)
+        public ProjectProperties(ConfiguredProject configuredProject, UnconfiguredProject unconfiguredProject)
             : base(configuredProject, unconfiguredProject)
         {
         }
