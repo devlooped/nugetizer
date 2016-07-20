@@ -46,12 +46,19 @@
     <Reference Include="NuGet">
       <HintPath>..\packages\NuGet.CommandLine.3.4.3\tools\NuGet.exe</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\ReadPackagesConfigTests.cs" />
     <Compile Include="Infrastructure\AssertTaskItem.cs" />
     <Compile Include="Infrastructure\Assets.cs" />
+    <Compile Include="Tests\GenerateNuSpecTests.cs" />
+    <Compile Include="Infrastructure\PackageDependencyGroupComparer.cs" />
+    <Compile Include="Infrastructure\ManifestFileComparer.cs" />
+    <Compile Include="Infrastructure\FrameworkAssemblyReferenceComparer.cs" />
+    <Compile Include="Infrastructure\PackageReferenceSetComparer.cs" />
+    <Compile Include="Infrastructure\PackageDependencyComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

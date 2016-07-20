@@ -141,26 +141,32 @@ namespace NuGet.Packaging.Tasks
 
             manifestMetadata = manifest.Metadata;
 
-            manifestMetadata.Authors = SplitCommaSeparatedString(Authors);
+            if (!String.IsNullOrEmpty(Authors))
+                manifestMetadata.Authors = SplitCommaSeparatedString(Authors);
             manifestMetadata.UpdateMember(x => x.Copyright, Copyright);
             manifestMetadata.AddRangeToMember(x => x.DependencyGroups, GetDependencySets());
             manifestMetadata.UpdateMember(x => x.Description, Description);
             manifestMetadata.DevelopmentDependency |= DevelopmentDependency;
             manifestMetadata.AddRangeToMember(x => x.FrameworkReferences, GetFrameworkAssemblies());
-            manifestMetadata.SetIconUrl(IconUrl);
+            if (!String.IsNullOrEmpty(IconUrl))
+                manifestMetadata.SetIconUrl(IconUrl);
             manifestMetadata.UpdateMember(x => x.Id, Id);
             manifestMetadata.UpdateMember(x => x.Language, Language);
-            manifestMetadata.SetLicenseUrl(LicenseUrl);
+            if (!String.IsNullOrEmpty(LicenseUrl))
+                manifestMetadata.SetLicenseUrl(LicenseUrl);
             manifestMetadata.UpdateMember(x => x.MinClientVersionString, MinClientVersion);
-            manifestMetadata.Owners = SplitCommaSeparatedString(Owners);
-            manifestMetadata.SetProjectUrl(ProjectUrl);
+            if (!String.IsNullOrEmpty(Owners))
+                manifestMetadata.Owners = SplitCommaSeparatedString(Owners);
+            if (!String.IsNullOrEmpty(ProjectUrl))
+                manifestMetadata.SetProjectUrl(ProjectUrl);
             manifestMetadata.AddRangeToMember(x => x.PackageAssemblyReferences, GetReferenceSets());
             manifestMetadata.UpdateMember(x => x.ReleaseNotes, ReleaseNotes);
             manifestMetadata.RequireLicenseAcceptance |= RequireLicenseAcceptance;
             manifestMetadata.UpdateMember(x => x.Summary, Summary);
             manifestMetadata.UpdateMember(x => x.Tags, Tags);
             manifestMetadata.UpdateMember(x => x.Title, Title);
-            manifestMetadata.Version = GetNuGetVersion(Version);
+            if (!String.IsNullOrEmpty(Version))
+                manifestMetadata.Version = GetNuGetVersion(Version);
 
             manifest.Files.AddRange(GetManifestFiles());
 
