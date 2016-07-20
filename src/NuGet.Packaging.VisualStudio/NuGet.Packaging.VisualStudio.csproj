@@ -115,6 +115,7 @@
     <Compile Include="Commands.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="IDialogService.cs" />
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
     <Compile Include="ProjectProperties.cs" />
     <Compile Include="Solution\IProject.cs" />
     <Compile Include="Solution\ISolution.cs" />
@@ -244,6 +245,14 @@
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\external\clide\src\Clide\Clide.csproj">
+      <Project>{e8fabf5d-2fc8-43f6-b866-e3349afb7538}</Project>
+      <Name>Clide</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bDebugSymbolsProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>
@@ -252,5 +261,12 @@
     </ItemGroup>
     <Copy SourceFiles="@(BuildSystemToCopy)" DestinationFiles="@(BuildSystemToCopy->'$(LocalAppData)\CustomProjectSystems\NuGet.Packaging\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(RulesToCopy)" DestinationFiles="@(RulesToCopy->'$(LocalAppData)\CustomProjectSystems\NuGet.Packaging\Rules\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
+    <ItemGroup>
+      <Reference Condition=" '%(Filename)' == 'envdte80' ">
+        <EmbedInteropTypes>True</EmbedInteropTypes>
+      </Reference>
+    </ItemGroup>
   </Target>
 </Project>

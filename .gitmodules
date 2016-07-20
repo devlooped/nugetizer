@@ -1,0 +1,3 @@
+[submodule "external/clide"]
+	path = external/clide
+	url = git@github.com:clariuslabs/clide.git
