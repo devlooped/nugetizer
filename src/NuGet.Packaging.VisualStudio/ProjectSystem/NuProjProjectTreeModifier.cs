@@ -1,26 +1,26 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
+
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.ProjectSystem;
-using Microsoft.VisualStudio.ProjectSystem.Designers;
-using Microsoft.VisualStudio.ProjectSystem.Utilities;
-using Microsoft.VisualStudio.ProjectSystem.Utilities.Designers;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	[Export(typeof(IProjectTreeModifier))]
-	[AppliesTo(NuProjCapabilities.NuProj)]
-	internal sealed class NuProjProjectTreeModifier : IProjectTreeModifier
-	{
-		[Import]
-		public UnconfiguredProject UnconfiguredProject { get; set; }
+    [Export(typeof(IProjectTreePropertiesProvider))]
+    [AppliesTo(NuProjCapabilities.NuProj)]
+    internal sealed class NuProjProjectTreeModifier : IProjectTreePropertiesProvider
+    {
+        [Import]
+        public UnconfiguredProject UnconfiguredProject { get; set; }
 
-		public IProjectTree ApplyModifications(IProjectTree tree, IProjectTreeProvider projectTreeProvider)
-		{
-			if (tree.Capabilities.Contains(ProjectTreeCapabilities.ProjectRoot))
-				tree = tree.SetIcon(KnownMonikers.NuGet.ToProjectSystemType());
-
-			return tree;
-		}
-	}
+        public void CalculatePropertyValues(IProjectTreeCustomizablePropertyContext propertyContext, IProjectTreeCustomizablePropertyValues propertyValues)
+        {
+            if (propertyValues != null)
+            {
+                if (propertyValues.Flags.Contains(ProjectTreeFlags.Common.ProjectRoot))
+                {
+                    propertyValues.Icon = KnownMonikers.NuGet.ToProjectSystemType();
+                }
+            }
+        }
+    }
 }

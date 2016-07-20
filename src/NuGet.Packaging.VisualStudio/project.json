@@ -1,0 +1,23 @@
+﻿{
+  "dependencies": {
+    "Clarius.VisualStudio": "1.3.7",
+    "Microsoft.VisualStudio.ImageCatalog": "14.3.25407",
+    "Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime": "14.3.25407",
+    "Microsoft.VisualStudio.ProjectSystem.Analyzers": "15.0.183-pre",
+    "Microsoft.VisualStudio.ProjectSystem.SDK": "15.0.183-pre",
+    "Microsoft.VisualStudio.Shell.15.0": "15.0.25123-Dev15Preview",
+    "Microsoft.VisualStudio.Shell.Interop.11.0": "11.0.61030",
+    "Microsoft.VSSDK.BuildTools": "15.0.25201-Dev15Preview2",
+    "PropertyChanged.Fody": "1.51.3",
+    "VSSDK.ComponentModelHost": "12.0.4",
+    "VSSDK.DTE.8": "8.0.4",
+    "VSSDK.TemplateWizardInterface": "12.0.4",
+    "VSSDK.VSHelp": "7.0.4"
+  },
+  "frameworks": {
+    "net46": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}

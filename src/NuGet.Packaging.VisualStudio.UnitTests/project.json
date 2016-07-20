@@ -1,0 +1,12 @@
+﻿{
+  "dependencies": {
+    "Moq": "4.5.16",
+    "xunit": "2.1.0"
+  },
+  "frameworks": {
+    "net46": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}
