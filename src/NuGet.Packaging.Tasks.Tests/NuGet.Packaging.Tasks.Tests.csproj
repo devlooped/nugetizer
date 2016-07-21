@@ -47,6 +47,9 @@
       <HintPath>..\packages\NuGet.CommandLine.3.4.3\tools\NuGet.exe</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +62,12 @@
     <Compile Include="Infrastructure\FrameworkAssemblyReferenceComparer.cs" />
     <Compile Include="Infrastructure\PackageReferenceSetComparer.cs" />
     <Compile Include="Infrastructure\PackageDependencyComparer.cs" />
+    <Compile Include="Tests\BuildNuGetTests.cs" />
+    <Compile Include="Infrastructure\NuGetRunner.cs" />
+    <Compile Include="Infrastructure\ToolRunner.cs" />
+    <Compile Include="Infrastructure\MSBuildRunner.cs" />
+    <Compile Include="Infrastructure\MSBuildArgumentBuilder.cs" />
+    <Compile Include="Infrastructure\NuspecReaderExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

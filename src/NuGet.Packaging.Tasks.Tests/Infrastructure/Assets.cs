@@ -8,6 +8,30 @@ namespace NuGet.Packaging.Tasks.Tests.Infrastructure
     {
         private static readonly string ProjectDirectory = ComputeProjectDirectory();
 
+        public static string NuGetPackagingTargetsPath
+        {
+            get { return Path.Combine(ProjectDirectory, "src/Global.NuGet.Packaging.Targets"); }
+        }
+
+        public static string NuGetPackagingTasksPath
+        {
+            get
+            {
+                string baseDirectory = Path.GetDirectoryName(typeof(Assets).Assembly.Location);
+                return Path.Combine(baseDirectory, "NuGet.Packaging.Tasks.dll");
+            }
+        }
+
+        public static string NuGetToolPath
+        {
+            get { return Path.Combine(ProjectDirectory, "src/packages/NuGet.CommandLine.3.4.3/tools"); }
+        }
+
+        public static string NuGetExePath
+        {
+            get { return Path.Combine(NuGetToolPath, "nuget.exe"); }
+        }
+
         public static string ScenariosDirectory
         {
             get { return Path.Combine(ProjectDirectory, "src", "NuGet.Packaging.Tasks.Tests", "Scenarios"); }
