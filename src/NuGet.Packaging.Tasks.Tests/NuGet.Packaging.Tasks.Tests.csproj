@@ -68,6 +68,7 @@
     <Compile Include="Infrastructure\MSBuildRunner.cs" />
     <Compile Include="Infrastructure\MSBuildArgumentBuilder.cs" />
     <Compile Include="Infrastructure\NuspecReaderExtensions.cs" />
+    <Compile Include="Tests\ReadProjectJsonTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
