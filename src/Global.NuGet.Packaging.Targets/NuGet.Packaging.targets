@@ -13,8 +13,10 @@
   <PropertyGroup>
     <IsNuGetMetadataAvailable Condition=" '$(NuGetId)' != '' ">True</IsNuGetMetadataAvailable>
     <NuGetVersion Condition=" '$(NuGetVersion)' == '' ">1.0.0</NuGetVersion>
-    <NuGetInfoPath>$(IntermediateOutputPath)_$(NuGetId).nuspec</NuGetInfoPath>
+    <NuGetInfoPath Condition=" '$(NuGetId)' != '' ">$(IntermediateOutputPath)_$(NuGetId).nuspec</NuGetInfoPath>
+    <NuGetInfoPath Condition=" '$(NuGetId)' == '' ">$(IntermediateOutputPath)_package.nuspec</NuGetInfoPath>
     <NuSpecPath>$(NuGetInfoPath)</NuSpecPath>
+    <NuGetInfoPath>$([System.IO.Path]::GetFullPath($(NuGetInfoPath)))</NuGetInfoPath>
     <NuGetOutputPath Condition=" '$(NuGetOutputPath)' == '' ">$(OutDir)$(NuGetId).$(NuGetVersion).nupkg</NuGetOutputPath>
   </PropertyGroup>
 
@@ -44,10 +46,22 @@
   </Target>
 
   <Target
+    Name="_GetProjectReferenceNuGetInfo"
+    DependsOnTargets="ResolveProjectReferences"
+    Returns="@(_ProjectReferenceNuGetInfo)">
+    <MSBuild
+      Projects="@(ProjectReference)"
+      Targets="GetNuGetInfo"
+      Condition="('$(BuildingSolutionFile)'=='true' or '$(BuildingInsideVisualStudio)'=='true')">
+      <Output TaskParameter="TargetOutputs" ItemName="_ProjectReferenceNuGetInfo"/>
+    </MSBuild>
+  </Target>
+
+  <Target
     Name="_GenerateNuSpec"
     Inputs="@(NuGetFile);AlwaysRunEvenIfPackageFileIsEmpty"
     Outputs="$(NuSpecPath)"
-    DependsOnTargets="_GetNuGetDependencies;_GetNuGetFiles">
+    DependsOnTargets="_GetNuGetDependencies;_GetNuGetFiles;_GetProjectReferenceNuGetInfo">
     <!-- Please Note:
          In order to avoid incremental build issues this target will always run.
          However, the task will make sure that it doesn't touch the file if the
@@ -72,10 +86,12 @@
       RequireLicenseAcceptance="$(NuGetRequireLicenseAcceptance)"
       Tags="$(NuGetTags)"
       DevelopmentDependency="$(NuGetDevelopmentDependency)"
+      TargetFrameworkMoniker="$(TargetFrameworkMoniker)"
       Dependencies="@(NuGetDependency)"
       References="@(NuGetAssemblyReference)"
       FrameworkReferences="@(NuGetFrameworkReference)"
-      Files="@(NuGetFile)" />
+      Files="@(NuGetFile)"
+      NuSpecFileDependencies="@(_ProjectReferenceNuGetInfo)" />
   </Target>
 
   <Target

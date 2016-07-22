@@ -271,5 +271,110 @@ namespace NuGet.Packaging.Tasks.Tests
                 }
             }
         }
+
+        [Fact]
+        public void GenerateNuSpec_NuSpecFileDependency()
+        {
+            var nuspecFileDependency = Assets.GetScenarioFilePath("GenerateNuSpec_NuSpecFileDependency", "NuGetPackage.nuspec");
+            var output = Path.Combine(projectDirectory, "NuSpecFileDependency.nuspec");
+
+            var target = new GenerateNuSpec();
+            target.OutputFileName = output;
+            target.Id = "Test";
+            target.Version = "1.0.0";
+            target.Title = "Test";
+            target.Authors = "Nuproj";
+            target.RequireLicenseAcceptance = true;
+            target.Description = "Test description";
+            target.ReleaseNotes = "Testing";
+            target.Summary = "Test summary";
+            target.ProjectUrl = "http://nuget.org/changes";
+            target.IconUrl = "http://placekitten.com/g/128/128";
+            target.LicenseUrl = "http://nuget.net/LICENSE/changes";
+            target.Copyright = "Copyright © Testing";
+            target.Tags = "Tags";
+            target.DevelopmentDependency = false;
+
+            target.NuSpecFileDependencies = new []
+            {
+                new TaskItem(nuspecFileDependency)
+            };
+
+            var result = target.Execute();
+            Assert.True(result);
+
+            using (var stream = File.OpenRead(output))
+            {
+                var manifest = Manifest.ReadFrom(stream, false);
+                Assert.Equal(target.Id, manifest.Metadata.Id);
+                Assert.Equal(target.Version, manifest.Metadata.Version.ToString());
+                Assert.Equal(target.Title, manifest.Metadata.Title);
+                Assert.Equal(target.Authors, String.Join(",", manifest.Metadata.Authors));
+                Assert.Equal(target.RequireLicenseAcceptance, manifest.Metadata.RequireLicenseAcceptance);
+                Assert.Equal(target.Description, manifest.Metadata.Description);
+                Assert.Equal(target.ReleaseNotes, manifest.Metadata.ReleaseNotes);
+                Assert.Equal(target.Summary, manifest.Metadata.Summary);
+                Assert.Equal(target.Language, manifest.Metadata.Language);
+                Assert.Equal(target.ProjectUrl, manifest.Metadata.ProjectUrl.ToString());
+                Assert.Equal(target.IconUrl, manifest.Metadata.IconUrl.ToString());
+                Assert.Equal(target.LicenseUrl, manifest.Metadata.LicenseUrl.ToString());
+                Assert.Equal(target.Copyright, manifest.Metadata.Copyright);
+                Assert.Equal(target.Tags, manifest.Metadata.Tags);
+                Assert.Equal(false, manifest.Metadata.DevelopmentDependency);
+
+                var expectedFrameworkAssemblies = new[] {
+                    new FrameworkAssemblyReference
+                    (
+                        "Microsoft.Build.Framework",
+                        new [] { NuGetFramework.Parse("net45") }
+                    )
+                };
+
+                var expectedDependencySets = new[] {
+                    new PackageDependencyGroup(
+                        NuGetFramework.Parse("net45"),
+                        new [] {
+                            new Core.PackageDependency
+                            (
+                                "Mono.Addins",
+                                VersionRange.Parse("1.2")
+                            )
+                        }
+                    )
+                };
+
+                var expectedReferenceSets = new[] {
+                    new PackageReferenceSet
+                    (
+                        new [] { "NuGet.Core.dll" }
+                    )
+                };
+
+                var expectedFiles = new[] {
+                    new ManifestFile
+                    {
+                        Source = "Library.dll",
+                        Target = "lib/net45/Library.dll",
+                        Exclude = "",
+                    }
+                };
+
+                Assert.Equal(expectedFrameworkAssemblies,
+                    manifest.Metadata.FrameworkReferences,
+                    FrameworkAssemblyReferenceComparer.Instance);
+
+                Assert.Equal(expectedDependencySets,
+                    manifest.Metadata.DependencyGroups,
+                    PackageDependencyGroupComparer.Instance);
+
+                Assert.Equal(expectedReferenceSets,
+                    manifest.Metadata.PackageAssemblyReferences,
+                    PackageReferenceSetComparer.Instance);
+
+                Assert.Equal(expectedFiles,
+                    manifest.Files,
+                    ManifestFileComparer.Instance);
+            }
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace NuGet.Packaging.Tasks
     public class GenerateNuSpec : Task
     {
         private const string NuSpecXmlNamespace = @"http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd";
+        private const string NuGetPackageIdPlaceholder = "NUGET_PACKAGE_ID_PLACEHOLDER";
 
         public string InputFileName { get; set; }
 
@@ -22,10 +23,8 @@ namespace NuGet.Packaging.Tasks
 
         public string MinClientVersion { get; set; }
 
-        [Required]
         public string Id { get; set; }
 
-        [Required]
         public string Version { get; set; }
 
         public string Title { get; set; }
@@ -63,6 +62,11 @@ namespace NuGet.Packaging.Tasks
         public ITaskItem[] FrameworkReferences { get; set; }
 
         public ITaskItem[] Files { get; set; }
+
+        public ITaskItem[] NuSpecFileDependencies { get; set; }
+
+        [Required]
+        public string TargetFrameworkMoniker { get; set; }
 
         [Output]
         public ITaskItem[] FilesWritten { get; set; }
@@ -170,7 +174,80 @@ namespace NuGet.Packaging.Tasks
 
             manifest.Files.AddRange(GetManifestFiles());
 
+            // Add placeholders into required fields otherwise it is not possible to
+            // read the .nuspec file using NuGet's Manifest.ReadFrom.
+            if (!manifestMetadata.Authors.NullAsEmpty().Any())
+                manifestMetadata.Authors = SplitCommaSeparatedString("NUGET_PACKAGE_AUTHORS_PLACEHOLDER");
+            if (manifestMetadata.Description == null)
+                manifestMetadata.UpdateMember(x => x.Description, "NUGET_PACKAGE_DESCRIPTION_PLACEHOLDER");
+            if (manifestMetadata.Id == null)
+                manifestMetadata.UpdateMember(x => x.Id, NuGetPackageIdPlaceholder);
+
+            AddNuSpecFileDependencies(manifest);
+
             return manifest;
+        }
+
+        void AddNuSpecFileDependencies(Manifest manifest)
+        {
+            foreach (ITaskItem nuspecFileDependency in NuSpecFileDependencies.NullAsEmpty())
+            {
+                string fileName = nuspecFileDependency.GetMetadata(Metadata.FileSource);
+                using (var stream = File.OpenRead(fileName))
+                {
+                    var dependencyManifest = Manifest.ReadFrom(stream, false);
+                    if (dependencyManifest.Metadata.Id == NuGetPackageIdPlaceholder)
+                    {
+                        MergeDependencyManifest(manifest, dependencyManifest);
+                    }
+                    else
+                    {
+                        RemoveDependencyManifestFiles(manifest, dependencyManifest);
+                        AddNuGetDependency(manifest, dependencyManifest);
+                    }
+                }
+            }
+        }
+
+        static void MergeDependencyManifest(Manifest manifest, Manifest dependencyManifest)
+        {
+            var manifestMetadata = manifest.Metadata;
+            var dependencyManifestMetadata = dependencyManifest.Metadata;
+
+            manifest.Files.AddRange(dependencyManifest.Files);
+            manifestMetadata.AddRangeToMember(x => x.DependencyGroups, dependencyManifestMetadata.DependencyGroups);
+            manifestMetadata.AddRangeToMember(x => x.FrameworkReferences, dependencyManifestMetadata.FrameworkReferences);
+            manifestMetadata.AddRangeToMember(x => x.PackageAssemblyReferences, dependencyManifestMetadata.PackageAssemblyReferences);
+        }
+
+        /// <summary>
+        /// Removes any files that belong to another project's manifest from the current
+        /// project's manifest.
+        /// </summary>
+        void RemoveDependencyManifestFiles(Manifest manifest, Manifest dependencyManifest)
+        {
+            foreach (ManifestFile fileToRemove in dependencyManifest.Files)
+            {
+                manifest.Files.RemoveAll(file => file.Source == fileToRemove.Source);
+            }
+         }
+
+        void AddNuGetDependency(Manifest manifest, Manifest dependencyManifest)
+        {
+            var manifestMetadata = manifest.Metadata;
+            var dependencyManifestMetadata = dependencyManifest.Metadata;
+
+            var packageDependency = new Core.PackageDependency(
+                dependencyManifestMetadata.Id,
+                new VersionRange(dependencyManifestMetadata.Version));
+
+            var dependencyGroup = new PackageDependencyGroup(
+                NuGetFramework.Parse(TargetFrameworkMoniker),
+                new [] { packageDependency });
+            var dependencyGroups = new List<PackageDependencyGroup>();
+            dependencyGroups.Add(dependencyGroup);
+
+            manifestMetadata.AddRangeToMember(x => x.DependencyGroups, dependencyGroups);
         }
 
         IEnumerable<string> SplitCommaSeparatedString(string value)
