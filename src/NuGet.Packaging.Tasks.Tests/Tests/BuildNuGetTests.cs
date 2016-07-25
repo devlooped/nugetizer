@@ -204,6 +204,36 @@ namespace NuGet.Packaging.Tasks.Tests
                 Assert.Equal(1, frameworkSpecificGroup.Items.Count());
             }
         }
+
+        [Fact]
+        public async Task BuildNuGet_ReferenceOutputAssemblyIsFalse()
+        {
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuGet_ReferenceOutputAssemblyIsFalse");
+            string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
+
+            await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);
+
+            await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
+
+            string packagePath = Path.Combine(tempSolutionDirectory, "Main", "bin", "Debug", "Main.0.1.2.nupkg");
+
+            using (var reader = new PackageArchiveReader(File.OpenRead(packagePath))) {
+                var identity = reader.GetIdentity();
+                Assert.Equal("Main", identity.Id);
+                Assert.Equal("0.1.2", identity.Version.ToString());
+
+                var packageDependencyGroup = reader.GetPackageDependencies().Single();
+                Assert.Equal("net45", packageDependencyGroup.TargetFramework.GetShortFolderName());
+                var packageDependency = packageDependencyGroup.Packages.Single(item => item.Id == "Newtonsoft.Json");
+                Assert.Equal("[9.0.1, )", packageDependency.VersionRange.ToString());
+                Assert.Equal(1, packageDependencyGroup.Packages.Count());
+
+                var frameworkSpecificGroup = reader.GetLibItems().Single();
+                Assert.Equal("net45", frameworkSpecificGroup.TargetFramework.GetShortFolderName());
+                Assert.Contains("lib/net45/Main.dll", frameworkSpecificGroup.Items);
+                Assert.Equal(1, frameworkSpecificGroup.Items.Count());
+            }
+        }
     }
 }
 

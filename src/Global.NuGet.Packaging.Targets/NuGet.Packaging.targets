@@ -49,8 +49,15 @@
     Name="_GetProjectReferenceNuGetInfo"
     DependsOnTargets="ResolveProjectReferences"
     Returns="@(_ProjectReferenceNuGetInfo)">
+
+    <ItemGroup>
+      <_FilteredProjectReference
+        Include="@(ProjectReference)"
+        Condition="'%(ProjectReference.ReferenceOutputAssembly)' != 'False'" />
+    </ItemGroup>
+
     <MSBuild
-      Projects="@(ProjectReference)"
+      Projects="@(_FilteredProjectReference)"
       Targets="GetNuGetInfo"
       Condition="('$(BuildingSolutionFile)'=='true' or '$(BuildingInsideVisualStudio)'=='true')">
       <Output TaskParameter="TargetOutputs" ItemName="_ProjectReferenceNuGetInfo"/>
