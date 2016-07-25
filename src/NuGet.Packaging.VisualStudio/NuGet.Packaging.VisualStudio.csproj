@@ -111,14 +111,13 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DialogService.cs" />
     <Compile Include="ExportProvider.cs" />
-    <Compile Include="Extensions\DteProjectExtensions.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="Extensions\IProjectNodeExntesions.cs" />
+    <Compile Include="Extensions\ISolutionExplorerExtensions.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="IDialogService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
     <Compile Include="ProjectProperties.cs" />
-    <Compile Include="Solution\IProject.cs" />
-    <Compile Include="Solution\ISolution.cs" />
     <Compile Include="IUnfoldPlatformTemplateService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
@@ -137,7 +136,6 @@
     <Compile Include="Views\AddPlatformImplementationView.xaml.cs">
       <DependentUpon>AddPlatformImplementationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Solution\Project.cs" />
     <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
     <Compile Include="LegacyProjectSystem\NuProjFlavoredProject.cs" />
@@ -146,7 +144,6 @@
     <Compile Include="ProjectSystem\NuProjProjectTreeModifier.cs" />
     <Compile Include="ProjectSystem\NuProjUnconfiguredProject.cs" />
     <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
-    <Compile Include="Solution\Solution.cs" />
     <Compile Include="Wizards\CrossPlatformWizard.cs" />
     <Compile Include="Wizards\CrossPlatformWizardModel.cs" />
     <Compile Include="IUnfoldTemplateService.cs" />
@@ -246,6 +243,14 @@
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\external\clide\src\Clide.Extensibility\Clide.Extensibility.csproj">
+      <Project>{09ac21f4-4e72-4942-afac-20b9ef325a50}</Project>
+      <Name>Clide.Extensibility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
+      <Project>{099bebd8-6b04-416d-ba44-e0201951542b}</Project>
+      <Name>Clide.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\external\clide\src\Clide\Clide.csproj">
       <Project>{e8fabf5d-2fc8-43f6-b866-e3349afb7538}</Project>
       <Name>Clide</Name>
@@ -265,6 +270,9 @@
   <Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
     <ItemGroup>
       <Reference Condition=" '%(Filename)' == 'envdte80' ">
+        <EmbedInteropTypes>True</EmbedInteropTypes>
+      </Reference>
+      <Reference Condition=" '%(Filename)' == 'Merq' ">
         <EmbedInteropTypes>True</EmbedInteropTypes>
       </Reference>
     </ItemGroup>

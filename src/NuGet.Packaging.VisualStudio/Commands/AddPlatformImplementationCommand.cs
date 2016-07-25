@@ -2,13 +2,14 @@
 using System.Linq;
 using System.ComponentModel.Composition;
 using System.IO;
+using Clide;
 
 namespace NuGet.Packaging.VisualStudio
 {
 	[Export(typeof(DynamicCommand))]
 	class AddPlatformImplementationCommand : DynamicCommand
 	{
-		readonly ISolution solution;
+		readonly ISolutionExplorer solutionExplorer;
 		readonly IDialogService dialogService;
 		readonly IPlatformProvider platformProvider;
 		readonly IUnfoldPlatformTemplateService unfoldTemplateService;
@@ -16,14 +17,14 @@ namespace NuGet.Packaging.VisualStudio
 
 		[ImportingConstructor]
 		public AddPlatformImplementationCommand(
-			ISolution solution,
+			ISolutionExplorer solutionExplorer,
 			IPlatformProvider platformProvider,
 			IUnfoldProjectTemplateService unfoldProjectTemplateService,
 			IUnfoldPlatformTemplateService unfoldTemplateService,
 			IDialogService dialogService)
 			: base(Commands.AddPlatformImplementationCommandId)
 		{
-			this.solution = solution;
+			this.solutionExplorer = solutionExplorer;
 			this.platformProvider = platformProvider;
 			this.dialogService = dialogService;
 			this.unfoldTemplateService = unfoldTemplateService;
@@ -43,8 +44,8 @@ namespace NuGet.Packaging.VisualStudio
 			if (dialogService.ShowDialog(view) == true)
 			{
 				var targetBasePath = Path.Combine(
-					Path.GetDirectoryName(solution.Path),
-					solution.SelectedProject.Name);
+					Path.GetDirectoryName(solutionExplorer.Solution.PhysicalPath),
+					solutionExplorer.GetSelectedProject().Name);
 
 				foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
 					unfoldTemplateService.UnfoldTemplate(selectedPlatform.Id, targetBasePath);

@@ -19,6 +19,7 @@
 		LanguageVsTemplate = "CSharp",
 		ShowOnlySpecifiedTemplatesVsTemplate = true)]
 	[ProvideMenuResource("2000", 1)]
+	[ProvideBindingPath]
 	public sealed class VsPackage : Package
 	{
 		protected override void Initialize()
@@ -34,7 +35,9 @@
 			var componentModel = this.GetService(typeof(SComponentModel)) as IComponentModel;
 			var menuCommandService = this.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
-			foreach (var command in componentModel.DefaultExportProvider.GetExportedValues<DynamicCommand>())
+			var commands = componentModel.DefaultExportProvider.GetExportedValues<DynamicCommand>();
+
+			foreach (var command in commands)
 				menuCommandService.AddCommand(command);
 		}
 	}

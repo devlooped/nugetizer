@@ -1,6 +1,9 @@
 ﻿{
   "dependencies": {
     "Clarius.VisualStudio": "1.3.7",
+    "IFluentInterface": "2.0.1",
+    "Merq": "0.3.39-pre",
+    "Merq.Async": "0.3.39-pre",
     "Microsoft.VisualStudio.ImageCatalog": "14.3.25407",
     "Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime": "14.3.25407",
     "Microsoft.VisualStudio.ProjectSystem.Analyzers": "15.0.183-pre",

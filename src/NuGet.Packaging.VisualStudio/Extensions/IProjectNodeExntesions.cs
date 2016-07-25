@@ -1,50 +1,30 @@
-﻿using EnvDTE;
-using Microsoft.VisualStudio;
+﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using NuGet.Packaging.VisualStudio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace NuGet.Packaging.VisualStudio
+namespace Clide
 {
-	class Project : IProject
+	static class IProjectNodeExntesions
 	{
-		readonly IVsHierarchy project;
-
-		public Project(IVsHierarchy project)
+		public static bool IsNuProj(this IProjectNode project)
 		{
-			this.project = project;
+			return project.IsProjectSubtype(new Guid(Guids.FlavoredProjectTypeGuid)) ||
+					project.As<EnvDTE.Project>().FullName.EndsWith(
+						NuGet.Packaging.VisualStudio.Constants.ProjectFileExtension, StringComparison.OrdinalIgnoreCase);
 		}
 
-		public bool IsNuProj => IsProjectSubtype(new Guid(Guids.FlavoredProjectTypeGuid)) ||
-			DteProject.FullName.EndsWith(Constants.ProjectFileExtension, StringComparison.OrdinalIgnoreCase);
+		static bool IsProjectSubtype(this IProjectNode project, Guid projectTypeGuid) =>
+			project.GetProjectSubtypes().Any(type => type == projectTypeGuid);
 
-		EnvDTE.Project DteProject
-		{
-			get
-			{
-				object dteProject;
-				ErrorHandler.ThrowOnFailure(
-					project.GetProperty(
-						VSConstants.VSITEMID_ROOT,
-						(int)__VSHPROPID.VSHPROPID_ExtObject,
-						out dteProject));
-
-				return dteProject as EnvDTE.Project;
-			}
-		}
-
-		public string Name => DteProject.Name;
-
-		public string Path => DteProject.FullName;
-
-		bool IsProjectSubtype(Guid projectTypeGuid) =>
-			GetProjectSubtypes().Any(type => type == projectTypeGuid);
-
-		IEnumerable<Guid> GetProjectSubtypes()
+		static IEnumerable<Guid> GetProjectSubtypes(this IProjectNode project)
 		{
 			string guidList;
-			var aggregatableProject = project as IVsAggregatableProject;
+			var aggregatableProject = (IVsAggregatableProject)project.AsVsProject();
 			if (aggregatableProject != null &&
 				ErrorHandler.Succeeded(aggregatableProject.GetAggregateProjectTypeGuids(out guidList)))
 				return ParseGuids(guidList);
@@ -52,7 +32,7 @@ namespace NuGet.Packaging.VisualStudio
 			return Enumerable.Empty<Guid>();
 		}
 
-		IEnumerable<Guid> ParseGuids(string guidList)
+		static IEnumerable<Guid> ParseGuids(string guidList)
 		{
 			if (!string.IsNullOrEmpty(guidList))
 			{
@@ -65,26 +45,22 @@ namespace NuGet.Packaging.VisualStudio
 			}
 		}
 
-		public void BuildNuGetPackage()
+		public static void BuildNuGetPackage(this IProjectNode project)
 		{
-			if (!IsNuProj)
-			{
-				// TODO: Add NuProj type guid and targets
-			}
-
-			// TODO: Invoke the corresponding msbuild target
 		}
 
-		public void OpenNuSpecPropertyPage()
+		public static void OpenNuSpecPropertyPage(this IProjectNode project)
 		{
+			var hierarchy = project.AsVsHierarchy();
+
 			Guid projectDesignerEditorGuid;
 			ErrorHandler.ThrowOnFailure(
-				project.GetGuidProperty(
+				hierarchy.GetGuidProperty(
 					VSConstants.VSITEMID_ROOT,
 					(int)__VSHPROPID2.VSHPROPID_ProjectDesignerEditor,
 					out projectDesignerEditorGuid));
 
-			var vsProject = project as IVsProject2;
+			var vsProject = hierarchy as IVsProject2;
 
 			IVsWindowFrame frame;
 			ErrorHandler.ThrowOnFailure(
