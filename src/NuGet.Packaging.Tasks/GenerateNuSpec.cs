@@ -121,7 +121,9 @@ namespace NuGet.Packaging.Tasks
             {
                 newManifest.Save(stream, false);
                 stream.Seek(0, SeekOrigin.Begin);
-                newSource = Encoding.UTF8.GetString(stream.ToArray());
+                using (var reader = new StreamReader(stream, Encoding.UTF8)) {
+                    newSource = reader.ReadToEnd();
+                }
             }
 
             return oldSource != newSource;
