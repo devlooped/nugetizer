@@ -38,6 +38,27 @@ namespace NuGet.Packaging.Tasks.Tests
                 Assert.Equal(1, frameworkSpecificGroup.Items.Count());
             }
         }
+
+        [Fact]
+        public async Task BuildNuProj_PackageReference()
+        {
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_PackageReference");
+            string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
+
+            await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
+
+            string packagePath = Path.Combine(tempSolutionDirectory, "bin", "Debug", "NuGetPackage.1.0.0.nupkg");
+
+            using (var reader = new PackageArchiveReader(File.OpenRead(packagePath))) {
+                var nuspecReader = new NuspecReader(reader.GetNuspec());
+
+                var dependencyGroup = nuspecReader.GetDependencyGroups().Single();
+                Assert.Equal("net45", dependencyGroup.TargetFramework.GetShortFolderName());
+                var packageDependency = dependencyGroup.Packages.Single();
+                Assert.Equal("Newtonsoft.Json", packageDependency.Id);
+                Assert.Equal("[8.0.3, )", packageDependency.VersionRange.ToString());
+            }
+        }
     }
 }
 

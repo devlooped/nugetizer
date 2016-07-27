@@ -184,6 +184,10 @@
         RemoveMetadata="IsDevelopmentDependency;RequireReinstallation">
       </NuGetDependency>
     </ItemGroup>
+
+    <ItemGroup>
+      <NuGetDependency Include="@(PackageReference)" />
+    </ItemGroup>
   </Target>
 
   <Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets"
