@@ -4,6 +4,12 @@
           Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
 
   <PropertyGroup>
+    <NuGetCommonPackagingPath Condition=" '$(NuGetCommonPackagingPath)' == '' ">$(MSBuildExtensionsPath)\NuGet.Packaging\</NuGetCommonPackagingPath>
+  </PropertyGroup>
+  <Import Project="$(NuGetCommonPackagingPath)\NuGet.Packaging.Common.props"
+          Condition="Exists('$(NuGetCommonPackagingPath)\NuGet.Packaging.Common.props')" />
+
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 

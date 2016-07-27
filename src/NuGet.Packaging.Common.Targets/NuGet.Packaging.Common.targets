@@ -126,7 +126,7 @@
     DependsOnTargets="_GetNuGetDependencies"
     Returns="@(NuGetFile)">
     <ItemGroup>
-      <_NuGetLibFile Include="$(TargetPath)" />
+      <_NuGetLibFile Include="$(TargetPath)" Condition=" $(ExcludeTargetOutputInNuGetPackage) != 'True' " />
       <_NuGetLibFile Include="@(DocFileItem)" Condition="Exists('%(DocFileItem.FullPath)')" />
     </ItemGroup>
 

@@ -57,6 +57,12 @@
       <Link>NuGet.Packaging.Common.targets</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\NuGet.Packages.Targets\NuGet.Packaging.targets">
+      <Link>NuGet.Packaging.targets</Link>
+    </None>
+    <None Include="..\NuGet.Packages.Targets\NuGet.Packaging.props">
+      <Link>NuGet.Packaging.props</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

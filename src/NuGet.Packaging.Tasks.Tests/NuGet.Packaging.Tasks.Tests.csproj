@@ -71,6 +71,7 @@
     <Compile Include="Tests\ReadProjectJsonTests.cs" />
     <Compile Include="Tests\IncrementalBuildTests.cs" />
     <Compile Include="Tests\BuildProjectTests.cs" />
+    <Compile Include="Tests\BuildNuProjTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

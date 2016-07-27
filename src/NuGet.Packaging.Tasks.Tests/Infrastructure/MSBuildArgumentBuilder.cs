@@ -13,6 +13,8 @@ namespace NuGet.Packaging.Tasks.Tests.Infrastructure
         static MSBuildArgumentBuilder()
         {
             defaultProperties = new Dictionary<string, string>();
+            defaultProperties.Add("NuGetCommonPackagingPath", Assets.NuGetPackagingTargetsPath);
+            defaultProperties.Add("NuGetPackagingPath", Assets.NuProjPackagingPath);
             defaultProperties.Add("NuGetTargetsPath", Assets.NuGetPackagingTargetsPath);
             defaultProperties.Add("NuGetTasksPath", Assets.NuGetPackagingTasksPath);
             defaultProperties.Add("NuGetToolPath", Assets.NuGetToolPath);
