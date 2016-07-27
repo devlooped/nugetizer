@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TemplateWizard;
+﻿using Clide;
+using Microsoft.VisualStudio.TemplateWizard;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,10 +74,36 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 				new PlatformViewModel { Id = "Xamarin.Android", IsSelected = false }
 			});
 
+			var sharedProject = new Mock<IProjectNode>();
+			var nuGetProject = new Mock<IProjectNode>();
+			var iosProject = new Mock<IProjectNode>();
+
+			unfoldTemplateService
+				.Setup(x => x.UnfoldTemplate(
+				   Constants.Templates.SharedProject, It.IsAny<string>(), It.IsAny<string>()))
+				.Returns(sharedProject.Object);
+
+			unfoldTemplateService
+				.Setup(x => x.UnfoldTemplate(
+				   Constants.Templates.NuGetPackage, It.IsAny<string>(), It.IsAny<string>()))
+				.Returns(nuGetProject.Object);
+
+			unfoldPlatformTemplateService
+				.Setup(x => x.UnfoldTemplate(
+				   Constants.Platforms.IOS, It.IsAny<string>()))
+				.Returns(iosProject.Object);
+
 			wizard.RunFinished();
 
-			unfoldPlatformTemplateService.Verify(x => x.UnfoldTemplate("Xamarin.iOS", @"c:\src\MySolution\MySolution", true));
-			unfoldPlatformTemplateService.Verify(x => x.UnfoldTemplate("Xamarin.Android", It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+			// Verify that the IOS project has been unfolded
+			unfoldPlatformTemplateService.Verify(x => x.UnfoldTemplate("Xamarin.iOS", @"c:\src\MySolution\MySolution"));
+			// Verify that the Android project has been unfolded
+			unfoldPlatformTemplateService.Verify(x => x.UnfoldTemplate("Xamarin.Android", It.IsAny<string>()), Times.Never);
+
+			// iOS project references the shared project
+			iosProject.Verify(x => x.AddReference(sharedProject.Object));
+			// NuGet project references the iOS project
+			nuGetProject.Verify(x => x.AddReference(iosProject.Object));
 		}
 	}
 }

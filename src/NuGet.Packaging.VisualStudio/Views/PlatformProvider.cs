@@ -12,17 +12,8 @@ namespace NuGet.Packaging.VisualStudio
 	{
 		public IEnumerable<PlatformViewModel> GetSupportedPlatforms()
 		{
-			yield return new PlatformViewModel
-			{
-				DisplayName = Resources.IOS_DisplayName,
-				Id = Constants.Platforms.IOS
-			};
-
-			yield return new PlatformViewModel
-			{
-				DisplayName = Resources.Android_DisplayName,
-				Id = Constants.Platforms.Android
-			};
+			yield return new PlatformViewModel(Constants.Platforms.IOS, Resources.IOS_DisplayName);
+			yield return new PlatformViewModel(Constants.Platforms.Android, Resources.Android_DisplayName);
 		}
 	}
 }

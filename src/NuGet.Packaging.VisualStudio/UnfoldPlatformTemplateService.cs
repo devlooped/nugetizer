@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Clide;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -31,7 +32,6 @@ namespace NuGet.Packaging.VisualStudio
 				{
 					TemplateId = Constants.Templates.IOS,
 					Language = "CSharp",
-					Suffix = Resources.IOS_Suffix
 				});
 
 			platformTemplates.Add(
@@ -40,28 +40,25 @@ namespace NuGet.Packaging.VisualStudio
 				{
 					TemplateId = Constants.Templates.Android,
 					Language = "CSharp",
-					Suffix = Resources.Android_Suffix
 				});
 		}
 
-		public void UnfoldTemplate(string platformId, string path, bool appendPlatformSuffix = true)
+		public IProjectNode UnfoldTemplate(string platformId, string path)
 		{
 			PlatformTemplate template;
-			if (platformTemplates.TryGetValue(platformId, out template) &&
-				unfoldTemplateService.IsTemplateInstalled(template.TemplateId, template.Language))
-			{
-				if (appendPlatformSuffix)
-					path = path + "." + template.Suffix;
+			if (!platformTemplates.TryGetValue(platformId, out template))
+				throw new NotSupportedException(
+					string.Format(
+						Resources.UnfoldPlatformTemplateService_PlatformTemplateNotFound,
+						platformId));
 
-				unfoldTemplateService.UnfoldTemplate(template.TemplateId, path, template.Language);
-			}
+			return unfoldTemplateService.UnfoldTemplate(template.TemplateId, path, template.Language);
 		}
 
 		class PlatformTemplate
 		{
 			public string TemplateId { get; set; }
 			public string Language { get; set; }
-			public string Suffix { get; set; }
 		}
 	}
 }

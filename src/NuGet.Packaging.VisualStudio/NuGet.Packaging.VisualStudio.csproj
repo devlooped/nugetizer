@@ -106,13 +106,14 @@
       <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
     </Compile>
     <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
+    <Compile Include="Commands\AddPlatformImplementationContext.cs" />
     <Compile Include="Commands\BuildNuGetPackageCommand.cs" />
     <Compile Include="Commands\DynamicCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DialogService.cs" />
     <Compile Include="ExportProvider.cs" />
     <Compile Include="Commands.cs" />
-    <Compile Include="Extensions\IProjectNodeExntesions.cs" />
+    <Compile Include="Extensions\IProjectNodeExtensions.cs" />
     <Compile Include="Extensions\ISolutionExplorerExtensions.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="IDialogService.cs" />
@@ -270,9 +271,6 @@
   <Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
     <ItemGroup>
       <Reference Condition=" '%(Filename)' == 'envdte80' ">
-        <EmbedInteropTypes>True</EmbedInteropTypes>
-      </Reference>
-      <Reference Condition=" '%(Filename)' == 'Merq' ">
         <EmbedInteropTypes>True</EmbedInteropTypes>
       </Reference>
     </ItemGroup>

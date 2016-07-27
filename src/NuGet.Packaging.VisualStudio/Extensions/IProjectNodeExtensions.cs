@@ -4,19 +4,15 @@ using NuGet.Packaging.VisualStudio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Clide
 {
-	static class IProjectNodeExntesions
+	static class IProjectNodeExtensions
 	{
-		public static bool IsNuProj(this IProjectNode project)
-		{
-			return project.IsProjectSubtype(new Guid(Guids.FlavoredProjectTypeGuid)) ||
-					project.As<EnvDTE.Project>().FullName.EndsWith(
-						NuGet.Packaging.VisualStudio.Constants.ProjectFileExtension, StringComparison.OrdinalIgnoreCase);
-		}
+		public static bool IsNuProj(this IProjectNode project) => project.IsProjectSubtype(
+				new Guid(Guids.FlavoredProjectTypeGuid)) ||
+				project.As<EnvDTE.Project>().FullName.EndsWith(
+					NuGet.Packaging.VisualStudio.Constants.ProjectFileExtension, StringComparison.OrdinalIgnoreCase);
 
 		static bool IsProjectSubtype(this IProjectNode project, Guid projectTypeGuid) =>
 			project.GetProjectSubtypes().Any(type => type == projectTypeGuid);

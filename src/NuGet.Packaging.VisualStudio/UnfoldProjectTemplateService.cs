@@ -1,6 +1,9 @@
-﻿using EnvDTE80;
+﻿using Clide;
+using EnvDTE80;
+using System;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Linq;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -9,15 +12,19 @@ namespace NuGet.Packaging.VisualStudio
 	{
 		const string DefaultLanguage = "CSharp";
 
+		readonly ISolutionExplorer solutionExplorer;
 		readonly Solution2 solution;
 
 		[ImportingConstructor]
-		public UnfoldProjectTemplateService([Import(ExportProvider.DteSolution2)] object solution)
-			: this((Solution2)solution)
+		public UnfoldProjectTemplateService(
+			ISolutionExplorer solutionExplorer,
+			[Import(ExportProvider.DteSolution2)] object solution)
+			: this(solutionExplorer, (Solution2)solution)
 		{ }
 
-		public UnfoldProjectTemplateService(Solution2 solution)
+		public UnfoldProjectTemplateService(ISolutionExplorer solutionExplorer, Solution2 solution)
 		{
+			this.solutionExplorer = solutionExplorer;
 			this.solution = solution;
 		}
 
@@ -36,20 +43,42 @@ namespace NuGet.Packaging.VisualStudio
 			}
 		}
 
-		public void UnfoldTemplate(string templateId, string path, string language = "")
+		public IProjectNode UnfoldTemplate(string templateId, string path, string language = "")
 		{
 			if (string.IsNullOrEmpty(language))
 				language = DefaultLanguage;
 
 			var projectTemplatePath = solution.GetProjectTemplate(templateId, language);
+			if (projectTemplatePath == null)
+				throw new NotSupportedException(
+					string.Format(
+						Resources.UnfoldProjectTemplateService_TemplateNotFound,
+						templateId,
+						language));
 
-			if (!string.IsNullOrEmpty(projectTemplatePath))
-			{
-				solution.AddFromTemplate(
-					projectTemplatePath,
-					path,
-					Path.GetFileName(path));
-			}
+			var projectName = Path.GetFileName(path);
+
+			solution.AddFromTemplate(
+				projectTemplatePath,
+				path,
+				projectName);
+
+			var project = solutionExplorer
+				.Solution
+				.Nodes
+				.OfType<IProjectNode>()
+				.FirstOrDefault(x =>
+					x.Name == projectName &&
+					string.Equals(Path.GetDirectoryName(x.PhysicalPath), path, StringComparison.OrdinalIgnoreCase));
+
+			if (project == null)
+				throw new InvalidOperationException(
+					string.Format(
+						Resources.UnfoldProjectTemplateService_UnfoldTemplateFailed,
+						templateId,
+						language));
+
+			return project;
 		}
 	}
 }

@@ -159,6 +159,9 @@
   <data name="IOS_Suffix" xml:space="preserve">
     <value>iOS</value>
   </data>
+  <data name="IProjectNodeExtensions_AddSharedProjectReferenceFailed" xml:space="preserve">
+    <value>Failed to add reference {0} to {1}</value>
+  </data>
   <data name="NuSpecPropertyPageTitle" xml:space="preserve">
     <value>NuSpec</value>
   </data>
@@ -200,5 +203,14 @@
   </data>
   <data name="TargetFrameworkMonikerDescription" xml:space="preserve">
     <value>The version of the Common Language Runtime to use for output assembly.</value>
+  </data>
+  <data name="UnfoldPlatformTemplateService_PlatformTemplateNotFound" xml:space="preserve">
+    <value>The template for the platform {0} could not be found</value>
+  </data>
+  <data name="UnfoldProjectTemplateService_TemplateNotFound" xml:space="preserve">
+    <value>The template {0} ({1}) could not be found</value>
+  </data>
+  <data name="UnfoldProjectTemplateService_UnfoldTemplateFailed" xml:space="preserve">
+    <value>Failed to unfold template {0} ({1})</value>
   </data>
 </root>

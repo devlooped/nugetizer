@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using EnvDTE;
 using Microsoft.VisualStudio.TemplateWizard;
-using EnvDTE80;
 using System.IO;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.ComponentModelHost;
-using System.ComponentModel.Composition;
+using Clide;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -16,6 +15,7 @@ namespace NuGet.Packaging.VisualStudio
 		IUnfoldTemplateService unfoldTemplateService;
 		IUnfoldPlatformTemplateService unfoldPlatformTemplateService;
 		IPlatformProvider platformProvider;
+
 
 		public CrossPlatformWizard()
 		{ }
@@ -52,18 +52,23 @@ namespace NuGet.Packaging.VisualStudio
 					WizardModel.SolutionDirectory,
 					WizardModel.SafeProjectName);
 
-			foreach (var selectedPlatform in ViewModel.Platforms.Where(x => x.IsSelected))
-				unfoldPlatformTemplateService.UnfoldTemplate(
-					selectedPlatform.Id, baseTargetPath);
-
-			unfoldTemplateService.UnfoldTemplate(
+			var sharedProject = unfoldTemplateService.UnfoldTemplate(
 				Constants.Templates.SharedProject,
 				baseTargetPath + ".Shared");
 
-			unfoldTemplateService.UnfoldTemplate(
+			var nuGetProject = unfoldTemplateService.UnfoldTemplate(
 				Constants.Templates.NuGetPackage,
 				baseTargetPath + ".Package",
 				Constants.Language);
+
+			foreach (var selectedPlatform in ViewModel.Platforms.Where(x => x.IsSelected))
+			{
+				var platformProject = unfoldPlatformTemplateService.UnfoldTemplate(
+					selectedPlatform.Id, baseTargetPath);
+
+				platformProject.AddReference(sharedProject);
+				nuGetProject.AddReference(platformProject);
+			}
 		}
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
@@ -78,15 +83,8 @@ namespace NuGet.Packaging.VisualStudio
 			if (ViewModel == null)
 				ViewModel = new CrossPlatformViewModel();
 
-			foreach (var template in platformProvider.GetSupportedPlatforms())
-			{
-				ViewModel.Platforms.Add(
-					new PlatformViewModel
-					{
-						DisplayName = template.DisplayName,
-						Id = template.Id
-					});
-			}
+			foreach (var platform in platformProvider.GetSupportedPlatforms())
+				ViewModel.Platforms.Add(platform);
 		}
 
 		void SatifyDependencies()

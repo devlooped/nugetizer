@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NuGet.Packaging.VisualStudio
+﻿namespace NuGet.Packaging.VisualStudio
 {
 	class Constants
 	{
@@ -20,6 +14,24 @@ namespace NuGet.Packaging.VisualStudio
 		{
 			public const string IOS = "Xamarin.iOS";
 			public const string Android = "Xamarin.Android";
+		}
+
+		public class Suffixes
+		{
+			public static readonly string IOS = Resources.IOS_Suffix;
+			public static readonly string Android = Resources.Android_Suffix;
+			public static readonly string NuGetPackage = "NuGet";
+			public static readonly string SharedProject = "Shared";
+
+			public static string GetSuffixForPlatform(string platformId)
+			{
+				if (string.Equals(Platforms.IOS, platformId, System.StringComparison.OrdinalIgnoreCase))
+					return IOS;
+				if (string.Equals(Platforms.Android, platformId, System.StringComparison.OrdinalIgnoreCase))
+					return Android;
+
+				return null;
+			}
 		}
 
 		public class Templates

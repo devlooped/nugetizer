@@ -187,6 +187,15 @@ namespace NuGet.Packaging.VisualStudio {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to add reference {0} to {1}.
+        /// </summary>
+        internal static string IProjectNodeExtensions_AddSharedProjectReferenceFailed {
+            get {
+                return ResourceManager.GetString("IProjectNodeExtensions_AddSharedProjectReferenceFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NuSpec.
         /// </summary>
         internal static string NuSpecPropertyPageTitle {
@@ -309,6 +318,33 @@ namespace NuGet.Packaging.VisualStudio {
         internal static string TargetFrameworkMonikerDescription {
             get {
                 return ResourceManager.GetString("TargetFrameworkMonikerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The template for the platform {0} could not be found.
+        /// </summary>
+        internal static string UnfoldPlatformTemplateService_PlatformTemplateNotFound {
+            get {
+                return ResourceManager.GetString("UnfoldPlatformTemplateService_PlatformTemplateNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The template {0} ({1}) could not be found.
+        /// </summary>
+        internal static string UnfoldProjectTemplateService_TemplateNotFound {
+            get {
+                return ResourceManager.GetString("UnfoldProjectTemplateService_TemplateNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to unfold template {0} ({1}).
+        /// </summary>
+        internal static string UnfoldProjectTemplateService_UnfoldTemplateFailed {
+            get {
+                return ResourceManager.GetString("UnfoldProjectTemplateService_UnfoldTemplateFailed", resourceCulture);
             }
         }
     }

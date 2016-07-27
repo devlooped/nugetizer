@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Clide;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,6 +12,15 @@ namespace NuGet.Packaging.VisualStudio
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		public PlatformViewModel()
+		{ }
+
+		public PlatformViewModel(string id, string displayName)
+		{
+			this.Id = id;
+			this.DisplayName = displayName;
+		}
+
 		public bool IsSelected { get; set; } = true;
 
 		public bool IsEnabled { get; set; } = true;
@@ -18,5 +28,11 @@ namespace NuGet.Packaging.VisualStudio
 		public string DisplayName { get; set; }
 
 		public string Id { get; set; }
+
+		public string TargetPath { get; set; }
+
+		public string ProjectName { get; set; }
+
+		public IProjectNode Project { get; set; }
 	}
 }

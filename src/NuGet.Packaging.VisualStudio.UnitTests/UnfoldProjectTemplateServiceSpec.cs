@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using Clide;
+using EnvDTE;
 using EnvDTE80;
 using Moq;
 using System;
@@ -13,11 +14,12 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 	public class UnfoldProjectTemplateServiceSpec
 	{
 		Mock<Solution2> solution = new Mock<Solution2>();
+		Mock<ISolutionExplorer> solutionExplorer = new Mock<ISolutionExplorer>();
 
 		[Fact]
 		public void when_checking_installed_templates_then_returns_true_if_template_is_installed()
 		{
-			var service = new UnfoldProjectTemplateService(solution.Object);
+			var service = new UnfoldProjectTemplateService(solutionExplorer.Object, solution.Object);
 
 			solution
 				.Setup(x => x.GetProjectTemplate("Foo", "CSharp"))
@@ -30,14 +32,25 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 		[Fact]
 		public void when_unfolding_template_then_template_is_unfolded()
 		{
-			var service = new UnfoldProjectTemplateService(solution.Object);
+			var service = new UnfoldProjectTemplateService(solutionExplorer.Object, solution.Object);
 
 			solution
 				.Setup(x => x.GetProjectTemplate("Foo", "CSharp"))
 				.Returns(@"c:\foo.vstemplate");
 
-			service.UnfoldTemplate("Foo", @"c:\src\MySolution\MyLibrary");
+			solutionExplorer.
+				Setup(x => x.Solution)
+				.Returns(Mock.Of<ISolutionNode>(x =>
+					x.Nodes == new[]
+					{
+						Mock.Of<IProjectNode> (project =>
+							project.Name == "MyLibrary" &&
+							project.PhysicalPath == @"c:\src\MySolution\MyLibrary\MyLibrary.csproj")
+					}));
 
+			var unfoldedProject = service.UnfoldTemplate("Foo", @"c:\src\MySolution\MyLibrary");
+
+			Assert.NotNull(unfoldedProject);
 			solution.Verify(x =>
 			   x.AddFromTemplate(
 				   @"c:\foo.vstemplate",
