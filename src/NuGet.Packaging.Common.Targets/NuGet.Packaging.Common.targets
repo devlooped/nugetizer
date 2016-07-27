@@ -130,7 +130,7 @@
       <_NuGetLibFile Include="@(DocFileItem)" Condition="Exists('%(DocFileItem.FullPath)')" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition=" $(ExcludeReferencesInNuGetPackage) != 'True' ">
       <_NuGetLibFile
         Include="%(ReferencePath.FullPath)"
         Condition=" '%(ReferencePath.FrameworkFile)' != 'true'

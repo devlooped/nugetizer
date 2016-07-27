@@ -59,6 +59,39 @@ namespace NuGet.Packaging.Tasks.Tests
                 Assert.Equal("[8.0.3, )", packageDependency.VersionRange.ToString());
             }
         }
+
+        [Fact]
+        public async Task BuildNuProj_ProjectReference()
+        {
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_ProjectReference");
+            string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
+
+            await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);
+
+            await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
+
+            string packagePath = Path.Combine(tempSolutionDirectory, "bin", "Debug", "NuGetPackage.1.0.0.nupkg");
+
+            using (var reader = new PackageArchiveReader(File.OpenRead(packagePath))) {
+                var nuspecReader = new NuspecReader(reader.GetNuspec());
+                var identity = reader.GetIdentity();
+                Assert.Equal("NuGetPackage", identity.Id);
+                Assert.Equal("1.0.0", identity.Version.ToString());
+                Assert.Equal("NuGetPackage", nuspecReader.GetId());
+                Assert.Equal("1.0.0", nuspecReader.GetVersion().ToString());
+
+                var packageDependencyGroup = reader.GetPackageDependencies().Single();
+                Assert.Equal("net45", packageDependencyGroup.TargetFramework.GetShortFolderName());
+                var packageDependency = packageDependencyGroup.Packages.Single(item => item.Id == "Mono.Addins");
+                Assert.Equal("[1.2.0, )", packageDependency.VersionRange.ToString());
+                Assert.Equal(1, packageDependencyGroup.Packages.Count());
+
+                var frameworkSpecificGroup = reader.GetLibItems().Single();
+                Assert.Equal("net45", frameworkSpecificGroup.TargetFramework.GetShortFolderName());
+                Assert.Contains("lib/net45/Library.dll", frameworkSpecificGroup.Items);
+                Assert.Equal(1, frameworkSpecificGroup.Items.Count());
+            }
+        }
     }
 }
 
