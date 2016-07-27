@@ -49,12 +49,12 @@
     <Compile Include="ReadProjectJson.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Global.NuGet.Packaging.Targets\NuGet.Packaging.props">
-      <Link>NuGet.Packaging.props</Link>
+    <None Include="..\NuGet.Packaging.Common.Targets\NuGet.Packaging.Common.props">
+      <Link>NuGet.Packaging.Common.props</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\Global.NuGet.Packaging.Targets\NuGet.Packaging.targets">
-      <Link>NuGet.Packaging.targets</Link>
+    <None Include="..\NuGet.Packaging.Common.Targets\NuGet.Packaging.Common.targets">
+      <Link>NuGet.Packaging.Common.targets</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

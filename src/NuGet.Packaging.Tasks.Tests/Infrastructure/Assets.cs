@@ -10,7 +10,7 @@ namespace NuGet.Packaging.Tasks.Tests.Infrastructure
 
         public static string NuGetPackagingTargetsPath
         {
-            get { return Path.Combine(ProjectDirectory, "src/Global.NuGet.Packaging.Targets"); }
+            get { return Path.Combine(ProjectDirectory, "src/NuGet.Packaging.Common.Targets"); }
         }
 
         public static string NuGetPackagingTasksPath
