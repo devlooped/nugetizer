@@ -17,6 +17,7 @@
     <NuGetInfoPath Condition=" '$(NuGetId)' == '' ">$(IntermediateOutputPath)_package.nuspec</NuGetInfoPath>
     <NuSpecPath>$(NuGetInfoPath)</NuSpecPath>
     <NuGetInfoPath>$([System.IO.Path]::GetFullPath($(NuGetInfoPath)))</NuGetInfoPath>
+    <NuGetTargetFrameworkMoniker>$(TargetFrameworkMoniker)</NuGetTargetFrameworkMoniker>
     <NuGetOutputPath Condition=" '$(NuGetOutputPath)' == '' ">$(OutDir)$(NuGetId).$(NuGetVersion).nupkg</NuGetOutputPath>
   </PropertyGroup>
 
@@ -97,7 +98,7 @@
       RequireLicenseAcceptance="$(NuGetRequireLicenseAcceptance)"
       Tags="$(NuGetTags)"
       DevelopmentDependency="$(NuGetDevelopmentDependency)"
-      TargetFrameworkMoniker="$(TargetFrameworkMoniker)"
+      TargetFrameworkMoniker="$(NuGetTargetFrameworkMoniker)"
       Dependencies="@(NuGetDependency)"
       References="@(NuGetAssemblyReference)"
       FrameworkReferences="@(NuGetFrameworkReference)"
@@ -157,7 +158,7 @@
 
     <CreateItem
       Include="@(_NuGetLibFile)"
-      AdditionalMetadata="TargetFrameworkMoniker=$(TargetFrameworkMoniker)">
+      AdditionalMetadata="TargetFrameworkMoniker=$(NuGetTargetFrameworkMoniker)">
       <Output
         TaskParameter="Include"
         ItemName="_NuGetLibFileWithTargetFramework" />
@@ -179,7 +180,7 @@
         ItemName="_NuGetPackageReference" />
     </ReadPackagesConfig>
 
-    <ReadProjectJson Projects="$(MSBuildProjectFullPath)" TargetFrameworkMoniker="$(TargetFrameworkMoniker)">
+    <ReadProjectJson Projects="$(MSBuildProjectFullPath)" TargetFrameworkMoniker="$(NuGetTargetFrameworkMoniker)">
       <Output
         TaskParameter="PackageReferences"
         ItemName="_NuGetPackageReference" />

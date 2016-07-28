@@ -114,6 +114,42 @@ namespace NuGet.Packaging.Tasks.Tests
                 Assert.Equal("1.2.3", nuspecReader.GetVersion().ToString());
             }
         }
+
+        [Fact]
+        public async Task BuildNuProj_PackageProjectReference()
+        {
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_PackageProjectReference");
+            string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
+
+            await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
+
+            string packagePath = Path.Combine(tempSolutionDirectory, "Main", "bin", "Debug", "Main.2.0.1.nupkg");
+
+            using (var reader = new PackageArchiveReader(File.OpenRead(packagePath))) {
+                var identity = reader.GetIdentity();
+                Assert.Equal("Main", identity.Id);
+                Assert.Equal("2.0.1", identity.Version.ToString());
+ 
+                var packageDependencyGroup = reader.GetPackageDependencies().Single();
+                Assert.Equal("any", packageDependencyGroup.TargetFramework.GetShortFolderName());
+                var packageDependency = packageDependencyGroup.Packages.Single(item => item.Id == "Other");
+                Assert.Equal("[1.2.3, )", packageDependency.VersionRange.ToString());
+                Assert.Equal(1, packageDependencyGroup.Packages.Count());
+            }
+
+            packagePath = Path.Combine(tempSolutionDirectory, "Other", "bin", "Debug", "Other.1.2.3.nupkg");
+
+            using (var reader = new PackageArchiveReader(File.OpenRead(packagePath))) {
+                var identity = reader.GetIdentity();
+                Assert.Equal("Other", identity.Id);
+                Assert.Equal("1.2.3", identity.Version.ToString());
+
+                var frameworkSpecificGroup = reader.GetLibItems().Single();
+                Assert.Equal("net45", frameworkSpecificGroup.TargetFramework.GetShortFolderName());
+                Assert.Contains("lib/net45/readme.txt", frameworkSpecificGroup.Items);
+                Assert.Equal(1, frameworkSpecificGroup.Items.Count());
+            }
+        }
     }
 }
 

@@ -93,10 +93,6 @@
     <IntermediateOutputPath Condition="'$(IntermediateOutputPath)' != '' and '$(IntermediateOutputPathWasSpecified)' == 'true' and '$(GenerateProjectSpecificOutputFolder)' == 'true'">$(IntermediateOutputPath)$(ProjectName)\</IntermediateOutputPath>
   </PropertyGroup>
 
-  <!--
-      NUSPEC PATH
-  -->
-
   <PropertyGroup>
     <BuildNuGet>True</BuildNuGet>
     <ExcludeTargetOutputInNuGetPackage>True</ExcludeTargetOutputInNuGetPackage>
@@ -120,6 +116,10 @@
 
   <Import Project="$(NuGetCommonPackagingPath)\NuGet.Packaging.Common.targets"
           Condition="Exists('$(NuGetCommonPackagingPath)\NuGet.Packaging.Common.targets')" />
+
+  <PropertyGroup>
+    <NuGetTargetFrameworkMoniker>any</NuGetTargetFrameworkMoniker>
+  </PropertyGroup>
 
   <Target Name="CoreCompile" />
   <Target Name="CreateManifestResourceNames" Condition="false" />
