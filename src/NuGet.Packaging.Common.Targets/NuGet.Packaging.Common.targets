@@ -39,10 +39,14 @@
     </ItemGroup>
   </Target>
 
+  <PropertyGroup>
+    <GetNuGetInfoDependsOn>_GenerateNuSpec</GetNuGetInfoDependsOn>
+  </PropertyGroup>
+
   <Target
     Name="GetNuGetInfo"
     Outputs="$(NuGetInfoPath)"
-    DependsOnTargets="_GenerateNuSpec">
+    DependsOnTargets="$(GetNuGetInfoDependsOn)">
   </Target>
 
   <Target
@@ -101,11 +105,15 @@
       NuSpecFileDependencies="@(_ProjectReferenceNuGetInfo)" />
   </Target>
 
+  <PropertyGroup>
+    <BuildNuGetDependsOn>GetNuGetInfo</BuildNuGetDependsOn>
+  </PropertyGroup>
+
   <Target
     Name="BuildNuGet"
     Inputs="$(MSBuildAllProjects);$(NuSpecPath)"
     Outputs="$(NuGetOutputPath)"
-    DependsOnTargets="GetNuGetInfo">
+    DependsOnTargets="$(BuildNuGetDependsOn)">
 
     <MakeDir
       Directories="$(OutDir)"

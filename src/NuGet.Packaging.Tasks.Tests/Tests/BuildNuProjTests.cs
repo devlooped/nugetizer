@@ -92,6 +92,28 @@ namespace NuGet.Packaging.Tasks.Tests
                 Assert.Equal(1, frameworkSpecificGroup.Items.Count());
             }
         }
+
+        [Fact]
+        public async Task BuildNuProj_PackageVersion_DeterminedAtBuildTime()
+        {
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_PackageVersion_IsDeterminedAtBuildTime");
+            string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
+
+            await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);
+
+            await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
+
+            string packagePath = Path.Combine(tempSolutionDirectory, "bin", "Debug", "NuGetPackage.1.2.3.nupkg");
+
+            using (var reader = new PackageArchiveReader(File.OpenRead(packagePath))) {
+                var nuspecReader = new NuspecReader(reader.GetNuspec());
+                var identity = reader.GetIdentity();
+                Assert.Equal("NuGetPackage", identity.Id);
+                Assert.Equal("1.2.3", identity.Version.ToString());
+                Assert.Equal("NuGetPackage", nuspecReader.GetId());
+                Assert.Equal("1.2.3", nuspecReader.GetVersion().ToString());
+            }
+        }
     }
 }
 
