@@ -7,6 +7,7 @@ using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using NuGet.Frameworks;
+using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
 namespace NuGet.Packaging.Tasks
@@ -216,10 +217,121 @@ namespace NuGet.Packaging.Tasks
             var manifestMetadata = manifest.Metadata;
             var dependencyManifestMetadata = dependencyManifest.Metadata;
 
-            manifest.Files.AddRange(dependencyManifest.Files);
-            manifestMetadata.AddRangeToMember(x => x.DependencyGroups, dependencyManifestMetadata.DependencyGroups);
-            manifestMetadata.AddRangeToMember(x => x.FrameworkReferences, dependencyManifestMetadata.FrameworkReferences);
-            manifestMetadata.AddRangeToMember(x => x.PackageAssemblyReferences, dependencyManifestMetadata.PackageAssemblyReferences);
+            MergeFiles(manifest, dependencyManifest);
+            MergeDependencyGroups(manifestMetadata, dependencyManifestMetadata);
+            MergeFrameworkReferences(manifestMetadata, dependencyManifestMetadata);
+            MergePackageAssemblyReferences(manifestMetadata, dependencyManifestMetadata);
+        }
+
+        static void MergeFiles(Manifest manifest, Manifest dependencyManifest)
+        {
+            var filesToAdd = dependencyManifest
+                .Files
+                .Where(file => !manifest.Files.Any(item => item.Source == file.Source))
+                .ToList();
+            
+            manifest.Files.AddRange(filesToAdd);
+        }
+
+        static void MergeDependencyGroups(ManifestMetadata manifestMetadata, ManifestMetadata dependencyManifestMetadata)
+        {
+            if (!dependencyManifestMetadata.DependencyGroups.Any())
+                return;
+
+            manifestMetadata.DependencyGroups = Merge(
+                manifestMetadata.DependencyGroups,
+                dependencyManifestMetadata.DependencyGroups,
+                dependencyGroup => dependencyGroup.TargetFramework,
+                dependencyGroup => dependencyGroup.Packages,
+                (x, y) => string.Equals(x.Id, y.Id, StringComparison.OrdinalIgnoreCase),
+                CreateDependencyGroup);
+        }
+
+        static PackageDependencyGroup CreateDependencyGroup(PackageDependencyGroup dependencyGroup, IList<Core.PackageDependency> packages)
+        {
+            packages.AddRange(dependencyGroup.Packages);
+
+            return new PackageDependencyGroup(
+                dependencyGroup.TargetFramework,
+                packages);
+        }
+
+        static void MergeFrameworkReferences(ManifestMetadata manifestMetadata, ManifestMetadata dependencyManifestMetadata)
+        {
+            var frameworkReferencesToAdd = dependencyManifestMetadata
+                .FrameworkReferences
+                .Where(frameworkReference => !manifestMetadata.FrameworkReferences.Any(
+                    item => item.AssemblyName == frameworkReference.AssemblyName
+                    && item.SupportedFrameworks.Single().Equals(frameworkReference.SupportedFrameworks.Single())))
+                .ToList();
+
+            manifestMetadata.AddRangeToMember(x => x.FrameworkReferences, frameworkReferencesToAdd);
+        }
+
+        static void MergePackageAssemblyReferences(ManifestMetadata manifestMetadata, ManifestMetadata dependencyManifestMetadata)
+        {
+            if (!dependencyManifestMetadata.PackageAssemblyReferences.Any())
+                return;
+
+            manifestMetadata.PackageAssemblyReferences = Merge(
+                manifestMetadata.PackageAssemblyReferences,
+                dependencyManifestMetadata.PackageAssemblyReferences,
+                referenceSet => referenceSet.TargetFramework,
+                referenceSet => referenceSet.References,
+                (x, y) => string.Equals(x, y, StringComparison.OrdinalIgnoreCase),
+                CreateReferenceSet);
+        }
+
+        static IEnumerable<G> Merge<T, G>(
+            IEnumerable<G> group1,
+            IEnumerable<G> group2,
+            Func<G, NuGetFramework> getTargetFramework,
+            Func<G, IEnumerable<T>> getItems,
+            Func<T, T, bool> isMatch,
+            Func<G, List<T>, G> createGroup)
+            where T : class
+            where G : class
+        {
+            var mergedGroups = new List<G>();
+
+            foreach (G currentGroup in group2)
+            {
+                G existingGroup = group1.FirstOrDefault(
+                    item => getTargetFramework(item).Equals(getTargetFramework(currentGroup)));
+
+                if (existingGroup == null)
+                {
+                    mergedGroups.Add(currentGroup);
+                }
+                else
+                {
+                    List<T> items = getItems(currentGroup)
+                        .Where(item => !getItems(existingGroup).Any(existingItem => isMatch(existingItem, item)))
+                        .ToList();
+
+                    if (items.Any())
+                    {
+                        mergedGroups.Add(createGroup(existingGroup, items));
+                    }
+                }
+            }
+
+            IEnumerable<G> existingGroups = group1.Where(
+                existingGroup => !mergedGroups.Any(
+                    currentGroup => getTargetFramework(currentGroup).Equals(getTargetFramework(existingGroup))));
+
+            mergedGroups.AddRange(existingGroups);
+
+            return mergedGroups;
+        }
+
+        static PackageReferenceSet CreateReferenceSet(PackageReferenceSet referenceSet, IList<string> references)
+        {
+            references.AddRange(referenceSet.References);
+
+            return new PackageReferenceSet(
+                referenceSet.TargetFramework,
+                references);
         }
 
         /// <summary>
@@ -285,7 +397,7 @@ namespace NuGet.Packaging.Tasks
                     select new FrameworkAssemblyReference
                     (
                         fr.ItemSpec,
-                        new [] { new NuGetFramework(fr.GetTargetFramework().GetShortFrameworkName()) }
+                        new [] { NuGetFramework.Parse(fr.GetTargetFramework().GetShortFrameworkName()) }
                     )).ToList();
         }
 
