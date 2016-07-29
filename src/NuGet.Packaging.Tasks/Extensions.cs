@@ -216,5 +216,10 @@ namespace NuGet.Packaging.Tasks
 
             return item;
         }
+
+        public static bool IsOlderVersionThan(this Core.PackageDependency package, Core.PackageDependency other)
+        {
+            return package.VersionRange.MinVersion < other.VersionRange.MinVersion;
+        }
     }
 }

@@ -864,5 +864,87 @@ namespace NuGet.Packaging.Tasks.Tests
                 Assert.Equal(4, manifest.Metadata.PackageAssemblyReferences.Count());
             }
         }
+
+        [Fact]
+        public void GenerateNuSpec_Merge_DuplicatePackageIdWithDifferentVersion()
+        {
+            string output = Path.Combine(projectDirectory, "ToBeMerged.nuspec");
+
+            var target = new GenerateNuSpecWithLoggingCaptured();
+            target.OutputFileName = output;
+            target.Version = "1.0.0";
+
+            target.Dependencies = new[]
+            {
+                new TaskItem("A", new Dictionary<string, string>
+                {
+                    { Metadata.TargetFramework, "net45" },
+                    { Metadata.Version, "2.8.5" }
+                }),
+                new TaskItem("B", new Dictionary<string, string>
+                {
+                    { Metadata.TargetFramework, "net45" },
+                    { Metadata.Version, "3.2.1" }
+                })
+            };
+
+            bool result = target.Execute();
+            Assert.True(result);
+
+            string input = output;
+            output = Path.Combine(projectDirectory, "DuplicatePackageIdWithDifferentVersion.nuspec");
+
+            target = new GenerateNuSpecWithLoggingCaptured();
+            target.OutputFileName = output;
+            target.Id = "DuplicatePackageIdWithDifferentVersion";
+            target.Version = "1.0.0";
+            target.Authors = "Nuproj";
+            target.RequireLicenseAcceptance = true;
+            target.Description = "DuplicatePackageIdWithDifferentVersion";
+            target.ReleaseNotes = "Testing";
+            target.ProjectUrl = "http://nuproj.net/changes";
+            target.IconUrl = "http://placekitten.com/g/128/128";
+            target.LicenseUrl = "http://nuproj.net/LICENSE/changes";
+            target.Copyright = "Copyright © Testing";
+            target.DevelopmentDependency = false;
+            target.TargetFrameworkMoniker = "any";
+            target.NuSpecFileDependencies = new []
+            {
+                new TaskItem(input)
+            };
+
+            target.Dependencies = new[]
+            {
+                new TaskItem("A", new Dictionary<string, string>
+                {
+                    { Metadata.TargetFramework, "net45" },
+                    { Metadata.Version, "2.9.1" }
+                }),
+                new TaskItem("B", new Dictionary<string, string>
+                {
+                    { Metadata.TargetFramework, "net45" },
+                    { Metadata.Version, "3.0.2" }
+                })
+            };
+
+            result = target.Execute();
+            Assert.True(result);
+
+            using (var stream = File.OpenRead(output))
+            {
+                var manifest = Manifest.ReadFrom(stream, false);
+
+                var net45Dependencies = manifest.Metadata.DependencyGroups.Single(
+                    item => item.TargetFramework.GetShortFolderName() == "net45");
+
+                var package = net45Dependencies.Packages.Single(p => p.Id == "A");
+                Assert.Equal("[2.9.1, )", package.VersionRange.ToString());
+                package = net45Dependencies.Packages.Single(p => p.Id == "B");
+                Assert.Equal("[3.2.1, )", package.VersionRange.ToString());
+                Assert.Equal(2, net45Dependencies.Packages.Count());
+            }
+
+            Assert.StartsWith("NuGet package dependency with different version exists.", target.WarningsLogged.First());
+        }
     }
 }

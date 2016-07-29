@@ -212,7 +212,7 @@ namespace NuGet.Packaging.Tasks
             }
         }
 
-        static void MergeDependencyManifest(Manifest manifest, Manifest dependencyManifest)
+        void MergeDependencyManifest(Manifest manifest, Manifest dependencyManifest)
         {
             var manifestMetadata = manifest.Metadata;
             var dependencyManifestMetadata = dependencyManifest.Metadata;
@@ -233,7 +233,7 @@ namespace NuGet.Packaging.Tasks
             manifest.Files.AddRange(filesToAdd);
         }
 
-        static void MergeDependencyGroups(ManifestMetadata manifestMetadata, ManifestMetadata dependencyManifestMetadata)
+        void MergeDependencyGroups(ManifestMetadata manifestMetadata, ManifestMetadata dependencyManifestMetadata)
         {
             if (!dependencyManifestMetadata.DependencyGroups.Any())
                 return;
@@ -243,17 +243,46 @@ namespace NuGet.Packaging.Tasks
                 dependencyManifestMetadata.DependencyGroups,
                 dependencyGroup => dependencyGroup.TargetFramework,
                 dependencyGroup => dependencyGroup.Packages,
-                (x, y) => string.Equals(x.Id, y.Id, StringComparison.OrdinalIgnoreCase),
+                (x, y) => x.Equals(y),
                 CreateDependencyGroup);
         }
 
-        static PackageDependencyGroup CreateDependencyGroup(PackageDependencyGroup dependencyGroup, IList<Core.PackageDependency> packages)
+        PackageDependencyGroup CreateDependencyGroup(PackageDependencyGroup dependencyGroup, IList<Core.PackageDependency> packages)
         {
-            packages.AddRange(dependencyGroup.Packages);
+            var updatedPackages = new List<Core.PackageDependency>();
+
+            foreach (Core.PackageDependency package in dependencyGroup.Packages)
+            {
+                var existingPackage = packages.FirstOrDefault(
+                    p => p.Id.Equals(package.Id, StringComparison.OrdinalIgnoreCase));
+
+                if (existingPackage == null)
+                {
+                    updatedPackages.Add(package);
+                }
+                else
+                {
+                    LogWarning("NuGet package dependency with different version exists. Taking highest version. {0}, {1}",
+                        package, existingPackage);
+
+                    if (existingPackage.IsOlderVersionThan(package))
+                    {
+                        updatedPackages.Add(package);
+                        packages.Remove(existingPackage);
+                    }
+                }
+            }
+
+            updatedPackages.AddRange(packages);
 
             return new PackageDependencyGroup(
                 dependencyGroup.TargetFramework,
-                packages);
+                updatedPackages);
+        }
+
+        protected virtual void LogWarning(string message, params object[] messageArgs)
+        {
+            Log.LogWarning(message, messageArgs);
         }
 
         static void MergeFrameworkReferences(ManifestMetadata manifestMetadata, ManifestMetadata dependencyManifestMetadata)

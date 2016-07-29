@@ -72,6 +72,7 @@
     <Compile Include="Tests\IncrementalBuildTests.cs" />
     <Compile Include="Tests\BuildProjectTests.cs" />
     <Compile Include="Tests\BuildNuProjTests.cs" />
+    <Compile Include="Infrastructure\GenerateNuSpecWithLoggingCaptured.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
