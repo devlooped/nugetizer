@@ -18,7 +18,6 @@ namespace NuGet.Packaging.Tasks.Tests.Infrastructure
             defaultProperties.Add("NuGetTargetsPath", Assets.NuGetPackagingTargetsPath);
             defaultProperties.Add("NuGetTasksPath", Assets.NuGetPackagingTasksPath);
             defaultProperties.Add("NuGetToolPath", Assets.NuGetToolPath);
-            defaultProperties.Add("BuildingInsideVisualStudio", "true");
         }
 
         public MSBuildArgumentBuilder(string fileName)

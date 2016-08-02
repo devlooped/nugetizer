@@ -121,6 +121,10 @@
     <NuGetTargetFrameworkMoniker>any</NuGetTargetFrameworkMoniker>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PrepareForRunDependsOn></PrepareForRunDependsOn>
+  </PropertyGroup>
+
   <Target Name="CoreCompile" />
   <Target Name="CreateManifestResourceNames" Condition="false" />
 
