@@ -17,6 +17,5 @@
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="NuGet.Packaging.VisualStudio" Path="|NuGet.Packaging.VisualStudio;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="NuGet.Packaging.VisualStudio" Path="Templates\Projects" d:VsixSubPath="Templates\Projects" />
     <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" Path="|NuGet.Packaging.VisualStudio|" />
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Clide" Path="|Clide|" />
   </Assets>
 </PackageManifest>

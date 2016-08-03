@@ -19,7 +19,6 @@
 		LanguageVsTemplate = "CSharp",
 		ShowOnlySpecifiedTemplatesVsTemplate = true)]
 	[ProvideMenuResource("2000", 1)]
-	[ProvideBindingPath]
 	public sealed class VsPackage : Package
 	{
 		protected override void Initialize()

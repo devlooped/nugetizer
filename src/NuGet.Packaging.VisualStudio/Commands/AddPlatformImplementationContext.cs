@@ -1,10 +1,7 @@
 ﻿using Clide;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -20,8 +17,10 @@ namespace NuGet.Packaging.VisualStudio
 
 		public void Initialize(IPlatformProvider platformProvider)
 		{
+			SelectedProject = solutionExplorer.GetSelectedProject();
+
 			BasePath = Path.GetDirectoryName(solutionExplorer.Solution.PhysicalPath);
-			BaseProjectName = solutionExplorer.GetSelectedProject().Name;
+			BaseProjectName = SelectedProject.Name;
 
 			var projects = solutionExplorer.Solution.FindProjects().ToList();
 
@@ -43,6 +42,8 @@ namespace NuGet.Packaging.VisualStudio
 				platforms.Add(platform);
 			}
 		}
+
+		public IProjectNode SelectedProject { get; set; }
 
 		public IEnumerable<PlatformViewModel> Platforms => platforms;
 

@@ -118,6 +118,7 @@
     <Compile Include="Guids.cs" />
     <Compile Include="IDialogService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
+    <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
     <Compile Include="ProjectProperties.cs" />
     <Compile Include="IUnfoldPlatformTemplateService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
@@ -244,19 +245,10 @@
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\external\clide\src\Clide.Extensibility\Clide.Extensibility.csproj">
-      <Project>{09ac21f4-4e72-4942-afac-20b9ef325a50}</Project>
-      <Name>Clide.Extensibility</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
       <Project>{099bebd8-6b04-416d-ba44-e0201951542b}</Project>
       <Name>Clide.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\external\clide\src\Clide\Clide.csproj">
-      <Project>{e8fabf5d-2fc8-43f6-b866-e3349afb7538}</Project>
-      <Name>Clide</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bDebugSymbolsProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,10 +1,6 @@
-﻿using Microsoft.VisualStudio.Shell;
-using System.Linq;
+﻿using System.Linq;
 using System.ComponentModel.Composition;
-using System.IO;
 using Clide;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -54,6 +50,10 @@ namespace NuGet.Packaging.VisualStudio
 				{
 					context.SharedProject = unfoldProjectTemplateService.UnfoldTemplate(
 						Constants.Templates.SharedProject, context.SharedProjectPath);
+
+					// Move PCL items to the shared project
+					context.SelectedProject.Accept(
+						new MoveProjectItemsToProjectVisitor(context.SharedProject));
 				}
 
 				if (context.NuGetProject == null)
