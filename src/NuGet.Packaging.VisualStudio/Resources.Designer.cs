@@ -320,32 +320,5 @@ namespace NuGet.Packaging.VisualStudio {
                 return ResourceManager.GetString("TargetFrameworkMonikerDescription", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The template for the platform {0} could not be found.
-        /// </summary>
-        internal static string UnfoldPlatformTemplateService_PlatformTemplateNotFound {
-            get {
-                return ResourceManager.GetString("UnfoldPlatformTemplateService_PlatformTemplateNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The template {0} ({1}) could not be found.
-        /// </summary>
-        internal static string UnfoldProjectTemplateService_TemplateNotFound {
-            get {
-                return ResourceManager.GetString("UnfoldProjectTemplateService_TemplateNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to unfold template {0} ({1}).
-        /// </summary>
-        internal static string UnfoldProjectTemplateService_UnfoldTemplateFailed {
-            get {
-                return ResourceManager.GetString("UnfoldProjectTemplateService_UnfoldTemplateFailed", resourceCulture);
-            }
-        }
     }
 }

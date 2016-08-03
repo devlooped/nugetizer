@@ -12,22 +12,18 @@ namespace NuGet.Packaging.VisualStudio
 {
 	public class CrossPlatformWizard : IWizard
 	{
-		IUnfoldTemplateService unfoldTemplateService;
-		IUnfoldPlatformTemplateService unfoldPlatformTemplateService;
 		IPlatformProvider platformProvider;
-
+		ISolutionExplorer solutionExplorer;
 
 		public CrossPlatformWizard()
 		{ }
 
 		internal CrossPlatformWizard(
-			IUnfoldTemplateService unfoldTemplateService,
-			IUnfoldPlatformTemplateService unfoldPlatformTemplateService,
-			IPlatformProvider platformProvider)
+			IPlatformProvider platformProvider,
+			ISolutionExplorer solutionExplorer)
 		{
-			this.unfoldTemplateService = unfoldTemplateService;
-			this.unfoldPlatformTemplateService = unfoldPlatformTemplateService;
 			this.platformProvider = platformProvider;
+			this.solutionExplorer = solutionExplorer;
 		}
 
 		internal CrossPlatformWizardModel WizardModel { get; set; }
@@ -48,23 +44,20 @@ namespace NuGet.Packaging.VisualStudio
 
 		public void RunFinished()
 		{
-			var baseTargetPath = Path.Combine(
-					WizardModel.SolutionDirectory,
-					WizardModel.SafeProjectName);
-
-			var sharedProject = unfoldTemplateService.UnfoldTemplate(
+			var sharedProject = solutionExplorer.Solution.UnfoldTemplate(
 				Constants.Templates.SharedProject,
-				baseTargetPath + ".Shared");
+				WizardModel.SafeProjectName + "." + Constants.Suffixes.SharedProject);
 
-			var nuGetProject = unfoldTemplateService.UnfoldTemplate(
+			var nuGetProject = solutionExplorer.Solution.UnfoldTemplate(
 				Constants.Templates.NuGetPackage,
-				baseTargetPath + ".Package",
+				WizardModel.SafeProjectName + "." + Constants.Suffixes.NuGetPackage,
 				Constants.Language);
 
 			foreach (var selectedPlatform in ViewModel.Platforms.Where(x => x.IsSelected))
 			{
-				var platformProject = unfoldPlatformTemplateService.UnfoldTemplate(
-					selectedPlatform.Id, baseTargetPath);
+				var platformProject = solutionExplorer.Solution.UnfoldTemplate(
+					Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
+					selectedPlatform.ProjectName);
 
 				platformProject.AddReference(sharedProject);
 				nuGetProject.AddReference(platformProject);
@@ -91,11 +84,8 @@ namespace NuGet.Packaging.VisualStudio
 		{
 			var componentModel = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
 
-			if (unfoldPlatformTemplateService == null)
-				unfoldPlatformTemplateService = componentModel.DefaultExportProvider.GetExportedValue<IUnfoldPlatformTemplateService>();
-
-			if (unfoldTemplateService == null)
-				unfoldTemplateService = componentModel.DefaultExportProvider.GetExportedValue<IUnfoldProjectTemplateService>();
+			if (solutionExplorer == null)
+				solutionExplorer = componentModel.DefaultExportProvider.GetExportedValue<ISolutionExplorer>();
 
 			if (platformProvider == null)
 				platformProvider = componentModel.DefaultExportProvider.GetExportedValue<IPlatformProvider>();

@@ -19,24 +19,20 @@ namespace NuGet.Packaging.VisualStudio
 		{
 			SelectedProject = solutionExplorer.GetSelectedProject();
 
-			BasePath = Path.GetDirectoryName(solutionExplorer.Solution.PhysicalPath);
 			BaseProjectName = SelectedProject.Name;
 
 			var projects = solutionExplorer.Solution.FindProjects().ToList();
 
 			SharedProjectName = BaseProjectName + "." + Constants.Suffixes.SharedProject;
-			SharedProjectPath = Path.Combine(BasePath, SharedProjectName);
 			SharedProject = GetProjectNode(projects, SharedProjectName);
 
 			NuGetProjectName = BaseProjectName + "." + Constants.Suffixes.NuGetPackage;
-			NuGetProjectPath = Path.Combine(BasePath, NuGetProjectName);
 			NuGetProject = GetProjectNode(projects, NuGetProjectName);
 
 			platforms = new List<PlatformViewModel>();
 			foreach (var platform in platformProvider.GetSupportedPlatforms())
 			{
 				platform.ProjectName = BaseProjectName + "." + Constants.Suffixes.GetSuffixForPlatform(platform.Id);
-				platform.TargetPath = Path.Combine(BasePath, platform.ProjectName);
 				platform.Project = GetProjectNode(projects, platform.ProjectName);
 
 				platforms.Add(platform);
@@ -47,17 +43,11 @@ namespace NuGet.Packaging.VisualStudio
 
 		public IEnumerable<PlatformViewModel> Platforms => platforms;
 
-		public string BasePath { get; set; }
-
 		public string BaseProjectName { get; set; }
 
 		public string SharedProjectName { get; set; }
 
-		public string SharedProjectPath { get; set; }
-
 		public IProjectNode SharedProject { get; set; }
-
-		public string NuGetProjectPath { get; set; }
 
 		public string NuGetProjectName { get; set; }
 

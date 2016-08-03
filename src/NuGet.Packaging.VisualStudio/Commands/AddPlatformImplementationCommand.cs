@@ -10,23 +10,17 @@ namespace NuGet.Packaging.VisualStudio
 		readonly ISolutionExplorer solutionExplorer;
 		readonly IDialogService dialogService;
 		readonly IPlatformProvider platformProvider;
-		readonly IUnfoldPlatformTemplateService unfoldPlatformTemplateService;
-		readonly IUnfoldProjectTemplateService unfoldProjectTemplateService;
 
 		[ImportingConstructor]
 		public AddPlatformImplementationCommand(
 			ISolutionExplorer solutionExplorer,
 			IPlatformProvider platformProvider,
-			IUnfoldProjectTemplateService unfoldProjectTemplateService,
-			IUnfoldPlatformTemplateService unfoldPlatformTemplateService,
 			IDialogService dialogService)
 			: base(Commands.AddPlatformImplementationCommandId)
 		{
 			this.solutionExplorer = solutionExplorer;
 			this.platformProvider = platformProvider;
 			this.dialogService = dialogService;
-			this.unfoldPlatformTemplateService = unfoldPlatformTemplateService;
-			this.unfoldProjectTemplateService = unfoldProjectTemplateService;
 		}
 
 		protected override void Execute()
@@ -48,8 +42,8 @@ namespace NuGet.Packaging.VisualStudio
 			{
 				if (context.SharedProject == null && viewModel.UseSharedProject)
 				{
-					context.SharedProject = unfoldProjectTemplateService.UnfoldTemplate(
-						Constants.Templates.SharedProject, context.SharedProjectPath);
+					context.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
+						Constants.Templates.SharedProject, context.SharedProjectName);
 
 					// Move PCL items to the shared project
 					context.SelectedProject.Accept(
@@ -58,16 +52,19 @@ namespace NuGet.Packaging.VisualStudio
 
 				if (context.NuGetProject == null)
 				{
-					context.NuGetProject = unfoldProjectTemplateService.UnfoldTemplate(
-						Constants.Templates.NuGetPackage, context.NuGetProjectPath, Constants.Language);
+					context.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
+						Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
 				}
+
+				return;
 
 				foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
 				{
 					if (selectedPlatform.Project == null)
 					{
-						selectedPlatform.Project = unfoldPlatformTemplateService.UnfoldTemplate(
-							selectedPlatform.Id, selectedPlatform.TargetPath);
+						selectedPlatform.Project = solutionExplorer.Solution.UnfoldTemplate(
+							Constants.Templates.GetPlatformTemplate(selectedPlatform.Id), 
+							selectedPlatform.ProjectName);
 					}
 
 					if (context.SharedProject != null)

@@ -120,7 +120,6 @@
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
     <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
     <Compile Include="ProjectProperties.cs" />
-    <Compile Include="IUnfoldPlatformTemplateService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
       <SubType>UserControl</SubType>
@@ -129,7 +128,6 @@
       <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </Compile>
     <Compile Include="LegacyProjectSystem\NuSpecPropertyStore.cs" />
-    <Compile Include="UnfoldPlatformTemplateService.cs" />
     <Compile Include="Views\AddPlatformImplementationViewModel.cs" />
     <Compile Include="Views\CrossPlatformViewModel.cs" />
     <Compile Include="Views\IPlatformProvider.cs" />
@@ -148,8 +146,6 @@
     <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
     <Compile Include="Wizards\CrossPlatformWizard.cs" />
     <Compile Include="Wizards\CrossPlatformWizardModel.cs" />
-    <Compile Include="IUnfoldTemplateService.cs" />
-    <Compile Include="UnfoldProjectTemplateService.cs" />
     <None Include="project.json" />
     <None Include="Templates\Spikes\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Spikes\PortableClassLibrary\class1.cs" />

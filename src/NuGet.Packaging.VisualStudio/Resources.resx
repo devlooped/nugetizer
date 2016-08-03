@@ -204,13 +204,4 @@
   <data name="TargetFrameworkMonikerDescription" xml:space="preserve">
     <value>The version of the Common Language Runtime to use for output assembly.</value>
   </data>
-  <data name="UnfoldPlatformTemplateService_PlatformTemplateNotFound" xml:space="preserve">
-    <value>The template for the platform {0} could not be found</value>
-  </data>
-  <data name="UnfoldProjectTemplateService_TemplateNotFound" xml:space="preserve">
-    <value>The template {0} ({1}) could not be found</value>
-  </data>
-  <data name="UnfoldProjectTemplateService_UnfoldTemplateFailed" xml:space="preserve">
-    <value>Failed to unfold template {0} ({1})</value>
-  </data>
 </root>

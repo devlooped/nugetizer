@@ -40,6 +40,22 @@
 			public const string Android = "Xamarin.Android.ClassLibrary";
 			public const string NuGetPackage = "NuGet.Packaging.VisualStudio.Package";
 			public const string SharedProject = "Microsoft.CS.SharedProject";
+
+			public static string GetPlatformTemplate(string platformId)
+			{
+				switch (platformId)
+				{
+					case Platforms.IOS: return IOS;
+					case Platforms.Android: return Android;
+					default: return null;
+				}
+			}
+		}
+
+		public class Contracts
+		{
+			public const string Dte = "NuGet.Packaging.VisualStudio.Dte";
+			public const string DteSolution2 = "NuGet.Packaging.VisualStudio.DteSolution2";
 		}
 	}
 }

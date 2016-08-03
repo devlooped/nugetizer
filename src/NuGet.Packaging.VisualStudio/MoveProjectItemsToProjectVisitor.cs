@@ -9,7 +9,7 @@ namespace NuGet.Packaging.VisualStudio
 	{
 		readonly Stack<ISolutionExplorerNode> stack;
 		readonly List<ISolutionExplorerNode> nodesToBeDeleted;
-		readonly Func<IProjectItemNode, bool> filterItem = x => true; // null filter
+		readonly Func<IProjectItemNode, bool> filterItem = x => false; // null filter
 
 		public MoveProjectItemsToProjectVisitor(IProjectNode targetProject, Func<IProjectItemNode, bool> filterItem = null)
 		{

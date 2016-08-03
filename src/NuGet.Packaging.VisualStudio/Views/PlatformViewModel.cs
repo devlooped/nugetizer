@@ -29,8 +29,6 @@ namespace NuGet.Packaging.VisualStudio
 
 		public string Id { get; set; }
 
-		public string TargetPath { get; set; }
-
 		public string ProjectName { get; set; }
 
 		public IProjectNode Project { get; set; }
