@@ -13,7 +13,7 @@ namespace NuGet.Packaging.Tasks.Tests
         [Fact]
         public async Task BuildNuGet_ClassLibraryWithNuGetDependency()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuGet_ClassLibraryWithNuGetDependency");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);
@@ -51,7 +51,7 @@ namespace NuGet.Packaging.Tasks.Tests
         [Fact]
         public async Task BuildNuGet_ProjectReference()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuGet_ProjectReference");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);
@@ -91,7 +91,7 @@ namespace NuGet.Packaging.Tasks.Tests
         [Fact]
         public async Task BuildNuGet_ReferencedProjectBuildsPackage()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuGet_ReferencedProjectBuildsPackage");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);
@@ -148,7 +148,7 @@ namespace NuGet.Packaging.Tasks.Tests
         [Fact]
         public async Task BuildNuGet_ReferenceOutputAssemblyIsFalse()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuGet_ReferenceOutputAssemblyIsFalse");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);

@@ -12,7 +12,7 @@ namespace NuGet.Packaging.Tasks.Tests
         [Fact]
         public async Task BuildNuProj_OneNuGetFile()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_OneNuGetFile");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
@@ -42,7 +42,7 @@ namespace NuGet.Packaging.Tasks.Tests
         [Fact]
         public async Task BuildNuProj_PackageReference()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_PackageReference");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
@@ -63,7 +63,7 @@ namespace NuGet.Packaging.Tasks.Tests
         [Fact]
         public async Task BuildNuProj_ProjectReference()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_ProjectReference");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);
@@ -94,9 +94,9 @@ namespace NuGet.Packaging.Tasks.Tests
         }
 
         [Fact]
-        public async Task BuildNuProj_PackageVersion_DeterminedAtBuildTime()
+        public async Task BuildNuProj_PackageVersion_IsDeterminedAtBuildTime()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_PackageVersion_IsDeterminedAtBuildTime");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await NuGetRunner.RestorePackagesAsync(tempSolutionDirectory);
@@ -118,7 +118,7 @@ namespace NuGet.Packaging.Tasks.Tests
         [Fact]
         public async Task BuildNuProj_PackageProjectReference()
         {
-            string sourceSolutionPath = Assets.GetScenarioSolutionPath("BuildNuProj_PackageProjectReference");
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
 
             await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
