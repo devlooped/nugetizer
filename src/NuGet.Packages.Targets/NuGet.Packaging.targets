@@ -114,8 +114,8 @@
     <NuGetVersion>$(Version)</NuGetVersion>
   </PropertyGroup>
 
-  <Import Project="$(NuGetCommonPackagingPath)\NuGet.Packaging.Common.targets"
-          Condition="Exists('$(NuGetCommonPackagingPath)\NuGet.Packaging.Common.targets')" />
+  <Import Project="$(NuGetPackagingPath)\NuGet.Packaging.Common.targets"
+          Condition="Exists('$(NuGetPackagingPath)\NuGet.Packaging.Common.targets')" />
 
   <PropertyGroup>
     <NuGetTargetFrameworkMoniker>any</NuGetTargetFrameworkMoniker>

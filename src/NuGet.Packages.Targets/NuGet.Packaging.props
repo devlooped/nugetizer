@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <NuGetCommonPackagingPath Condition=" '$(NuGetCommonPackagingPath)' == '' ">$(MSBuildExtensionsPath)\NuGet.Packaging\</NuGetCommonPackagingPath>
+    <NuGetPackagingPath Condition=" '$(NuGetPackagingPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\</NuGetPackagingPath>
   </PropertyGroup>
-  <Import Project="$(NuGetCommonPackagingPath)\NuGet.Packaging.Common.props"
-          Condition="Exists('$(NuGetCommonPackagingPath)\NuGet.Packaging.Common.props')" />
+  <Import Project="$(NuGetPackagingPath)\NuGet.Packaging.Common.props"
+          Condition="Exists('$(NuGetPackagingPath)\NuGet.Packaging.Common.props')" />
 
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
