@@ -48,7 +48,7 @@
   </Target>
 
   <PropertyGroup>
-    <GetNuGetInfoDependsOn>_GenerateNuSpec</GetNuGetInfoDependsOn>
+    <GetNuGetInfoDependsOn>$(GetNuGetInfoDependsOn);_GenerateNuSpec</GetNuGetInfoDependsOn>
   </PropertyGroup>
 
   <Target
@@ -121,7 +121,7 @@
   </Target>
 
   <PropertyGroup>
-    <BuildNuGetDependsOn>GetNuGetInfo</BuildNuGetDependsOn>
+    <BuildNuGetDependsOn>$(BuildNuGetDependsOn);GetNuGetInfo</BuildNuGetDependsOn>
   </PropertyGroup>
 
   <Target
