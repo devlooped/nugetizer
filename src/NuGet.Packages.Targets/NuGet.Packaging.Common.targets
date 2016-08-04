@@ -21,7 +21,7 @@
     <NuSpecPath>$(NuGetInfoPath)</NuSpecPath>
     <NuGetInfoPath>$([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(MSBuildProjectDirectory)`, `$(NuGetInfoPath)`))`))</NuGetInfoPath>
     <NuGetTargetFrameworkMoniker>$(TargetFrameworkMoniker)</NuGetTargetFrameworkMoniker>
-    <NuGetOutputPath Condition=" '$(NuGetOutputPath)' == '' ">$(OutDir)$(NuGetId).$(NuGetVersion).nupkg</NuGetOutputPath>
+    <NuGetTargetPath Condition=" '$(NuGetTargetPath)' == '' ">$(OutDir)$(NuGetId).$(NuGetVersion).nupkg</NuGetTargetPath>
   </PropertyGroup>
 
    <PropertyGroup Condition=" '$(BuildNuGet)' == 'True' AND '$(IsNuGetMetadataAvailable)' == 'True' ">
@@ -39,7 +39,7 @@
     Name="_CollectOutputFiles">
     <ItemGroup>
       <FileWrites Include="$(NuGetInfoPath)" />
-      <FileWrites Include="$(NuGetOutputPath)" />
+      <FileWrites Include="$(NuGetTargetPath)" />
     </ItemGroup>
   </Target>
 
@@ -120,7 +120,7 @@
   <Target
     Name="BuildNuGet"
     Inputs="$(MSBuildAllProjects);$(NuSpecPath)"
-    Outputs="$(NuGetOutputPath)"
+    Outputs="$(NuGetTargetPath)"
     DependsOnTargets="$(BuildNuGetDependsOn)">
 
     <MakeDir
