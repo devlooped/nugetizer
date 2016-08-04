@@ -530,6 +530,9 @@ namespace NuGet.Packaging.Tasks.Tests
             var target = new GenerateNuSpec();
             target.OutputFileName = output;
             target.Version = "1.0.0";
+            target.Id = "NUGET_PACKAGE_ID_PLACEHOLDER";
+            target.Authors = "authors";
+            target.Description = "description";
 
             target.Dependencies = new[]
             {
@@ -654,6 +657,9 @@ namespace NuGet.Packaging.Tasks.Tests
             var target = new GenerateNuSpec();
             target.OutputFileName = output;
             target.Version = "1.0.0";
+            target.Id = "NUGET_PACKAGE_ID_PLACEHOLDER";
+            target.Authors = "authors";
+            target.Description = "description";
 
             target.FrameworkReferences = new[]
             {
@@ -680,6 +686,7 @@ namespace NuGet.Packaging.Tasks.Tests
             target = new GenerateNuSpec();
             target.OutputFileName = output;
             target.Id = "MergeFrameworkReferences";
+            target.Description = "Description";
             target.Version = "1.0.0";
             target.Authors = "Nuproj";
             target.RequireLicenseAcceptance = true;
@@ -762,6 +769,9 @@ namespace NuGet.Packaging.Tasks.Tests
             var target = new GenerateNuSpec();
             target.OutputFileName = output;
             target.Version = "1.0.0";
+            target.Id = "NUGET_PACKAGE_ID_PLACEHOLDER";
+            target.Authors = "authors";
+            target.Description = "description";
 
             target.References = new[]
             {
@@ -873,6 +883,9 @@ namespace NuGet.Packaging.Tasks.Tests
             var target = new GenerateNuSpecWithLoggingCaptured();
             target.OutputFileName = output;
             target.Version = "1.0.0";
+            target.Id = "NUGET_PACKAGE_ID_PLACEHOLDER";
+            target.Authors = "authors";
+            target.Description = "Description";
 
             target.Dependencies = new[]
             {

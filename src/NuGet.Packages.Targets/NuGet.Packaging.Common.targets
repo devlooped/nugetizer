@@ -84,8 +84,12 @@
     Name="_GenerateNuSpec"
     DependsOnTargets="_GetNuGetDependencies;_GetNuGetFiles;_GetProjectReferenceNuGetInfo">
 
+    <!-- Add values for required metadata so the .nuspec can be read again when no metadata is defined -->
     <PropertyGroup>
+      <NuGetId Condition=" '$(NuGetId)' == '' ">NUGET_PACKAGE_ID_PLACEHOLDER</NuGetId>
       <NuGetVersion Condition=" '$(NuGetVersion)' == '' ">1.0.0</NuGetVersion>
+      <NuGetAuthors Condition=" '$(NuGetAuthors)' == '' ">NUGET_PACKAGE_AUTHORS_PLACEHOLDER</NuGetAuthors>
+      <NuGetDescription Condition=" '$(NuGetDescription)' == '' ">NUGET_PACKAGE_DESCRIPTION_PLACEHOLDER</NuGetDescription>
     </PropertyGroup>
 
     <!-- Please Note:

@@ -24,16 +24,20 @@ namespace NuGet.Packaging.Tasks
 
         public string MinClientVersion { get; set; }
 
+        [Required]
         public string Id { get; set; }
 
+        [Required]
         public string Version { get; set; }
 
         public string Title { get; set; }
 
+        [Required]
         public string Authors { get; set; }
 
         public string Owners { get; set; }
 
+        [Required]
         public string Description { get; set; }
 
         public string ReleaseNotes { get; set; }
@@ -176,15 +180,6 @@ namespace NuGet.Packaging.Tasks
                 manifestMetadata.Version = GetNuGetVersion(Version);
 
             manifest.Files.AddRange(GetManifestFiles());
-
-            // Add placeholders into required fields otherwise it is not possible to
-            // read the .nuspec file using NuGet's Manifest.ReadFrom.
-            if (!manifestMetadata.Authors.NullAsEmpty().Any())
-                manifestMetadata.Authors = SplitCommaSeparatedString("NUGET_PACKAGE_AUTHORS_PLACEHOLDER");
-            if (manifestMetadata.Description == null)
-                manifestMetadata.UpdateMember(x => x.Description, "NUGET_PACKAGE_DESCRIPTION_PLACEHOLDER");
-            if (manifestMetadata.Id == null)
-                manifestMetadata.UpdateMember(x => x.Id, NuGetPackageIdPlaceholder);
 
             AddNuSpecFileDependencies(manifest);
 
