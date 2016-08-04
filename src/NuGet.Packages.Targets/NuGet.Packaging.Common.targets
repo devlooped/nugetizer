@@ -1,8 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ImportByWildcardBeforeNuGetPackagingCommonTargets Condition="'$(ImportByWildcardBeforeNuGetPackagingCommonTargets)' == ''">true</ImportByWildcardBeforeNuGetPackagingCommonTargets>
+    <ImportByWildcardAfterNuGetPackagingCommonTargets Condition="'$(ImportByWildcardAfterNuGetPackagingCommonTargets)' == ''">true</ImportByWildcardAfterNuGetPackagingCommonTargets>
+  </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).Before.targets" 
-    Condition="Exists('$(MSBuildThisFileDirectory)$(MSBuildThisFileName).Before.targets')"/>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\Imports\NuGet.Packaging.Common.targets\ImportBefore\*"
+    Condition="'$(ImportByWildcardBeforeNuGetPackagingCommonTargets)' == 'true' and exists('$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\Imports\NuGet.Packaging.Common.targets\ImportBefore')"/>
 
   <UsingTask TaskName="NuGet.Packaging.Tasks.AssignTargetFramework" AssemblyFile="$(NuGetTasksPath)" />
   <UsingTask TaskName="NuGet.Packaging.Tasks.GenerateNuSpec" AssemblyFile="$(NuGetTasksPath)" />
@@ -203,6 +207,6 @@
     </ItemGroup>
   </Target>
 
-  <Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets"
-    Condition="Exists('$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets')"/>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\Imports\NuGet.Packaging.Common.targets\ImportAfter\*"
+    Condition="'$(ImportByWildcardAfterNuGetPackagingCommonTargets)' == 'true' and exists('$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\Imports\NuGet.Packaging.Common.targets\ImportAfter')"/>
 </Project>
