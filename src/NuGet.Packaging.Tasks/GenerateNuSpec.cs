@@ -410,7 +410,7 @@ namespace NuGet.Packaging.Tasks
                     select new ManifestFile
                     {
                         Source = f.GetMetadata(Metadata.FileSource),
-                        Target = f.GetMetadata(Metadata.FileTarget),
+                        Target = f.GetMetadataAsPath(Metadata.FileTarget),
                         Exclude = f.GetMetadata(Metadata.FileExclude),
                     }).ToList();
         }

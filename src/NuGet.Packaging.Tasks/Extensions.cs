@@ -55,6 +55,22 @@ namespace NuGet.Packaging.Tasks
             return result;
         }
 
+        /// <summary>
+        /// Ensures the metadata value has any backslashes replaced with forward slashes
+        /// when not on Windows.
+        /// </summary>
+        public static string GetMetadataAsPath(this ITaskItem taskItem, string metadataName)
+        {
+            string metadataValue = taskItem.GetMetadata(metadataName);
+
+            if (Path.DirectorySeparatorChar == '/')
+            {
+                return metadataValue.Replace('\\', '/');
+            }
+
+            return metadataValue;
+        }
+
         public static PackageDirectory GetPackageDirectory(this ITaskItem taskItem)
         {
             var packageDirectoryName = taskItem.GetMetadata(Metadata.PackageDirectory);

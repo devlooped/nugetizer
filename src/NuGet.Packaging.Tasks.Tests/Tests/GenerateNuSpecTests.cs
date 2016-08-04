@@ -93,7 +93,7 @@ namespace NuGet.Packaging.Tasks.Tests
                     new ManifestFile
                     {
                         Source = fileToAdd,
-                        Target = @"lib\net45",
+                        Target = Path.Combine("lib", "net45"),
                         Exclude = "",
                     },
                 };

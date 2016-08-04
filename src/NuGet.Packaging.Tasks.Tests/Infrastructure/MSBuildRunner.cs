@@ -30,9 +30,6 @@ namespace NuGet.Packaging.Tasks.Tests.Infrastructure
 
         public static Task BuildAsync(string solutionPath, string target, Dictionary<string, string> properties)
         {
-            bool isMono = Type.GetType("Mono.Runtime") != null;
-            string command = isMono ? "xbuild" : "msbuild";
-
             var arguments = new MSBuildArgumentBuilder(solutionPath);
             arguments.Append("/t:" + target);
 
@@ -42,7 +39,7 @@ namespace NuGet.Packaging.Tasks.Tests.Infrastructure
 
             arguments.Build();
 
-            return ToolRunner.Run(command, arguments.ToString(), Path.GetDirectoryName(solutionPath));
+            return ToolRunner.Run("msbuild", arguments.ToString(), Path.GetDirectoryName(solutionPath));
         }
     }
 }
