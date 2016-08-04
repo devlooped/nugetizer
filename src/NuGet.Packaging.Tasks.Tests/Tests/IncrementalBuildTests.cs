@@ -18,7 +18,7 @@ namespace NuGet.Packaging.Tasks.Tests
             string sourceSolutionPath = Assets.GetScenarioSolutionPath("IncrementalBuild_NuSpecIsNotUpdated");
             string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
             string projectPath = Path.Combine(Path.GetDirectoryName(solutionPath), "ClassLibrary");
-            string nuspecFile = Path.Combine(projectPath, @"obj/Debug/_NuGetPackage.nuspec");
+            string nuspecFile = Path.Combine(projectPath, @"obj/Debug/_package.nuspec");
 
             // Perform first build
             await MSBuildRunner.BuildAsync(solutionPath, buildNuGet: true);

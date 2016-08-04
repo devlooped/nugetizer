@@ -17,8 +17,7 @@
   <PropertyGroup>
     <IsNuGetMetadataAvailable Condition=" '$(NuGetId)' != '' ">True</IsNuGetMetadataAvailable>
     <NuGetVersion Condition=" '$(NuGetVersion)' == '' ">1.0.0</NuGetVersion>
-    <NuGetInfoPath Condition=" '$(NuGetId)' != '' ">$(IntermediateOutputPath)_$(NuGetId).nuspec</NuGetInfoPath>
-    <NuGetInfoPath Condition=" '$(NuGetId)' == '' ">$(IntermediateOutputPath)_package.nuspec</NuGetInfoPath>
+    <NuGetInfoPath>$(IntermediateOutputPath)_package.nuspec</NuGetInfoPath>
     <NuSpecPath>$(NuGetInfoPath)</NuSpecPath>
     <NuGetInfoPath>$([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(MSBuildProjectDirectory)`, `$(NuGetInfoPath)`))`))</NuGetInfoPath>
     <NuGetTargetFrameworkMoniker>$(TargetFrameworkMoniker)</NuGetTargetFrameworkMoniker>
