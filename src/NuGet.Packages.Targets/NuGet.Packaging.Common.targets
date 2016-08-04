@@ -82,8 +82,6 @@
 
   <Target
     Name="_GenerateNuSpec"
-    Inputs="@(NuGetFile);AlwaysRunEvenIfPackageFileIsEmpty"
-    Outputs="$(NuSpecPath)"
     DependsOnTargets="_GetNuGetDependencies;_GetNuGetFiles;_GetProjectReferenceNuGetInfo">
 
     <PropertyGroup>
