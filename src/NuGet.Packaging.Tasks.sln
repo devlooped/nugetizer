@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.Tasks", "NuGet.Packaging.Tasks\NuGet.Packaging.Tasks.csproj", "{F46DEF57-56D2-4996-BCC5-1ED39493CB06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.Tasks.Tests", "NuGet.Packaging.Tasks.Tests\NuGet.Packaging.Tasks.Tests.csproj", "{66A01B3D-F924-44DC-BDB3-61C5A6EE8B97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F46DEF57-56D2-4996-BCC5-1ED39493CB06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F46DEF57-56D2-4996-BCC5-1ED39493CB06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F46DEF57-56D2-4996-BCC5-1ED39493CB06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F46DEF57-56D2-4996-BCC5-1ED39493CB06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66A01B3D-F924-44DC-BDB3-61C5A6EE8B97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66A01B3D-F924-44DC-BDB3-61C5A6EE8B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66A01B3D-F924-44DC-BDB3-61C5A6EE8B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66A01B3D-F924-44DC-BDB3-61C5A6EE8B97}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

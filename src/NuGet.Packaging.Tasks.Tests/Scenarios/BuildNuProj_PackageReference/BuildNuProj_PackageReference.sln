@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{5DD5E4FA-CB73-4610-85AB-557B54E96AA9}") = "Package", "Package.nuproj", "{0EAE2A5B-F205-4927-9DE6-4CCD8F44EDAA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0EAE2A5B-F205-4927-9DE6-4CCD8F44EDAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EAE2A5B-F205-4927-9DE6-4CCD8F44EDAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EAE2A5B-F205-4927-9DE6-4CCD8F44EDAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EAE2A5B-F205-4927-9DE6-4CCD8F44EDAA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

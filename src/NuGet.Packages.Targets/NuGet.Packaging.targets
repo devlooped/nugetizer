@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" TreatAsLocalProperty="OutDir;IntermediateOutputPath" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" TreatAsLocalProperty="OutDir;IntermediateOutputPath" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Import Project="$(CustomBeforeNuProjTargets)" Condition="'$(CustomBeforeNuProjTargets)' != '' and Exists('$(CustomBeforeNuProjTargets)')"/>
 
@@ -93,14 +93,41 @@
     <IntermediateOutputPath Condition="'$(IntermediateOutputPath)' != '' and '$(IntermediateOutputPathWasSpecified)' == 'true' and '$(GenerateProjectSpecificOutputFolder)' == 'true'">$(IntermediateOutputPath)$(ProjectName)\</IntermediateOutputPath>
   </PropertyGroup>
 
-  <!--
-      NUSPEC PATH
-  -->
+  <PropertyGroup>
+    <BuildNuGet>True</BuildNuGet>
+    <ExcludeTargetOutputInNuGetPackage>True</ExcludeTargetOutputInNuGetPackage>
+    <ExcludeReferencesInNuGetPackage>True</ExcludeReferencesInNuGetPackage>
+    <NuGetId>$(Id)</NuGetId>
+    <NuGetVersion>$(Version)</NuGetVersion>
+    <NuGetTitle>$(Title)</NuGetTitle>
+    <NuGetAuthors>$(Authors)</NuGetAuthors>
+    <NuGetOwners>$(Owners)</NuGetOwners>
+    <NuGetDescription>$(Description)</NuGetDescription>
+    <NuGetReleaseNotes>$(ReleaseNotes)</NuGetReleaseNotes>
+    <NuGetSummary>$(Summary)</NuGetSummary>
+    <NuGetLanguage>$(Language)</NuGetLanguage>
+    <NuGetProjectUrl>$(ProjectUrl)</NuGetProjectUrl>
+    <NuGetIconUrl>$(IconUrl)</NuGetIconUrl>
+    <NuGetCopyright>$(Copyright)</NuGetCopyright>
+    <NuGetRequireLicenseAcceptance>$(RequireLicenseAcceptance)</NuGetRequireLicenseAcceptance>
+    <NuGetTags>$(Tags)</NuGetTags>
+    <NuGetVersion>$(Version)</NuGetVersion>
+  </PropertyGroup>
+
+  <Import Project="$(NuGetPackagingPath)\NuGet.Packaging.Common.targets"
+          Condition="Exists('$(NuGetPackagingPath)\NuGet.Packaging.Common.targets')" />
 
   <PropertyGroup>
-    <NuSpecPath>$(IntermediateOutputPath)$(Id).nuspec</NuSpecPath>
-  </PropertyGroup>  
-  
+    <NuGetTargetFrameworkMoniker>any</NuGetTargetFrameworkMoniker>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PrepareForRunDependsOn></PrepareForRunDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CoreCompile" />
+  <Target Name="CreateManifestResourceNames" Condition="false" />
+
   <Import Project="$(CustomAfterNuProjTargets)" Condition="'$(CustomAfterNuProjTargets)' != '' and Exists('$(CustomAfterNuProjTargets)')"/>
 
 </Project>
