@@ -16,12 +16,10 @@
 
   <PropertyGroup>
     <IsNuGetMetadataAvailable Condition=" '$(NuGetId)' != '' ">True</IsNuGetMetadataAvailable>
-    <NuGetVersion Condition=" '$(NuGetVersion)' == '' ">1.0.0</NuGetVersion>
     <NuGetInfoPath>$(IntermediateOutputPath)_package.nuspec</NuGetInfoPath>
     <NuSpecPath>$(NuGetInfoPath)</NuSpecPath>
     <NuGetInfoPath>$([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(MSBuildProjectDirectory)`, `$(NuGetInfoPath)`))`))</NuGetInfoPath>
     <NuGetTargetFrameworkMoniker>$(TargetFrameworkMoniker)</NuGetTargetFrameworkMoniker>
-    <NuGetTargetPath Condition=" '$(NuGetTargetPath)' == '' ">$(OutDir)$(NuGetId).$(NuGetVersion).nupkg</NuGetTargetPath>
   </PropertyGroup>
 
    <PropertyGroup Condition=" '$(BuildNuGet)' == 'True' AND '$(IsNuGetMetadataAvailable)' == 'True' ">
@@ -37,6 +35,12 @@
 
   <Target
     Name="_CollectOutputFiles">
+
+    <PropertyGroup>
+      <NuGetVersion Condition=" '$(NuGetVersion)' == '' ">1.0.0</NuGetVersion>
+      <NuGetTargetPath Condition=" '$(NuGetTargetPath)' == '' ">$(OutDir)$(NuGetId).$(NuGetVersion).nupkg</NuGetTargetPath>
+    </PropertyGroup>
+
     <ItemGroup>
       <FileWrites Include="$(NuGetInfoPath)" />
       <FileWrites Include="$(NuGetTargetPath)" />
@@ -81,6 +85,11 @@
     Inputs="@(NuGetFile);AlwaysRunEvenIfPackageFileIsEmpty"
     Outputs="$(NuSpecPath)"
     DependsOnTargets="_GetNuGetDependencies;_GetNuGetFiles;_GetProjectReferenceNuGetInfo">
+
+    <PropertyGroup>
+      <NuGetVersion Condition=" '$(NuGetVersion)' == '' ">1.0.0</NuGetVersion>
+    </PropertyGroup>
+
     <!-- Please Note:
          In order to avoid incremental build issues this target will always run.
          However, the task will make sure that it doesn't touch the file if the
