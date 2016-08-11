@@ -108,10 +108,11 @@
     <NuGetLanguage>$(Language)</NuGetLanguage>
     <NuGetProjectUrl>$(ProjectUrl)</NuGetProjectUrl>
     <NuGetIconUrl>$(IconUrl)</NuGetIconUrl>
+    <NuGetLicenseUrl>$(LicenseUrl)</NuGetLicenseUrl>
     <NuGetCopyright>$(Copyright)</NuGetCopyright>
     <NuGetRequireLicenseAcceptance>$(RequireLicenseAcceptance)</NuGetRequireLicenseAcceptance>
     <NuGetTags>$(Tags)</NuGetTags>
-    <NuGetVersion>$(Version)</NuGetVersion>
+    <NuGetDevelopmentDependency>$(DevelopmentDependency)</NuGetDevelopmentDependency>
   </PropertyGroup>
 
   <Import Project="$(NuGetPackagingPath)\NuGet.Packaging.Common.targets"
