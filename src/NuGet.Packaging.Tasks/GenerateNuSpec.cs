@@ -439,7 +439,7 @@ namespace NuGet.Packaging.Tasks
                     group dependency by dependency.TargetFramework into dependenciesByFramework
                     select new PackageDependencyGroup
                     (
-                        NuGetFramework.Parse(dependenciesByFramework.Key.GetShortFrameworkName()),
+                        NuGetFramework.Parse(dependenciesByFramework.Key.GetShortFrameworkName() ?? "any"),
                         (from dependency in dependenciesByFramework
                          where dependency.Id != "_._"
                          group dependency by dependency.Id into dependenciesById

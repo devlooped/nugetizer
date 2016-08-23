@@ -150,6 +150,31 @@ namespace NuGet.Packaging.Tasks.Tests
                 Assert.Equal(1, frameworkSpecificGroup.Items.Count());
             }
         }
+
+        /// <summary>
+        /// When no target framework is specified for the package reference it will
+        /// be installed for all project target frameworks.
+        /// </summary>
+        [Fact]
+        public async Task BuildNuProj_PackageReferenceNoTargetFramework()
+        {
+            string sourceSolutionPath = Assets.GetScenarioSolutionPath();
+            string solutionPath = CopySolutionToTempDirectory(sourceSolutionPath);
+
+            await MSBuildRunner.RebuildAsync(solutionPath, buildNuGet: true);
+
+            string packagePath = Path.Combine(tempSolutionDirectory, "bin", "Debug", "NuGetPackage.1.0.0.nupkg");
+
+            using (var reader = new PackageArchiveReader(File.OpenRead(packagePath))) {
+                var nuspecReader = new NuspecReader(reader.GetNuspec());
+
+                var dependencyGroup = nuspecReader.GetDependencyGroups().Single();
+                Assert.Equal("any", dependencyGroup.TargetFramework.GetShortFolderName());
+                var packageDependency = dependencyGroup.Packages.Single();
+                Assert.Equal("Newtonsoft.Json", packageDependency.Id);
+                Assert.Equal("[8.0.3, )", packageDependency.VersionRange.ToString());
+            }
+        }
     }
 }
 

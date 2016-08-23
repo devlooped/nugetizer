@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup>
+    <ProjectGuid>0EAE2A5B-F205-4927-9DE6-4CCD8F44EDAA</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NuGetPackagingPath Condition=" '$(NuGetPackagingPath)' == '' ">$(LocalAppData)\CustomProjectSystems\NuGet.Packaging\</NuGetPackagingPath>
+  </PropertyGroup>
+  <Import Project="$(NuGetPackagingPath)\NuGet.Packaging.props" Condition="Exists('$(NuGetPackagingPath)\NuGet.Packaging.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>NuGetPackage</Id>
+    <Version>1.0.0</Version>
+    <Title>NuGetPackage</Title>
+    <Authors>author</Authors>
+    <Owners>owner</Owners>
+    <Summary>Summary</Summary>
+    <Description>Description</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>8.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(NuGetPackagingPath)\NuGet.Packaging.targets" />
+</Project>
