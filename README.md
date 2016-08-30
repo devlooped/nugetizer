@@ -2,4 +2,4 @@
 
 NuGetizer 3000 is here, and will be beyond awesome!
 
-Stay tunned on #nugetizer3000 Slack channel. 
+Check out the [wiki](https://github.com/xamarin/NuGetizer3000/wiki) for more details.
