@@ -21,12 +21,12 @@ namespace NuGet.Packaging.VisualStudio
 
 		protected override void Execute()
 		{
-			var selectedProject = solutionExplorer.GetSelectedProject();
+			var selectedProject = solutionExplorer.Solution.ActiveProject;
 
 			var buildNuGetPackage = true;
 			var openNuSpecPropertyPage = false;
 
-			if (!selectedProject.IsNuProj())
+			if (!selectedProject.Supports(NuProjCapabilities.NuProj))
 				buildNuGetPackage = openNuSpecPropertyPage =
 					dialogService.ShowConfirmationMessage(Resources.AddNuProjToLibrary);
 

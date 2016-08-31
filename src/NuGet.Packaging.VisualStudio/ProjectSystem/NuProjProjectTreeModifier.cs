@@ -18,7 +18,8 @@ namespace NuGet.Packaging.VisualStudio
             {
                 if (propertyValues.Flags.Contains(ProjectTreeFlags.Common.ProjectRoot))
                 {
-                    propertyValues.Icon = KnownMonikers.NuGet.ToProjectSystemType();
+					// Set the icon
+                    // propertyValues.Icon = KnownMonikers.NuGet.ToProjectSystemType();
                 }
             }
         }

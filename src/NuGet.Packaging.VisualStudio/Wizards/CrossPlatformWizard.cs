@@ -44,11 +44,14 @@ namespace NuGet.Packaging.VisualStudio
 
 		public void RunFinished()
 		{
-			var sharedProject = solutionExplorer.Solution.UnfoldTemplate(
+			var solutionContext = new SolutionContext(solutionExplorer);
+			solutionContext.BaseProjectName = WizardModel.SafeProjectName;
+
+			solutionContext.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
 				Constants.Templates.SharedProject,
 				WizardModel.SafeProjectName + "." + Constants.Suffixes.SharedProject);
 
-			var nuGetProject = solutionExplorer.Solution.UnfoldTemplate(
+			solutionContext.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
 				Constants.Templates.NuGetPackage,
 				WizardModel.SafeProjectName + "." + Constants.Suffixes.NuGetPackage,
 				Constants.Language);
@@ -57,10 +60,10 @@ namespace NuGet.Packaging.VisualStudio
 			{
 				var platformProject = solutionExplorer.Solution.UnfoldTemplate(
 					Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
-					selectedPlatform.ProjectName);
+					solutionContext.GetTargetProjectName (selectedPlatform));
 
-				platformProject.AddReference(sharedProject);
-				nuGetProject.AddReference(platformProject);
+				platformProject.AddReference(solutionContext.SharedProject);
+				solutionContext.NuGetProject.AddReference(platformProject);
 			}
 		}
 

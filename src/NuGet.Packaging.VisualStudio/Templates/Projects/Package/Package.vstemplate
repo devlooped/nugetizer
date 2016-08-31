@@ -13,7 +13,6 @@
     <DefaultName>NuGetPackage</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
-    <Hidden>true</Hidden>
   </TemplateData>
   <TemplateContent>
     <Project File="Package.nuproj" ReplaceParameters="true">

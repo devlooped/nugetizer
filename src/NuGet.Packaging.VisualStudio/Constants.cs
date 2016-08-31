@@ -51,11 +51,5 @@
 				}
 			}
 		}
-
-		public class Contracts
-		{
-			public const string Dte = "NuGet.Packaging.VisualStudio.Dte";
-			public const string DteSolution2 = "NuGet.Packaging.VisualStudio.DteSolution2";
-		}
 	}
 }

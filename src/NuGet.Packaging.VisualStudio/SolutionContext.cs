@@ -5,43 +5,37 @@ using System.Linq;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	class AddPlatformImplementationContext
+	class SolutionContext
 	{
 		readonly ISolutionExplorer solutionExplorer;
-		List<PlatformViewModel> platforms;
 
-		public AddPlatformImplementationContext(ISolutionExplorer solutionExplorer)
+		public SolutionContext(ISolutionExplorer solutionExplorer)
 		{
 			this.solutionExplorer = solutionExplorer;
 		}
 
-		public void Initialize(IPlatformProvider platformProvider)
+		public void Initialize(IProjectNode baseProject)
 		{
-			SelectedProject = solutionExplorer.GetSelectedProject();
+			SelectedProject = baseProject;
 
 			BaseProjectName = SelectedProject.Name;
 
 			var projects = solutionExplorer.Solution.FindProjects().ToList();
 
+			// TODO
+			// Rather than hardcoding a convention for the shared project name, 
+			// is there a way we can instead annotate it with some MSBuild property 
+			// that will flag it as "the one" we used before? 
+			// This would allow users to rename/move the project freely, 
+			// which would make the feature more resilient.
 			SharedProjectName = BaseProjectName + "." + Constants.Suffixes.SharedProject;
 			SharedProject = GetProjectNode(projects, SharedProjectName);
 
 			NuGetProjectName = BaseProjectName + "." + Constants.Suffixes.NuGetPackage;
 			NuGetProject = GetProjectNode(projects, NuGetProjectName);
-
-			platforms = new List<PlatformViewModel>();
-			foreach (var platform in platformProvider.GetSupportedPlatforms())
-			{
-				platform.ProjectName = BaseProjectName + "." + Constants.Suffixes.GetSuffixForPlatform(platform.Id);
-				platform.Project = GetProjectNode(projects, platform.ProjectName);
-
-				platforms.Add(platform);
-			}
 		}
 
 		public IProjectNode SelectedProject { get; set; }
-
-		public IEnumerable<PlatformViewModel> Platforms => platforms;
 
 		public string BaseProjectName { get; set; }
 
@@ -55,5 +49,11 @@ namespace NuGet.Packaging.VisualStudio
 
 		IProjectNode GetProjectNode(IEnumerable<IProjectNode> projects, string projectName) =>
 			projects.FirstOrDefault(x => x.Name == projectName);
+
+		public IProjectNode GetProjectNode(string projectName) =>
+			GetProjectNode(solutionExplorer.Solution.FindProjects(), projectName);
+
+		public string GetTargetProjectName(PlatformViewModel platform) =>
+			BaseProjectName + "." + Constants.Suffixes.GetSuffixForPlatform(platform.Id);
 	}
 }

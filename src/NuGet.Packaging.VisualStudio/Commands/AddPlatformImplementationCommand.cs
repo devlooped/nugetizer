@@ -25,12 +25,12 @@ namespace NuGet.Packaging.VisualStudio
 
 		protected override void Execute()
 		{
-			var context = new AddPlatformImplementationContext(solutionExplorer);
-			context.Initialize(platformProvider);
+			var context = new SolutionContext(solutionExplorer);
+			context.Initialize(solutionExplorer.Solution.ActiveProject);
 
 			var viewModel = new AddPlatformImplementationViewModel();
 
-			foreach (var platform in context.Platforms)
+			foreach (var platform in platformProvider.GetSupportedPlatforms())
 				viewModel.Platforms.Add(platform);
 
 			viewModel.IsSharedProjectEnabled = context.SharedProject == null;
@@ -56,21 +56,20 @@ namespace NuGet.Packaging.VisualStudio
 						Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
 				}
 
-				return;
-
 				foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
 				{
-					if (selectedPlatform.Project == null)
-					{
-						selectedPlatform.Project = solutionExplorer.Solution.UnfoldTemplate(
-							Constants.Templates.GetPlatformTemplate(selectedPlatform.Id), 
-							selectedPlatform.ProjectName);
-					}
+					var projectName = context.GetTargetProjectName(selectedPlatform);
+					var project = context.GetProjectNode(projectName);
+
+					if (project == null)
+						project = solutionExplorer.Solution.UnfoldTemplate(
+							Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
+							projectName);
 
 					if (context.SharedProject != null)
-						selectedPlatform.Project.AddReference(context.SharedProject);
+						project.AddReference(context.SharedProject);
 
-					context.NuGetProject.AddReference(selectedPlatform.Project);
+					context.NuGetProject.AddReference(project);
 				}
 			}
 		}

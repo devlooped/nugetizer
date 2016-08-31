@@ -9,38 +9,6 @@ namespace Clide
 {
 	static class IProjectNodeExtensions
 	{
-		public static bool IsNuProj(this IProjectNode project) => project.IsProjectSubtype(
-				new Guid(Guids.FlavoredProjectTypeGuid)) ||
-				project.As<EnvDTE.Project>().FullName.EndsWith(
-					NuGet.Packaging.VisualStudio.Constants.ProjectFileExtension, StringComparison.OrdinalIgnoreCase);
-
-		static bool IsProjectSubtype(this IProjectNode project, Guid projectTypeGuid) =>
-			project.GetProjectSubtypes().Any(type => type == projectTypeGuid);
-
-		static IEnumerable<Guid> GetProjectSubtypes(this IProjectNode project)
-		{
-			string guidList;
-			var aggregatableProject = (IVsAggregatableProject)project.AsVsProject();
-			if (aggregatableProject != null &&
-				ErrorHandler.Succeeded(aggregatableProject.GetAggregateProjectTypeGuids(out guidList)))
-				return ParseGuids(guidList);
-
-			return Enumerable.Empty<Guid>();
-		}
-
-		static IEnumerable<Guid> ParseGuids(string guidList)
-		{
-			if (!string.IsNullOrEmpty(guidList))
-			{
-				foreach (var value in guidList.Trim().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					Guid guid;
-					if (Guid.TryParse(value.Trim(), out guid))
-						yield return guid;
-				}
-			}
-		}
-
 		public static void BuildNuGetPackage(this IProjectNode project)
 		{
 		}

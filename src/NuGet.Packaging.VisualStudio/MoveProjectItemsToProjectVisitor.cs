@@ -112,7 +112,7 @@ namespace NuGet.Packaging.VisualStudio
 					}
 					catch
 					{
-						// Ignore?
+						// Ignore? 
 					}
 				}
 			}
