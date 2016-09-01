@@ -187,6 +187,15 @@ namespace NuGet.Packaging.VisualStudio {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to add reference {0} to {1}.
+        /// </summary>
+        internal static string IProjectNodeExtensions_AddSharedProjectReferenceFailed {
+            get {
+                return ResourceManager.GetString("IProjectNodeExtensions_AddSharedProjectReferenceFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NuSpec.
         /// </summary>
         internal static string NuSpecPropertyPageTitle {

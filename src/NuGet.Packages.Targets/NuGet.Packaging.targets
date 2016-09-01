@@ -34,7 +34,7 @@
 
     <ProjectCapability Include="ProjectReferences;ReferencesFolder" />
     <ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
-    <ProjectCapability Include="NuProj" />
+    <ProjectCapability Include="NuGet.Packaging" />
   </ItemGroup>
 
   <PropertyGroup>

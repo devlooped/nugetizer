@@ -106,20 +106,18 @@
       <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
     </Compile>
     <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
+    <Compile Include="SolutionContext.cs" />
     <Compile Include="Commands\BuildNuGetPackageCommand.cs" />
     <Compile Include="Commands\DynamicCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DialogService.cs" />
-    <Compile Include="ExportProvider.cs" />
-    <Compile Include="Extensions\DteProjectExtensions.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="Extensions\IProjectNodeExtensions.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="IDialogService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
+    <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
     <Compile Include="ProjectProperties.cs" />
-    <Compile Include="Solution\IProject.cs" />
-    <Compile Include="Solution\ISolution.cs" />
-    <Compile Include="IUnfoldPlatformTemplateService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
       <SubType>UserControl</SubType>
@@ -128,7 +126,6 @@
       <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </Compile>
     <Compile Include="LegacyProjectSystem\NuSpecPropertyStore.cs" />
-    <Compile Include="UnfoldPlatformTemplateService.cs" />
     <Compile Include="Views\AddPlatformImplementationViewModel.cs" />
     <Compile Include="Views\CrossPlatformViewModel.cs" />
     <Compile Include="Views\IPlatformProvider.cs" />
@@ -137,7 +134,6 @@
     <Compile Include="Views\AddPlatformImplementationView.xaml.cs">
       <DependentUpon>AddPlatformImplementationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Solution\Project.cs" />
     <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
     <Compile Include="LegacyProjectSystem\NuProjFlavoredProject.cs" />
@@ -146,11 +142,8 @@
     <Compile Include="ProjectSystem\NuProjProjectTreeModifier.cs" />
     <Compile Include="ProjectSystem\NuProjUnconfiguredProject.cs" />
     <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
-    <Compile Include="Solution\Solution.cs" />
     <Compile Include="Wizards\CrossPlatformWizard.cs" />
     <Compile Include="Wizards\CrossPlatformWizardModel.cs" />
-    <Compile Include="IUnfoldTemplateService.cs" />
-    <Compile Include="UnfoldProjectTemplateService.cs" />
     <None Include="project.json" />
     <None Include="Templates\Spikes\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Spikes\PortableClassLibrary\class1.cs" />
@@ -246,11 +239,10 @@
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\external\clide\src\Clide\Clide.csproj">
-      <Project>{e8fabf5d-2fc8-43f6-b866-e3349afb7538}</Project>
-      <Name>Clide</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bDebugSymbolsProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
+    <ProjectReference Include="..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
+      <Project>{099bebd8-6b04-416d-ba44-e0201951542b}</Project>
+      <Name>Clide.Interfaces</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -159,6 +159,9 @@
   <data name="IOS_Suffix" xml:space="preserve">
     <value>iOS</value>
   </data>
+  <data name="IProjectNodeExtensions_AddSharedProjectReferenceFailed" xml:space="preserve">
+    <value>Failed to add reference {0} to {1}</value>
+  </data>
   <data name="NuSpecPropertyPageTitle" xml:space="preserve">
     <value>NuSpec</value>
   </data>

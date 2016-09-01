@@ -45,9 +45,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wizards\CrossPlatformWizardModelSpec.cs" />
     <Compile Include="Wizards\CrossPlatformWizardSpec.cs" />
-    <Compile Include="UnfoldProjectTemplateServiceSpec.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
+      <Project>{099bebd8-6b04-416d-ba44-e0201951542b}</Project>
+      <Name>Clide.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NuGet.Packaging.VisualStudio\NuGet.Packaging.VisualStudio.csproj">
       <Project>{9617edcd-23bb-41ea-827d-f5729d45b0af}</Project>
       <Name>NuGet.Packaging.VisualStudio</Name>
@@ -56,6 +59,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

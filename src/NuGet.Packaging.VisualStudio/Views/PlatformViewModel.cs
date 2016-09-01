@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Clide;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,6 +11,15 @@ namespace NuGet.Packaging.VisualStudio
 	class PlatformViewModel : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		public PlatformViewModel()
+		{ }
+
+		public PlatformViewModel(string id, string displayName)
+		{
+			this.Id = id;
+			this.DisplayName = displayName;
+		}
 
 		public bool IsSelected { get; set; } = true;
 

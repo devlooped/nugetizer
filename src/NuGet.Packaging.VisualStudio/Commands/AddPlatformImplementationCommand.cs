@@ -1,64 +1,76 @@
-﻿using Microsoft.VisualStudio.Shell;
-using System.Linq;
+﻿using System.Linq;
 using System.ComponentModel.Composition;
-using System.IO;
+using Clide;
 
 namespace NuGet.Packaging.VisualStudio
 {
 	[Export(typeof(DynamicCommand))]
 	class AddPlatformImplementationCommand : DynamicCommand
 	{
-		readonly ISolution solution;
+		readonly ISolutionExplorer solutionExplorer;
 		readonly IDialogService dialogService;
 		readonly IPlatformProvider platformProvider;
-		readonly IUnfoldPlatformTemplateService unfoldTemplateService;
-		readonly IUnfoldProjectTemplateService unfoldProjectTemplateService;
 
 		[ImportingConstructor]
 		public AddPlatformImplementationCommand(
-			ISolution solution,
+			ISolutionExplorer solutionExplorer,
 			IPlatformProvider platformProvider,
-			IUnfoldProjectTemplateService unfoldProjectTemplateService,
-			IUnfoldPlatformTemplateService unfoldTemplateService,
 			IDialogService dialogService)
 			: base(Commands.AddPlatformImplementationCommandId)
 		{
-			this.solution = solution;
+			this.solutionExplorer = solutionExplorer;
 			this.platformProvider = platformProvider;
 			this.dialogService = dialogService;
-			this.unfoldTemplateService = unfoldTemplateService;
-			this.unfoldProjectTemplateService = unfoldProjectTemplateService;
 		}
 
 		protected override void Execute()
 		{
+			var context = new SolutionContext(solutionExplorer);
+			context.Initialize(solutionExplorer.Solution.ActiveProject);
+
 			var viewModel = new AddPlatformImplementationViewModel();
 
 			foreach (var platform in platformProvider.GetSupportedPlatforms())
 				viewModel.Platforms.Add(platform);
+
+			viewModel.IsSharedProjectEnabled = context.SharedProject == null;
 
 			var view = new AddPlatformImplementationView();
 			view.DataContext = viewModel;
 
 			if (dialogService.ShowDialog(view) == true)
 			{
-				var targetBasePath = Path.Combine(
-					Path.GetDirectoryName(solution.Path),
-					solution.SelectedProject.Name);
+				if (context.SharedProject == null && viewModel.UseSharedProject)
+				{
+					context.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
+						Constants.Templates.SharedProject, context.SharedProjectName);
+
+					// Move PCL items to the shared project
+					context.SelectedProject.Accept(
+						new MoveProjectItemsToProjectVisitor(context.SharedProject));
+				}
+
+				if (context.NuGetProject == null)
+				{
+					context.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
+						Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
+				}
 
 				foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
-					unfoldTemplateService.UnfoldTemplate(selectedPlatform.Id, targetBasePath);
+				{
+					var projectName = context.GetTargetProjectName(selectedPlatform);
+					var project = context.GetProjectNode(projectName);
 
-				var targetSharedProjectPath = targetBasePath + ".Shared";
-				var targetPackagePath = targetBasePath + ".Package";
+					if (project == null)
+						project = solutionExplorer.Solution.UnfoldTemplate(
+							Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
+							projectName);
 
-				if (viewModel.UseSharedProject && !Directory.Exists(targetSharedProjectPath))
-					unfoldProjectTemplateService.UnfoldTemplate(
-						Constants.Templates.SharedProject, targetSharedProjectPath);
+					if (context.SharedProject != null)
+						project.AddReference(context.SharedProject);
 
-				if (!Directory.Exists(targetPackagePath))
-					unfoldProjectTemplateService.UnfoldTemplate(
-						Constants.Templates.NuGetPackage, targetPackagePath, Constants.Language);
+					context.NuGetProject.AddReference(project);
+				}
 			}
 		}
 	}
