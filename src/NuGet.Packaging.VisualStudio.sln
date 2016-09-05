@@ -1,22 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.25428.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{60C60A19-C14C-4DB2-88E3-732EE97E29DE}"
 	ProjectSection(SolutionItems) = preProject
-		NuGet.Packages.Targets\NuGet.Packaging.props = NuGet.Packages.Targets\NuGet.Packaging.props
-		NuGet.Packages.Targets\NuGet.Packaging.targets = NuGet.Packages.Targets\NuGet.Packaging.targets
+		NuGet.Packaging.Tasks\NuGet.Packaging.Common.props = NuGet.Packaging.Tasks\NuGet.Packaging.Common.props
+		NuGet.Packaging.Tasks\NuGet.Packaging.Common.targets = NuGet.Packaging.Tasks\NuGet.Packaging.Common.targets
+		NuGet.Packaging.Tasks\NuGet.Packaging.props = NuGet.Packaging.Tasks\NuGet.Packaging.props
+		NuGet.Packaging.Tasks\NuGet.Packaging.targets = NuGet.Packaging.Tasks\NuGet.Packaging.targets
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.VisualStudio", "NuGet.Packaging.VisualStudio\NuGet.Packaging.VisualStudio.csproj", "{9617EDCD-23BB-41EA-827D-F5729D45B0AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.VisualStudio.UnitTests", "NuGet.Packaging.VisualStudio.UnitTests\NuGet.Packaging.VisualStudio.UnitTests.csproj", "{AED0CC61-5461-4AF7-921E-8C292B44D0F5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02F9DAAA-4CD1-496B-9954-F08B9DD25622}"
-	ProjectSection(SolutionItems) = preProject
-		key.snk = key.snk
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{04F19AA5-4C91-47D5-A057-2D31296A5601}"
 EndProject

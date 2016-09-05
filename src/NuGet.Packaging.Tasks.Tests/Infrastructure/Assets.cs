@@ -6,11 +6,13 @@ namespace NuGet.Packaging.Tasks.Tests.Infrastructure
 {
     public static class Assets
     {
+        // TODO: simplify all this, since all files go to the test output directory.
+
         private static readonly string ProjectDirectory = ComputeProjectDirectory();
 
         public static string NuGetPackagingTargetsPath
         {
-            get { return Path.Combine(ProjectDirectory, "src/NuGet.Packages.Targets"); }
+            get { return Path.Combine(ProjectDirectory, "src/NuGet.Packaging.Tasks"); }
         }
 
         public static string NuGetPackagingTasksPath
