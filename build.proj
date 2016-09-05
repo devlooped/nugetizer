@@ -11,8 +11,9 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<Solution Include="src\*.sln"/>
-		<TestProject Include="src\**\*Tests.csproj" />
+    <Solution Include="external\clide\src\Clide.Tasks.sln"/>
+    <Solution Include="src\*.sln"/>
+    <TestProject Include="src\**\*Tests.csproj" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
