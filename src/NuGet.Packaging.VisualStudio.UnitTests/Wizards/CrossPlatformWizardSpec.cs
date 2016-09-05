@@ -74,8 +74,8 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 
 			wizard.ViewModel = new CrossPlatformViewModel(new[]
 			{
-				new PlatformViewModel { Id = "Xamarin.iOS", IsSelected = true, ProjectName = "App.iOS" },
-				new PlatformViewModel { Id = "Xamarin.Android", IsSelected = false, ProjectName = "App.Android" }
+				new PlatformViewModel { Id = "Xamarin.iOS", IsSelected = true },
+				new PlatformViewModel { Id = "Xamarin.Android", IsSelected = false }
 			});
 
 			var sharedProject = new Mock<IProjectNode>();
