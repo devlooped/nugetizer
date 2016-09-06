@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{9617EDCD-23BB-41EA-827D-F5729D45B0AF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NuGet.Packaging.VisualStudio</RootNamespace>
+    <AssemblyName>NuGet.Packaging.VisualStudio</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LegacyProjectSystem\NuSpecPropertyPageView.resx">
+      <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\PropertyPageBase\Constants.cs">
+      <Link>PropertyPageBase\Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\IPageView.cs">
+      <Link>PropertyPageBase\IPageView.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\IPageViewSite.cs">
+      <Link>PropertyPageBase\IPageViewSite.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\IPropertyPageUI.cs">
+      <Link>PropertyPageBase\IPropertyPageUI.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\IPropertyStore.cs">
+      <Link>PropertyPageBase\IPropertyStore.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\PageView.cs">
+      <Link>PropertyPageBase\PageView.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\PropertyControlMap.cs">
+      <Link>PropertyPageBase\PropertyControlMap.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\PropertyControlTable.cs">
+      <Link>PropertyPageBase\PropertyControlTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\PropertyPage.cs">
+      <Link>PropertyPageBase\PropertyPage.cs</Link>
+    </Compile>
+    <Compile Include="..\PropertyPageBase\UserEditCompleteHandler.cs">
+      <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
+    </Compile>
+    <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
+    <Compile Include="SolutionContext.cs" />
+    <Compile Include="Commands\BuildNuGetPackageCommand.cs" />
+    <Compile Include="Commands\DynamicCommand.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="DialogService.cs" />
+    <Compile Include="Commands.cs" />
+    <Compile Include="Extensions\IProjectNodeExtensions.cs" />
+    <Compile Include="Guids.cs" />
+    <Compile Include="IDialogService.cs" />
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
+    <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
+    <Compile Include="ProjectProperties.cs" />
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.Designer.cs">
+      <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LegacyProjectSystem\NuSpecPropertyStore.cs" />
+    <Compile Include="Views\AddPlatformImplementationViewModel.cs" />
+    <Compile Include="Views\CrossPlatformViewModel.cs" />
+    <Compile Include="Views\IPlatformProvider.cs" />
+    <Compile Include="Views\PlatformProvider.cs" />
+    <Compile Include="Views\PlatformViewModel.cs" />
+    <Compile Include="Views\AddPlatformImplementationView.xaml.cs">
+      <DependentUpon>AddPlatformImplementationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
+    <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
+    <Compile Include="LegacyProjectSystem\NuProjFlavoredProject.cs" />
+    <Compile Include="LegacyProjectSystem\NuProjFlavoredProjectFactory.cs" />
+    <Compile Include="ProjectSystem\NuProjProjectProperties.cs" />
+    <Compile Include="ProjectSystem\NuProjProjectTreeModifier.cs" />
+    <Compile Include="ProjectSystem\NuProjUnconfiguredProject.cs" />
+    <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
+    <Compile Include="Wizards\CrossPlatformWizard.cs" />
+    <Compile Include="Wizards\CrossPlatformWizardModel.cs" />
+    <None Include="NuGet.Packaging.VisualStudio.targets">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="project.json" />
+    <None Include="Templates\Spikes\PortableClassLibrary\assemblyinfo.cs" />
+    <None Include="Templates\Spikes\PortableClassLibrary\class1.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="VsPackage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="source.extension.vsixmanifest" />
+    <None Include="Templates\Projects\Package\Package.nuproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Rules\content.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\folder.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\general.browseobject.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\general.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\none.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\ProjectItemsSchema.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\ProjectReference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\ResolvedProjectReference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\scc.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\Projects\Package\Package.vstemplate">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\Spikes\PortableClassLibrary\csPortableClassLibrary.vstemplate" />
+    <None Include="Templates\Spikes\PortableClassLibrary\PortableClassLibrary.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="Commands.vsct">
+      <ResourceName>2000</ResourceName>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\Projects\CrossPlatformLibrary\CrossPlatformLibrary.vstemplate">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\AddPlatformImplementationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
+      <Project>{099bebd8-6b04-416d-ba44-e0201951542b}</Project>
+      <Name>Clide.Interfaces</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="NuGet.Packaging.VisualStudio.targets" />
+</Project>

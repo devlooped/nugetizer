@@ -12,7 +12,7 @@
 	
 	<ItemGroup>
     <Solution Include="external\clide\src\Clide.Tasks.sln"/>
-    <Solution Include="src\*.sln"/>
+    <Solution Include="src\**\*.sln"/>
     <TestProject Include="src\**\*Tests.csproj" />
 	</ItemGroup>
 

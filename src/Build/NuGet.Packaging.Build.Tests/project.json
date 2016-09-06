@@ -1,0 +1,18 @@
+﻿{
+  "dependencies": {
+    "GitInfo": "1.1.29",
+    "Newtonsoft.Json": "6.0.4",
+    "NuGet.Client": "3.4.3",
+    "NuGet.Packaging": "3.4.3",
+    "NuGet.ProjectManagement": "3.4.3",
+    "ModuleInit.Fody": "1.5.9.0",
+    "xunit": "2.1.0",
+    "xunit.runner.visualstudio": "2.1.0"
+  },
+  "frameworks": {
+    "net45": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}

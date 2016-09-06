@@ -21,3 +21,4 @@ project.lock.json
 
 log.txt
 NuGet.exe
+/src/test.proj

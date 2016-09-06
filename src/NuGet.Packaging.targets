@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="NuGet.Packaging.props" Condition=" '$(NuGetPackagingPropsImported)' != 'true' " />
+
+	<ItemGroup Condition=" '$(NoGlobalAssemblyInfo)' != 'true' And '$(Language)' == 'C#' ">
+		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
+	</ItemGroup>
+
+	<PropertyGroup Condition=" '$(Language)' == 'C#' ">
+		<ThisAssemblyNameFile>$(IntermediateOutputPath)ThisAssembly.AssemblyName.g$(DefaultLanguageSourceExtension)</ThisAssemblyNameFile>
+		<CoreCompileDependsOn>
+			ThisAssemblyName;
+			$(CoreCompileDependsOn)
+		</CoreCompileDependsOn>
+	</PropertyGroup>
+
+	<Target Name="ThisAssemblyName" BeforeTargets="BuildOnlySettings" Condition=" '$(ThisAssemblyNameFile)' != '' " DependsOnTargets="GenerateThisAssemblyName">
+		<ItemGroup>
+			<Compile Include="$(ThisAssemblyNameFile)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="GenerateThisAssemblyName" Inputs="$(MSBuildProjectFullPath)" Outputs="$(ThisAssemblyNameFile)">
+		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
+		<WriteLinesToFile Lines='
+namespace $(ThisAssemblyNamespace)
+{
+	partial class ThisAssembly
+	{
+		/// &lt;summary&gt;AssemblyName: $(AssemblyName)&lt;/summary&gt;
+		public const string AssemblyName = "$(AssemblyName)"%3B
+	}
+}
+' Overwrite='true' File='$(ThisAssemblyNameFile)' />
+
+		<ItemGroup>
+			<FileWrites Include="$(ThisAssemblyNameFile)" />
+		</ItemGroup>
+	</Target>
+
+	<PropertyGroup>
+		<NuGetPackagingTargetsImported>true</NuGetPackagingTargetsImported>
+	</PropertyGroup>
+</Project>
