@@ -19,8 +19,5 @@ project.lock.json
 *.nuget.props
 *.nuget.targets
 
-
-
 log.txt
 NuGet.exe
-/NULL

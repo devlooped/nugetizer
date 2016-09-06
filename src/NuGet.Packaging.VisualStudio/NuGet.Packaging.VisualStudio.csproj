@@ -2,10 +2,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -19,11 +16,6 @@
     <RootNamespace>NuGet.Packaging.VisualStudio</RootNamespace>
     <AssemblyName>NuGet.Packaging.VisualStudio</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\Common7\IDE\devenv.exe</StartProgram>
-    <StartArguments>/rootsuffix exp</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -144,6 +136,9 @@
     <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
     <Compile Include="Wizards\CrossPlatformWizard.cs" />
     <Compile Include="Wizards\CrossPlatformWizardModel.cs" />
+    <None Include="NuGet.Packaging.VisualStudio.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="project.json" />
     <None Include="Templates\Spikes\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Spikes\PortableClassLibrary\class1.cs" />
@@ -160,51 +155,42 @@
     <None Include="source.extension.vsixmanifest" />
     <None Include="Templates\Projects\Package\Package.nuproj" />
   </ItemGroup>
-  <!-- 
-  These are the parts of the custom project system which will be deployed as part of the 
-  final implementation, and provide the basic processing for handling rules in CPS.
-  -->
-  <!--
-  The XAML files provide buth compile-time implementations for CPS rules as well as
-  runtime information for property pages.  They will also be deployed as part of the
-  final package.
-  -->
   <ItemGroup>
     <None Include="Rules\content.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Rules\folder.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Rules\general.browseobject.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Rules\general.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Rules\none.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Rules\ProjectItemsSchema.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Rules\ProjectReference.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Rules\ResolvedProjectReference.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Rules\scc.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -220,9 +206,6 @@
     <VSCTCompile Include="Commands.vsct">
       <ResourceName>2000</ResourceName>
     </VSCTCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Templates\Projects\CrossPlatformLibrary\CrossPlatformLibrary.vstemplate">
@@ -246,19 +229,5 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
-    <ItemGroup>
-      <BuildSystemToCopy Include="..\NuGet.Packages.Targets\**\*" />
-      <RulesToCopy Include="Rules\**\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(BuildSystemToCopy)" DestinationFiles="@(BuildSystemToCopy->'$(LocalAppData)\CustomProjectSystems\NuGet.Packaging\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(RulesToCopy)" DestinationFiles="@(RulesToCopy->'$(LocalAppData)\CustomProjectSystems\NuGet.Packaging\Rules\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
-  </Target>
-  <Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
-    <ItemGroup>
-      <Reference Condition=" '%(Filename)' == 'envdte80' ">
-        <EmbedInteropTypes>True</EmbedInteropTypes>
-      </Reference>
-    </ItemGroup>
-  </Target>
+  <Import Project="NuGet.Packaging.VisualStudio.targets" />
 </Project>

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="NuGet.Packaging" Version="1.0" Language="en-US" Publisher="Microsoft" />
+    <Identity Id="NuGet.Packaging" Version="|NuGet.Packaging.VisualStudio;GetVersion|" Language="en-US" Publisher="Microsoft" />
     <DisplayName>NuGetizer3000</DisplayName>
-    <Description xml:space="preserve">A template for creating a NuGet Package project</Description>
+    <Description xml:space="preserve">NuGet Package Authoring Tools</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="14.0" />

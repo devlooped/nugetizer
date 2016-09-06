@@ -1,0 +1,18 @@
+os: Visual Studio 2015
+
+build_script:
+- cmd: msbuild build.proj /t:build,test,package /v:normal 
+
+install:
+- cmd: git submodule update --init --recursive
+
+# we run the tests ourselves in build.proj for coverage
+test: off
+
+nuget:
+  project_feed: true
+  disable_publish_on_pr: true
+  
+artifacts:
+  - path: out\*.nupkg
+    name: Package

@@ -83,9 +83,11 @@ namespace NuGet.Packaging.Tasks.Tests.Infrastructure
                 }
             };
 
-            process.Start();
-            process.BeginErrorReadLine();
-            process.BeginOutputReadLine();
+            if (process.Start())
+            {
+                process.BeginErrorReadLine();
+                process.BeginOutputReadLine();
+            }
 
             return tcs.Task;
         }

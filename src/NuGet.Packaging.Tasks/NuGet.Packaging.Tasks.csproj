@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,12 +8,14 @@
     <RootNamespace>NuGet.Packaging.Tasks</RootNamespace>
     <AssemblyName>NuGet.Packaging.Tasks</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <OutputPath>bin</OutputPath>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -21,7 +23,6 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -49,22 +50,21 @@
     <Compile Include="ReadProjectJson.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\NuGet.Packages.Targets\NuGet.Packaging.Common.props">
-      <Link>NuGet.Packaging.Common.props</Link>
+    <Content Include="NuGet.Packaging.Common.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\NuGet.Packages.Targets\NuGet.Packaging.Common.targets">
-      <Link>NuGet.Packaging.Common.targets</Link>
+    </Content>
+    <Content Include="NuGet.Packaging.Common.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\NuGet.Packages.Targets\NuGet.Packaging.targets">
-      <Link>NuGet.Packaging.targets</Link>
+    </Content>
+    <Content Include="NuGet.Packaging.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\NuGet.Packages.Targets\NuGet.Packaging.props">
-      <Link>NuGet.Packaging.props</Link>
+    </Content>
+    <Content Include="NuGet.Packaging.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

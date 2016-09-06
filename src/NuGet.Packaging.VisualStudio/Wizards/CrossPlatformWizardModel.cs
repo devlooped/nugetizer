@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	class CrossPlatformWizardModel
+	public class CrossPlatformWizardModel
 	{
 		public virtual void ParseParameters(Dictionary<string, string> replacementsDictionary)
 		{

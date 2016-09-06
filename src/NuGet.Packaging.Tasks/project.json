@@ -1,0 +1,11 @@
+﻿{
+  "dependencies": {
+    "GitInfo": "1.1.29"
+  },
+  "frameworks": {
+    "net45": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}
