@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <ScenarioFile Include="Scenarios\**\*.*" Exclude="Scenarios\**\bin\**\*.*;Scenarios\**\obj\**\*.*;" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(ScenarioFile)"
+			  DestinationFiles="@(ScenarioFile -> '$(OutputPath)Scenarios\%(RecursiveDir)%(Filename)%(Extension)')"
+			  SkipUnchangedFiles="true" />
+  </Target>
+</Project>

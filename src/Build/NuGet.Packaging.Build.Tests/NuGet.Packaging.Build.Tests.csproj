@@ -13,15 +13,29 @@
   <ItemGroup>
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
+    <None Include="NuGet.Packaging.Build.Tests.targets" />
+    <None Include="Scenarios\Scenario.props" />
+    <None Include="Scenarios\Scenario.targets" />
+    <None Include="test.proj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+    <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scenarios\given_a_library_with_project_reference\a.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scenarios\given_a_library_with_project_reference\b.csproj">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -30,14 +44,20 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MockBuildEngine.cs" />
-    <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="Builder.cs" />
+    <Compile Include="Builder.NuGetizer.cs">
+      <DependentUpon>Builder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="given_an_empty_library_project.cs" />
+    <Compile Include="given_a_library_with_project_reference.cs" />
+    <Compile Include="Utilities\MockBuildEngine.cs" />
+    <Compile Include="Utilities\ModuleInitializer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TestOutputLogger.cs" />
+    <Compile Include="Utilities\TestOutputLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuGet.Packaging.Authoring.Build.Tasks\NuGet.Packaging.Authoring.Build.Tasks.csproj">
@@ -51,4 +71,5 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.targets))\NuGet.Packaging.targets" />
+  <Import Project="$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectName).targets')" />
 </Project>

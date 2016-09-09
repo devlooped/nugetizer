@@ -10,8 +10,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <NuGetPackagingProps Condition=" '$(NuGetPackagingProps)' == '' ">$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\Microsoft.NuGet.Packaging.props</NuGetPackagingProps>
-  </PropertyGroup>
-  <Import Condition=" Exists('$(NuGetPackagingProps)') " Project="$(NuGetPackagingProps)" />
+    <PropertyGroup>
+        <NuGetPackagingProps Condition="'$(NuGetPackagingProps)' == ''">$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\Microsoft.NuGet.Packaging.props</NuGetPackagingProps>
+    </PropertyGroup>
+    <Import Condition="Exists('$(NuGetPackagingProps)')" Project="$(NuGetPackagingProps)" />
 </Project>

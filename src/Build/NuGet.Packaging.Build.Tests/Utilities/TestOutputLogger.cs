@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using Xunit.Abstractions;
 
+/// <summary>
+/// xunit logger > MSBuild logger
+/// </summary>
 public class TestOutputLogger : ILogger
 {
 	ITestOutputHelper output;
 
-	public TestOutputLogger(ITestOutputHelper output)
+	public TestOutputLogger(ITestOutputHelper output, LoggerVerbosity verbosity = LoggerVerbosity.Quiet)
 	{
 		this.output = output;
-		this.Verbosity = LoggerVerbosity.Quiet;
+		this.Verbosity = verbosity;
 	}
 
 	public void Reset()

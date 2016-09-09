@@ -1,16 +1,16 @@
-﻿using Microsoft.Build.Framework;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace Microsoft.Build.Framework
 {
-    public class MockBuildEngine : IBuildEngine
+	/// <summary>
+	/// Fake build engine for unit testing Tasks without spinning up 
+	/// MSBuild.
+	/// </summary>
+	public class MockBuildEngine : IBuildEngine
     {
         bool trace = false;
 		ITestOutputHelper output;

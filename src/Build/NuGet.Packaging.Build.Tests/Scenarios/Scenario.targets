@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- Import the NuGet targets from the test project to allow easy diagnostics -->
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Build.Tests.nuget.targets))\NuGet.Packaging.Build.Tests.nuget.targets"/>
+  <Import Project="$(NuGetTargetsPath)\Microsoft.NuGet.Packaging.targets" />
+  
+  <Target Name="Dump" DependsOnTargets="GetPackageContents">
+    <DumpItems Items="@(_PackageContent)" ItemName="PackageContent" />
+  </Target>
+
+  <Target Name="Doc" DependsOnTargets="AllProjectOutputGroups">
+    <DumpItems Items="@(DebugSymbolsProjectOutputGroupOutput)" ItemName="DebugSymbolsProjectOutputGroupOutput" />
+  </Target>
+</Project>

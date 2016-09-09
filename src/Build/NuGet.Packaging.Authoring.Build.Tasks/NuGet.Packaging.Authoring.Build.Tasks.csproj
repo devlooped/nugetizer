@@ -17,8 +17,12 @@
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Microsoft.NuGet.Packaging.Authoring.props" />
-    <None Include="Microsoft.NuGet.Packaging.Authoring.targets" />
+    <Content Include="Microsoft.NuGet.Packaging.Authoring.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Microsoft.NuGet.Packaging.Authoring.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup />
