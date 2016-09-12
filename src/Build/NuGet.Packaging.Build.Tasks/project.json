@@ -1,10 +1,11 @@
 ﻿{
   "dependencies": {
     "GitInfo": "1.1.29",
+    "netfx-System.StringResources": "3.0.13",
     "Newtonsoft.Json": "6.0.4",
     "NuGet.Client": "3.4.3",
-    "NuGet.ProjectManagement": "3.4.3",
-    "NuGet.Packaging": "3.4.3"
+    "NuGet.Packaging": "3.4.3",
+    "NuGet.ProjectManagement": "3.4.3"
   },
   "frameworks": {
     "net45": {}

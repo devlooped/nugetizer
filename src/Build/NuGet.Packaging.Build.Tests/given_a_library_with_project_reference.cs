@@ -23,8 +23,8 @@ namespace Microsoft.NuGet.Packaging
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
 			// TODO: build some helpers to make this easier to assert.
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Library"), "Did not include main project output as Library");
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Library"), "Did not include referenced project output as Library");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Lib"), "Did not include main project output as Library");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Lib"), "Did not include referenced project output as Library");
 		}
 
 		[Fact]

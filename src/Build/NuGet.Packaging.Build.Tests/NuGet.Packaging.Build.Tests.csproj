@@ -27,6 +27,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+    <Content Include="Scenarios\dynamic.csproj">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj">
       <SubType>Designer</SubType>
     </Content>
@@ -44,6 +47,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssignPackagePathTests.cs" />
     <Compile Include="Builder.cs" />
     <Compile Include="Builder.NuGetizer.cs">
       <DependentUpon>Builder.cs</DependentUpon>
@@ -68,6 +72,9 @@
       <Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
       <Name>NuGet.Packaging.Build.Tasks</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.targets))\NuGet.Packaging.targets" />

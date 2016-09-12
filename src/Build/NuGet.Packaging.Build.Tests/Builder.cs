@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
-using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Tasks;
-using Xunit.Abstractions;
 
 /// <summary>
 /// General-purpose MSBuild builder with support for 
@@ -28,7 +20,7 @@ public static partial class Builder
 		if (!File.Exists(projectOrSolution))
 			throw new FileNotFoundException($"Project or solution to build {projectOrSolution} was not found.", projectOrSolution);
 
-		try
+		using (var manager = new BuildManager())
 		{
 			properties = properties ?? new Dictionary<string, string>();
 
@@ -45,11 +37,7 @@ public static partial class Builder
 			if (logger != null)
 				parameters.Loggers = new[] { logger };
 
-			return BuildManager.DefaultBuildManager.Build(parameters, request);
-		}
-		finally
-		{
-			BuildManager.DefaultBuildManager.Dispose();
+			return manager.Build(parameters, request);
 		}
 	}
 

@@ -10,102 +10,98 @@ Copyright (c) .NET Foundation. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--<UsingTask TaskName="Microsoft.NuGet.Packaging.Build.Tasks.?" AssemblyFile="Microsoft.NuGet.Packaging.Build.Tasks.dll" />-->
+	<UsingTask TaskName="Microsoft.NuGet.Packaging.Build.Tasks.AssignPackagePath" AssemblyFile="Microsoft.NuGet.Packaging.Build.Tasks.dll" />
+
+  <PropertyGroup>
+    <IncludeSymbols Condition=" '$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug' ">true</IncludeSymbols>
+  </PropertyGroup>
 
   <Target Name="GetPackageContents"
-			  DependsOnTargets="AssignProjectConfiguration;_SplitProjectReferencesByFileExistence;AllProjectOutputGroups;_CollectPackageContents"
-			  Returns="@(_PackageContent)" />
+				DependsOnTargets="AssignProjectConfiguration;_SplitProjectReferencesByFileExistence;AllProjectOutputGroups;_CollectPackageContents"
+				Returns="@(_PackageContent)" />
 
-  <Target Name="_CollectPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)">
-    <!-- We define these here so that potentially other targets can populate these properties before this target runs. -->
-    <PropertyGroup>
-      <PackageId Condition=" '$(PackageId)' == '' ">$(AssemblyName)</PackageId>
-      <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
-    </PropertyGroup>
+	<Target Name="_CollectPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)">
+		<!-- We define these here so that potentially other targets can populate these properties before this target runs. -->
+		<PropertyGroup>
+			<PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
+		</PropertyGroup>
 
-    <!-- 
-            PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
-        -->
+		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
+         NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the 
+         current project. -->
+		<ItemGroup>
+			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')">
+				<Kind>Lib</Kind>
+			</PackageFile>
+
+			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+                   Condition="'$(IncludeSymbols)' == 'true'">
+				<Kind>Symbols</Kind>
+      </PackageFile>
+
+			<PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')">
+				<Kind>Doc</Kind>
+      </PackageFile>
+
+			<PackageFile Include="@(PackageReference)">
+				<Kind>Dependency</Kind>
+			</PackageFile>
+		</ItemGroup>
+
     <ItemGroup>
-      <PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')">
+      <!-- Always annotate files with the declaring project target framework -->
+      <PackageFile>
         <PackageId>$(PackageId)</PackageId>
-        <Kind>Library</Kind>
-        <TargetFramework>$(TargetFrameworkMoniker)</TargetFramework>
-      </PackageFile>
-
-      <PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')">
-        <PackageId>$(PackageId)</PackageId>
-        <Kind>Symbols</Kind>
-      </PackageFile>
-
-      <PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')">
-        <PackageId>$(PackageId)</PackageId>
-        <Kind>Documentation</Kind>
-      </PackageFile>
-
-      <!--TODO: collect Compile files, symbols, etc.-->
-      <PackageFile Include="@(PackageReference)">
-        <PackageId>$(PackageId)</PackageId>
-        <Kind>Package</Kind>
+        <TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
       </PackageFile>
     </ItemGroup>
 
-    <!-- 
-            Projects PackageFiles into _PackageContents items that have the same metadata.
-            If the PackagePath was not explicitly specified, determine one from the project relative
-            path and the TargetFramework and Kind metadata, and set it on the projected item.
-        -->
-    <!--
-    <AssignPackagePath PackageFiles="@(PackageFile)">
-			<Output TaskParameter="PackageFileWithPackagePath" ItemName="_PackageContent" />
-		</AssignPackagePath>
-    -->
-    <ItemGroup>
-      <!-- TODO: PENDING AssignPackagePath task -->
-      <_PackageContent Include="@(PackageFile)">
-        <PackagePath>TODO</PackagePath>
-      </_PackageContent>
-    </ItemGroup>
+    <!-- Ensure we have a TargetPath determined from the current project directory like any other items -->
+    <AssignTargetPath Files="@(PackageFile)" RootFolder="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="AssignedFiles" ItemName="_PackageFileWithTargetPath" />
+    </AssignTargetPath>
 
-    <!-- If packaging the project, provide the metadata as a non-file item -->
-    <ItemGroup Condition=" '$(CreatePackage)' == 'true' ">
-      <_PackageContent Include="$(PackageId)">
-        <!-- For consistency with the other items, we also provide this metadata -->
-        <PackageId>$(PackageId)</PackageId>
+    <AssignPackagePath Files="@(_PackageFileWithTargetPath)" Kinds="@(PackageFileKind)">
+      <Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
+    </AssignPackagePath>
+    
+		<!-- If packaging the project, provide the metadata as a non-file item -->
+		<ItemGroup Condition="'$(PackageId)' != ''">
+			<_PackageContent Include="$(PackageId)">
+				<!-- For consistency with the other items, we also provide this metadata -->
+				<PackageId>$(PackageId)</PackageId>
 
-        <!-- The rest of the metadata items don't need to repeat "Package" prefix all the time -->
-        <Id>$(PackageId)</Id>
-        <Kind>Metadata</Kind>
-        <Version>$(PackageVersion)</Version>
-        <Authors>$(Authors)</Authors>
-        <Owners>$(Owners)</Owners>
-        <Description>$(Description)</Description>
-        <Copyright>$(Copyright)</Copyright>
-        <Summary>$(Summary)</Summary>
+				<!-- The rest of the metadata items don't need to repeat "Package" prefix all the time -->
+				<Id>$(PackageId)</Id>
+				<Kind>Metadata</Kind>
+				<Version>$(PackageVersion)</Version>
+				<Authors>$(Authors)</Authors>
+				<Owners>$(Owners)</Owners>
+				<Description>$(Description)</Description>
+				<Copyright>$(Copyright)</Copyright>
+				<Summary>$(Summary)</Summary>
 
-        <RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
-        <LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
-        <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
-        <Tags>$(PackageTags)</Tags>
+				<RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
+				<LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
+				<ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
+				<Tags>$(PackageTags)</Tags>
 
-        <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
-        <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
-        <RepositoryType>$(RepositoryType)</RepositoryType>
-        <PackageType>$(PackageType)</PackageType>
-      </_PackageContent>
-    </ItemGroup>
+				<ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
+				<RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+				<RepositoryType>$(RepositoryType)</RepositoryType>
+				<PackageType>$(PackageType)</PackageType>
+			</_PackageContent>
+		</ItemGroup>
 
-    <MSBuild
-				Projects="@(_MSBuildProjectReferenceExistent)"
-				Targets="GetPackageContents"
-				BuildInParallel="$(BuildInParallel)"
-				Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
-				Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
-				RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
-      <Output TaskParameter="TargetOutputs" ItemName="_PackageContent" />
-    </MSBuild>
+		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+				 Targets="GetPackageContents"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
+				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
+				 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_PackageContent" />
+		</MSBuild>
 
-  </Target>
-
+	</Target>
 
 </Project>

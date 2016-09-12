@@ -14,13 +14,13 @@ namespace Microsoft.NuGet.Packaging
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
-			Assert.True(result.Items.Any(i => i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Library"), "Did not include main output");
+			Assert.True(result.Items.Any(i => i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Lib"), "Did not include main output");
 		}
 
 		[Fact]
 		public void when_getting_package_contents_then_retrieves_symbols()
 		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library_project));
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { Configuration = "Debug" });
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
