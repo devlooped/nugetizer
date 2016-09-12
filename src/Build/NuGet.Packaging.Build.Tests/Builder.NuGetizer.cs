@@ -19,8 +19,8 @@ static partial class Builder
 		var scenarioDir = Path.Combine(ModuleInitializer.BaseDirectory, "Scenarios", scenarioName);
 		string projectOrSolution;
 
-		if (File.Exists(Path.Combine(scenarioDir, projectName + ".csproj")))
-			projectOrSolution = Path.Combine(scenarioDir, "a.csproj");
+		if (File.Exists(Path.Combine(scenarioDir, $"{projectName}.csproj")))
+			projectOrSolution = Path.Combine(scenarioDir, $"{projectName}.csproj");
 		else
 			projectOrSolution = Directory.EnumerateFiles(scenarioDir, "*.csproj").First();
 
