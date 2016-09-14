@@ -17,15 +17,6 @@ namespace NuGet.Packaging.Build.Tasks
     {
         static readonly FrameworkName NullFramework = new FrameworkName("Null,Version=v1.0");
 
-        public static FrameworkName GetTargetFramework(this ITaskItem item)
-        {
-            var value = item.GetMetadata(MetadataName.TargetFramework);
-
-			return string.IsNullOrEmpty(value) ?
-				NullFramework : 
-				new FrameworkName(NuGetFramework.Parse(value).DotNetFrameworkName);
-        }
-
         public static FrameworkName GetTargetFrameworkMoniker(this ITaskItem item)
         {
             var value = item.GetMetadata(MetadataName.TargetFrameworkMoniker);
