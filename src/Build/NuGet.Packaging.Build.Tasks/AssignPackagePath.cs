@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using NuGet.Packaging.Build.Tasks.Properties;
-using NuGet.Packaging;
 using static NuGet.Packaging.Build.Tasks.Properties.Strings;
 using static NuGet.Client.ManagedCodeConventions;
 
@@ -67,26 +65,36 @@ namespace NuGet.Packaging.Build.Tasks
 			var output = new TaskItem(file);
 			output.SetMetadata(MetadataName.PackageFolder, packageFolder);
 
+			var frameworkMoniker = file.GetTargetFrameworkMoniker();
+			var targetFramework = frameworkMoniker.GetShortFrameworkName() ?? "";
+
 			// Special case for contentFiles, since they can also provide a codeLanguage metadata
 			if (packageFolder == PackagingConstants.Folders.ContentFiles)
 			{
 				/// See https://docs.nuget.org/create/nuspec-reference#contentfiles-with-visual-studio-2015-update-1-and-later
-				var codeLanguage = file.GetMetadata(nameof(PropertyNames.CodeLanguage)) ?? PackagingConstants.AnyFramework;
+				var codeLanguage = file.GetMetadata(nameof(PropertyNames.CodeLanguage));
+				if (string.IsNullOrEmpty(codeLanguage))
+					codeLanguage = PackagingConstants.AnyFramework;
+
 				packageFolder = Path.Combine(packageFolder, codeLanguage);
+
+				// And they also cannot have an empty framework, at most, it will be "any"
+				if (string.IsNullOrEmpty(targetFramework))
+					targetFramework = PackagingConstants.AnyFramework;
 			}
 
-			var frameworkMoniker = file.GetTargetFrameworkMoniker();
-			var targetFramework = frameworkMoniker.GetShortFrameworkName() ?? "";
-			var fileName = file.GetMetadata("TargetPath");
-			if (string.IsNullOrEmpty(fileName))
-				fileName = file.GetMetadata("FileName") + file.GetMetadata("Extension");
+			var targetPath = file.GetMetadata("TargetPath");
+			if (string.IsNullOrEmpty(targetPath))
+				targetPath = file.GetMetadata("FileName") + file.GetMetadata("Extension");
 
-			// None files go straight to the root folder of the package.
+			// None files or those for which we know no mapping, go straight to the root folder of the package.
+			// This allows custom packaging paths such as "workbooks", "docs" or whatever, which aren't prohibited by 
+			// the format.
 			var packagePath = string.IsNullOrEmpty(packageFolder) ?
 				// File goes to the determined target path (or the root of the package), such as a readme.txt
-				fileName :
+				targetPath :
 				// Otherwise, it goes to a framework-specific folder.
-				Path.Combine(new[] { packageFolder, targetFramework }.Concat(fileName.Split(Path.DirectorySeparatorChar)).ToArray());
+				Path.Combine(new[] { packageFolder, targetFramework }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
 
 			output.SetMetadata(MetadataName.TargetFramework, targetFramework);
 			output.SetMetadata(MetadataName.PackagePath, packagePath);

@@ -15,7 +15,7 @@
       $(GetPackageContentsDependsOn);
     </GetPackageContentsDependsOn>
   </PropertyGroup>
-  
+
   <Target Name="AddPackageFile">
     <ItemGroup>
       <PackageFile Include="readme.txt">
@@ -34,5 +34,8 @@
         <DumpItems Items="@(_PackageContent)" ItemName="PackageContent" />
         <!--<DumpItems Items="@(ReferencePath)" ItemName="ReferencePath" />-->
     </Target>
+
+  <!-- Turn off Fody we use for ModuleInitializer in unit tests -->
+  <Target Name="FodyTarget" />
 
 </Project>

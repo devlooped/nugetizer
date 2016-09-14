@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		NuGet.Packaging.Build.targets = NuGet.Packaging.Build.targets
 		..\NuGet.Packaging.Shared.props = ..\NuGet.Packaging.Shared.props
 		..\NuGet.Packaging.Shared.targets = ..\NuGet.Packaging.Shared.targets
+		..\..\packages.config = ..\..\packages.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.Authoring.Build.Tasks", "NuGet.Packaging.Authoring.Build.Tasks\NuGet.Packaging.Authoring.Build.Tasks.csproj", "{F145CE58-06AA-4499-89D5-E5144B38D8F3}"

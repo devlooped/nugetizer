@@ -158,6 +158,57 @@ namespace NuGet.Packaging
 		}
 
 		[Fact]
+		public void when_file_has_explicit_package_path_then_calculated_package_folder_is_empty_and_preserves_package_path()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("readme.txt", new Dictionary<string,string>
+					{
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", "None" },
+						{ "PackagePath", "docs\\readme.txt" }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Empty(task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
+			Assert.Equal(task.AssignedFiles[0].GetMetadata("PackagePath"), "docs\\readme.txt");
+		}
+
+		[InlineData("", "vb", "contentFiles\\vb\\any\\")]
+		[InlineData("", "", "contentFiles\\any\\any\\")]
+		[InlineData(".NETFramework,Version=v4.5", "cs", "contentFiles\\cs\\net45\\")]
+		[InlineData(".NETFramework,Version=v4.5", "", "contentFiles\\any\\net45\\")]
+		[Theory]
+		public void when_assigning_content_file_then_applies_tfm_and_language(string tfm, string lang, string expectedPath)
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("Sample.cs", new Dictionary<string,string>
+					{
+						{ "TargetFrameworkMoniker", tfm },
+						{ "Kind", "Content" },
+						{ "CodeLanguage", lang }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Equal("contentFiles", task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
+			Assert.True(task.AssignedFiles[0].GetMetadata("PackagePath").StartsWith(expectedPath), 
+				$"'{task.AssignedFiles[0].GetMetadata("PackagePath")}' does not start with expected '{expectedPath}'");
+		}
+
+		[Fact]
 		public void when_file_has_none_kind_then_assigned_file_has_empty_package_folder()
 		{
 			var task = new AssignPackagePath
