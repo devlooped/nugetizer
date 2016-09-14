@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="All" InitialTargets="Configure" TreatAsLocalProperty="RootSuffix" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="All" InitialTargets="Configure" TreatAsLocalProperty="RootSuffix" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
@@ -9,11 +9,12 @@
 		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-    <Solution Include="external\clide\src\Clide.Tasks.sln"/>
-    <Solution Include="src\**\*.sln"/>
-    <TestProject Include="src\**\*Tests.csproj" />
+		<Solution Include="external\clide\src\Clide.Tasks.sln" Condition="'$(Solution)' == ''"/>
+		<Solution Include="src\**\*.sln" Condition="'$(Solution)' == ''"/>
+    <Solution Include="$(Solution)" Condition="'$(Solution)' != ''" />
+		<TestProject Include="src\**\*Tests.csproj" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
@@ -38,33 +39,50 @@
 
 	<Target Name="Test" DependsOnTargets="Build">
 		<MSBuild Projects="@(TestProject)" BuildInParallel="true" Targets="GetTargetPath" Properties="$(CommonBuildProperties)">
-			<Output TaskParameter="TargetOutputs" ItemName="TestAssembly" />
+			<Output TaskParameter="TargetOutputs" ItemName="_TestAssembly" />
 		</MSBuild>
+    <ItemGroup>
+      <TestAssembly Include="@(_TestAssembly)" Condition="Exists('%(FullPath)')" />
+    </ItemGroup>
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-		
+
 		<PropertyGroup>
 			<XunitOptions>$(XunitOptions) -html $(Out)\test.html -xml $(Out)\test.xml -parallel none -noshadow</XunitOptions>
 
 			<CoverageConsole>$(PackagesPath)\OpenCover\tools\OpenCover.Console.exe</CoverageConsole>
-			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[NuGet.Packaging.*]* -[xunit*]* -[*Tests]* -[*]*ThisAssembly* -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
+			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[NuGet.Packaging.*]* -[NuGet.Packaging.VisualStudio*]* -[xunit*]* -[*Tests]* -[*]*ThisAssembly*" -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
 			<CoverageCommand>$(CoverageConsole) $(CoverageOptions) -target:$(XunitConsole) -targetargs:"@(TestAssembly, ' ') $(XunitOptions)"</CoverageCommand>
+
+			<ReportConsole>$(PackagesPath)\ReportGenerator\tools\ReportGenerator.exe</ReportConsole>
+			<ReportOptions>-reports:$(Out)\coverage.xml -targetdir:$(Out)\coverage -reporttypes:Html;Xml;Badges</ReportOptions>
 		</PropertyGroup>
 
-		<!--
-    <Message Importance="high" Text="Executing: $(CoverageCommand)" />
-		<Exec Command="$(CoverageCommand)" ContinueOnError="ErrorAndContinue" />
-    -->
+		<Message Importance="high" Text="Executing: $(CoverageCommand)" />
+		<Exec Command="$(CoverageCommand)"
+			  ConsoleToMSBuild="true"
+			  StandardErrorImportance="high"
+			  StandardOutputImportance="normal" />
 
-    <Exec Command="$(XunitConsole) @(TestAssembly, ' ') $(XunitOptions)"
-          Condition=" '@(TestAssembly)' != '' "
-          ContinueOnError="ErrorAndContinue" />
+		<!--<Exec Command="$(XunitConsole) @(TestAssembly, ' ') $(XunitOptions)"
+			  Condition=" '@(TestAssembly)' != '' "
+			  ContinueOnError="ErrorAndContinue" />-->
+
+    <MakeDir Directories="$(Out)\coverage" Condition="!Exists('$(Out)\coverage')" />
+    <Exec Command="$(ReportConsole) $(ReportOptions)"
+			  ConsoleToMSBuild="true"
+			  StandardErrorImportance="high"
+			  StandardOutputImportance="normal" />
+	</Target>
+
+  <Target Name="Coverage" DependsOnTargets="Test">
+    <Exec Command="start $(Out)\coverage\index.htm" />
   </Target>
-
+  
 	<!-- Configure and restore initial targets and packages -->
 	<Import Project="src\NuGet.Restore.targets" />
 	<PropertyGroup>
 		<GitInfoTargets>$(PackagesPath)\GitInfo\build\GitInfo.targets</GitInfoTargets>
-    <XunitConsole>$(PackagesPath)\xunit.runner.console\tools\xunit.console.x86.exe</XunitConsole>
+		<XunitConsole>$(PackagesPath)\xunit.runner.console\tools\xunit.console.x86.exe</XunitConsole>
 		<PendingRestore Condition=" !Exists('$(GitInfoTargets)') Or !Exists('$(XunitConsole)') ">true</PendingRestore>
 	</PropertyGroup>
 
@@ -77,17 +95,17 @@
 		<MSBuild Projects="$(GitInfoTargets)" Targets="GitVersion;GitInfoReport" Properties="GitInfoReportImportance=high">
 			<Output TaskParameter="TargetOutputs" ItemName="GitInfo" />
 		</MSBuild>
-		
+
 		<!-- For now this is an informative version #, used to update CI -->
 		<PropertyGroup>
-			<Version>%(GitInfo.GitSemVerMajor).%(GitInfo.GitSemVerMinor).%(GitInfo.GitSemVerPatch)%(GitInfo.GitSemVerDashLabel)</Version>			
+			<Version>%(GitInfo.GitSemVerMajor).%(GitInfo.GitSemVerMinor).%(GitInfo.GitSemVerPatch)%(GitInfo.GitSemVerDashLabel)</Version>
 		</PropertyGroup>
-		
+
 		<Message Text="Building version $(Version)" Importance="high" />
-		
-        <!-- Update AppVeyor build # to match the actual one being used -->
-        <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(APPVEYOR)' == 'true' "
+
+		<!-- Update AppVeyor build # to match the actual one being used -->
+		<Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(APPVEYOR)' == 'true' "
               ConsoleToMSBuild="true"
-              ContinueOnError="WarnAndContinue" />	
+              ContinueOnError="WarnAndContinue" />
 	</Target>
 </Project>
