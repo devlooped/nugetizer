@@ -11,7 +11,7 @@
 	[ProvideObject(typeof(NuSpecPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
 	[ProvideProjectFactory(
 		typeof(NuProjFlavoredProjectFactory),
-		"NuProj.Packaging",
+		"NuGet.Packaging",
 		"#1100",
 		null,
 		null
