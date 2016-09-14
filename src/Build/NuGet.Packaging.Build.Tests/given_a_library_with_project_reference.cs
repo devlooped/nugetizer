@@ -8,7 +8,7 @@ using Microsoft.Build.Framework;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Microsoft.NuGet.Packaging
+namespace NuGet.Packaging
 {
 	public class given_a_library_with_project_reference
 	{

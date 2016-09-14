@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Microsoft.NuGet.Packaging.Build.Tasks.Properties;
+using NuGet.Packaging.Build.Tasks.Properties;
 using NuGet.Packaging;
-using static Microsoft.NuGet.Packaging.Build.Tasks.Properties.Strings;
+using static NuGet.Packaging.Build.Tasks.Properties.Strings;
 using static NuGet.Client.ManagedCodeConventions;
 
-namespace Microsoft.NuGet.Packaging.Build.Tasks
+namespace NuGet.Packaging.Build.Tasks
 {
 	/// <summary>
 	/// Ensures all files have the PackagePath metadata.

@@ -10,7 +10,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<UsingTask TaskName="Microsoft.NuGet.Packaging.Build.Tasks.AssignPackagePath" AssemblyFile="Microsoft.NuGet.Packaging.Build.Tasks.dll" />
+	<UsingTask TaskName="NuGet.Packaging.Build.Tasks.AssignPackagePath" AssemblyFile="NuGet.Packaging.Build.Tasks.dll" />
 
   <PropertyGroup>
     <IncludeSymbols Condition=" '$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug' ">true</IncludeSymbols>

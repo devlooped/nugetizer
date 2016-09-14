@@ -1,4 +1,4 @@
-﻿namespace Microsoft.NuGet.Packaging.Build.Tasks
+﻿namespace NuGet.Packaging.Build.Tasks
 {
 	public static class MetadataName
     {

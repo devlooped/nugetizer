@@ -3,13 +3,13 @@ using System.IO;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Microsoft.NuGet.Packaging.Build.Tasks;
+using NuGet.Packaging.Build.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
-using static Microsoft.NuGet.Packaging.Build.Tasks.Properties.Strings;
+using static NuGet.Packaging.Build.Tasks.Properties.Strings;
 
-namespace Microsoft.NuGet.Packaging
+namespace NuGet.Packaging
 {
 	public class AssignPackagePathTests
 	{
@@ -19,7 +19,7 @@ namespace Microsoft.NuGet.Packaging
 
 		static AssignPackagePathTests()
 		{
-			kinds = new Project(Path.Combine(ModuleInitializer.BaseDirectory, "Microsoft.NuGet.Packaging.props"), null, null, new ProjectCollection())
+			kinds = new Project(Path.Combine(ModuleInitializer.BaseDirectory, "NuGet.Packaging.props"), null, null, new ProjectCollection())
 				.GetItems("PackageFileKind")
 				.Select(item => new TaskItem(item.UnevaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
 				.ToArray();

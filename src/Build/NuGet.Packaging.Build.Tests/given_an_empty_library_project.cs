@@ -3,7 +3,7 @@ using Microsoft.Build.Execution;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Microsoft.NuGet.Packaging
+namespace NuGet.Packaging
 {
 	public class given_an_empty_library_project
 	{

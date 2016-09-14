@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.targets))\NuGet.Packaging.targets" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Shared.targets))\NuGet.Packaging.Shared.targets" />
 
   <!-- TODO: 
-    * Generate ErrorCodes constants from .resx
+    * Generate ErrorCodes constants from .resx?
   -->
 </Project>

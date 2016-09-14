@@ -2,11 +2,11 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- This will be the right path when we run from xunit in the bin/$(Configuration) folder -->
-    <NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Microsoft.NuGet.Packaging.props))</NuGetTargetsPath>
+    <NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.props))</NuGetTargetsPath>
     <!-- This will be the right path when we run from MSBuild from the source location inside the tests project -->
-    <NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\Microsoft.NuGet.Packaging.props')">$(MSBuildThisFileDirectory)..\..\NuGet.Packaging.Build.Tasks\bin\Debug</NuGetTargetsPath>
+    <NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGet.Packaging.props')">$(MSBuildThisFileDirectory)..\..\NuGet.Packaging.Build.Tasks\bin\Debug</NuGetTargetsPath>
   </PropertyGroup>
-  <Import Project="$(NuGetTargetsPath)\Microsoft.NuGet.Packaging.props" />
+  <Import Project="$(NuGetTargetsPath)\NuGet.Packaging.props" />
   <!-- Import the NuGet props from the test project to allow easy diagnostics -->
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Build.Tests.nuget.props))\NuGet.Packaging.Build.Tests.nuget.props"/>
   <PropertyGroup>

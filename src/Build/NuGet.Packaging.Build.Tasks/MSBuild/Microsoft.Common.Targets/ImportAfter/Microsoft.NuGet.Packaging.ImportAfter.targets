@@ -11,7 +11,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <NuGetPackagingTargets Condition="'$(NuGetPackagingTargets)' == ''">$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\Microsoft.NuGet.Packaging.targets</NuGetPackagingTargets>
+        <NuGetPackagingTargets Condition="'$(NuGetPackagingTargets)' == ''">$(MSBuildExtensionsPath)\Microsoft\NuGet.Packaging\NuGet.Packaging.targets</NuGetPackagingTargets>
     </PropertyGroup>
     <Import Condition="Exists('$(NuGetPackagingTargets)')" Project="$(NuGetPackagingTargets)" />
 </Project>
