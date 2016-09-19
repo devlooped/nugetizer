@@ -1,38 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <!-- This will be the right path when we run from xunit in the bin/$(Configuration) folder -->
-    <NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.props))</NuGetTargetsPath>
-    <!-- This will be the right path when we run from MSBuild from the source location inside the tests project -->
-    <NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGet.Packaging.props')">$(MSBuildThisFileDirectory)..\..\NuGet.Packaging.Build.Tasks\bin\Debug</NuGetTargetsPath>
-  </PropertyGroup>
-  <Import Project="$(NuGetTargetsPath)\NuGet.Packaging.props" />
-  <!-- Import the NuGet props from the test project to allow easy diagnostics -->
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Build.Tests.nuget.props))\NuGet.Packaging.Build.Tests.nuget.props"/>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputPath>bin</OutputPath>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Scenario</RootNamespace>
-    <!-- These properties are more likely to change per-project -->
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+	<PropertyGroup>
+		<!-- This will be the right path when we run from xunit in the bin/$(Configuration) folder -->
+		<NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.props))</NuGetTargetsPath>
+		<!-- This will be the right path when we run from MSBuild from the source location inside the tests project -->
+		<NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGet.Packaging.props')">$(MSBuildThisFileDirectory)..\..\NuGet.Packaging.Build.Tasks\bin\Debug</NuGetTargetsPath>
+	</PropertyGroup>
 
-    <!-- A bunch of known GUIDs for P2P references -->
-    <GuidA>{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}</GuidA>
-    <GuidB>{BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB}</GuidB>
-    <GuidC>{CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC}</GuidC>
-    <GuidD>{DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD}</GuidD>
-    <GuidE>{EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE}</GuidE>
-    <GuidF>{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}</GuidF>
+	<Import Project="$(NuGetTargetsPath)\NuGet.Packaging.props" />
+	<!-- Import the NuGet props from the test project to allow easy diagnostics -->
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Build.Tests.nuget.props))\NuGet.Packaging.Build.Tests.nuget.props"/>
 
-    <ProjectGuid>$(GuidA)</ProjectGuid>
-    
-    <!-- Used for Dump/Introspect -->
-    <UseCompiledTasks>true</UseCompiledTasks>
-    <!--Avoids warnings from Xamarin global imports.-->
-    <ImportByWildcardAfterMicrosoftCommonTargets>false</ImportByWildcardAfterMicrosoftCommonTargets>
-    <ImportByWildcardBeforeMicrosoftCommonTargets>false</ImportByWildcardBeforeMicrosoftCommonTargets>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<OutputPath>bin\$(MSBuildProjectName)</OutputPath>
+		<OutputType>Library</OutputType>
+		<RootNamespace>Scenario</RootNamespace>
+		<!-- These properties are more likely to change per-project -->
+		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
+
+		<!-- A bunch of known GUIDs for P2P references -->
+		<GuidA>{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}</GuidA>
+		<GuidB>{BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB}</GuidB>
+		<GuidC>{CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC}</GuidC>
+		<GuidD>{DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD}</GuidD>
+		<GuidE>{EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE}</GuidE>
+		<GuidF>{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}</GuidF>
+
+		<ProjectGuid>$(GuidA)</ProjectGuid>
+
+		<!-- Used for Dump/Introspect -->
+		<UseCompiledTasks>true</UseCompiledTasks>
+		<!--Avoids warnings from Xamarin global imports.-->
+		<ImportByWildcardAfterMicrosoftCommonTargets>false</ImportByWildcardAfterMicrosoftCommonTargets>
+		<ImportByWildcardBeforeMicrosoftCommonTargets>false</ImportByWildcardBeforeMicrosoftCommonTargets>
+		<!-- Prevents Fody.VerifyTask from running -->
+		<NCrunch>1</NCrunch>
+	</PropertyGroup>
+
 </Project>

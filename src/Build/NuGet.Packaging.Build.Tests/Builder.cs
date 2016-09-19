@@ -50,13 +50,20 @@ public static partial class Builder
 		var platform = project.GetPropertyValue("Platform");
 
 		var xml = new XElement("SolutionConfiguration");
+		xml.Add(new XElement("ProjectConfiguration",
+			new XAttribute("Project", project.GetPropertyValue("ProjectGuid")),
+			new XAttribute("AbsolutePath", project.FullPath),
+			new XAttribute("BuildProjectInSolution", "true"))
+		{
+			Value = $"{config}|{platform}"
+		});
 
 		foreach (var reference in GetProjectReferences(project))
 		{
 			xml.Add(new XElement("ProjectConfiguration",
 				new XAttribute("Project", reference.GetPropertyValue("ProjectGuid")),
 				new XAttribute("AbsolutePath", reference.FullPath),
-				new XAttribute("BuildProjectInSolution", "true"))
+				new XAttribute("BuildProjectInSolution", "false"))
 			{
 				Value = $"{config}|{platform}"
 			});

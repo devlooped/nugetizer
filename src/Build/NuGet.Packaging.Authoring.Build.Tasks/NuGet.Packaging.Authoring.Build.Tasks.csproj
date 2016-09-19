@@ -11,10 +11,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Tasks.v4.0" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Microsoft.NuGet.Packaging.Authoring.props">

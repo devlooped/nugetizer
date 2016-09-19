@@ -1,14 +1,24 @@
 ﻿using System.Linq;
+using System.Reflection;
+using System.Threading;
 using Microsoft.Build.Execution;
+using Microsoft.Build.Framework;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace NuGet.Packaging
 {
 	public class given_a_library_with_project_reference
 	{
-		// TODO: generate constants for target names and property names in a given target
-		// so that tests can just break/be fixed easily instead of find/replace strings all over.
+		ITestOutputHelper output;
 
+		public given_a_library_with_project_reference(ITestOutputHelper output)
+		{
+			this.output = output;
+		}
+
+		//[Verbosity(LoggerVerbosity.Diagnostic)]
 		[Fact]
 		public void when_getting_package_contents_then_retrieves_main_assembly_transitively()
 		{
@@ -24,7 +34,7 @@ namespace NuGet.Packaging
 		[Fact]
 		public void when_getting_package_contents_then_retrieves_symbols_transitively()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference));
+			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 

@@ -17,6 +17,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<IncludeSymbols Condition=" '$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug' ">true</IncludeSymbols>
 		<IsPackable Condition="'$(IsPackable)' == '' And '$(PackageId)' != ''">true</IsPackable>
 		<BuildPackage Condition=" '$(BuildPackage)' == '' and '$(IsPackable)' == 'true'">true</BuildPackage>
+		<!-- Directory where the .nupkg will be saved to if BuildPackage is run -->
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(IntermediateOutputPath)</PackageOutputPath>
 		<BuildDependsOn Condition="'$(BuildPackage)' == 'true'">
 			$(BuildDependsOn);
@@ -40,10 +41,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<!-- NuGet v3 already provides us with ReferencePath metadata we can use to turn them into PackageReference -->
 	<Target Name="_SynthesizePackageReferences" DependsOnTargets="ResolveReferences">
 		<ItemGroup>
-			<_ReferenceWithPackageId Include="@(ReferencePath -> HasMetadata('NuGetPackageId'))" />
-			<PackageReference Include="@(_ReferenceWithPackageId -> '%(NuGetPackageId)')">
-				<Version>%(NuGetPackageVersion)</Version>
-			</PackageReference>
+			<_ReferencePathWithPackageId Include="@(ReferencePath -> HasMetadata('NuGetPackageId'))" />
+			<_PackageReferenceFromNuGet Include="@(_ReferencePathWithPackageId -> '%(NuGetPackageId)')">
+				<Version>%(_ReferencePathWithPackageId.NuGetPackageVersion)</Version>
+			</_PackageReferenceFromNuGet>
+			<PackageReference Include="@(_PackageReferenceFromNuGet)" />
 		</ItemGroup>
 	</Target>
 
@@ -137,29 +139,26 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<_ReferencePathWithoutPackageId Include="@(ReferencePath -> WithMetadataValue('NuGetPackageId', ''))" />
 		</ItemGroup>
 
-		<CreatePackage PackageContent="@(PackageContent)"
-					   PackageVersion="$(PackageVersion)"
-					   PackageId="$(PackageId)"
+		<CreatePackage Id="$(PackageId)"
+					   Version="$(PackageVersion)"
+					   Contents="@(PackageContent)"
 					   Authors="$(Authors)"
-					  Description="$(Description)"
-					  Copyright="$(Copyright)"
-					  RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
-					  LicenseUrl="$(PackageLicenseUrl)"
-					  ProjectUrl="$(PackageProjectUrl)"
-					  IconUrl="$(PackageIconUrl)"
-					  ReleaseNotes="$(PackageReleaseNotes)"
-					  Tags="$(PackageTags)"
-					  Configuration="$(Configuration)"
-					  PackageOutputPath="$(PackageOutputPath)"
-					  PackageTypes="$(PackageType)"
-					  IsTool="$(IsTool)"
-					  RepositoryUrl="$(RepositoryUrl)"
-					  RepositoryType="$(RepositoryType)"
-					  NoPackageAnalysis="$(NoPackageAnalysis)"
-					  MinClientVersion="$(MinClientVersion)"
-					  Serviceable="$(Serviceable)"
-					  VersionSuffix ="$(VersionSuffix)"
-					  AssemblyReferences="@(_ReferencePathWithoutPackageId)"/>
+					   Description="$(Description)"
+					   Copyright="$(Copyright)"
+					   RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
+					   LicenseUrl="$(PackageLicenseUrl)"
+					   ProjectUrl="$(PackageProjectUrl)"
+					   IconUrl="$(PackageIconUrl)"
+					   ReleaseNotes="$(PackageReleaseNotes)"
+					   Tags="$(PackageTags)"
+					   OutputPath="$(PackageOutputPath)"
+					   Types="$(PackageType)"
+					   IsTool="$(IsTool)"
+					   RepositoryUrl="$(RepositoryUrl)"
+					   RepositoryType="$(RepositoryType)"
+					   NoPackageAnalysis="$(NoPackageAnalysis)"
+					   MinClientVersion="$(MinClientVersion)"
+					   AssemblyReferences="@(_ReferencePathWithoutPackageId)"/>
 	</Target>
 
 </Project>

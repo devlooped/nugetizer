@@ -11,16 +11,14 @@
     <PublicSign>false</PublicSign>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Tasks.v4.0" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
-    <None Include="NuGet.Packaging.Build.Tests.targets" />
+    <None Include="NuGet.Packaging.Build.Tests.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Scenarios\Scenario.props" />
     <None Include="Scenarios\Scenario.targets" />
     <None Include="test.proj" />
@@ -41,6 +39,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreatePackageTests.cs" />
     <Compile Include="AssignPackagePathTests.cs" />
     <Compile Include="Builder.cs" />
     <Compile Include="Builder.NuGetizer.cs">

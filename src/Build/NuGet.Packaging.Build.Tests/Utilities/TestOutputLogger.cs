@@ -9,10 +9,10 @@ public class TestOutputLogger : ILogger
 {
 	ITestOutputHelper output;
 
-	public TestOutputLogger(ITestOutputHelper output, LoggerVerbosity verbosity = LoggerVerbosity.Quiet)
+	public TestOutputLogger(ITestOutputHelper output, LoggerVerbosity? verbosity = LoggerVerbosity.Quiet)
 	{
 		this.output = output;
-		this.Verbosity = verbosity;
+		this.Verbosity = verbosity.GetValueOrDefault();
 	}
 
 	public void Reset()
