@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 
@@ -26,7 +24,7 @@ static partial class Builder
 			projectOrSolution = Directory.EnumerateFiles(scenarioDir, "*.csproj").First();
 
 		if (properties != null)
-			return Build(projectOrSolution, target, 
+			return Build(projectOrSolution, target,
 				properties: properties.GetType().GetProperties().ToDictionary(prop => prop.Name, prop => prop.GetValue(properties).ToString()),
 				logger: logger)[target];
 		else

@@ -30,8 +30,8 @@ namespace NuGet.Packaging.Build.Tasks
 		public override bool Execute()
 		{
 			var kindMap = Kinds.ToDictionary(
-				kind => kind.ItemSpec, 
-				kind => kind.GetMetadata("PackageFolder"), 
+				kind => kind.ItemSpec,
+				kind => kind.GetMetadata("PackageFolder"),
 				StringComparer.OrdinalIgnoreCase);
 
 			AssignedFiles = Files.Select(file => EnsurePackagePath(file, kindMap)).ToArray();

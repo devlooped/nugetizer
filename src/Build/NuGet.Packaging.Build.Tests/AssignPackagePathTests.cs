@@ -58,7 +58,7 @@ namespace NuGet.Packaging
 			{
 				BuildEngine = engine,
 				Kinds = kinds,
-				Files = new ITaskItem[] 
+				Files = new ITaskItem[]
 				{
 					new TaskItem("a.dll", new Dictionary<string,string>
 					{
@@ -205,7 +205,7 @@ namespace NuGet.Packaging
 
 			Assert.True(task.Execute());
 			Assert.Equal("contentFiles", task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.True(task.AssignedFiles[0].GetMetadata("PackagePath").StartsWith(expectedPath), 
+			Assert.True(task.AssignedFiles[0].GetMetadata("PackagePath").StartsWith(expectedPath),
 				$"'{task.AssignedFiles[0].GetMetadata("PackagePath")}' does not start with expected '{expectedPath}'");
 		}
 

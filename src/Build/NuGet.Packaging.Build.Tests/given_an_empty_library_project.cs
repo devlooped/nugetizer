@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.Build.Execution;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace NuGet.Packaging
 {

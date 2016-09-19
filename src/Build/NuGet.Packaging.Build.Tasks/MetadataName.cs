@@ -1,8 +1,8 @@
 ﻿namespace NuGet.Packaging.Build.Tasks
 {
 	public static class MetadataName
-    {
-        public const string FileSource = "FullPath";
+	{
+		public const string FileSource = "FullPath";
 
 		public const string Kind = nameof(Kind);
 
@@ -17,9 +17,9 @@
 		/// none was provided.
 		/// </summary>
 		public const string PackagePath = nameof(PackagePath);
-        
-        public const string TargetFramework = nameof(TargetFramework);
 
-        public const string TargetFrameworkMoniker = nameof(TargetFrameworkMoniker);
+		public const string TargetFramework = nameof(TargetFramework);
+
+		public const string TargetFrameworkMoniker = nameof(TargetFrameworkMoniker);
 	}
 }
