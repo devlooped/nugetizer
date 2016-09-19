@@ -14,7 +14,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <PropertyGroup>
         <IncludeSymbols Condition=" '$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug' ">true</IncludeSymbols>
-        <BuildPackage Condition=" '$(BuildPackage)' == '' and '$(PackageId)' != ''">true</BuildPackage>
+		<IsPackable Condition="'$(IsPackable)' == '' And '$(PackageId)' != ''">true</IsPackable>
+        <BuildPackage Condition=" '$(BuildPackage)' == '' and '$(IsPackable)' == 'true'">true</BuildPackage>
         <BuildDependsOn Condition="'$(BuildPackage)' == 'true'">
             $(BuildDependsOn);
             BuildPackage;
@@ -116,6 +117,9 @@ Copyright (c) .NET Foundation. All rights reserved.
         </MSBuild>
 
     </Target>
-    
+
+	<Target Name="BuildPackage">
+		
+	</Target>
 
 </Project>
