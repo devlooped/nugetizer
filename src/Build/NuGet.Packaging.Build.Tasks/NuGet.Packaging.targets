@@ -31,23 +31,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 			AssignProjectConfiguration;
 			_SplitProjectReferencesByFileExistence;
 			AllProjectOutputGroups;
-			_SynthesizePackageReferences;
 			_CollectPackageContents;
 		</_GetPackageContentsDependsOn>
 	</PropertyGroup>
 
 	<Target Name="GetPackageContents" DependsOnTargets="$(_GetPackageContentsDependsOn)" Returns="@(_PackageContent)" />
-
-	<!-- NuGet v3 already provides us with ReferencePath metadata we can use to turn them into PackageReference -->
-	<Target Name="_SynthesizePackageReferences" DependsOnTargets="ResolveReferences">
-		<ItemGroup>
-			<_ReferencePathWithPackageId Include="@(ReferencePath -> HasMetadata('NuGetPackageId'))" />
-			<_PackageReferenceFromNuGet Include="@(_ReferencePathWithPackageId -> '%(NuGetPackageId)')">
-				<Version>%(_ReferencePathWithPackageId.NuGetPackageVersion)</Version>
-			</_PackageReferenceFromNuGet>
-			<PackageReference Include="@(_PackageReferenceFromNuGet)" />
-		</ItemGroup>
-	</Target>
 
 	<Target Name="_CollectPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)">
 		<!-- We define these here so that potentially other targets can populate these properties before this target runs. -->

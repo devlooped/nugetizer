@@ -3,6 +3,7 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
   <PropertyGroup>
     <ProjectGuid>$(GuidB)</ProjectGuid>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BNuGetPackageReference">

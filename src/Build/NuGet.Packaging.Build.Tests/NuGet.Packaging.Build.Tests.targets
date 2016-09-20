@@ -29,7 +29,7 @@
 
 	<Target Name="AfterBuild">
 		<ItemGroup>
-			<ScenarioFile Include="Scenarios\**\*.*" Exclude="Scenarios\**\bin\**\*.*;Scenarios\**\obj\**\*.*;" />
+			<ScenarioFile Include="Scenarios\**\*.*" Exclude="Scenarios\**\bin\**\*.*;Scenarios\**\obj\**\*.*" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(ScenarioFile)"

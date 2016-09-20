@@ -25,17 +25,12 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="Dump" DependsOnTargets="GetPackageContents;ResolveReferences">
-		<!--<Introspect>
-      <Output TaskParameter="Properties" ItemName="Properties" />
-      <Output TaskParameter="Targets" ItemName="Targets" />
-    </Introspect>
-    <DumpItems Items="@(Properties)" />-->
-		<DumpItems Items="@(_PackageContent)" ItemName="PackageContent" />
-		<!--<DumpItems Items="@(ReferencePath)" ItemName="ReferencePath" />-->
+	<Target Name="Dump" DependsOnTargets="GetPackageContents">
+		<DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
 	</Target>
 
 	<!-- Turn off Fody we use for ModuleInitializer in unit tests -->
 	<Target Name="FodyTarget" />
+	<Target Name="FodyVerifyTarget" />
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 using Microsoft.Build.Evaluation;
@@ -20,7 +21,10 @@ public static partial class Builder
 		if (!File.Exists(projectOrSolution))
 			throw new FileNotFoundException($"Project or solution to build {projectOrSolution} was not found.", projectOrSolution);
 
-		using (var manager = new BuildManager())
+		// Without this, builds end up running in process and colliding with each other, 
+		// especially around the current directory used to resolve relative paths in projects.
+		Environment.SetEnvironmentVariable("MSBUILDNOINPROCNODE", "1");
+		using (var manager = new BuildManager(Guid.NewGuid().ToString()))
 		{
 			properties = properties ?? new Dictionary<string, string>();
 

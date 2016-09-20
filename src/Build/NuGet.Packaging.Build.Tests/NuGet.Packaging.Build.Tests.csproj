@@ -19,13 +19,20 @@
     <None Include="NuGet.Packaging.Build.Tests.targets">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Scenarios\Scenario.props" />
+    <Content Include="Scenarios\given_library_project_with_nugets\project.json" />
+    <Content Include="Scenarios\given_library_project_with_nugets\project.lock.json" />
+    <None Include="Scenarios\Scenario.props">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Scenarios\Scenario.targets" />
     <None Include="test.proj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
     <Content Include="Scenarios\dynamic.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scenarios\given_library_project_with_nugets\a.csproj">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj">
@@ -45,6 +52,7 @@
     <Compile Include="Builder.NuGetizer.cs">
       <DependentUpon>Builder.cs</DependentUpon>
     </Compile>
+    <Compile Include="given_library_project_with_nugets.cs" />
     <Compile Include="given_an_empty_library_project.cs" />
     <Compile Include="given_a_library_with_project_reference.cs" />
     <Compile Include="Utilities\MockBuildEngine.cs" />

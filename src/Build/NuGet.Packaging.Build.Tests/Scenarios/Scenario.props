@@ -7,10 +7,6 @@
 		<NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGet.Packaging.props')">$(MSBuildThisFileDirectory)..\..\NuGet.Packaging.Build.Tasks\bin\Debug</NuGetTargetsPath>
 	</PropertyGroup>
 
-	<Import Project="$(NuGetTargetsPath)\NuGet.Packaging.props" />
-	<!-- Import the NuGet props from the test project to allow easy diagnostics -->
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Build.Tests.nuget.props))\NuGet.Packaging.Build.Tests.nuget.props"/>
-
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -33,11 +29,15 @@
 
 		<!-- Used for Dump/Introspect -->
 		<UseCompiledTasks>true</UseCompiledTasks>
-		<!--Avoids warnings from Xamarin global imports.-->
-		<ImportByWildcardAfterMicrosoftCommonTargets>false</ImportByWildcardAfterMicrosoftCommonTargets>
-		<ImportByWildcardBeforeMicrosoftCommonTargets>false</ImportByWildcardBeforeMicrosoftCommonTargets>
+		<!-- Avoids warnings from Xamarin global imports.-->
+		<!--<ImportByWildcardAfterMicrosoftCommonTargets>false</ImportByWildcardAfterMicrosoftCommonTargets>
+		<ImportByWildcardBeforeMicrosoftCommonTargets>false</ImportByWildcardBeforeMicrosoftCommonTargets>-->
 		<!-- Prevents Fody.VerifyTask from running -->
 		<NCrunch>1</NCrunch>
 	</PropertyGroup>
+
+	<Import Project="$(NuGetTargetsPath)\NuGet.Packaging.props" />
+	<!-- Import the NuGet props from the test project to allow easy diagnostics -->
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Build.Tests.nuget.props))\NuGet.Packaging.Build.Tests.nuget.props"/>
 
 </Project>
