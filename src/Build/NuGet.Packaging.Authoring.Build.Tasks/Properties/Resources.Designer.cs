@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.NuGet.Packaging.Build.Tasks.Properties {
+namespace NuGet.Packaging.Authoring.Build.Tasks.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Microsoft.NuGet.Packaging.Build.Tasks.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.NuGet.Packaging.Build.Tasks.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("NuGet.Packaging.Authoring.Build.Tasks.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -1,11 +1,10 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.31",
-    "Moq": "4.5.16",
-    "xunit": "2.1.0"
+    "Newtonsoft.Json": "8.0.3",
+    "Microsoft.CodeAnalysis":  "1.3.2"
   },
   "frameworks": {
-    "net46": {}
+    "net45": {}
   },
   "runtimes": {
     "win": {}

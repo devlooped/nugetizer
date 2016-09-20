@@ -4,7 +4,6 @@ using System.Linq;
 using EnvDTE;
 using Microsoft.VisualStudio.TemplateWizard;
 using System.IO;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Clide;
 
@@ -85,13 +84,11 @@ namespace NuGet.Packaging.VisualStudio
 
 		void SatifyDependencies()
 		{
-			var componentModel = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
-
 			if (solutionExplorer == null)
-				solutionExplorer = componentModel.DefaultExportProvider.GetExportedValue<ISolutionExplorer>();
+				solutionExplorer = ServiceLocator.Global.GetExport<ISolutionExplorer>();
 
 			if (platformProvider == null)
-				platformProvider = componentModel.DefaultExportProvider.GetExportedValue<IPlatformProvider>();
+				platformProvider = ServiceLocator.Global.GetExport<IPlatformProvider>();
 		}
 
 		public bool ShouldAddProjectItem(string filePath) => true;

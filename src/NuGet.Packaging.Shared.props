@@ -30,7 +30,7 @@
 		<PublicSign>true</PublicSign>
 		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)PublicKey.snk</AssemblyOriginatorKeyFile>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-		<ThisAssemblyNamespace>Microsoft.NuGet.Packaging</ThisAssemblyNamespace>
+		<ThisAssemblyNamespace>NuGet.Packaging</ThisAssemblyNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

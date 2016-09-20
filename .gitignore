@@ -1,9 +1,7 @@
 bin
 obj
-packages
 out
 temp
-/lib
 .vs
 
 *.suo
@@ -15,10 +13,12 @@ temp
 *.metaproj
 *.tmp
 *.cache
+
+packages
 project.lock.json
 *.nuget.props
 *.nuget.targets
 
 log.txt
 NuGet.exe
-/src/test.proj
+test.proj

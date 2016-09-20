@@ -4,8 +4,18 @@
     <StartAction>Program</StartAction>
     <StartProgram>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\Common7\IDE\devenv.exe</StartProgram>
     <StartArguments>/rootsuffix exp</StartArguments>
+
+    <NoGlobalAssemblyInfo>true</NoGlobalAssemblyInfo>
+    <GitInfoThisAssemblyFile>$(IntermediateOutputPath)ThisAssembly.GitInfo.g.cs</GitInfoThisAssemblyFile>
   </PropertyGroup>
 
+  <Target Name="FixGitInfo" BeforeTargets="CoreCompile" AfterTargets="GitThisAssembly">
+    <ItemGroup>
+      <Compile Remove="$(GitInfoThisAssemblyFile)" />
+      <Compile Include="$(GitInfoThisAssemblyFile)" />
+    </ItemGroup>
+  </Target>
+  
   <Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
     <PropertyGroup>
       <Version Condition=" '$(Configuration)' == 'Release' ">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
