@@ -6,10 +6,17 @@
 
 		public const string Kind = nameof(Kind);
 
+		public const string Version = nameof(Version);
+
 		/// <summary>
 		/// One of https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/PackagingConstants.cs#L27
 		/// </summary>
 		public const string PackageFolder = nameof(PackageFolder);
+
+		/// <summary>
+		/// The package that declares the given package file.
+		/// </summary>
+		public const string PackageId = nameof(PackageId);
 
 		/// <summary>
 		/// Concatenation of <see cref="PackageFolder"/> and <see cref="TargetFramework"/>. 

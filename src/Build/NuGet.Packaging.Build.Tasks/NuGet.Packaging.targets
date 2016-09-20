@@ -21,7 +21,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(IntermediateOutputPath)</PackageOutputPath>
 		<BuildDependsOn Condition="'$(BuildPackage)' == 'true'">
 			$(BuildDependsOn);
-			BuildPackage;
+			Pack;
 		</BuildDependsOn>
 		<!-- NOTE: this is the "internal" DependsOn for our implementation of the collecting target.
 			 Users extend GetPackageContentsDependsOn instead. This ensures that our own dependencies will not 
@@ -52,7 +52,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</PackageFile>
 
 			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-							   Condition="'$(IncludeSymbols)' == 'true'">
+						 Condition="'$(IncludeSymbols)' == 'true'">
 				<Kind>Symbols</Kind>
 			</PackageFile>
 
@@ -63,10 +63,17 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<PackageFile Include="@(PackageReference)">
 				<Kind>Dependency</Kind>
 			</PackageFile>
+			
+			<!-- Specific framework targets would turn:
+				* @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to Kind=FrameworkReference
+				  (maybe ResolvedFrom=ImplicitlyExpandDesignTimeFacades too?)
+				* @(ReferencePath) are resolved otherwise (i.e. ResolvedFrom={RawFile}) to Kind=AssemblyReference
+			-->
 		</ItemGroup>
 
 		<ItemGroup>
-			<!-- Always annotate files with the declaring project target framework -->
+			<!-- Always annotate files with the declaring project target framework. 
+				 TODO: take into account multi-targetting. -->
 			<PackageFile>
 				<PackageId>$(PackageId)</PackageId>
 				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
@@ -121,12 +128,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	</Target>
 
-	<Target Name="BuildPackage" DependsOnTargets="_CollectPackageContents;$(BuildPackageDependsOn)" Condition="'$(IsPackable)' == 'true'">
-		<ItemGroup>
-			<!-- Ignore references from NuGet packages since they should be package references instead. See _SynthesizePackageReferences above -->
-			<_ReferencePathWithoutPackageId Include="@(ReferencePath -> WithMetadataValue('NuGetPackageId', ''))" />
-		</ItemGroup>
-
+	<Target Name="Pack" DependsOnTargets="_CollectPackageContents;$(BuildPackageDependsOn)" Condition="'$(IsPackable)' == 'true'">
 		<CreatePackage Id="$(PackageId)"
 					   Version="$(PackageVersion)"
 					   Contents="@(PackageContent)"
@@ -140,13 +142,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 					   ReleaseNotes="$(PackageReleaseNotes)"
 					   Tags="$(PackageTags)"
 					   OutputPath="$(PackageOutputPath)"
-					   Types="$(PackageType)"
-					   IsTool="$(IsTool)"
-					   RepositoryUrl="$(RepositoryUrl)"
-					   RepositoryType="$(RepositoryType)"
 					   NoPackageAnalysis="$(NoPackageAnalysis)"
-					   MinClientVersion="$(MinClientVersion)"
-					   AssemblyReferences="@(_ReferencePathWithoutPackageId)"/>
+					   MinClientVersion="$(MinClientVersion)" />
 	</Target>
 
 </Project>

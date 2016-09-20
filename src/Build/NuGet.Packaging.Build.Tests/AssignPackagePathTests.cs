@@ -130,12 +130,12 @@ namespace NuGet.Packaging
 			Assert.Equal(expectedTargetFramework, task.AssignedFiles[0].GetMetadata(MetadataName.TargetFramework));
 		}
 
-		public static IEnumerable<object[]> GetKnownKinds => kinds
+		public static IEnumerable<object[]> GetMappedKnownKinds => kinds
 			// None don't get a package folder at all, and contentFiles get a special map that includes the codelang
-			.Where(kind => kind.ItemSpec != "None" && kind.ItemSpec != "Content")
+			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && kind.ItemSpec != "Content")
 			.Select(kind => new object[] { kind.ItemSpec, kind.GetMetadata("PackageFolder") });
 
-		[MemberData("GetKnownKinds")]
+		[MemberData("GetMappedKnownKinds")]
 		[Theory]
 		public void when_file_has_known_kind_then_assigned_file_contains_mapped_package_folder(string packageFileKind, string mappedPackageFolder)
 		{
