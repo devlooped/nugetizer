@@ -59,9 +59,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</PackageFileKind>
 
 		<!-- Special-case singular form of the built-in plural form folders. -->
-		<PackageFileKind Include="Tools">
-			<PackageFolder>tools</PackageFolder>
-		</PackageFileKind>
 		<PackageFileKind Include="Tool">
 			<PackageFolder>tools</PackageFolder>
 		</PackageFileKind>

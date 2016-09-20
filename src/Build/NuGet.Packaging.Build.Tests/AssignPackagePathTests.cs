@@ -132,7 +132,7 @@ namespace NuGet.Packaging
 
 		public static IEnumerable<object[]> GetMappedKnownKinds => kinds
 			// None don't get a package folder at all, and contentFiles get a special map that includes the codelang
-			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && kind.ItemSpec != "Content")
+			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles")
 			.Select(kind => new object[] { kind.ItemSpec, kind.GetMetadata("PackageFolder") });
 
 		[MemberData("GetMappedKnownKinds")]
