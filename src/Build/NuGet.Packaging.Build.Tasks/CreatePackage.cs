@@ -23,7 +23,15 @@ namespace NuGet.Packaging.Build.Tasks
 
 		public string Authors { get; set; }
 
+		public string Owners { get; set; }
+
+		public string Title { get; set; }
+
 		public string Description { get; set; }
+
+		public string Summary { get; set; }
+
+		public string Language { get; set; }
 
 		public string Copyright { get; set; }
 
@@ -73,9 +81,15 @@ namespace NuGet.Packaging.Build.Tasks
 			metadata.Id = Id;
 			if (!string.IsNullOrEmpty(Authors))
 				metadata.Authors = Authors.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			if (!string.IsNullOrEmpty(Owners))
+				metadata.Owners = Owners.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			metadata.Title = Title;
 			metadata.Description = Description;
+			metadata.Summary = Summary;
+			metadata.Language = Language;
 			metadata.Copyright = Copyright;
+
 			metadata.RequireLicenseAcceptance = string.IsNullOrEmpty(RequireLicenseAcceptance) ? false : bool.Parse(RequireLicenseAcceptance);
 			metadata.SetLicenseUrl(LicenseUrl);
 			metadata.SetProjectUrl(ProjectUrl);

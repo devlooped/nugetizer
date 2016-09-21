@@ -25,7 +25,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Scenarios\Scenario.targets" />
-    <None Include="test.proj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />

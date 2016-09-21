@@ -101,9 +101,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<Version>$(PackageVersion)</Version>
 				<Authors>$(Authors)</Authors>
 				<Owners>$(Owners)</Owners>
+				<Title>$(Title)</Title>
 				<Description>$(Description)</Description>
-				<Copyright>$(Copyright)</Copyright>
 				<Summary>$(Summary)</Summary>
+				<Language>$(NeutralLanguage)</Language>
+				<Copyright>$(Copyright)</Copyright>
 
 				<RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
 				<LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
