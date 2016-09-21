@@ -29,7 +29,7 @@
     <FullClassName>Microsoft.VisualStudio.PortableLibrary.ProjectFlavoring.Templating.NewProjectTemplateWizardFactory</FullClassName>
   </WizardExtension>
   <WizardExtension>
-    <Assembly>NuGet.Packaging.VisualStudio, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5ae9beea16a2da9a</Assembly>
+    <Assembly>NuGet.Packaging.VisualStudio, Version=1.0.0.0, Culture=neutral, PublicKeyToken=44c0b6b1fa7a936a</Assembly>
     <FullClassName>NuGet.Packaging.VisualStudio.NewLibraryWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>

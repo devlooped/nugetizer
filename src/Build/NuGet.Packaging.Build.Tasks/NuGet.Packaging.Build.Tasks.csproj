@@ -47,5 +47,6 @@
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="NuGet.Packaging.Build.Tasks.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Build.targets))\NuGet.Packaging.Build.targets" />
 </Project>

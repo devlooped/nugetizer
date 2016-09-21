@@ -6,6 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.Build.Tasks
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BD16CBB5-BD47-4CC3-A9FD-7F1B9077455D}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\appveyor.yml = ..\..\appveyor.yml
 		..\..\build.cmd = ..\..\build.cmd
 		..\..\build.proj = ..\..\build.proj
 		..\GlobalAssemblyInfo.cs = ..\GlobalAssemblyInfo.cs

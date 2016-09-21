@@ -1,0 +1,48 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<CoreCompileDependsOn>
+			PackageFileKind;
+			$(CoreCompileDependsOn);
+		</CoreCompileDependsOn>
+		<PackageKindFile>$(IntermediateOutputPath)PackageKindFile.g$(DefaultLanguageSourceExtension)</PackageKindFile>
+	</PropertyGroup>
+
+	<Target Name="PackageFileKind" BeforeTargets="BuildOnlySettings" DependsOnTargets="GeneratePackageFileKind">
+		<ItemGroup>
+			<Compile Include="$(PackageKindFile)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="GeneratePackageFileKind" Inputs="$(MSBuildThisFileFullPath);NuGet.Packaging.props" Outputs="$(PackageKindFile)">
+		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
+		<XmlPeek Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;"
+					 Query="/msb:Project/msb:ItemGroup/msb:PackageFileKind/@Include"
+					 XmlInputPath="$(MSBuildThisProjectDirectory)NuGet.Packaging.props">
+			<Output TaskParameter="Result" ItemName="_PackageFileKind" />
+		</XmlPeek>
+
+		<WriteLinesToFile Lines='
+namespace $(RootNamespace)
+{
+	/// &lt;summary&gt;Available Kind metadata for PackageFile items&lt;/summary&gt;
+	public static partial class PackageFileKind
+	{
+' Overwrite='true' File='$(PackageKindFile)' />
+
+		<WriteLinesToFile Lines='				  
+		/// &lt;summary&gt;Kind: %(_PackageFileKind.Identity)&lt;/summary&gt;
+		public const string %(_PackageFileKind.Identity) = "%(_PackageFileKind.Identity)"%3B
+' Overwrite='false' File='$(PackageKindFile)' />
+
+		<WriteLinesToFile Lines='
+	}
+}
+' Overwrite='false' File='$(PackageKindFile)' />
+
+		<ItemGroup>
+			<FileWrites Include="$(PackageKindFile)" />
+		</ItemGroup>
+	</Target>
+
+</Project>
