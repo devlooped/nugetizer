@@ -59,16 +59,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')">
 				<Kind>Doc</Kind>
 			</PackageFile>
-
-			<PackageFile Include="@(PackageReference)">
-				<Kind>Dependency</Kind>
-			</PackageFile>
-			
-			<!-- Specific framework targets would turn:
-				* @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to Kind=FrameworkReference
-				  (maybe ResolvedFrom=ImplicitlyExpandDesignTimeFacades too?)
-				* @(ReferencePath) are resolved otherwise (i.e. ResolvedFrom={RawFile}) to Kind=AssemblyReference
-			-->
 		</ItemGroup>
 
 		<ItemGroup>
@@ -85,19 +75,31 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<Output TaskParameter="AssignedFiles" ItemName="_PackageFileWithTargetPath" />
 		</AssignTargetPath>
 
-		<AssignPackagePath Files="@(_PackageFileWithTargetPath)" Kinds="@(PackageFileKind)">
+		<AssignPackagePath Files="@(_PackageFileWithTargetPath)" Kinds="@(PackageItemKind)">
 			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
 		</AssignPackagePath>
 
+		<ItemGroup>
+			<!-- Convert PackageReferences to _PackageContent -->
+			<_PackageContent Include="@(PackageReference)">
+				<Kind>Dependency</Kind>
+			</_PackageContent>
+			<!-- Specific framework targets would turn:
+				* @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to Kind=FrameworkReference
+				  (maybe ResolvedFrom=ImplicitlyExpandDesignTimeFacades too?)
+				* @(ReferencePath) are resolved otherwise (i.e. ResolvedFrom={RawFile}) to Kind=AssemblyReference
+			-->
+		</ItemGroup>
+		
 		<!-- If packaging the project, provide the metadata as a non-file item -->
 		<ItemGroup Condition="'$(PackageId)' != ''">
 			<_PackageContent Include="$(PackageId)">
 				<!-- For consistency with the other items, we also provide this metadata -->
 				<PackageId>$(PackageId)</PackageId>
+				<Kind>Metadata</Kind>
 
 				<!-- The rest of the metadata items don't need to repeat "Package" prefix all the time -->
 				<Id>$(PackageId)</Id>
-				<Kind>Metadata</Kind>
 				<Version>$(PackageVersion)</Version>
 				<Authors>$(Authors)</Authors>
 				<Owners>$(Owners)</Owners>

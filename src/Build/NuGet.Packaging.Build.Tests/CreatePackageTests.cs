@@ -71,7 +71,7 @@ namespace NuGet.Packaging
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Id },
-					{ MetadataName.Kind, PackageFileKind.Dependency },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" }
@@ -99,7 +99,7 @@ namespace NuGet.Packaging
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Id },
-					{ MetadataName.Kind, PackageFileKind.Dependency },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),

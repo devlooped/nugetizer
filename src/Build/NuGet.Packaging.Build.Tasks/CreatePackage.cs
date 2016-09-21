@@ -112,7 +112,7 @@ namespace NuGet.Packaging.Build.Tasks
 			// Collect all dependencies that are direct on the calling project, 
 			// meaning they have a PackageId == Id being generated.
 			var directDependencies = from item in Contents
-									 where item.GetMetadata(MetadataName.Kind) == PackageFileKind.Dependency
+									 where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency
 									 let packageId = item.GetMetadata(MetadataName.PackageId)
 									 where packageId == Id
 									 select new Dependency

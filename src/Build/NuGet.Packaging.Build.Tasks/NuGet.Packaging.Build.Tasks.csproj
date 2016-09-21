@@ -15,6 +15,7 @@
   <ItemGroup>
     <Content Include="NuGet.Packaging.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="NuGet.Packaging.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -26,6 +27,7 @@
     <Content Include="MSBuild\Microsoft.Common.Targets\ImportAfter\Microsoft.NuGet.Packaging.ImportAfter.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="NuGet.Packaging.Build.Tasks.targets" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup />

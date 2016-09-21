@@ -20,7 +20,7 @@ namespace NuGet.Packaging
 		static AssignPackagePathTests()
 		{
 			kinds = new Project(Path.Combine(ModuleInitializer.BaseDirectory, "NuGet.Packaging.props"), null, null, new ProjectCollection())
-				.GetItems("PackageFileKind")
+				.GetItems("PackageItemKind")
 				.Select(item => new TaskItem(item.UnevaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
 				.ToArray();
 		}
