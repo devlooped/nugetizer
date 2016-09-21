@@ -9,7 +9,7 @@
     <GitInfoThisAssemblyFile>$(IntermediateOutputPath)ThisAssembly.GitInfo.g.cs</GitInfoThisAssemblyFile>
   </PropertyGroup>
 
-  <Target Name="FixGitInfo" BeforeTargets="CoreCompile" AfterTargets="GitThisAssembly">
+  <Target Name="FixGitInfo" BeforeTargets="CoreCompile">
     <ItemGroup>
       <Compile Remove="$(GitInfoThisAssemblyFile)" />
       <Compile Include="$(GitInfoThisAssemblyFile)" />

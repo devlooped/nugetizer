@@ -1,16 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.25612.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{60C60A19-C14C-4DB2-88E3-732EE97E29DE}"
-	ProjectSection(SolutionItems) = preProject
-		NuGet.Packaging.Tasks\NuGet.Packaging.Common.props = NuGet.Packaging.Tasks\NuGet.Packaging.Common.props
-		NuGet.Packaging.Tasks\NuGet.Packaging.Common.targets = NuGet.Packaging.Tasks\NuGet.Packaging.Common.targets
-		NuGet.Packaging.Tasks\NuGet.Packaging.props = NuGet.Packaging.Tasks\NuGet.Packaging.props
-		NuGet.Packaging.Tasks\NuGet.Packaging.targets = NuGet.Packaging.Tasks\NuGet.Packaging.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.VisualStudio", "NuGet.Packaging.VisualStudio\NuGet.Packaging.VisualStudio.csproj", "{9617EDCD-23BB-41EA-827D-F5729D45B0AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.VisualStudio.UnitTests", "NuGet.Packaging.VisualStudio.UnitTests\NuGet.Packaging.VisualStudio.UnitTests.csproj", "{AED0CC61-5461-4AF7-921E-8C292B44D0F5}"
@@ -28,6 +20,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clide.IntegrationTests", "..\..\external\clide\src\Clide.IntegrationTests\Clide.IntegrationTests.csproj", "{D9C83C1F-7249-4B67-8ADE-0A1AA21F738B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clide.Vsix", "..\..\external\clide\src\Clide.Vsix\Clide.Vsix.csproj", "{C9A505CA-F826-473A-8290-B36AF6BE56FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B6FDDFD1-0254-44F4-B631-1FC78865773A}"
+	ProjectSection(SolutionItems) = preProject
+		..\NuGet.Build.Packaging.Shared.props = ..\NuGet.Build.Packaging.Shared.props
+		..\NuGet.Build.Packaging.Shared.targets = ..\NuGet.Build.Packaging.Shared.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

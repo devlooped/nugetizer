@@ -11,16 +11,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Solution Include="external\clide\src\Clide.Tasks.sln" Condition="'$(Solution)' == ''"/>
-		<Solution Include="src\**\*.sln" Condition="'$(Solution)' == ''"/>
-    <Solution Include="$(Solution)" Condition="'$(Solution)' != ''" />
-		<TestProject Include="src\**\*Tests.csproj" />
+		<Solution Include="src\Build\NuGet.Build.Packaging.sln" />
+		<TestProject Include="src\Build\**\*Tests.csproj" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
 
 	<Target Name="Clean">
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" Targets="Clean" />
+		<Exec Command="rmdir .vs /S /Q" ContinueOnError="true" />
 		<Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" />
 		<Exec Command="rmdir $(PackagesPath) /S /Q" Condition=" Exists('$(PackagesPath)') " ContinueOnError="true" />
 	</Target>
@@ -41,16 +40,16 @@
 		<MSBuild Projects="@(TestProject)" BuildInParallel="true" Targets="GetTargetPath" Properties="$(CommonBuildProperties)">
 			<Output TaskParameter="TargetOutputs" ItemName="_TestAssembly" />
 		</MSBuild>
-    <ItemGroup>
-      <TestAssembly Include="@(_TestAssembly)" Condition="Exists('%(FullPath)')" />
-    </ItemGroup>
+		<ItemGroup>
+			<TestAssembly Include="@(_TestAssembly)" Condition="Exists('%(FullPath)')" />
+		</ItemGroup>
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 
 		<PropertyGroup>
 			<XunitOptions>$(XunitOptions) -html $(Out)\test.html -xml $(Out)\test.xml -parallel none -noshadow</XunitOptions>
 
 			<CoverageConsole>$(PackagesPath)\OpenCover\tools\OpenCover.Console.exe</CoverageConsole>
-			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[NuGet.Packaging.*]* -[NuGet.Packaging.VisualStudio*]* -[xunit*]* -[*Tests]* -[*]*ThisAssembly*" -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
+			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[NuGet.Build.Packaging*]* -[NuGet.Packaging.VisualStudio*]* -[Clide*]* -[xunit*]* -[*Tests]* -[*]*ThisAssembly*" -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
 			<CoverageCommand>$(CoverageConsole) $(CoverageOptions) -target:$(XunitConsole) -targetargs:"@(TestAssembly, ' ') $(XunitOptions)"</CoverageCommand>
 
 			<ReportConsole>$(PackagesPath)\ReportGenerator\tools\ReportGenerator.exe</ReportConsole>
@@ -67,17 +66,17 @@
 			  Condition=" '@(TestAssembly)' != '' "
 			  ContinueOnError="ErrorAndContinue" />-->
 
-    <MakeDir Directories="$(Out)\coverage" Condition="!Exists('$(Out)\coverage')" />
-    <Exec Command="$(ReportConsole) $(ReportOptions)"
-			  ConsoleToMSBuild="true"
-			  StandardErrorImportance="high"
-			  StandardOutputImportance="normal" />
+		<MakeDir Directories="$(Out)\coverage" Condition="!Exists('$(Out)\coverage')" />
+		<Exec Command="$(ReportConsole) $(ReportOptions)"
+				  ConsoleToMSBuild="true"
+				  StandardErrorImportance="high"
+				  StandardOutputImportance="normal" />
 	</Target>
 
-  <Target Name="Coverage" DependsOnTargets="Test">
-    <Exec Command="start $(Out)\coverage\index.htm" />
-  </Target>
-  
+	<Target Name="Coverage" DependsOnTargets="Test">
+		<Exec Command="start $(Out)\coverage\index.htm" />
+	</Target>
+
 	<!-- Configure and restore initial targets and packages -->
 	<Import Project="src\NuGet.Restore.targets" />
 	<PropertyGroup>

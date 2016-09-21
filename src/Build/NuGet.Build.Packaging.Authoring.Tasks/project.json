@@ -1,0 +1,16 @@
+﻿{
+  "dependencies": {
+    "GitInfo": "1.1.31",
+    "netfx-System.StringResources": "3.0.14",
+    "Newtonsoft.Json": "6.0.4",
+    "NuGet.Client": "3.4.3",
+    "NuGet.ProjectManagement": "3.4.3",
+    "NuGet.Packaging": "3.4.3"
+  },
+  "frameworks": {
+    "net46": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}

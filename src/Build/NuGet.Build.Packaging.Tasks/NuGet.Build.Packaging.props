@@ -1,0 +1,91 @@
+<!--
+***********************************************************************************************
+Microsoft.NuGet.Build.Packaging.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemGroup>
+		<!-- Default mapping between %(PackageFile.Kind) metadata and package folders inside .nupkg -->
+		<!-- PackageFolder should map to a supported folder as defined in PackagingConstants.Folders -->
+		<PackageItemKind Include="Library">
+			<PackageFolder>lib</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Symbols">
+			<PackageFolder>lib</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Doc">
+			<PackageFolder>lib</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Content">
+			<!-- Plain "content" is deprecated as of NuGet v3+ -->
+			<PackageFolder>contentFiles</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="None">
+			<!-- Causes the file to end up in the package root dir -->
+			<PackageFolder></PackageFolder>
+		</PackageItemKind>
+
+		<PackageItemKind Include="Build">
+			<PackageFolder>build</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Tools">
+			<PackageFolder>tools</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="ContentFiles">
+			<PackageFolder>contentFiles</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Native">
+			<PackageFolder>native</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Runtimes">
+			<PackageFolder>runtimes</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Ref">
+			<PackageFolder>ref</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Analyzers">
+			<PackageFolder>analyzers</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Source">
+			<PackageFolder>source</PackageFolder>
+		</PackageItemKind>
+
+		<!-- Special-case singular form of the built-in plural form folders. -->
+		<PackageItemKind Include="Tool">
+			<PackageFolder>tools</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Runtime">
+			<PackageFolder>runtimes</PackageFolder>
+		</PackageItemKind>
+		<PackageItemKind Include="Analyzer">
+			<PackageFolder>analyzers</PackageFolder>
+		</PackageItemKind>
+
+		<!-- For unknown Kind we apply the heuristics of turning the metadata value into pascalCase 
+             and using that as the package folder (i.e. 'Workbooks' -> 'workbooks') -->
+
+		<!-- Finally, specially treated items that we include here for completeness and documentation -->
+
+		<!-- PackageReference items end up as Dependency -->
+		<!-- Project references that build packages also end up as package dependencies -->
+		<PackageItemKind Include="Dependency" />
+		
+		<!-- The package manifest item if the project generates a package -->
+		<PackageItemKind Include="Metadata" />
+
+		<!-- Platform targets could turn @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to FrameworkReference, for example -->
+		<PackageItemKind Include="FrameworkReference" />
+
+		<!-- Platform targets cound turn other @(ReferencePath) that are resolved otherwise (i.e. {RawFile}) into AssemblyReference, for example -->
+		<PackageItemKind Include="AssemblyReference" />
+
+	</ItemGroup>
+
+</Project>
