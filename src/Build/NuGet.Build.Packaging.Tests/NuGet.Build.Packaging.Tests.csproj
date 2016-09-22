@@ -18,6 +18,15 @@
     <None Include="NuGet.Build.Packaging.Tests.targets">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Scenarios\given_a_complex_pack\a.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scenarios\given_a_complex_pack\b.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scenarios\given_a_complex_pack\c.csproj" />
+    <Content Include="Scenarios\given_a_complex_pack\d.csproj" />
+    <Content Include="Scenarios\given_a_complex_pack\e.csproj" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.json" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.lock.json" />
     <None Include="Scenarios\Scenario.props">
@@ -50,11 +59,13 @@
     <Compile Include="Builder.NuGetizer.cs">
       <DependentUpon>Builder.cs</DependentUpon>
     </Compile>
+    <Compile Include="given_a_complex_pack.cs" />
     <Compile Include="given_library_project_with_nugets.cs" />
     <Compile Include="given_an_empty_library_project.cs" />
     <Compile Include="given_a_library_with_project_reference.cs" />
     <Compile Include="Utilities\MockBuildEngine.cs" />
     <Compile Include="Utilities\ModuleInitializer.cs" />
+    <Compile Include="Utilities\TaskItemExtensions.cs" />
     <Compile Include="Utilities\TestOutputLogger.cs" />
   </ItemGroup>
   <ItemGroup>

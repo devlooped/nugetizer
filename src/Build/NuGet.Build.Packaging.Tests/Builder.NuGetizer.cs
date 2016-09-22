@@ -14,13 +14,21 @@ using Xunit.Sdk;
 /// </summary>
 static partial class Builder
 {
-	public static ITargetResult BuildScenario(string scenarioName, object properties = null, string target = "GetPackageContents", ITestOutputHelper output = null, LoggerVerbosity? verbosity = null)
+	public static ITargetResult BuildScenario(string scenarioName, object properties = null, string projectName = null, string target = "GetPackageContents", ITestOutputHelper output = null, LoggerVerbosity? verbosity = null)
 	{
-		var projectName = scenarioName;
-		if (scenarioName.StartsWith("given", StringComparison.OrdinalIgnoreCase))
-			projectName = string.Join("_", scenarioName.Split('_').Skip(2));
-
 		var scenarioDir = Path.Combine(ModuleInitializer.BaseDirectory, "Scenarios", scenarioName);
+
+		if (projectName == null)
+		{
+			projectName = scenarioName;
+			if (scenarioName.StartsWith("given", StringComparison.OrdinalIgnoreCase))
+				projectName = string.Join("_", scenarioName.Split('_').Skip(2));
+		}
+		else if (!File.Exists(Path.Combine(scenarioDir, $"{projectName}.csproj")))
+		{
+			throw new FileNotFoundException($"Project '{projectName}' was not found under scenario path '{scenarioDir}'.", projectName);
+		}
+
 		string projectOrSolution;
 
 		if (File.Exists(Path.Combine(scenarioDir, $"{projectName}.csproj")))

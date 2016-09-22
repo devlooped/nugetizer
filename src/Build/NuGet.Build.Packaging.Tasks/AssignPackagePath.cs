@@ -42,9 +42,6 @@ namespace NuGet.Build.Packaging.Tasks
 
 		ITaskItem EnsurePackagePath(ITaskItem file, IDictionary<string, string> kindMap)
 		{
-			if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")))
-				return new TaskItem(file);
-
 			var kind = file.GetMetadata("Kind");
 			if (string.IsNullOrEmpty(kind))
 			{
@@ -68,6 +65,14 @@ namespace NuGet.Build.Packaging.Tasks
 
 			var frameworkMoniker = file.GetTargetFrameworkMoniker();
 			var targetFramework = frameworkMoniker.GetShortFrameworkName() ?? "";
+			// At this point we have the correct target framework
+			output.SetMetadata(MetadataName.TargetFramework, targetFramework);
+
+			// If PackagePath already specified, skip the rest.
+			if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")) ||
+				// TBD: If no PackageId specified, we'll let referencing projects define the package path 
+				string.IsNullOrEmpty(file.GetMetadata("PackageId")))
+				return output;
 
 			// Special case for contentFiles, since they can also provide a codeLanguage metadata
 			if (packageFolder == PackagingConstants.Folders.ContentFiles)
@@ -97,7 +102,6 @@ namespace NuGet.Build.Packaging.Tasks
 				// Otherwise, it goes to a framework-specific folder.
 				Path.Combine(new[] { packageFolder, targetFramework }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
 
-			output.SetMetadata(MetadataName.TargetFramework, targetFramework);
 			output.SetMetadata(MetadataName.PackagePath, packagePath);
 
 			return output;

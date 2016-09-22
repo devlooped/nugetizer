@@ -65,33 +65,6 @@ namespace NuGet.Build.Packaging
 				task.CreateManifest();
 
 		[Fact]
-		public void when_creating_package_with_simple_dependency_then_contains_dependency_group()
-		{
-			task.Contents = new[]
-			{
-				new TaskItem("Newtonsoft.Json", new Metadata
-				{
-					{ MetadataName.PackageId, task.Id },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
-					{ MetadataName.Version, "8.0.0" },
-					// NOTE: AssignPackagePath takes care of converting TFM > short name
-					{ MetadataName.TargetFramework, "net45" }
-				}),
-			};
-
-			var manifest = ExecuteTask();
-
-			Assert.NotNull(manifest);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
-			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
-			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
-
-			// We get a version range actually for the specified dependency, like [1.0.0,)
-			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
-		}
-
-		[Fact]
 		public void when_creating_package_then_contains_all_metadata()
 		{
 			task.Contents = new[]
@@ -121,6 +94,62 @@ namespace NuGet.Build.Packaging
 			Assert.Equal(task.IconUrl, metadata.IconUrl.ToString());
 			Assert.Equal(task.ReleaseNotes, metadata.ReleaseNotes);
 			Assert.Equal(task.MinClientVersion, metadata.MinClientVersion.ToString());
+		}
+
+
+		[Fact]
+		public void when_creating_package_with_simple_dependency_then_contains_dependency_group()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Id },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.NotNull(manifest);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+
+			// We get a version range actually for the specified dependency, like [1.0.0,)
+			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
+		}
+
+
+		[Fact]
+		public void when_creating_package_with_referenced_package_project_then_contains_package_dependency()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Id },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.NotNull(manifest);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+
+			// We get a version range actually for the specified dependency, like [1.0.0,)
+			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
 		}
 	}
 }
