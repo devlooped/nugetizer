@@ -25,13 +25,17 @@
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>full</DebugType>
 		<NoWarn>1692;$(NoWarn)</NoWarn>
-		<SignAssembly>true</SignAssembly>
-		<PublicSign>true</PublicSign>
-		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)PublicKey.snk</AssemblyOriginatorKeyFile>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<ThisAssemblyNamespace>$(RootNamespace)</ThisAssemblyNamespace>
 	</PropertyGroup>
 
+	<!-- Default to unsigned assemblies unless explicitly told to sign -->
+	<PropertyGroup Condition="'$(PublicSign)' == 'true'">
+		<SignAssembly>true</SignAssembly>
+		<PublicSign>true</PublicSign>
+		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)PublicKey.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+	
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<DefineConstants Condition=" '$(DefineConstants)' != '' ">$(DefineConstants);RELEASE</DefineConstants>
 		<DefineConstants Condition=" '$(DefineConstants)' == '' ">RELEASE</DefineConstants>
