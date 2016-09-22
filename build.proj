@@ -49,7 +49,7 @@
 			<XunitOptions>$(XunitOptions) -html $(Out)\test.html -xml $(Out)\test.xml -parallel none -noshadow</XunitOptions>
 
 			<CoverageConsole>$(PackagesPath)\OpenCover\tools\OpenCover.Console.exe</CoverageConsole>
-			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[NuGet.Build.Packaging*]* -[NuGet.Packaging.VisualStudio*]* -[Clide*]* -[xunit*]* -[*Tests]* -[*]*ThisAssembly*" -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
+			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[NuGet.Build.Packaging*]* -[NuGet.Packaging.Core*]* -[NuGet.Packaging.VisualStudio*]* -[Clide*]* -[xunit*]* -[*Tests]* -[*]*ThisAssembly*" -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
 			<CoverageCommand>$(CoverageConsole) $(CoverageOptions) -target:$(XunitConsole) -targetargs:"@(TestAssembly, ' ') $(XunitOptions)"</CoverageCommand>
 
 			<ReportConsole>$(PackagesPath)\ReportGenerator\tools\ReportGenerator.exe</ReportConsole>
