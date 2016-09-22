@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -74,20 +75,26 @@ public class VerbosityAttribute : BeforeAfterTestAttribute
 
 	public override void Before(MethodInfo methodUnderTest)
 	{
+		// Don't ever set the verbosity on release builds just in case 
+		// we forget the attribute in a commit ;)
+#if DEBUG
 		var data = Thread.GetNamedDataSlot(nameof(LoggerVerbosity));
 		if (data == null)
 			data = Thread.AllocateNamedDataSlot(nameof(LoggerVerbosity));
 
 		Thread.SetData(data, Verbosity);
+#endif
 
 		base.Before(methodUnderTest);
 	}
 
 	public override void After(MethodInfo methodUnderTest)
 	{
+#if DEBUG
 		var data = Thread.GetNamedDataSlot(nameof(LoggerVerbosity));
 		if (data != null)
 			Thread.SetData(data, null);
+#endif
 
 		base.After(methodUnderTest);
 	}

@@ -11,6 +11,7 @@
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<OutputPath>bin\$(MSBuildProjectName)</OutputPath>
+		<IntermediateOutputPath>obj\$(MSBuildProjectName)</IntermediateOutputPath>
 		<OutputType>Library</OutputType>
 		<RootNamespace>Scenario</RootNamespace>
 		<!-- These properties are more likely to change per-project -->
@@ -29,11 +30,20 @@
 
 		<!-- Used for Dump/Introspect -->
 		<UseCompiledTasks>true</UseCompiledTasks>
+		
 		<!-- Avoids warnings from Xamarin global imports.-->
 		<!--<ImportByWildcardAfterMicrosoftCommonTargets>false</ImportByWildcardAfterMicrosoftCommonTargets>
 		<ImportByWildcardBeforeMicrosoftCommonTargets>false</ImportByWildcardBeforeMicrosoftCommonTargets>-->
 		<!-- Prevents Fody.VerifyTask from running -->
 		<NCrunch>1</NCrunch>
+		<!-- Avoids architecture mismatch warnings -->
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Required package metadata -->
+		<Authors>NuGet</Authors>
+		<Description>Package for '$(MSBuildProjectName)' project.</Description>
 	</PropertyGroup>
 
 	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.props" />

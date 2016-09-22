@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Build.Framework;
+using NuGet.Packaging;
+using Xunit;
 
 namespace NuGet.Build.Packaging
 {
@@ -25,6 +27,14 @@ namespace NuGet.Build.Packaging
 			}
 
 			return true;
+		}
+
+		public static Manifest GetManifest(this ITaskItem package)
+		{
+			using (var reader = new PackageArchiveReader(package.GetMetadata("FullPath")))
+			{
+				return reader.GetManifest();
+			}
 		}
 	}
 }

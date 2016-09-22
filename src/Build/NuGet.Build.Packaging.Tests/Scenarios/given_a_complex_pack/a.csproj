@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
 	<PropertyGroup>
-		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ProjectGuid>$(GuidA)</ProjectGuid>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 		<PackageId>A</PackageId>
 		<PackageVersion>1.0.0</PackageVersion>
 	</PropertyGroup>

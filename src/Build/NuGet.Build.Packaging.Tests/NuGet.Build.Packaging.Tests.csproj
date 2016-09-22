@@ -12,6 +12,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
@@ -63,16 +65,13 @@
     <Compile Include="given_library_project_with_nugets.cs" />
     <Compile Include="given_an_empty_library_project.cs" />
     <Compile Include="given_a_library_with_project_reference.cs" />
+    <Compile Include="UtilitiesTests.cs" />
     <Compile Include="Utilities\MockBuildEngine.cs" />
     <Compile Include="Utilities\ModuleInitializer.cs" />
     <Compile Include="Utilities\TaskItemExtensions.cs" />
     <Compile Include="Utilities\TestOutputLogger.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NuGet.Build.Packaging.Authoring.Tasks\NuGet.Build.Packaging.Authoring.Tasks.csproj">
-      <Project>{f145ce58-06aa-4499-89d5-e5144b38d8f3}</Project>
-      <Name>NuGet.Build.Packaging.Authoring.Tasks</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj">
       <Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
       <Name>NuGet.Build.Packaging.Tasks</Name>

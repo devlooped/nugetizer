@@ -67,7 +67,7 @@ public static partial class Builder
 			xml.Add(new XElement("ProjectConfiguration",
 				new XAttribute("Project", reference.GetPropertyValue("ProjectGuid")),
 				new XAttribute("AbsolutePath", reference.FullPath),
-				new XAttribute("BuildProjectInSolution", "false"))
+				new XAttribute("BuildProjectInSolution", "true"))
 			{
 				Value = $"{config}|{platform}"
 			});

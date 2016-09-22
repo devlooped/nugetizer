@@ -26,15 +26,16 @@
 		</ItemGroup>
 	</Target>-->
 
-	<Target Name="Dump" DependsOnTargets="_FilterPackageDependencyContents">
-		<!--<DumpItems Items="@(_FilteredPackageContent)" ItemName="_FilteredPackageContent" />-->
-		<!--<DumpItems Items="@(_MSBuildProjectReferenceExistent)" ItemName="_MSBuildProjectReferenceExistent" />-->
-		<Message Importance="high" Text="%(_FilteredPackageContent.Filename)%(_FilteredPackageContent.Extension)
-	Kind=%(_FilteredPackageContent.Kind)
-	PackageId=%(_FilteredPackageContent.PackageId)
-	PackagePath=%(_FilteredPackageContent.PackagePath)
-	TargetFramework=%(_FilteredPackageContent.TargetFramework)
-	TargetFrameworkMoniker=%(_FilteredPackageContent.TargetFrameworkMoniker)" />
+	<Target Name="Dump" DependsOnTargets="GetPackageContents">
+    <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
+    <!--<DumpItems Items="@(_MSBuildProjectReferenceExistent)" ItemName="_MSBuildProjectReferenceExistent" />-->
+		<Message Importance="high" Text="%(_PackContent.Filename)%(_PackContent.Extension)
+	Kind=%(_PackContent.Kind)
+	PackageId=%(_PackContent.PackageId)
+	PackagePath=%(_PackContent.PackagePath)
+	TargetFramework=%(_PackContent.TargetFramework)
+	TargetFrameworkMoniker=%(_PackContent.TargetFrameworkMoniker)" />
+
 	</Target>
 
 	
