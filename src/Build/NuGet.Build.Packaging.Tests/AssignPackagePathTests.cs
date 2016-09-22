@@ -199,8 +199,10 @@ namespace NuGet.Build.Packaging
 		}
 
 		public static IEnumerable<object[]> GetMappedKnownKinds => kinds
-			// None don't get a package folder at all, and contentFiles get a special map that includes the codelang
-			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles")
+			// Skip unmapped kinds (i.e. None, Dependency, etc.)
+			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) &&
+				// Skip contentFiles from this test since they get a special map that includes the codelang
+				kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles")
 			.Select(kind => new object[] { kind.ItemSpec, kind.GetMetadata("PackageFolder") });
 
 		[MemberData("GetMappedKnownKinds")]
@@ -226,6 +228,36 @@ namespace NuGet.Build.Packaging
 			Assert.Equal(mappedPackageFolder, task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
 			Assert.Equal($"{mappedPackageFolder}\\net45\\library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
 		}
+
+		public static IEnumerable<object[]> GetUnmappedKnownKinds => kinds
+			.Where(kind => string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && 
+				kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles" && 
+				kind.ItemSpec != PackageItemKind.None)
+			.Select(kind => new object[] { kind.ItemSpec });
+
+		[MemberData("GetUnmappedKnownKinds")]
+		[Theory]
+		public void when_file_has_known_kind_with_no_package_folder_then_package_path_is_empty(string packageFileKind)
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("Foo", new Dictionary<string,string>
+					{
+						{ "PackageId", "A" },
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", packageFileKind }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Equal("", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+		}
+
 
 		[Fact]
 		public void when_file_has_explicit_package_path_then_calculated_package_folder_is_empty_and_preserves_package_path()
