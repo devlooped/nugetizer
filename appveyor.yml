@@ -1,5 +1,15 @@
 os: Visual Studio 2015
 
+init:
+- ps: >-
+    reg ADD "HKLM\Software\Microsoft\StrongName\Verification\*,*" /f
+
+    if ($env:PROCESSOR_ARCHITECTURE -eq "AMD64")
+
+    {
+      reg ADD "HKLM\Software\Wow6432Node\Microsoft\StrongName\Verification\*,*" /f
+    }
+
 build_script:
 - cmd: msbuild build.proj /t:build,test,package /v:minimal 
 

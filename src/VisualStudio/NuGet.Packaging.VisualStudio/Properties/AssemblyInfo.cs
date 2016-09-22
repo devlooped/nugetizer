@@ -1,4 +1,4 @@
-﻿using NuGet.Packaging;
+﻿using NuGet.Build.Packaging;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

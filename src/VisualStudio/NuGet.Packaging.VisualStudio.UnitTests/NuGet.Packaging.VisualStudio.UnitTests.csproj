@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Shared.props))\NuGet.Packaging.Shared.props" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.props))\NuGet.Build.Packaging.Shared.props" />
   <PropertyGroup>
     <ProjectGuid>{AED0CC61-5461-4AF7-921E-8C292B44D0F5}</ProjectGuid>
     <RootNamespace>NuGet.Packaging.VisualStudio.UnitTests</RootNamespace>
@@ -39,7 +39,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Packaging.Shared.targets))\NuGet.Packaging.Shared.targets" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.targets))\NuGet.Build.Packaging.Shared.targets" />
   <Target Name="FixGitInfo" BeforeTargets="CoreCompile" AfterTargets="GitThisAssembly">
     <ItemGroup>
       <Compile Remove="$(GitInfoThisAssemblyFile)" />

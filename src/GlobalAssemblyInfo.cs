@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 0436
 
 using System.Reflection;
-using NuGet.Packaging;
+using NuGet.Build.Packaging;
 
 [assembly: AssemblyCompany ("Microsoft")]
 [assembly: AssemblyProduct ("Microsoft NuGet Packaging")]
@@ -21,7 +21,7 @@ using NuGet.Packaging;
 [assembly: AssemblyFileVersion(ThisAssembly.FullVersion)]
 [assembly: AssemblyInformationalVersion(ThisAssembly.InformationalVersion)]
 
-namespace NuGet.Packaging
+namespace NuGet.Build.Packaging
 {
 	partial class ThisAssembly
 	{

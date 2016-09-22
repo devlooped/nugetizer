@@ -1,0 +1,153 @@
+<!--
+***********************************************************************************************
+Microsoft.NuGet.Build.Packaging.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.AssignPackagePath" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+
+	<PropertyGroup>
+		<IncludeSymbols Condition=" '$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug' ">true</IncludeSymbols>
+		<IsPackable Condition="'$(IsPackable)' == '' And '$(PackageId)' != ''">true</IsPackable>
+		<BuildPackage Condition=" '$(BuildPackage)' == '' and '$(IsPackable)' == 'true'">true</BuildPackage>
+		<!-- Directory where the .nupkg will be saved to if BuildPackage is run -->
+		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(IntermediateOutputPath)</PackageOutputPath>
+		<BuildDependsOn Condition="'$(BuildPackage)' == 'true'">
+			$(BuildDependsOn);
+			Pack;
+		</BuildDependsOn>
+		<!-- NOTE: this is the "internal" DependsOn for our implementation of the collecting target.
+			 Users extend GetPackageContentsDependsOn instead. This ensures that our own dependencies will not 
+			 be accidentally overriden.
+		-->
+		<_GetPackageContentsDependsOn>
+			AssignProjectConfiguration;
+			_SplitProjectReferencesByFileExistence;
+			AllProjectOutputGroups;
+			_CollectPackageContents;
+		</_GetPackageContentsDependsOn>
+	</PropertyGroup>
+
+	<Target Name="GetPackageContents" DependsOnTargets="$(_GetPackageContentsDependsOn)" Returns="@(_PackageContent)" />
+
+	<Target Name="_CollectPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)">
+		<!-- We define these here so that potentially other targets can populate these properties before this target runs. -->
+		<PropertyGroup>
+			<PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
+		</PropertyGroup>
+
+		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
+         NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the 
+         current project. -->
+		<ItemGroup>
+			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')">
+				<Kind>Lib</Kind>
+			</PackageFile>
+
+			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+						 Condition="'$(IncludeSymbols)' == 'true'">
+				<Kind>Symbols</Kind>
+			</PackageFile>
+
+			<PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')">
+				<Kind>Doc</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<ItemGroup>
+			<!-- Always annotate files with the declaring project target framework. 
+				 TODO: take into account multi-targetting. -->
+			<PackageFile>
+				<PackageId>$(PackageId)</PackageId>
+				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</PackageFile>
+		</ItemGroup>
+
+		<!-- Ensure we have a TargetPath determined from the current project directory like any other items -->
+		<AssignTargetPath Files="@(PackageFile)" RootFolder="$(MSBuildProjectDirectory)">
+			<Output TaskParameter="AssignedFiles" ItemName="_PackageFileWithTargetPath" />
+		</AssignTargetPath>
+
+		<AssignPackagePath Files="@(_PackageFileWithTargetPath)" Kinds="@(PackageItemKind)">
+			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
+		</AssignPackagePath>
+
+		<ItemGroup>
+			<!-- Convert PackageReferences to _PackageContent -->
+			<_PackageContent Include="@(PackageReference)">
+				<Kind>Dependency</Kind>
+			</_PackageContent>
+			<!-- Specific framework targets would turn:
+				* @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to Kind=FrameworkReference
+				  (maybe ResolvedFrom=ImplicitlyExpandDesignTimeFacades too?)
+				* @(ReferencePath) are resolved otherwise (i.e. ResolvedFrom={RawFile}) to Kind=AssemblyReference
+			-->
+		</ItemGroup>
+		
+		<!-- If packaging the project, provide the metadata as a non-file item -->
+		<ItemGroup Condition="'$(PackageId)' != ''">
+			<_PackageContent Include="$(PackageId)">
+				<!-- For consistency with the other items, we also provide this metadata -->
+				<PackageId>$(PackageId)</PackageId>
+				<Kind>Metadata</Kind>
+
+				<!-- The rest of the metadata items don't need to repeat "Package" prefix all the time -->
+				<Id>$(PackageId)</Id>
+				<Version>$(PackageVersion)</Version>
+				<Authors>$(Authors)</Authors>
+				<Owners>$(Owners)</Owners>
+				<Title>$(Title)</Title>
+				<Description>$(Description)</Description>
+				<Summary>$(Summary)</Summary>
+				<Language>$(NeutralLanguage)</Language>
+				<Copyright>$(Copyright)</Copyright>
+
+				<RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
+				<LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
+				<ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
+				<Tags>$(PackageTags)</Tags>
+
+				<ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
+				<RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+				<RepositoryType>$(RepositoryType)</RepositoryType>
+				<PackageType>$(PackageType)</PackageType>
+			</_PackageContent>
+		</ItemGroup>
+
+		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+				 Targets="GetPackageContents"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
+				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
+				 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_PackageContent" />
+		</MSBuild>
+
+	</Target>
+
+	<Target Name="Pack" DependsOnTargets="_CollectPackageContents;$(BuildPackageDependsOn)" Condition="'$(IsPackable)' == 'true'">
+		<CreatePackage Id="$(PackageId)"
+					   Version="$(PackageVersion)"
+					   Contents="@(PackageContent)"
+					   Authors="$(Authors)"
+					   Description="$(Description)"
+					   Copyright="$(Copyright)"
+					   RequireLicenseAcceptance="$(PackageRequireLicenseAcceptance)"
+					   LicenseUrl="$(PackageLicenseUrl)"
+					   ProjectUrl="$(PackageProjectUrl)"
+					   IconUrl="$(PackageIconUrl)"
+					   ReleaseNotes="$(PackageReleaseNotes)"
+					   Tags="$(PackageTags)"
+					   OutputPath="$(PackageOutputPath)"
+					   NoPackageAnalysis="$(NoPackageAnalysis)"
+					   MinClientVersion="$(MinClientVersion)" />
+	</Target>
+
+</Project>
