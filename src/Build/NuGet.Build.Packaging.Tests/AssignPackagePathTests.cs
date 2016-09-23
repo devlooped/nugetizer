@@ -6,8 +6,9 @@ using Microsoft.Build.Utilities;
 using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
-using static NuGet.Build.Packaging.Properties.Strings;
 using NuGet.Build.Packaging.Tasks;
+using static NuGet.Build.Packaging.Properties.Strings;
+using Metadata = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NuGet.Build.Packaging
 {
@@ -40,7 +41,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" }
@@ -49,7 +50,28 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.False(task.Execute());
-			Assert.Equal(engine.LoggedErrorEvents[0].Code, nameof(ErrorCode.NP0010));
+			Assert.Equal(nameof(ErrorCode.NP0010), engine.LoggedErrorEvents[0].Code);
+		}
+
+		[Fact]
+		public void when_file_has_no_kind_but_has_package_path_then_assigns_target_framework()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("library.dll", new Metadata
+					{
+						{ "PackagePath", "workbooks\\library.dll" },
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Equal("net45", task.AssignedFiles[0].GetMetadata(MetadataName.TargetFramework));
 		}
 
 		[Fact]
@@ -61,13 +83,13 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("a.dll", new Dictionary<string,string>
+					new TaskItem("a.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "Lib" }
 					}),
-					new TaskItem("a.pdb", new Dictionary<string,string>
+					new TaskItem("a.pdb", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -90,7 +112,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "Lib" }
@@ -111,7 +133,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "Lib" }
@@ -132,7 +154,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "Lib" }
@@ -153,7 +175,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "Kind", "Lib" }
@@ -183,7 +205,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", targetFrameworkMoniker },
@@ -215,7 +237,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -245,7 +267,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("Foo", new Dictionary<string,string>
+					new TaskItem("Foo", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -268,7 +290,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("readme.txt", new Dictionary<string,string>
+					new TaskItem("readme.txt", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -280,7 +302,7 @@ namespace NuGet.Build.Packaging
 
 			Assert.True(task.Execute());
 			Assert.Empty(task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal(task.AssignedFiles[0].GetMetadata("PackagePath"), "docs\\readme.txt");
+			Assert.Equal("docs\\readme.txt", task.AssignedFiles[0].GetMetadata("PackagePath"));
 		}
 
 		[InlineData("", "vb", "contentFiles\\vb\\any\\")]
@@ -296,7 +318,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("Sample.cs", new Dictionary<string,string>
+					new TaskItem("Sample.cs", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", tfm },
@@ -321,7 +343,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("readme.txt", new Dictionary<string,string>
+					new TaskItem("readme.txt", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -332,7 +354,7 @@ namespace NuGet.Build.Packaging
 
 			Assert.True(task.Execute());
 			Assert.Empty(task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal(task.AssignedFiles[0].GetMetadata("PackagePath"), "readme.txt");
+			Assert.Equal("readme.txt", task.AssignedFiles[0].GetMetadata("PackagePath"));
 		}
 
 		[Fact]
@@ -344,7 +366,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -356,7 +378,7 @@ namespace NuGet.Build.Packaging
 
 			Assert.True(task.Execute());
 			Assert.Empty(task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal(task.AssignedFiles[0].GetMetadata("PackagePath"), @"workbook\library.dll");
+			Assert.Equal(@"workbook\library.dll", task.AssignedFiles[0].GetMetadata("PackagePath"));
 		}
 
 		[Fact]
@@ -368,7 +390,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -393,7 +415,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("library.dll", new Dictionary<string,string>
+					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -416,7 +438,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("sdk\\bin\\tool.exe", new Dictionary<string,string>
+					new TaskItem("sdk\\bin\\tool.exe", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "Kind", "Tool" },
@@ -438,7 +460,7 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("sdk\\bin\\tool.exe", new Dictionary<string,string>
+					new TaskItem("sdk\\bin\\tool.exe", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -449,8 +471,7 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal(task.AssignedFiles[0].GetMetadata("PackagePath"), @"tools\net45\sdk\bin\tool.exe");
+			Assert.Equal(@"tools\net45\sdk\bin\tool.exe", task.AssignedFiles[0].GetMetadata("PackagePath"));
 		}
-
 	}
 }
