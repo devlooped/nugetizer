@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,13 +15,21 @@ using Xunit.Sdk;
 /// </summary>
 static partial class Builder
 {
-	public static ITargetResult BuildScenario(string scenarioName, object properties = null, string target = "GetPackageContents", ITestOutputHelper output = null, LoggerVerbosity? verbosity = null)
+	public static ITargetResult BuildScenario(string scenarioName, object properties = null, string projectName = null, string target = "GetPackageContents", ITestOutputHelper output = null, LoggerVerbosity? verbosity = null)
 	{
-		var projectName = scenarioName;
-		if (scenarioName.StartsWith("given", StringComparison.OrdinalIgnoreCase))
-			projectName = string.Join("_", scenarioName.Split('_').Skip(2));
-
 		var scenarioDir = Path.Combine(ModuleInitializer.BaseDirectory, "Scenarios", scenarioName);
+
+		if (projectName == null)
+		{
+			projectName = scenarioName;
+			if (scenarioName.StartsWith("given", StringComparison.OrdinalIgnoreCase))
+				projectName = string.Join("_", scenarioName.Split('_').Skip(2));
+		}
+		else if (!File.Exists(Path.Combine(scenarioDir, $"{projectName}.csproj")))
+		{
+			throw new FileNotFoundException($"Project '{projectName}' was not found under scenario path '{scenarioDir}'.", projectName);
+		}
+
 		string projectOrSolution;
 
 		if (File.Exists(Path.Combine(scenarioDir, $"{projectName}.csproj")))
@@ -66,20 +75,26 @@ public class VerbosityAttribute : BeforeAfterTestAttribute
 
 	public override void Before(MethodInfo methodUnderTest)
 	{
+		// Don't ever set the verbosity on release builds just in case 
+		// we forget the attribute in a commit ;)
+#if DEBUG
 		var data = Thread.GetNamedDataSlot(nameof(LoggerVerbosity));
 		if (data == null)
 			data = Thread.AllocateNamedDataSlot(nameof(LoggerVerbosity));
 
 		Thread.SetData(data, Verbosity);
+#endif
 
 		base.Before(methodUnderTest);
 	}
 
 	public override void After(MethodInfo methodUnderTest)
 	{
+#if DEBUG
 		var data = Thread.GetNamedDataSlot(nameof(LoggerVerbosity));
 		if (data != null)
 			Thread.SetData(data, null);
+#endif
 
 		base.After(methodUnderTest);
 	}

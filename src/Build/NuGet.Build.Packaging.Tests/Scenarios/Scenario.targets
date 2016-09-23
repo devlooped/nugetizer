@@ -9,7 +9,7 @@
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Tests.nuget.targets))\NuGet.Build.Packaging.Tests.nuget.targets"/>
 	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" />
 
-	<PropertyGroup>
+	<!--<PropertyGroup>
 		<GetPackageContentsDependsOn>
 			AddPackageFile;
 			$(GetPackageContentsDependsOn);
@@ -20,15 +20,25 @@
 		<ItemGroup>
 			<PackageFile Include="readme.txt">
 				<Kind>Content</Kind>
-				<CodeLanguage>cs</CodeLanguage>
+				<CodeLanguage>any</CodeLanguage>
+				<TargetFramework>any</TargetFramework>
 			</PackageFile>
 		</ItemGroup>
-	</Target>
+	</Target>-->
 
 	<Target Name="Dump" DependsOnTargets="GetPackageContents">
-		<DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
+    <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
+    <!--<DumpItems Items="@(_MSBuildProjectReferenceExistent)" ItemName="_MSBuildProjectReferenceExistent" />-->
+		<Message Importance="high" Text="%(_PackContent.Filename)%(_PackContent.Extension)
+	Kind=%(_PackContent.Kind)
+	PackageId=%(_PackContent.PackageId)
+	PackagePath=%(_PackContent.PackagePath)
+	TargetFramework=%(_PackContent.TargetFramework)
+	TargetFrameworkMoniker=%(_PackContent.TargetFrameworkMoniker)" />
+
 	</Target>
 
+	
 	<!-- Turn off Fody we use for ModuleInitializer in unit tests -->
 	<Target Name="FodyTarget" />
 	<Target Name="FodyVerifyTarget" />

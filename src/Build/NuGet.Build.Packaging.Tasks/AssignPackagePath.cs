@@ -42,9 +42,6 @@ namespace NuGet.Build.Packaging.Tasks
 
 		ITaskItem EnsurePackagePath(ITaskItem file, IDictionary<string, string> kindMap)
 		{
-			if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")))
-				return new TaskItem(file);
-
 			var kind = file.GetMetadata("Kind");
 			if (string.IsNullOrEmpty(kind))
 			{
@@ -68,6 +65,17 @@ namespace NuGet.Build.Packaging.Tasks
 
 			var frameworkMoniker = file.GetTargetFrameworkMoniker();
 			var targetFramework = frameworkMoniker.GetShortFrameworkName() ?? "";
+			// At this point we have the correct target framework
+			output.SetMetadata(MetadataName.TargetFramework, targetFramework);
+
+			// If PackagePath already specified, skip the rest.
+			if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")) ||
+				// TBD: If no PackageId specified, we'll let referencing projects define the package path 
+				string.IsNullOrEmpty(file.GetMetadata("PackageId")) || 
+				// If the kind is known but there is no mapped folder into the package, skip the rest.
+				// Special-case None kind since that means 'leave it wherever it lands' ;)
+				(string.IsNullOrEmpty(packageFolder) && kind != PackageItemKind.None))
+				return output;
 
 			// Special case for contentFiles, since they can also provide a codeLanguage metadata
 			if (packageFolder == PackagingConstants.Folders.ContentFiles)
@@ -84,6 +92,9 @@ namespace NuGet.Build.Packaging.Tasks
 					targetFramework = PackagingConstants.AnyFramework;
 			}
 
+			// NOTE: TargetPath allows a framework-specific file to still specify its relative 
+			// location without hardcoding the target framework (useful for multi-targetting and 
+			// P2P references)
 			var targetPath = file.GetMetadata("TargetPath");
 			if (string.IsNullOrEmpty(targetPath))
 				targetPath = file.GetMetadata("FileName") + file.GetMetadata("Extension");
@@ -97,7 +108,6 @@ namespace NuGet.Build.Packaging.Tasks
 				// Otherwise, it goes to a framework-specific folder.
 				Path.Combine(new[] { packageFolder, targetFramework }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
 
-			output.SetMetadata(MetadataName.TargetFramework, targetFramework);
 			output.SetMetadata(MetadataName.PackagePath, packagePath);
 
 			return output;

@@ -42,6 +42,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("library.dll", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" }
 					})
 				}
@@ -62,11 +63,13 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("a.dll", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "Lib" }
 					}),
 					new TaskItem("a.pdb", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "Symbols" }
 					})
@@ -76,6 +79,69 @@ namespace NuGet.Build.Packaging
 			Assert.True(task.Execute());
 
 			Assert.Equal(task.Files.Length, task.AssignedFiles.Length);
+		}
+
+		[Fact]
+		public void when_file_has_no_package_id_then_package_path_is_not_specified()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("library.dll", new Dictionary<string,string>
+					{
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", "Lib" }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Equal("", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+		}
+
+		[Fact]
+		public void when_file_has_no_package_id_then_target_framework_is_calculated_anyway()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("library.dll", new Dictionary<string,string>
+					{
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", "Lib" }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Equal("net45", task.AssignedFiles[0].GetMetadata(MetadataName.TargetFramework));
+		}
+
+		[Fact]
+		public void when_file_has_no_package_id_then_package_folder_is_calculated_anyway()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("library.dll", new Dictionary<string,string>
+					{
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", "Lib" }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Equal("lib", task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
 		}
 
 		[Fact]
@@ -89,6 +155,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("library.dll", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "Kind", "Lib" }
 					})
 				}
@@ -118,6 +185,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("library.dll", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", targetFrameworkMoniker },
 						{ "Kind", "Lib" }
 					})
@@ -131,8 +199,10 @@ namespace NuGet.Build.Packaging
 		}
 
 		public static IEnumerable<object[]> GetMappedKnownKinds => kinds
-			// None don't get a package folder at all, and contentFiles get a special map that includes the codelang
-			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles")
+			// Skip unmapped kinds (i.e. None, Dependency, etc.)
+			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) &&
+				// Skip contentFiles from this test since they get a special map that includes the codelang
+				kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles")
 			.Select(kind => new object[] { kind.ItemSpec, kind.GetMetadata("PackageFolder") });
 
 		[MemberData("GetMappedKnownKinds")]
@@ -147,6 +217,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("library.dll", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", packageFileKind }
 					})
@@ -157,6 +228,36 @@ namespace NuGet.Build.Packaging
 			Assert.Equal(mappedPackageFolder, task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
 			Assert.Equal($"{mappedPackageFolder}\\net45\\library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
 		}
+
+		public static IEnumerable<object[]> GetUnmappedKnownKinds => kinds
+			.Where(kind => string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && 
+				kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles" && 
+				kind.ItemSpec != PackageItemKind.None)
+			.Select(kind => new object[] { kind.ItemSpec });
+
+		[MemberData("GetUnmappedKnownKinds")]
+		[Theory]
+		public void when_file_has_known_kind_with_no_package_folder_then_package_path_is_empty(string packageFileKind)
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("Foo", new Dictionary<string,string>
+					{
+						{ "PackageId", "A" },
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", packageFileKind }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Equal("", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+		}
+
 
 		[Fact]
 		public void when_file_has_explicit_package_path_then_calculated_package_folder_is_empty_and_preserves_package_path()
@@ -169,6 +270,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("readme.txt", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "None" },
 						{ "PackagePath", "docs\\readme.txt" }
@@ -196,6 +298,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("Sample.cs", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", tfm },
 						{ "Kind", "Content" },
 						{ "CodeLanguage", lang }
@@ -220,6 +323,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("readme.txt", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "None" }
 					})
@@ -242,6 +346,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("library.dll", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "None" },
 						{ "TargetPath", "workbook\\library.dll"}
@@ -265,6 +370,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("library.dll", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "None" }
 					})
@@ -289,6 +395,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("library.dll", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", packageFileKind }
 					})
@@ -311,6 +418,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("sdk\\bin\\tool.exe", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "Kind", "Tool" },
 						{ "TargetPath", "sdk\\bin\\tool.exe"}
 					})
@@ -332,6 +440,7 @@ namespace NuGet.Build.Packaging
 				{
 					new TaskItem("sdk\\bin\\tool.exe", new Dictionary<string,string>
 					{
+						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "Tool" },
 						{ "TargetPath", "sdk\\bin\\tool.exe"}

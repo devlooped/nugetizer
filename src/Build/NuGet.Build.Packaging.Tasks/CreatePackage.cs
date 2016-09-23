@@ -8,57 +8,42 @@ using NuGet.Versioning;
 using NuGet.Frameworks;
 using NuGet.Packaging.Core;
 using NuGet.Packaging;
+using System.Collections.Generic;
 
 namespace NuGet.Build.Packaging.Tasks
 {
 	public class CreatePackage : Task
 	{
 		[Required]
-		public string Id { get; set; }
-
-		[Required]
-		public string Version { get; set; }
+		public ITaskItem Manifest { get; set; }
 
 		[Required]
 		public ITaskItem[] Contents { get; set; }
 
-		public string Authors { get; set; }
+		public string TargetPath { get; set; }
 
-		public string Owners { get; set; }
-
-		public string Title { get; set; }
-
-		public string Description { get; set; }
-
-		public string Summary { get; set; }
-
-		public string Language { get; set; }
-
-		public string Copyright { get; set; }
-
-		public string RequireLicenseAcceptance { get; set; }
-
-		public string LicenseUrl { get; set; }
-
-		public string ProjectUrl { get; set; }
-
-		public string IconUrl { get; set; }
-
-		public string ReleaseNotes { get; set; }
-
-		public string Tags { get; set; }
-
-		public string OutputPath { get; set; }
-
-		public bool NoPackageAnalysis { get; set; }
-
-		public string MinClientVersion { get; set; }
+		[Output]
+		public ITaskItem OutputPackage { get; set; }
 
 		public override bool Execute()
 		{
-			//  TODO: create file on OutputPath, invoke ExecuteImpl and return true.
+			try
+			{
+				using (var stream = File.Create(TargetPath))
+				{
+					BuildPackage(stream);
+				}
 
-			return true;
+				OutputPackage = new TaskItem(TargetPath);
+				Manifest.CopyMetadataTo(OutputPackage);
+					 
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Log.LogErrorFromException(ex);
+				return false;
+			}
 		}
 
 		// Implementation for testing to avoid I/O
@@ -67,11 +52,9 @@ namespace NuGet.Build.Packaging.Tasks
 			BuildPackage(output);
 
 			output.Seek(0, SeekOrigin.Begin);
-			var reader = new PackageArchiveReader(output);
-
-			using (var stream = reader.GetNuspec())
+			using (var reader = new PackageArchiveReader(output))
 			{
-				return Manifest.ReadFrom(stream, true);
+				return reader.GetManifest();
 			}
 		}
 
@@ -79,52 +62,52 @@ namespace NuGet.Build.Packaging.Tasks
 		{
 			var metadata = new ManifestMetadata();
 
-			metadata.Id = Id;
-			if (!string.IsNullOrEmpty(Authors))
-				metadata.Authors = Authors.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			if (!string.IsNullOrEmpty(Owners))
-				metadata.Owners = Owners.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			metadata.Id = Manifest.GetMetadata("Id");
+			metadata.Version = NuGetVersion.Parse(Manifest.GetMetadata("Version"));
 
-			metadata.Title = Title;
-			metadata.Description = Description;
-			metadata.Summary = Summary;
-			metadata.Language = Language;
-			metadata.Copyright = Copyright;
+			metadata.Title = Manifest.GetMetadata("Title");
+			metadata.Description = Manifest.GetMetadata("Description");
+			metadata.Summary = Manifest.GetMetadata("Summary");
+			metadata.Language = Manifest.GetMetadata("Language");
 
-			metadata.RequireLicenseAcceptance = string.IsNullOrEmpty(RequireLicenseAcceptance) ? false : bool.Parse(RequireLicenseAcceptance);
-			metadata.SetLicenseUrl(LicenseUrl);
-			metadata.SetProjectUrl(ProjectUrl);
-			metadata.SetIconUrl(IconUrl);
-			metadata.ReleaseNotes = ReleaseNotes;
-			metadata.Tags = Tags;
-			metadata.MinClientVersionString = MinClientVersion;
-			metadata.Version = NuGetVersion.Parse(Version);
+			metadata.Copyright = Manifest.GetMetadata("Copyright");
+			metadata.RequireLicenseAcceptance = string.IsNullOrEmpty(Manifest.GetMetadata("RequireLicenseAcceptance")) ? false :
+				bool.Parse(Manifest.GetMetadata("RequireLicenseAcceptance"));
+
+			if (!string.IsNullOrEmpty(Manifest.GetMetadata("Authors")))
+				metadata.Authors = Manifest.GetMetadata("Authors").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			if (!string.IsNullOrEmpty(Manifest.GetMetadata("Owners")))
+				metadata.Owners = Manifest.GetMetadata("Owners").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (!string.IsNullOrEmpty(Manifest.GetMetadata("LicenseUrl")))
+				metadata.SetLicenseUrl(Manifest.GetMetadata("LicenseUrl"));
+			if (!string.IsNullOrEmpty(Manifest.GetMetadata("ProjectUrl")))
+				metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
+			if (!string.IsNullOrEmpty(Manifest.GetMetadata("IconUrl")))
+				metadata.SetIconUrl(Manifest.GetMetadata("IconUrl"));
+
+			metadata.ReleaseNotes = Manifest.GetMetadata("ReleaseNotes");
+			metadata.Tags = Manifest.GetMetadata("Tags");
+			metadata.MinClientVersionString = Manifest.GetMetadata("MinClientVersion");
 
 			var manifest = new Manifest(metadata);
 
-			// TODO: Add files.
 			AddDependencies(manifest);
+			AddFiles(manifest);
 
 			return manifest;
 		}
 
 		void AddDependencies(Manifest manifest)
 		{
-			// Collect all dependencies that are direct on the calling project, 
-			// meaning they have a PackageId == Id being generated.
-			var directDependencies = from item in Contents
-									 where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency
-									 let packageId = item.GetMetadata(MetadataName.PackageId)
-									 where packageId == Id
-									 select new Dependency
-									 {
-										 Id = item.ItemSpec,
-										 Version = VersionRange.Parse(item.GetMetadata(MetadataName.Version)),
-										 TargetFramework = item.GetTargetFramework()
-									 };
-
-			
-			var dependencies = directDependencies; // + add Kind=Metadata as dependencies
+			var dependencies = from item in Contents
+							   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency
+							   select new Dependency
+							   {
+								   Id = item.ItemSpec,
+								   Version = VersionRange.Parse(item.GetMetadata(MetadataName.Version)),
+								   TargetFramework = item.GetTargetFramework()
+							   };
 
 			manifest.Metadata.DependencyGroups = (from dependency in dependencies
 												  group dependency by dependency.TargetFramework into dependenciesByFramework
@@ -143,15 +126,29 @@ namespace NuGet.Build.Packaging.Tasks
 												 )).ToList();
 		}
 
+		void AddFiles(Manifest manifest)
+		{
+			manifest.Files.AddRange(Contents
+				.Where(item => !string.IsNullOrEmpty(item.GetMetadata(MetadataName.PackagePath)))
+				.Select(item => new ManifestFile
+				{
+					Source = item.GetMetadata("FullPath"),
+					Target = item.GetMetadata(MetadataName.PackagePath),
+				}));
+		}
+
 		void BuildPackage(Stream output)
 		{
 			var builder = new PackageBuilder();
 			var manifest = CreateManifest();
 
 			builder.Populate(manifest.Metadata);
-			// We shouldn't need the basePath at this point, since MSBuild will resolve everything to their full paths.
-			builder.PopulateFiles("", manifest.Files);
-
+			// We don't use PopulateFiles because that performs search expansion, base path 
+			// extraction and the like, which messes with our determined files to include.
+			// TBD: do we support wilcard-based include/exclude?
+			builder.Files.AddRange(manifest.Files.Select(file => 
+				new PhysicalPackageFile { SourcePath = file.Source, TargetPath = file.Target }));
+			
 			builder.Save(output);
 		}
 

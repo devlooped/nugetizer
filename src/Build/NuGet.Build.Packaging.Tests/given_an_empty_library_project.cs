@@ -34,6 +34,7 @@ namespace NuGet.Build.Packaging
 			Assert.True(result.Items.Any(i => i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == "Symbols"), "Did not include main symbols");
 		}
 
+		[Verbosity(Microsoft.Build.Framework.LoggerVerbosity.Diagnostic)]
 		[Fact]
 		public void when_getting_package_contents_then_annotates_items_with_package_id()
 		{

@@ -31,26 +31,28 @@ namespace NuGet.Build.Packaging
 			task = new CreatePackage
 			{
 				BuildEngine = engine,
+				Manifest = new TaskItem("package", new Metadata
+				{
+					{ "Id", "package" },
+					{ "Version", "1.0.0" },
+					{ "Title", "title" },
+					{ "Description", "description" },
+					{ "Summary", "summary" },
+					{ "Language", "en" },
 
-				Id = "package",
-				Version = "1.0.0",
-				Title = "title",
-				Description = "description",
-				Summary = "summary",
-				Language = "en",
+					{ "Copyright", "copyright" },
+					{ "RequireLicenseAcceptance", "true" },
 
-				Copyright = "copyright",
-				RequireLicenseAcceptance = "true",
+					{ "Authors", "author1, author2" },
+					{ "Owners", "owner1, owner2" },
+					{ "Tags", "nuget msbuild" },
 
-				Authors = "author1, author2",
-				Owners = "owner1, owner2",
-				Tags = "nuget msbuild",
-
-				LicenseUrl = "http://contoso.com/license.txt", 
-				ProjectUrl = "http://contoso.com/",
-				IconUrl = "http://contoso.com/icon.png",
-				ReleaseNotes = "release notes",
-				MinClientVersion = "3.4.0",
+					{ "LicenseUrl", "http://contoso.com/license.txt" },
+					{ "ProjectUrl", "http://contoso.com/" },
+					{ "IconUrl", "http://contoso.com/icon.png" },
+					{ "ReleaseNotes", "release notes" },
+					{ "MinClientVersion", "3.4.0" },
+				})
 			};
 
 #if RELEASE
@@ -65,13 +67,46 @@ namespace NuGet.Build.Packaging
 				task.CreateManifest();
 
 		[Fact]
+		public void when_creating_package_then_contains_all_metadata()
+		{
+			task.Contents = new[]
+			{
+				// Need at least one dependency or content file for the generation to succeed.
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var metadata = ExecuteTask().Metadata;
+
+			Assert.True(metadata.RequireLicenseAcceptance);
+
+			Assert.Equal(task.Manifest.GetMetadata("Id"), metadata.Id);
+			Assert.Equal(task.Manifest.GetMetadata("Version"), metadata.Version.ToString());
+			Assert.Equal(task.Manifest.GetMetadata("Title"), metadata.Title);
+			Assert.Equal(task.Manifest.GetMetadata("Description"), metadata.Description);
+			Assert.Equal(task.Manifest.GetMetadata("Summary"), metadata.Summary);
+			Assert.Equal(task.Manifest.GetMetadata("Language"), metadata.Language);
+			Assert.Equal(task.Manifest.GetMetadata("Copyright"), metadata.Copyright);
+			Assert.Equal(task.Manifest.GetMetadata("LicenseUrl"), metadata.LicenseUrl.ToString());
+			Assert.Equal(task.Manifest.GetMetadata("ProjectUrl"), metadata.ProjectUrl.ToString());
+			Assert.Equal(task.Manifest.GetMetadata("IconUrl"), metadata.IconUrl.ToString());
+			Assert.Equal(task.Manifest.GetMetadata("ReleaseNotes"), metadata.ReleaseNotes);
+			Assert.Equal(task.Manifest.GetMetadata("MinClientVersion"), metadata.MinClientVersion.ToString());
+		}
+
+		[Fact]
 		public void when_creating_package_with_simple_dependency_then_contains_dependency_group()
 		{
 			task.Contents = new[]
 			{
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
-					{ MetadataName.PackageId, task.Id },
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.Kind, PackageItemKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
@@ -92,35 +127,50 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_creating_package_then_contains_all_metadata()
+		public void when_creating_package_with_referenced_package_project_then_contains_package_dependency()
 		{
 			task.Contents = new[]
 			{
-				// Need at least one dependency or content file for the generation to succeed.
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
-					{ MetadataName.PackageId, task.Id },
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.Kind, PackageItemKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" }
 				}),
 			};
 
-			var metadata = ExecuteTask().Metadata;
+			var manifest = ExecuteTask();
 
-			Assert.Equal(task.Id, metadata.Id);
-			Assert.Equal(task.Version, metadata.Version.ToString());
-			Assert.Equal(task.Title, metadata.Title);
-			Assert.Equal(task.Description, metadata.Description);
-			Assert.Equal(task.Summary, metadata.Summary);
-			Assert.Equal(task.Language, metadata.Language);
-			Assert.Equal(task.Copyright, metadata.Copyright);
-			Assert.True(metadata.RequireLicenseAcceptance);
-			Assert.Equal(task.LicenseUrl, metadata.LicenseUrl.ToString());
-			Assert.Equal(task.ProjectUrl, metadata.ProjectUrl.ToString());
-			Assert.Equal(task.IconUrl, metadata.IconUrl.ToString());
-			Assert.Equal(task.ReleaseNotes, metadata.ReleaseNotes);
-			Assert.Equal(task.MinClientVersion, metadata.MinClientVersion.ToString());
+			Assert.NotNull(manifest);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+
+			// We get a version range actually for the specified dependency, like [1.0.0,)
+			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
+		}
+
+		[Fact]
+		public void when_creating_package_with_file_then_contains_file()
+		{
+			var content = Path.GetTempFileName();
+			task.Contents = new[]
+			{
+				new TaskItem(content, new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.None },
+					{ MetadataName.PackagePath, "readme.txt" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.NotNull(manifest);
+			Assert.Contains(manifest.Files, file => file.Target == "readme.txt");
 		}
 	}
 }
