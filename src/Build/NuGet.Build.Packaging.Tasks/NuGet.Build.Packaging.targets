@@ -14,7 +14,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 
 	<PropertyGroup>
-		<IncludeSymbols Condition=" '$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug' ">true</IncludeSymbols>
+		<IncludeSymbols Condition="'$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug'">true</IncludeSymbols>
+		<IncludeOutputs Condition="'$(IncludeOutputs)' == ''">true</IncludeOutputs>
+		
 		<IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
 		<!-- Directory where the .nupkg will be saved to if Pack is run -->
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)</PackageOutputPath>
@@ -22,6 +24,25 @@ Copyright (c) .NET Foundation. All rights reserved.
 			$(BuildDependsOn);
 			Pack;
 		</BuildDependsOn>
+	</PropertyGroup>
+
+	<!-- Redefine or provide a PackageVersion to override the default. -->
+	<Target Name="GetPackageVersion"  Condition="'$(PackageVersion)' == ''">
+		<PropertyGroup>
+			<PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
+
+	<!-- Redefine or provide a PackageTargetPath to override the default. -->
+	<Target Name="GetPackageTargetPath" DependsOnTargets="GetPackageVersion" Returns="$(PackageTargetPath)">
+		<PropertyGroup>
+			<PackageTargetPath Condition="'$(PackageTargetPath)' == '' and '$(PackageId)' != ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
+			<!-- Ensure we got a full path -->
+			<PackageTargetPath Condition="'$(PackageTargetPath)' != ''">$([System.IO.Path]::GetFullPath('$(PackageTargetPath)'))</PackageTargetPath>
+		</PropertyGroup>
+	</Target>
+
+	<PropertyGroup>
 		<!-- NOTE: this is the "internal" DependsOn for our implementation of the collecting target.
 			 Users extend GetPackageContentsDependsOn instead. This ensures that our own dependencies will not 
 			 be accidentally overriden.
@@ -37,28 +58,19 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<Target Name="GetPackageContents" DependsOnTargets="$(_GetPackageContentsDependsOn)" Returns="@(_PackageContent)" />
 
-	<!-- Redefine or provide a PackageVersion to override the default. -->
-	<Target Name="GetPackageVersion"  Condition="'$(PackageVersion)' == ''">
-		<PropertyGroup>
-			<PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
-		</PropertyGroup>
-	</Target>
-
-	<!-- Redefine or provide a PackageVersion to override the default. -->
-	<Target Name="GetPackageTargetPath" DependsOnTargets="GetPackageVersion" Returns="$(PackageTargetPath)">
-		<PropertyGroup>
-			<PackageTargetPath Condition="'$(PackageTargetPath)' == '' and '$(PackageId)' != ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
-      <PackageTargetPath Condition="'$(PackageTargetPath)' != ''">$([System.IO.Path]::GetFullPath('$(PackageTargetPath)'))</PackageTargetPath>
-		</PropertyGroup>
-	</Target>
-
 	<Target Name="_CollectPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)">
 		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
 			 NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
 			 current project. -->
 		<ItemGroup>
-			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')">
+			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+						 Condition="'$(IncludeOutput)' == 'true'">
 				<Kind>Lib</Kind>
+			</PackageFile>
+			
+			<PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+						 Condition="'$(IncludeOutput)' == 'true'">
+				<Kind>Doc</Kind>
 			</PackageFile>
 
 			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
@@ -66,14 +78,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<Kind>Symbols</Kind>
 			</PackageFile>
 
-			<PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')">
-				<Kind>Doc</Kind>
+			<PackageFile Include="@(PackageReference)">
+				<Kind>Dependency</Kind>
 			</PackageFile>
-
-      <PackageFile Include="@(PackageReference)">
-        <Kind>Dependency</Kind>
-      </PackageFile>
-    </ItemGroup>
+		</ItemGroup>
 
 		<ItemGroup>
 			<!-- Always annotate files with the declaring project target framework and package id. 
@@ -100,10 +108,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ItemGroup Condition="'$(PackageId)' != ''">
 			<_PackageContent Include="$(PackageId)">
 				<Kind>Metadata</Kind>
-        <PackageId>$(PackageId)</PackageId>
-        <TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+				<PackageId>$(PackageId)</PackageId>
+				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
 
-        <!-- The rest of the metadata items don't need to repeat "Package" prefix all the time -->
+				<!-- The rest of the metadata items don't need to repeat "Package" prefix all the time -->
 				<Id>$(PackageId)</Id>
 				<Version>$(PackageVersion)</Version>
 				<Authors>$(Authors)</Authors>
@@ -176,17 +184,17 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Target Name="Pack" DependsOnTargets="$(_PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'" />
 
 	<Target Name="_Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)">
-    <ItemGroup>
-      <_PackageManifest Include="@(_PackContent -> WithMetadataValue('Kind', 'Metadata'))" Condition="'%(PackageId)' == '$(PackageId)'" />
-    </ItemGroup>
+		<ItemGroup>
+			<_PackageManifest Include="@(_PackContent -> WithMetadataValue('Kind', 'Metadata'))" Condition="'%(PackageId)' == '$(PackageId)'" />
+		</ItemGroup>
 		<!-- RepositoryUrl/RepositoryType/PackageType to be added -->
-    <CreatePackage Manifest="@(_PackageManifest)" Contents="@(_PackContent)" TargetPath="$(PackageTargetPath)">
-      <Output TaskParameter="OutputPackage" ItemName="PackageTargetPath" />
-    </CreatePackage>
+		<CreatePackage Manifest="@(_PackageManifest)" Contents="@(_PackContent)" TargetPath="$(PackageTargetPath)">
+			<Output TaskParameter="OutputPackage" ItemName="PackageTargetPath" />
+		</CreatePackage>
 
 		<Message Importance="normal" Text="Created package at $(PackageTargetPath)." />
 	</Target>
-	
+
 	<!-- This target's purpose is to remove from _PackageContent the items that are the contents of 
 		 indirect package dependencies that transitive project references build, turning those into 
 		 just a Dependency item for Pack.
