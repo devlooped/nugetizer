@@ -11,7 +11,7 @@
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<OutputPath>bin\$(MSBuildProjectName)</OutputPath>
-		<IntermediateOutputPath>obj\$(MSBuildProjectName)</IntermediateOutputPath>
+		<IntermediateOutputPath>obj\$(MSBuildProjectName)\</IntermediateOutputPath>
 		<OutputType>Library</OutputType>
 		<RootNamespace>Scenario</RootNamespace>
 		<!-- These properties are more likely to change per-project -->

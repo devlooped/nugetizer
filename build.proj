@@ -6,7 +6,7 @@
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false</CommonBuildProperties>
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);PackageOutputPath=$(Out);DeployExtension=false</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>
 
@@ -33,7 +33,8 @@
 	</Target>
 
 	<Target Name="Package" DependsOnTargets="Build">
-		<!-- TODO: build package with our own targets :) -->
+		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties);PackOnBuild=true" />
 	</Target>
 
 	<Target Name="Test" DependsOnTargets="Build">

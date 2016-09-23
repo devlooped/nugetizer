@@ -100,4 +100,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	</ItemGroup>
 
+	<PropertyGroup>
+		<NuGetBuildPackagingPropsImported>true</NuGetBuildPackagingPropsImported>
+	</PropertyGroup>
 </Project>

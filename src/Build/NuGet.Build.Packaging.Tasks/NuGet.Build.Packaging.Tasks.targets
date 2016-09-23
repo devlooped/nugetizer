@@ -8,6 +8,38 @@
 		<PackageItemKindFile>$(IntermediateOutputPath)PackageItemKind.g$(DefaultLanguageSourceExtension)</PackageItemKindFile>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<PackageId>NuGet.Build.Packaging</PackageId>
+		<Description>NuGet Packaging Targets</Description>
+		<GetPackageContentsDependsOn>
+			AddBuiltOutput;
+			$(GetPackageContentsDependsOn)
+		</GetPackageContentsDependsOn>
+	</PropertyGroup>
+
+	<!-- Imported *before* the GetPackageVersion redefinition -->
+	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
+
+	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
+		<PropertyGroup>
+			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="AddBuiltOutput" DependsOnTargets="ResolveReferences;AllProjectOutputGroups;AssignTargetPaths">
+		<ItemGroup>
+			<PackageFile Include="@(ContentWithTargetPath)">
+				<PackagePath>build\%(TargetPath)</PackagePath>
+			</PackageFile>
+			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')">
+				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
+			</PackageFile>
+			<PackageFile Include="@(ReferencePath)" Condition="$([System.String]::new('%(Filename)').StartsWith('NuGet'))">
+				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
+			</PackageFile>
+		</ItemGroup>
+	</Target>
+
 	<Target Name="PackageItemKind" BeforeTargets="BuildOnlySettings" DependsOnTargets="GeneratePackageItemKind">
 		<ItemGroup>
 			<Compile Include="$(PackageItemKindFile)" />

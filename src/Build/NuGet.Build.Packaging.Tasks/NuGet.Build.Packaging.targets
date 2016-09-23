@@ -13,9 +13,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.AssignPackagePath" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 
+	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
+	
 	<PropertyGroup>
 		<IncludeSymbols Condition="'$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug'">true</IncludeSymbols>
 		<IncludeOutputs Condition="'$(IncludeOutputs)' == ''">true</IncludeOutputs>
+		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 		
 		<IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
 		<!-- Directory where the .nupkg will be saved to if Pack is run -->
@@ -27,7 +30,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</PropertyGroup>
 
 	<!-- Redefine or provide a PackageVersion to override the default. -->
-	<Target Name="GetPackageVersion"  Condition="'$(PackageVersion)' == ''">
+	<Target Name="GetPackageVersion" Condition="'$(PackageVersion)' == ''">
 		<PropertyGroup>
 			<PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
 		</PropertyGroup>
@@ -64,12 +67,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 			 current project. -->
 		<ItemGroup>
 			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-						 Condition="'$(IncludeOutput)' == 'true'">
+						 Condition="'$(IncludeOutputs)' == 'true'">
 				<Kind>Lib</Kind>
 			</PackageFile>
 			
 			<PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-						 Condition="'$(IncludeOutput)' == 'true'">
+						 Condition="'$(IncludeOutputs)' == 'true'">
 				<Kind>Doc</Kind>
 			</PackageFile>
 

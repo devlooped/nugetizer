@@ -121,7 +121,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_preparing_d_without_package_id_then_does_not_set_package_path()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "d", target: "_PrepareForPack", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "d", target: "_PrepareForPack", output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 

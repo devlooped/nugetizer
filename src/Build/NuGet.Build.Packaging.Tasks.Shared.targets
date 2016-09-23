@@ -20,6 +20,18 @@
 		</ItemGroup>
 	</Target>
 
+	<PropertyGroup>
+		<!-- We'll include the PackageFiles ourselves -->
+		<IncludeOutputs>false</IncludeOutputs>
+
+		<Authors>Microsoft</Authors>
+		<Owners>Microsoft</Owners>
+		<Copyright>&#169; .NET Foundation. All rights reserved.</Copyright>
+		<NeutralLanguage>en</NeutralLanguage>
+		<PackageLicenseUrl>https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
+	</PropertyGroup>
+
 	<!-- TODO: 
     * Generate ErrorCodes constants from .resx?
   -->
