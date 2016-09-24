@@ -22,6 +22,9 @@
 
 	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion">
 		<PropertyGroup>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
 			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
 		</PropertyGroup>
 	</Target>
