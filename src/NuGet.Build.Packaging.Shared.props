@@ -35,7 +35,7 @@
 		<PublicSign>true</PublicSign>
 		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)PublicKey.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
-	
+
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<DefineConstants Condition=" '$(DefineConstants)' != '' ">$(DefineConstants);RELEASE</DefineConstants>
 		<DefineConstants Condition=" '$(DefineConstants)' == '' ">RELEASE</DefineConstants>
@@ -48,9 +48,9 @@
 		<Optimize>false</Optimize>
 	</PropertyGroup>
 
-  <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
+	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<NuGetPackagingPropsImported>true</NuGetPackagingPropsImported>
 	</PropertyGroup>
 

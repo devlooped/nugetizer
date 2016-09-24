@@ -42,17 +42,12 @@ namespace NuGet.Build.Packaging.Tasks
 
 		ITaskItem EnsurePackagePath(ITaskItem file, IDictionary<string, string> kindMap)
 		{
-			var kind = file.GetMetadata("Kind");
-			if (string.IsNullOrEmpty(kind))
-			{
-				Log.LogErrorCode(nameof(ErrorCode.NP0010), ErrorCode.NP0010(file.ItemSpec));
-				// We return the file anyway, since the task result will still be false.
-				return file;
-			}
+			var output = new TaskItem(file);
 
 			// Map the Kind to a target top-level directory.
-			string packageFolder;
-			if (!kindMap.TryGetValue(kind, out packageFolder))
+			var kind = file.GetMetadata("Kind");
+			var packageFolder = "";
+			if (!kindMap.TryGetValue(kind, out packageFolder) && !string.IsNullOrEmpty(kind))
 			{
 				// By convention, we just turn the first letter of Kind to lowercase and assume that 
 				// to be a valid folder kind.
@@ -60,7 +55,6 @@ namespace NuGet.Build.Packaging.Tasks
 					char.ToLower(kind[0]).ToString() + kind.Substring(1);
 			}
 
-			var output = new TaskItem(file);
 			output.SetMetadata(MetadataName.PackageFolder, packageFolder);
 
 			var frameworkMoniker = file.GetTargetFrameworkMoniker();
@@ -68,13 +62,31 @@ namespace NuGet.Build.Packaging.Tasks
 			// At this point we have the correct target framework
 			output.SetMetadata(MetadataName.TargetFramework, targetFramework);
 
-			// If PackagePath already specified, skip the rest.
-			if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")) ||
-				// TBD: If no PackageId specified, we'll let referencing projects define the package path 
-				string.IsNullOrEmpty(file.GetMetadata("PackageId")) || 
-				// If the kind is known but there is no mapped folder into the package, skip the rest.
-				// Special-case None kind since that means 'leave it wherever it lands' ;)
-				(string.IsNullOrEmpty(packageFolder) && kind != PackageItemKind.None))
+			// If PackagePath already specified, we're done.
+			if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")))
+				return output;
+
+			// If no PackageId specified, we let referencing projects define the package path
+			// as it will be included in their package.
+			// NOTE: if we don't do this, the package path of a project would be determined 
+			// by the declaring project's TFM, rather than the referencing one, and this 
+			// would be incorrect (i.e. a referenced PCL project that does not build a 
+			// nuget itself, would end up in the PCL lib folder rather than the referencing 
+			// package's lib folder for its own TFM, i.e. 'lib\net45').
+			if (string.IsNullOrEmpty(file.GetMetadata("PackageId")))
+				return output;
+
+			// If we got this far but there wasn't a Kind to process, it's an error.
+			if (string.IsNullOrEmpty(kind))
+			{
+				Log.LogErrorCode(nameof(ErrorCode.NP0010), ErrorCode.NP0010(file.ItemSpec));
+				// We return the file anyway, since the task result will still be false.
+				return file;
+			}
+
+			// If the kind is known but it isn't mapped to a folder inside the package, we're done.
+			// Special-case None kind since that means 'leave it wherever it lands' ;)
+			if (string.IsNullOrEmpty(packageFolder) && kind != PackageItemKind.None)
 				return output;
 
 			// Special case for contentFiles, since they can also provide a codeLanguage metadata
