@@ -6,9 +6,6 @@
     "MSBuilder.DumpItems": "0.2.1",
     "MSBuilder.Introspect": "0.1.5",
     "Newtonsoft.Json": "6.0.4",
-    "NuGet.Client": "3.4.3",
-    "NuGet.Packaging": "3.4.3",
-    "NuGet.ProjectManagement": "3.4.3",
     "xunit": "2.1.0",
     "xunit.runner.visualstudio": "2.1.0"
   },
