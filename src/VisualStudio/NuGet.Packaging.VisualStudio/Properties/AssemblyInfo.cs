@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0")]
 [assembly: AssemblyFileVersion("1.0.0")]
 [assembly: AssemblyInformationalVersion(
-    ThisAssembly.Git.SemVer.Major + "." + 
-    ThisAssembly.Git.SemVer.Minor + "." + 
-    ThisAssembly.Git.SemVer.Patch + "-" + 
-    ThisAssembly.Git.Branch + "+" + ThisAssembly.Git.Commit)]
+	ThisAssembly.Git.SemVer.Major + "." +
+	ThisAssembly.Git.SemVer.Minor + "." +
+	ThisAssembly.Git.SemVer.Patch + "-" +
+	ThisAssembly.Git.Branch + "+" + ThisAssembly.Git.Commit)]

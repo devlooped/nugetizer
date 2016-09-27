@@ -20,7 +20,13 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="SetPackageVersion" BeforeTargets="GetPackageVersion" DependsOnTargets="GitVersion">
+  <PropertyGroup>
+    <GetPackageVersionDependsOn>
+      SetPackageVersion;
+      $(GetPackageVersionDependsOn)
+    </GetPackageVersionDependsOn>
+  </PropertyGroup>
+	<Target Name="SetPackageVersion" DependsOnTargets="GitVersion">
 		<PropertyGroup>
 			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
 			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>

@@ -10,6 +10,42 @@ Copyright (c) .NET Foundation. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--<UsingTask TaskName="Microsoft.NuGet.Packaging.Authoring.Build.Tasks.?" AssemblyFile="Microsoft.NuGet.Packaging.Authoring.Build.Tasks.dll" />-->
+
+	<Import Project="Microsoft.NuGet.Packaging.Authoring.props" Condition="'$(NuGetPackaginAuthoringPropsImported)' == ''" />
+
+	<PropertyGroup>
+		<ProjectSystemRulesDir Condition="'$(ProjectSystemRulesDir)' == ''">$(MSBuildThisFileDirectory)..\Rules\</ProjectSystemRulesDir>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PropertyPageSchema Include="$(ProjectSystemRulesDir)ProjectItemsSchema.xaml">
+			<Context>Project</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="$(ProjectSystemRulesDir)scc.xaml;">
+			<Context>Invisible</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="$(ProjectSystemRulesDir)general.xaml">
+			<Context>Project;File</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="$(ProjectSystemRulesDir)general.browseobject.xaml">
+			<Context>BrowseObject</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="
+							$(ProjectSystemRulesDir)folder.xaml;
+							$(ProjectSystemRulesDir)none.xaml;
+							$(ProjectSystemRulesDir)content.xaml">
+			<Context>File;BrowseObject</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="$(ProjectSystemRulesDir)ResolvedProjectReference.xaml">
+			<Context>ProjectSubscriptionService;BrowseObject</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="$(ProjectSystemRulesDir)ProjectReference.xaml">
+			<Context>;BrowseObject</Context>
+		</PropertyPageSchema>
+
+		<ProjectCapability Include="ProjectReferences;ReferencesFolder" />
+		<ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
+		<ProjectCapability Include="NuGet.Packaging" />
+	</ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.31",
+    "GitInfo": "1.1.32",
     "Moq": "4.5.16",
     "xunit": "2.1.0"
   },

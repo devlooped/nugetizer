@@ -2,10 +2,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="NuGet.Build.Packaging.props" Condition=" '$(NuGetPackagingPropsImported)' != 'true' " />
 
-	<ItemGroup Condition=" '$(NoGlobalAssemblyInfo)' != 'true' And '$(Language)' == 'C#' ">
-		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
-	</ItemGroup>
-
 	<PropertyGroup Condition=" '$(Language)' == 'C#' ">
 		<ThisAssemblyNameFile>$(IntermediateOutputPath)ThisAssembly.AssemblyName.g$(DefaultLanguageSourceExtension)</ThisAssemblyNameFile>
 		<CoreCompileDependsOn>
@@ -32,14 +28,16 @@ namespace $(ThisAssemblyNamespace)
 	}
 }
 ' Overwrite='true' File='$(ThisAssemblyNameFile)' />
-
-		<ItemGroup>
-			<FileWrites Include="$(ThisAssemblyNameFile)" />
-		</ItemGroup>
 	</Target>
 
   <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
+  <!-- Fix a broken IDE build caused by Fody. See https://github.com/Fody/Fody/pull/264 -->
+  <Import Project="NuGet.Build.Packaging.IntellisenseFixup.targets" Condition="'$(BuildingInsideVisualStudio)' == 'true'" />
 
+  <ItemGroup Condition=" '$(NoGlobalAssemblyInfo)' != 'true' And '$(Language)' == 'C#' ">
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" Condition="'$(BuildingProject)' == 'true'" />
+  </ItemGroup>
+  
   <PropertyGroup>
 		<NuGetPackagingTargetsImported>true</NuGetPackagingTargetsImported>
 	</PropertyGroup>

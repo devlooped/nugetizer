@@ -6,16 +6,18 @@
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);PackageOutputPath=$(Out);DeployExtension=false</CommonBuildProperties>
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);PackageOutputPath=$(Out);PackOnBuild=true;DeployExtension=false</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Solution Include="src\Build\NuGet.Build.Packaging.sln" />
-		<TestProject Include="src\Build\**\*Tests.csproj" />
+    <Solution Include="external\clide\src\Clide.Tasks.sln" />
+    <Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
+    <TestProject Include="src\Build\**\*Tests.csproj" />
 	</ItemGroup>
 
-	<Target Name="All" DependsOnTargets="Build;Test;Package" />
+	<Target Name="All" DependsOnTargets="Build;Test" />
 
 	<Target Name="Clean">
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" Targets="Clean" />
@@ -28,13 +30,9 @@
 
 	<Target Name="Build">
 		<Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" StandardOutputImportance="low" />
+		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 		<Message Text="Build properties: $(CommonBuildProperties)" Importance="high" />
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
-	</Target>
-
-	<Target Name="Package" DependsOnTargets="Build">
-		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties);PackOnBuild=true" />
 	</Target>
 
 	<Target Name="Test" DependsOnTargets="Build">

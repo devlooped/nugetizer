@@ -67,14 +67,20 @@ Copyright (c) .NET Foundation. All rights reserved.
 	determined.
 	============================================================
 	-->
-	<Target Name="GetPackageVersion" DependsOnTargets="_SetDefaultPackageVersion" Returns="$(PackageVersion)" />
-    <Target Name="_SetDefaultPackageVersion" Condition="'$(PackageVersion)' == ''" Returns="$(PackageVersion)">
-        <PropertyGroup>
-            <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
-        </PropertyGroup>
-    </Target>
+	<PropertyGroup>
+		<GetPackageVersionDependsOn>
+			$(GetPackageVersionDependsOn);
+			_SetDefaultPackageVersion
+		</GetPackageVersionDependsOn>
+	</PropertyGroup>
+	<Target Name="GetPackageVersion" DependsOnTargets="$(GetPackageVersionDependsOn)" Returns="$(PackageVersion)" />
+	<Target Name="_SetDefaultPackageVersion" Condition="'$(PackageVersion)' == ''" Returns="$(PackageVersion)">
+		<PropertyGroup>
+			<PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 
-    <!--
+	<!--
 	============================================================
 					GetPackageTargetPath
 
@@ -86,10 +92,17 @@ Copyright (c) .NET Foundation. All rights reserved.
     GetPackageContents target instead.
    ============================================================
 	-->
-	<Target Name="GetPackageTargetPath" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="_SetDefaultPackageTargetPath;GetPackageVersion" Returns="@(PackageTargetPath)">
-        <ItemGroup>
-            <!-- Ensure we got a full path -->
-            <PackageTargetPath Include="$([System.IO.Path]::GetFullPath('$(PackageTargetPath)'))">
+  <PropertyGroup>
+    <GetPackageTargetPathDependsOn>
+      $(GetPackageTargetPathDependsOn);
+      GetPackageVersion;
+      _SetDefaultPackageTargetPath;
+    </GetPackageTargetPathDependsOn>
+  </PropertyGroup>
+  <Target Name="GetPackageTargetPath" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageTargetPathDependsOn)" Returns="@(PackageTargetPath)">
+		<ItemGroup>
+			<!-- Ensure we got a full path -->
+			<PackageTargetPath Include="$([System.IO.Path]::GetFullPath('$(PackageTargetPath)'))">
 				<Id>$(PackageId)</Id>
 				<Version>$(PackageVersion)</Version>
 				<Authors>$(Authors)</Authors>
@@ -113,11 +126,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</PackageTargetPath>
 		</ItemGroup>
 	</Target>
-    <Target Name="_SetDefaultPackageTargetPath" Condition="'$(IsPackable)' == 'true' and '$(PackageTargetPath)' == ''">
-        <PropertyGroup>
-            <PackageTargetPath Condition="'$(PackageTargetPath)' == ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
-        </PropertyGroup>
-    </Target>
+	<Target Name="_SetDefaultPackageTargetPath" Condition="'$(IsPackable)' == 'true' and '$(PackageTargetPath)' == ''">
+		<PropertyGroup>
+			<PackageTargetPath Condition="'$(PackageTargetPath)' == ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
+		</PropertyGroup>
+	</Target>
 
 	<!--
     ============================================================
@@ -139,16 +152,16 @@ Copyright (c) .NET Foundation. All rights reserved.
 			 be accidentally overriden.
 		-->
 		<_GetPackageContentsDependsOn>
-            GetAllPackageContents;
-            _GetPackageContents;
-        </_GetPackageContentsDependsOn>
+			GetAllPackageContents;
+			_GetPackageContents;
+		</_GetPackageContentsDependsOn>
 		<_GetAllPackageContentsDependsOn>
-            GetPackageTargetPath;
-            AssignProjectConfiguration;
-            _SplitProjectReferencesByFileExistence;
-            AllProjectOutputGroups;
-            _CollectAllPackageContents;
-        </_GetAllPackageContentsDependsOn>
+			GetPackageTargetPath;
+			AssignProjectConfiguration;
+			_SplitProjectReferencesByFileExistence;
+			AllProjectOutputGroups;
+			_CollectAllPackageContents;
+		</_GetAllPackageContentsDependsOn>
 	</PropertyGroup>
 
 	<!--
@@ -178,10 +191,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 		 The Outputs="%(PackageId)-BATCH" groups the @(_PackageContent) into batches coming from the same 
 		 package for easier processing. The '-BATCH' ensures we also process the batch without a PackageId.
 	-->
-	<Target Name="_GetPackageContents" 
-			DependsOnTargets="GetAllPackageContents" 
-			Inputs="@(_AllPackageContent)" 
-			Outputs="%(PackageId)-BATCH" 
+	<Target Name="_GetPackageContents"
+			DependsOnTargets="GetAllPackageContents"
+			Inputs="@(_AllPackageContent)"
+			Outputs="%(PackageId)-BATCH"
 			Returns="@(_PackageContent)">
 		<ItemGroup>
 			<!-- Attempt to grab a manifest for the current batch -->
@@ -217,7 +230,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<Target Name="GetAllPackageContents" DependsOnTargets="$(_GetAllPackageContentsDependsOn)" Returns="@(_AllPackageContent)" />
 
-    <!-- This is the actual inner target that authors extend when they provide a GetPackageContentsDependsOn target -->
+	<!-- This is the actual inner target that authors extend when they provide a GetPackageContentsDependsOn target -->
 	<Target Name="_CollectAllPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_AllPackageContent)" >
 		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
 			 NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
@@ -266,7 +279,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- If packaging the project, provide the metadata as a non-file item -->
 		<ItemGroup Condition="'$(PackageId)' != ''">
-            <_AllPackageContent Include="@(PackageTargetPath->'%(Id)')">
+			<_AllPackageContent Include="@(PackageTargetPath->'%(Id)')">
 				<Kind>Metadata</Kind>
 				<PackageId>$(PackageId)</PackageId>
 				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
@@ -349,7 +362,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<Output TaskParameter="OutputPackage" ItemName="PackageTargetPath" />
 		</CreatePackage>
 
-		<Message Importance="normal" Text="Created package at $(PackageTargetPath)." />
+		<Message Importance="high" Text="Created package at $(PackageTargetPath)." />
 	</Target>
 
 </Project>
