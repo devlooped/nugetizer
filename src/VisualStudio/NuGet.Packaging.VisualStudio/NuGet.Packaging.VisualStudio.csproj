@@ -80,6 +80,14 @@
       <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
     </Compile>
     <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
+    <Compile Include="ProjectSystem.Dev14\NuProjCapabilities.cs" />
+    <Compile Include="ProjectSystem.Dev14\NuProjConfiguredProject.cs" />
+    <Compile Include="ProjectSystem.Dev14\NuProjProjectCapabilitiesProvider.cs" />
+    <Compile Include="ProjectSystem.Dev14\NuProjProjectProperties.cs" />
+    <Compile Include="ProjectSystem.Dev14\NuProjProjectTreeModifier.cs" />
+    <Compile Include="ProjectSystem.Dev14\NuProjUnconfiguredProject.cs" />
+    <Compile Include="ProjectSystem.Dev14\NuProjValidProjectReferenceChecker.cs" />
+    <Compile Include="ProjectSystem.Dev14\ProjectProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionContext.cs" />
     <Compile Include="Commands\BuildNuGetPackageCommand.cs" />
@@ -92,7 +100,7 @@
     <Compile Include="IDialogService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
     <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
-    <Compile Include="ProjectProperties.cs" />
+    <None Include="ProjectSystem.Dev15\ProjectProperties.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
       <SubType>UserControl</SubType>
@@ -109,14 +117,14 @@
     <Compile Include="Views\AddPlatformImplementationView.xaml.cs">
       <DependentUpon>AddPlatformImplementationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProjectSystem\NuProjCapabilities.cs" />
-    <Compile Include="ProjectSystem\NuProjConfiguredProject.cs" />
+    <None Include="ProjectSystem.Dev15\NuProjCapabilities.cs" />
+    <None Include="ProjectSystem.Dev15\NuProjConfiguredProject.cs" />
     <Compile Include="LegacyProjectSystem\NuProjFlavoredProject.cs" />
     <Compile Include="LegacyProjectSystem\NuProjFlavoredProjectFactory.cs" />
-    <Compile Include="ProjectSystem\NuProjProjectProperties.cs" />
-    <Compile Include="ProjectSystem\NuProjProjectTreeModifier.cs" />
-    <Compile Include="ProjectSystem\NuProjUnconfiguredProject.cs" />
-    <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
+    <None Include="ProjectSystem.Dev15\NuProjProjectProperties.cs" />
+    <None Include="ProjectSystem.Dev15\NuProjProjectTreeModifier.cs" />
+    <None Include="ProjectSystem.Dev15\NuProjUnconfiguredProject.cs" />
+    <None Include="ProjectSystem.Dev15\NuProjValidProjectReferenceChecker.cs" />
     <Compile Include="Wizards\CrossPlatformWizard.cs" />
     <Compile Include="Wizards\CrossPlatformWizardModel.cs" />
     <None Include="NuGet.Packaging.VisualStudio.targets">
