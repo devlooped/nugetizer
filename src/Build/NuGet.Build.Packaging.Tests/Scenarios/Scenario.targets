@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
+    <PropertyGroup>
+        <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+    </PropertyGroup>
 
-	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-	<!-- Import the NuGet targets from the test project to allow easy diagnostics -->
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Tests.nuget.targets))\NuGet.Build.Packaging.Tests.nuget.targets"/>
-	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" />
+    <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+    <!-- Import the NuGet targets from the test project to allow easy diagnostics -->
+    <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Tests.nuget.targets))\NuGet.Build.Packaging.Tests.nuget.targets"/>
+    <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" />
 
-	<!--<PropertyGroup>
+    <!--<PropertyGroup>
 		<GetPackageContentsDependsOn>
 			AddPackageFile;
 			$(GetPackageContentsDependsOn);
@@ -26,21 +26,21 @@
 		</ItemGroup>
 	</Target>-->
 
-	<Target Name="Dump" DependsOnTargets="GetPackageContents">
-    <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
-    <!--<DumpItems Items="@(_MSBuildProjectReferenceExistent)" ItemName="_MSBuildProjectReferenceExistent" />-->
-		<Message Importance="high" Text="%(_PackContent.Filename)%(_PackContent.Extension)
-	Kind=%(_PackContent.Kind)
-	PackageId=%(_PackContent.PackageId)
-	PackagePath=%(_PackContent.PackagePath)
-	TargetFramework=%(_PackContent.TargetFramework)
-	TargetFrameworkMoniker=%(_PackContent.TargetFrameworkMoniker)" />
+    <Target Name="Dump" DependsOnTargets="GetPackageContents">
+        <!--<DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />-->
+        <!--<DumpItems Items="@(_MSBuildProjectReferenceExistent)" ItemName="_MSBuildProjectReferenceExistent" />-->
+        <Message Importance="high" Text="%(_PackageContent.Filename)%(_PackageContent.Extension)
+	Kind=%(_PackageContent.Kind)
+	PackageId=%(_PackageContent.PackageId)
+	PackagePath=%(_PackageContent.PackagePath)
+	TargetFramework=%(_PackageContent.TargetFramework)
+	TargetFrameworkMoniker=%(_PackageContent.TargetFrameworkMoniker)" />
 
-	</Target>
+    </Target>
 
-	
-	<!-- Turn off Fody we use for ModuleInitializer in unit tests -->
-	<Target Name="FodyTarget" />
-	<Target Name="FodyVerifyTarget" />
+
+    <!-- Turn off Fody we use for ModuleInitializer in unit tests -->
+    <Target Name="FodyTarget" />
+    <Target Name="FodyVerifyTarget" />
 
 </Project>
