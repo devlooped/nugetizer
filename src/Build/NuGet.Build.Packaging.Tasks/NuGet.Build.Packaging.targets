@@ -20,7 +20,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<IncludeOutputs Condition="'$(IncludeOutputs)' == ''">true</IncludeOutputs>
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 		
+		<!-- NOTE: we will always have this property in projects referencing this targets file. Can be used to detect this. -->
 		<IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
+		<IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
+		
 		<!-- Directory where the .nupkg will be saved to if Pack is run -->
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)</PackageOutputPath>
 		<BuildDependsOn Condition="'$(PackOnBuild)' == 'true' and '$(IsPackable)' == 'true'">
@@ -29,14 +32,58 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</BuildDependsOn>
 	</PropertyGroup>
 
-	<!-- Redefine or provide a PackageVersion to override the default. -->
-	<Target Name="GetPackageVersion" Condition="'$(PackageVersion)' == ''">
+	<!--
+	============================================================
+					GetTargetPath
+
+    This target is redefined from the common targets to add the 
+	%(IsPackable) metadata, which is used by the GetPacakgeContents 
+	target to detect project references that don't have this 
+	nuget package installed (and would therefore not behave 
+	properly when packed from the referencing project).
+	============================================================
+	-->
+	<Target
+		Name="GetTargetPath"
+		DependsOnTargets="$(GetTargetPathDependsOn)"
+		Returns="@(TargetPathWithTargetPlatformMonikerAndIsPackable)">
+		<ItemGroup>
+			<TargetPathWithTargetPlatformMonikerAndIsPackable Include="$(TargetPath)">
+				<TargetPlatformMoniker>$(TargetPlatformMoniker)</TargetPlatformMoniker>
+				<TargetPlatformIdentifier>$(TargetPlatformIdentifier)</TargetPlatformIdentifier>
+				<IsPackable>$(IsPackable)</IsPackable>
+			</TargetPathWithTargetPlatformMonikerAndIsPackable>
+		</ItemGroup>
+	</Target>
+
+	<!--
+	============================================================
+					GetPackageVersion
+
+    This target sets the default $(PackageVersion) to $(Version) 
+	if empty, and returns it. 
+	
+	It can be redefined to change how the package version is 
+	determined.
+	============================================================
+	-->
+	<Target Name="GetPackageVersion" Condition="'$(PackageVersion)' == ''" Returns="$(PackageVersion)">
 		<PropertyGroup>
 			<PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
 		</PropertyGroup>
 	</Target>
 
-	<!-- Redefine or provide a PackageTargetPath to override the default. -->
+	<!--
+	============================================================
+					GetPackageTargetPath
+
+    This target sets the default $(PackageTargetPath) if it's 
+	empty and returns it.
+	
+	It can be redefined to change how the package target path is 
+	determined.	
+	============================================================
+	-->
 	<Target Name="GetPackageTargetPath" DependsOnTargets="GetPackageVersion" Returns="$(PackageTargetPath)">
 		<PropertyGroup>
 			<PackageTargetPath Condition="'$(PackageTargetPath)' == '' and '$(PackageId)' != ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
@@ -59,6 +106,25 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</_GetPackageContentsDependsOn>
 	</PropertyGroup>
 
+	<!--
+	============================================================
+					GetPackageContents
+
+    Returns the "virtual package" for the current project, containing 
+	all items that would end up in a .nupkg if the project were 
+	to be packed. 
+	
+	If the project has NuGet metadata to generate a .nupkg, a metadata 
+	item containing the manifest information will also be returned, as 
+	
+		Identity=$(PackageId)
+		   %(Kind)=Metadata
+		   ... all manifest values as metadata items ...
+	
+	All items returned from this target contain a %(PackageId) metadata 
+	with the project's $(PackageId), if any.
+	============================================================
+	-->
 	<Target Name="GetPackageContents" DependsOnTargets="$(_GetPackageContentsDependsOn)" Returns="@(_PackageContent)" />
 
 	<Target Name="_CollectPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)">
@@ -138,7 +204,22 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_PackageContent>
 		</ItemGroup>
 
-		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+				 Targets="GetTargetPath"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
+				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
+				 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+      <Output TaskParameter="TargetOutputs" ItemName="_ReferencedTargetPath" />
+    </MSBuild>
+
+    <ItemGroup>
+      <UnknownPackableTargetPaths Include="@(_ReferencedTargetPath)" Condition="'%(_ReferencedTargetPath.IsPackable)' == ''" />
+    </ItemGroup>
+
+    <Error Text="Please install the required 'NuGet.Build.Packaging' package in the following projects: @(UnknownPackableTargetPaths-> '%(MSBuildSourceProjectFile)')" Code="NG1001" Condition="'@(UnknownPackableTargetPaths)' != ''" />
+
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
 				 Targets="GetPackageContents"
 				 BuildInParallel="$(BuildInParallel)"
 				 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
@@ -184,6 +265,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</_PackDependsOn>
 	</PropertyGroup>
 
+	<!--
+	============================================================
+					Pack
+
+    Creates the output .nupkg if the project is packable.
+	============================================================
+	-->
 	<Target Name="Pack" DependsOnTargets="$(_PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'" />
 
 	<Target Name="_Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)">

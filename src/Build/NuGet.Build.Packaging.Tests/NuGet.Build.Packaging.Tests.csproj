@@ -17,42 +17,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
-    <None Include="NuGet.Build.Packaging.Tests.targets">
-      <SubType>Designer</SubType>
-    </None>
-    <Content Include="Scenarios\given_a_complex_pack\a.csproj">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Scenarios\given_a_complex_pack\b.csproj">
-      <SubType>Designer</SubType>
-    </Content>
+    <None Include="NuGet.Build.Packaging.Tests.targets" />
+    <Content Include="Scenarios\given_a_complex_pack\a.csproj" />
+    <Content Include="Scenarios\given_a_complex_pack\b.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\c.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\d.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\e.csproj" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\a.csproj" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b.csproj" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.json" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.lock.json" />
-    <None Include="Scenarios\Scenario.props">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Scenarios\Scenario.props" />
     <None Include="Scenarios\Scenario.targets" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
-    <Content Include="Scenarios\dynamic.csproj">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Scenarios\given_library_project_with_nugets\a.csproj">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Scenarios\given_a_library_with_project_reference\a.csproj">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Scenarios\given_a_library_with_project_reference\b.csproj">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Scenarios\dynamic.csproj" />
+    <Content Include="Scenarios\given_library_project_with_nugets\a.csproj" />
+    <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj" />
+    <Content Include="Scenarios\given_a_library_with_project_reference\a.csproj" />
+    <Content Include="Scenarios\given_a_library_with_project_reference\b.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreatePackageTests.cs" />
@@ -62,6 +46,7 @@
       <DependentUpon>Builder.cs</DependentUpon>
     </Compile>
     <Compile Include="given_a_complex_pack.cs" />
+    <Compile Include="given_a_library_with_non_nugetized_reference.cs" />
     <Compile Include="given_library_project_with_nugets.cs" />
     <Compile Include="given_an_empty_library_project.cs" />
     <Compile Include="given_a_library_with_project_reference.cs" />

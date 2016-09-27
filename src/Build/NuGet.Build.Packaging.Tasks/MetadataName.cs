@@ -25,6 +25,11 @@
 		/// </summary>
 		public const string PackagePath = nameof(PackagePath);
 
+		/// <summary>
+		/// Whether the project can be packed as a .nupkg.
+		/// </summary>
+		public const string IsPackable = nameof(IsPackable);
+
 		public const string TargetFramework = nameof(TargetFramework);
 
 		public const string TargetFrameworkMoniker = nameof(TargetFrameworkMoniker);
