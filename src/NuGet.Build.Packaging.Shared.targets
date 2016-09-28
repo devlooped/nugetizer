@@ -31,8 +31,6 @@ namespace $(ThisAssemblyNamespace)
 	</Target>
 
   <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
-  <!-- Fix a broken IDE build caused by Fody. See https://github.com/Fody/Fody/pull/264 -->
-  <Import Project="NuGet.Build.Packaging.IntellisenseFixup.targets" Condition="'$(BuildingInsideVisualStudio)' == 'true'" />
 
   <ItemGroup Condition=" '$(NoGlobalAssemblyInfo)' != 'true' And '$(Language)' == 'C#' ">
     <Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" Condition="'$(BuildingProject)' == 'true'" />
