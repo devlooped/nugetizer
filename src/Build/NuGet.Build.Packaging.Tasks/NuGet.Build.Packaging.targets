@@ -18,6 +18,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<IncludeSymbols Condition="'$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug'">true</IncludeSymbols>
 		<IncludeOutputs Condition="'$(IncludeOutputs)' == ''">true</IncludeOutputs>
+		<IncludeFrameworkReferences Condition="'$(IncludeFrameworkReferences)' == ''">true</IncludeFrameworkReferences>
+		
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
 		<!-- NOTE: we will always have this property in projects referencing this targets file. Can be used to detect this. -->
@@ -155,7 +157,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 			GetAllPackageContents;
 			_GetPackageContents;
 		</_GetPackageContentsDependsOn>
+		<!-- Only depend on ResolveReferences if we need to include framework references -->
+		<_GetAllPackageContentsDependsOn Condition="'$(IncludeFrameworkReferences)' == 'true'">
+			ResolveReferences
+		</_GetAllPackageContentsDependsOn>
 		<_GetAllPackageContentsDependsOn>
+			$(_GetAllPackageContentsDependsOn);
 			GetPackageTargetPath;
 			AssignProjectConfiguration;
 			_SplitProjectReferencesByFileExistence;
@@ -253,6 +260,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 			<PackageFile Include="@(PackageReference)">
 				<Kind>Dependency</Kind>
+			</PackageFile>
+
+			<!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
+			     it also includes mscorlib which we don't need -->
+			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')" 
+						 Condition="'$(IncludeFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
+				<Kind>FrameworkReference</Kind>
 			</PackageFile>
 		</ItemGroup>
 
