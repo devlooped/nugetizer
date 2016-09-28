@@ -19,7 +19,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<IncludeSymbols Condition="'$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug'">true</IncludeSymbols>
 		<IncludeOutputs Condition="'$(IncludeOutputs)' == ''">true</IncludeOutputs>
 		<IncludeFrameworkReferences Condition="'$(IncludeFrameworkReferences)' == ''">true</IncludeFrameworkReferences>
-		
+
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
 		<!-- NOTE: we will always have this property in projects referencing this targets file. Can be used to detect this. -->
@@ -94,14 +94,14 @@ Copyright (c) .NET Foundation. All rights reserved.
     GetPackageContents target instead.
    ============================================================
 	-->
-  <PropertyGroup>
-    <GetPackageTargetPathDependsOn>
-      $(GetPackageTargetPathDependsOn);
-      GetPackageVersion;
-      _SetDefaultPackageTargetPath;
-    </GetPackageTargetPathDependsOn>
-  </PropertyGroup>
-  <Target Name="GetPackageTargetPath" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageTargetPathDependsOn)" Returns="@(PackageTargetPath)">
+	<PropertyGroup>
+		<GetPackageTargetPathDependsOn>
+			$(GetPackageTargetPathDependsOn);
+			GetPackageVersion;
+			_SetDefaultPackageTargetPath;
+		</GetPackageTargetPathDependsOn>
+	</PropertyGroup>
+	<Target Name="GetPackageTargetPath" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageTargetPathDependsOn)" Returns="@(PackageTargetPath)">
 		<ItemGroup>
 			<!-- Ensure we got a full path -->
 			<PackageTargetPath Include="$([System.IO.Path]::GetFullPath('$(PackageTargetPath)'))">
@@ -258,13 +258,19 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<Kind>Symbols</Kind>
 			</PackageFile>
 
+			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
+			<PackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
+						 Condition="'$(IncludeOutputs)' == 'true'">
+				<Kind>Lib</Kind>
+			</PackageFile>
+
 			<PackageFile Include="@(PackageReference)">
 				<Kind>Dependency</Kind>
 			</PackageFile>
 
 			<!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
 			     it also includes mscorlib which we don't need -->
-			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')" 
+			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
 						 Condition="'$(IncludeFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
 				<Kind>FrameworkReference</Kind>
 			</PackageFile>
