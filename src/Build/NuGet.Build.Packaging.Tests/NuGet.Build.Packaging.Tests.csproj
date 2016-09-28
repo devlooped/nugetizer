@@ -51,8 +51,10 @@
     <Compile Include="given_an_empty_library_project.cs" />
     <Compile Include="given_a_library_with_project_reference.cs" />
     <Compile Include="UtilitiesTests.cs" />
+    <Compile Include="Utilities\FrameworkAssemblyReferenceComparer.cs" />
     <Compile Include="Utilities\MockBuildEngine.cs" />
     <Compile Include="Utilities\ModuleInitializer.cs" />
+    <Compile Include="Utilities\TargetFrameworks.cs" />
     <Compile Include="Utilities\TaskItemExtensions.cs" />
     <Compile Include="Utilities\TestOutputLogger.cs" />
   </ItemGroup>

@@ -34,15 +34,24 @@ namespace NuGet.Build.Packaging
 			Assert.True(result.Items.Any(i => i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == "Symbols"), "Did not include main symbols");
 		}
 
-		[Verbosity(Microsoft.Build.Framework.LoggerVerbosity.Diagnostic)]
 		[Fact]
 		public void when_getting_package_contents_then_annotates_items_with_package_id()
 		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { PackageId = "Foo" });
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { PackageId = "Foo" }, output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
 			Assert.True(result.Items.All(i => i.GetMetadata("PackageId") == "Foo"), "Did not annotate contents with package id.");
+		}
+
+		[Fact]
+		public void when_getting_package_contents_then_contains_framework_reference()
+		{
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { PackageId = "Foo" }, output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			Assert.True(result.Items.Any(i => i.ItemSpec == "System.Core" && i.GetMetadata("Kind") == "FrameworkReference"), "Did not add System.Core framework reference.");
 		}
 	}
 }

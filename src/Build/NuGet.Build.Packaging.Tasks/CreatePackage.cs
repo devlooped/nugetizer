@@ -94,6 +94,7 @@ namespace NuGet.Build.Packaging.Tasks
 
 			AddDependencies(manifest);
 			AddFiles(manifest);
+			AddFrameworkAssemblies(manifest);
 
 			return manifest;
 		}
@@ -135,6 +136,19 @@ namespace NuGet.Build.Packaging.Tasks
 					Source = item.GetMetadata("FullPath"),
 					Target = item.GetMetadata(MetadataName.PackagePath),
 				}));
+		}
+
+		void AddFrameworkAssemblies(Manifest manifest)
+		{
+			var frameworkReferences = from item in Contents
+									  where item.GetMetadata(MetadataName.Kind) == PackageItemKind.FrameworkReference
+									  select new FrameworkAssemblyReference
+									  (
+										  item.ItemSpec,
+										  new [] { NuGetFramework.Parse(item.GetTargetFrameworkMoniker().FullName) }
+									  );
+
+			manifest.Metadata.FrameworkReferences = frameworkReferences;
 		}
 
 		void BuildPackage(Stream output)
