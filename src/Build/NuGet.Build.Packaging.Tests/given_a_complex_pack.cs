@@ -19,9 +19,24 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_getting_package_target_path_then_gets_package_metadata()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "a", target: "GetPackageTargetPath", output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			var metadata = result.Items.FirstOrDefault();
+
+			Assert.NotNull(metadata);
+			Assert.Equal("A", metadata.GetMetadata("Id"));
+			Assert.Equal("1.0.0", metadata.GetMetadata("Version"));
+			Assert.Equal("NuGet", metadata.GetMetadata("Authors"));
+		}
+
+		[Fact]
 		public void when_preparing_a_then_contains_assemblies_and_direct_dependency()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "a", target: "_PrepareForPack", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "a", target: "GetPackageContents", output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
@@ -57,7 +72,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_preparing_b_then_contains_assemblies_and_direct_dependency()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "b", target: "_PrepareForPack", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "b", target: "GetPackageContents", output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
@@ -93,7 +108,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_preparing_c_then_contains_external_dependency()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "c", target: "_PrepareForPack", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "c", target: "GetPackageContents", output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
@@ -121,7 +136,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_preparing_d_without_package_id_then_does_not_set_package_path()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "d", target: "_PrepareForPack", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "d", target: "GetPackageContents", output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 

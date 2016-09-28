@@ -1,48 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\Common7\IDE\devenv.exe</StartProgram>
-    <StartArguments>/rootsuffix exp</StartArguments>
+	<PropertyGroup>
+		<StartAction>Program</StartAction>
+		<StartProgram>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\Common7\IDE\devenv.exe</StartProgram>
+		<StartArguments>/rootsuffix exp</StartArguments>
 
-    <NoGlobalAssemblyInfo>true</NoGlobalAssemblyInfo>
-    <GitInfoThisAssemblyFile>$(IntermediateOutputPath)ThisAssembly.GitInfo.g.cs</GitInfoThisAssemblyFile>
-  </PropertyGroup>
+		<NoGlobalAssemblyInfo>true</NoGlobalAssemblyInfo>
+	</PropertyGroup>
 
-  <Target Name="FixGitInfo" BeforeTargets="CoreCompile">
-    <ItemGroup>
-      <Compile Remove="$(GitInfoThisAssemblyFile)" />
-      <Compile Include="$(GitInfoThisAssemblyFile)" />
-    </ItemGroup>
-  </Target>
-  
-  <Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
-    <PropertyGroup>
-      <Version Condition=" '$(Configuration)' == 'Release' ">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
-      <Version Condition=" '$(Configuration)' != 'Release' ">1.0.0</Version>
-    </PropertyGroup>
-  </Target>
+	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
+		<PropertyGroup>
+			<Version Condition=" '$(Configuration)' == 'Release' ">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
+			<Version Condition=" '$(Configuration)' != 'Release' ">1.0.0</Version>
+		</PropertyGroup>
+	</Target>
 
-  <Target Name="AfterBuild">
-    <ItemGroup>
-      <BuildSystemToCopy Include="..\NuGet.Packaging.Tasks\bin\*.props" />
-      <BuildSystemToCopy Include="..\NuGet.Packaging.Tasks\bin\*.targets" />
-      <RulesToCopy Include="Rules\**\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(BuildSystemToCopy)" 
-          DestinationFiles="@(BuildSystemToCopy->'$(LocalAppData)\CustomProjectSystems\NuGet.Packaging\%(RecursiveDir)%(FileName)%(Extension)')" 
-          SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(RulesToCopy)" 
-          DestinationFiles="@(RulesToCopy->'$(LocalAppData)\CustomProjectSystems\NuGet.Packaging\Rules\%(RecursiveDir)%(FileName)%(Extension)')" 
-          SkipUnchangedFiles="true" />
-  </Target>
-
-  <!-- Because envdte comes from a nuget package, we can't set the EmbedInteropTypes to true in the project, so we do it here -->
-  <Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
-    <ItemGroup>
-      <Reference Condition=" '%(Filename)' == 'envdte80' ">
-        <EmbedInteropTypes>True</EmbedInteropTypes>
-      </Reference>
-    </ItemGroup>
-  </Target>
+	<!-- Because envdte comes from a nuget package, we can't set the EmbedInteropTypes to true in the project, so we do it here -->
+	<Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
+		<ItemGroup>
+			<Reference Condition=" '%(Filename)' == 'envdte80' ">
+				<EmbedInteropTypes>True</EmbedInteropTypes>
+			</Reference>
+		</ItemGroup>
+	</Target>
 </Project>

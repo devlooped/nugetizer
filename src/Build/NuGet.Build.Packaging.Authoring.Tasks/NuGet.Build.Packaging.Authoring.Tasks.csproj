@@ -20,9 +20,41 @@
     <Content Include="Microsoft.NuGet.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="NuGet.Build.Packaging.Authoring.Tasks.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="project.json" />
+    <None Include="_._" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Rules\content.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Rules\folder.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Rules\general.browseobject.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Rules\general.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Rules\none.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Rules\ProjectItemsSchema.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Rules\ProjectReference.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Rules\ResolvedProjectReference.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Rules\scc.xaml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

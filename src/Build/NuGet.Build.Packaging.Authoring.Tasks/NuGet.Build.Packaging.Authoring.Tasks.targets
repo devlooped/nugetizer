@@ -1,0 +1,29 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<PackageId>NuGet.Build.Packaging.Authoring</PackageId>
+		<Description>NuGet Project System Targets</Description>
+		<GetPackageContentsDependsOn>
+			AddBuiltOutput;
+			$(GetPackageContentsDependsOn)
+		</GetPackageContentsDependsOn>
+	</PropertyGroup>
+
+	<!-- Imported *before* the GetPackageVersion redefinition -->
+	<Import Project="$(MSBuildThisFileDirectory)..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)\NuGet.Build.Packaging.targets" 
+			Condition="Exists('$(MSBuildThisFileDirectory)..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)\NuGet.Build.Packaging.targets')" />
+
+	<Target Name="AddBuiltOutput" DependsOnTargets="ResolveReferences;AllProjectOutputGroups;AssignTargetPaths">
+		<ItemGroup>
+			<PackageFile Include="Rules\*.*" />
+			<PackageFile>
+				<PackagePath>Rules\%(Filename)%(Extension)</PackagePath>
+			</PackageFile>
+			<PackageFile Include="_._">
+				<PackagePath>lib\net46\_._</PackagePath>
+			</PackageFile>
+			<!-- For now we don't need the output assembly -->
+		</ItemGroup>
+	</Target>
+
+</Project>
