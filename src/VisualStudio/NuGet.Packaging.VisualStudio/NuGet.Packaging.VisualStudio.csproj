@@ -180,7 +180,7 @@
       <Project>{f145ce58-06aa-4499-89d5-e5144b38d8f3}</Project>
       <Name>NuGet.Build.Packaging.Authoring.Tasks</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <PackOnBuild>true</PackOnBuild>
+      <AdditionalProperties>PackOnBuild=true</AdditionalProperties>
       <IncludeOutputGroupsInVSIXLocalOnly>PackageOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
       <IncludeOutputGroupsInVSIX>PackageOutputGroup</IncludeOutputGroupsInVSIX>
     </ProjectReference>

@@ -12,9 +12,9 @@
 
 	<ItemGroup>
 		<Solution Include="src\Build\NuGet.Build.Packaging.sln" />
-    <Solution Include="external\clide\src\Clide.Tasks.sln" />
-    <Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
-    <TestProject Include="src\Build\**\*Tests.csproj" />
+		<Solution Include="external\clide\src\Clide.Tasks.sln" />
+		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
+		<TestProject Include="src\Build\**\*Tests.csproj" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test" />
