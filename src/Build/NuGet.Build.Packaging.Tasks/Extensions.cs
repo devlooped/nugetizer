@@ -25,6 +25,15 @@ namespace NuGet.Build.Packaging
 			return bool.TryParse(metadataValue, out result) && result;
 		}
 
+		public static string GetNullableMetadata(this ITaskItem taskItem, string metadataName)
+		{
+			var value = taskItem.GetMetadata(metadataName);
+			if (string.IsNullOrEmpty(value))
+				return null;
+
+			return value;
+		}
+
 		public static Manifest GetManifest(this IPackageCoreReader packageReader)
 		{
 			using (var stream = packageReader.GetNuspec())

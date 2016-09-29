@@ -130,13 +130,25 @@ namespace NuGet.Build.Packaging.Tasks
 
 		void AddFiles(Manifest manifest)
 		{
-			manifest.Files.AddRange(Contents
-				.Where(item => !string.IsNullOrEmpty(item.GetMetadata(MetadataName.PackagePath)))
-				.Select(item => new ManifestFile
+			var contents = Contents.Where(item => 
+				!string.IsNullOrEmpty(item.GetMetadata(MetadataName.PackagePath)));
+
+			var files = contents.Where(item => item.GetMetadata(MetadataName.PackageFolder) != PackagingConstants.Folders.ContentFiles);
+			var contentFiles = contents.Where(item => item.GetMetadata(MetadataName.PackageFolder) == PackagingConstants.Folders.ContentFiles);
+
+			manifest.Files.AddRange(files.Select(item => new ManifestFile
 				{
 					Source = item.GetMetadata("FullPath"),
 					Target = item.GetMetadata(MetadataName.PackagePath),
 				}));
+
+			manifest.Metadata.ContentFiles = contentFiles.Select(item => new ManifestContentFiles
+			{
+				Include = item.GetMetadata("FullPath"), 
+				BuildAction = item.GetNullableMetadata(MetadataName.ContentFile.BuildAction),
+				CopyToOutput = item.GetNullableMetadata(MetadataName.ContentFile.CopyToOutput),
+				Flatten = item.GetNullableMetadata(MetadataName.ContentFile.Flatten),
+			}).ToArray();
 		}
 
 		void AddFrameworkAssemblies(Manifest manifest)

@@ -52,6 +52,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</PackageItemKind>
 		<PackageItemKind Include="ContentFiles">
 			<PackageFolder>contentFiles</PackageFolder>
+			<!-- Additional optional metadata: -->
+			<!-- CodeLanguage: any (default), cs, fs, vb -->
+			<!-- BuildAction: Compile (default), None, EmbeddedResource -->
+			<!-- CopyToOutput: false (default) / true -->
+			<!-- Flatten: false (default) / true -->
 		</PackageItemKind>
 		<PackageItemKind Include="Native">
 			<PackageFolder>native</PackageFolder>

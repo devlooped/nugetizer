@@ -38,5 +38,16 @@
 		public const string TargetFramework = nameof(TargetFramework);
 
 		public const string TargetFrameworkMoniker = nameof(TargetFrameworkMoniker);
+
+		/// <summary>
+		/// Available optional metadata values of contentFiles.
+		/// </summary>
+		public static class ContentFile
+		{
+			public const string CodeLanguage = nameof(CodeLanguage);
+			public const string BuildAction = nameof(BuildAction);
+			public const string CopyToOutput = nameof(CopyToOutput);
+			public const string Flatten = nameof(Flatten);
+		}
 	}
 }

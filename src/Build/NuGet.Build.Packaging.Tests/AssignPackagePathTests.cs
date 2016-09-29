@@ -335,6 +335,38 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_assigning_content_file_with_additional_metadata_then_preserves_metadata()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("Sample.cs", new Metadata
+					{
+						{ "PackageId", "A" },
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", "Content" },
+						{ MetadataName.ContentFile.CodeLanguage, "cs" },
+						{ MetadataName.ContentFile.BuildAction, "EmbeddedResource" },
+						{ MetadataName.ContentFile.CopyToOutput, "true" },
+						{ MetadataName.ContentFile.Flatten, "true" },
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+
+			var item = task.AssignedFiles[0];
+
+			Assert.Equal("cs", item.GetMetadata(MetadataName.ContentFile.CodeLanguage));
+			Assert.Equal("EmbeddedResource", item.GetMetadata(MetadataName.ContentFile.BuildAction));
+			Assert.Equal("true", item.GetMetadata(MetadataName.ContentFile.CopyToOutput));
+			Assert.Equal("true", item.GetMetadata(MetadataName.ContentFile.Flatten));
+		}
+
+		[Fact]
 		public void when_file_has_none_kind_then_assigned_file_has_empty_package_folder()
 		{
 			var task = new AssignPackagePath

@@ -93,7 +93,7 @@ namespace NuGet.Build.Packaging.Tasks
 			if (packageFolder == PackagingConstants.Folders.ContentFiles)
 			{
 				/// See https://docs.nuget.org/create/nuspec-reference#contentfiles-with-visual-studio-2015-update-1-and-later
-				var codeLanguage = file.GetMetadata(nameof(PropertyNames.CodeLanguage));
+				var codeLanguage = file.GetMetadata(MetadataName.ContentFile.CodeLanguage);
 				if (string.IsNullOrEmpty(codeLanguage))
 					codeLanguage = PackagingConstants.AnyFramework;
 

@@ -54,8 +54,10 @@
     <Compile Include="given_a_library_with_project_reference.cs" />
     <Compile Include="UtilitiesTests.cs" />
     <Compile Include="Utilities\FrameworkAssemblyReferenceComparer.cs" />
+    <Compile Include="Utilities\ManifestContentFilesComparer.cs" />
     <Compile Include="Utilities\MockBuildEngine.cs" />
     <Compile Include="Utilities\ModuleInitializer.cs" />
+    <Compile Include="Utilities\ManifestFileComparer.cs" />
     <Compile Include="Utilities\PackageDependencyComparer.cs" />
     <Compile Include="Utilities\PackageDependencyGroupComparer.cs" />
     <Compile Include="Utilities\TargetFrameworks.cs" />
