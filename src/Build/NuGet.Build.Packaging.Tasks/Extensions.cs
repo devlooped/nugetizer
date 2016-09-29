@@ -17,6 +17,14 @@ namespace NuGet.Build.Packaging
 
 		public static IEnumerable<T> NullAsEmpty<T>(this IEnumerable<T> source) => source ?? Enumerable.Empty<T>();
 
+		public static bool GetBoolean(this ITaskItem taskItem, string metadataName, bool defaultValue = false)
+		{
+			var result = false;
+			var metadataValue = taskItem.GetMetadata(metadataName);
+
+			return bool.TryParse(metadataValue, out result) && result;
+		}
+
 		public static Manifest GetManifest(this IPackageCoreReader packageReader)
 		{
 			using (var stream = packageReader.GetNuspec())

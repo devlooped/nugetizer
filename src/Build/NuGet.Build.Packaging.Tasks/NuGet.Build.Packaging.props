@@ -16,7 +16,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<Kind>None</Kind>
 		</PackageFile>
 	</ItemDefinitionGroup>
-	
+
 	<ItemGroup>
 		<!-- Default mapping between %(PackageFile.Kind) metadata and package folders inside .nupkg -->
 		<!-- PackageFolder should map to a supported folder as defined in PackagingConstants.Folders -->
@@ -87,8 +87,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- PackageReference items end up as Dependency -->
 		<!-- Project references that build packages also end up as package dependencies -->
-		<PackageItemKind Include="Dependency" />
-		
+		<PackageItemKind Include="Dependency">
+			<!-- PackageReference can contain a %(IsDevelopmentDependency)=true metadata -->
+		</PackageItemKind>
+
 		<!-- The package manifest item if the project generates a package -->
 		<PackageItemKind Include="Metadata" />
 

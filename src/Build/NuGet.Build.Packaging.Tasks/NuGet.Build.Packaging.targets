@@ -107,6 +107,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<PackageTargetPath Include="$([System.IO.Path]::GetFullPath('$(PackageTargetPath)'))">
 				<Id>$(PackageId)</Id>
 				<Version>$(PackageVersion)</Version>
+				<DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
+
 				<Authors>$(Authors)</Authors>
 				<Owners>$(Owners)</Owners>
 				<Title>$(Title)</Title>

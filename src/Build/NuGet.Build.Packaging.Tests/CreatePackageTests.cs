@@ -100,6 +100,28 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_creating_package_has_development_dependency_metadata_then_manifest_has_development_dependency()
+		{
+			task.Contents = new[]
+			{
+				// Need at least one dependency or content file for the generation to succeed.
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			task.Manifest.SetMetadata("DevelopmentDependency", "true");
+
+			var metadata = ExecuteTask().Metadata;
+
+			Assert.True(metadata.DevelopmentDependency);
+		}
+
+		[Fact]
 		public void when_creating_package_with_simple_dependency_then_contains_dependency_group()
 		{
 			task.Contents = new[]
@@ -124,6 +146,34 @@ namespace NuGet.Build.Packaging
 
 			// We get a version range actually for the specified dependency, like [1.0.0,)
 			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
+		}
+
+		[Fact]
+		public void when_creating_package_with_development_dependency_then_does_not_generate_dependency_group()
+		{
+			var content = Path.GetTempFileName();
+			task.Contents = new[]
+			{
+				new TaskItem(content, new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.None },
+					{ MetadataName.PackagePath, "readme.txt" }
+				}),
+				new TaskItem("Helpers", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Version, "1.0.0" },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.IsDevelopmentDependency, "true" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.Equal(0, manifest.Metadata.DependencyGroups.Count());
 		}
 
 		[Fact]

@@ -7,30 +7,17 @@ namespace NuGet.Build.Packaging
 {
 	public class FrameworkAssemblyReferenceComparer : IEqualityComparer<FrameworkAssemblyReference>
     {
-		public static FrameworkAssemblyReferenceComparer Default { get; private set; }
-
-		static FrameworkAssemblyReferenceComparer()
-		{
-			Default = new FrameworkAssemblyReferenceComparer(StringComparer.OrdinalIgnoreCase);
-		}
-
-        StringComparer comparer;
-
-        private FrameworkAssemblyReferenceComparer(StringComparer comparer)
-        {
-            this.comparer = comparer;
-        }
+		public static FrameworkAssemblyReferenceComparer Default { get; } = new FrameworkAssemblyReferenceComparer();
 
         public bool Equals(FrameworkAssemblyReference x, FrameworkAssemblyReference y)
         {
             if (x == null && x == null)
                 return true;
-
             if (x == null || y == null)
                 return false;
 
-            return comparer.Equals(x.AssemblyName, y.AssemblyName)
-                && comparer.Equals(GetSupportedFrameworks(x), GetSupportedFrameworks(y));
+            return StringComparer.OrdinalIgnoreCase.Equals(x.AssemblyName, y.AssemblyName)
+                && StringComparer.OrdinalIgnoreCase.Equals(GetSupportedFrameworks(x), GetSupportedFrameworks(y));
         }
 
         public int GetHashCode(FrameworkAssemblyReference obj)
@@ -38,8 +25,8 @@ namespace NuGet.Build.Packaging
             if (obj == null)
                 throw new ArgumentNullException("obj");
 
-            return comparer.GetHashCode(obj.AssemblyName ?? "")
-                + comparer.GetHashCode(GetSupportedFrameworks(obj));
+            return StringComparer.OrdinalIgnoreCase.GetHashCode(obj.AssemblyName ?? "")
+                + StringComparer.OrdinalIgnoreCase.GetHashCode(GetSupportedFrameworks(obj));
         }
 
         static string GetSupportedFrameworks(FrameworkAssemblyReference obj)

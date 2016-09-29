@@ -60,7 +60,7 @@ namespace $(RootNamespace)
 
 		<WriteLinesToFile Lines='				  
 		/// &lt;summary&gt;Kind: %(_PackageItemKind.Identity)&lt;/summary&gt;
-		public const string %(_PackageItemKind.Identity) = "%(_PackageItemKind.Identity)"%3B
+		public const string %(_PackageItemKind.Identity) = nameof(%(_PackageItemKind.Identity))%3B
 ' Overwrite='false' File='$(PackageItemKindFile)' />
 
 		<WriteLinesToFile Lines='

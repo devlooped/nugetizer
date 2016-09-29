@@ -63,7 +63,8 @@ namespace NuGet.Build.Packaging.Tasks
 			var metadata = new ManifestMetadata();
 
 			metadata.Id = Manifest.GetMetadata("Id");
-			metadata.Version = NuGetVersion.Parse(Manifest.GetMetadata("Version"));
+			metadata.Version = NuGetVersion.Parse(Manifest.GetMetadata(MetadataName.Version));
+			metadata.DevelopmentDependency = Manifest.GetBoolean("DevelopmentDependency");
 
 			metadata.Title = Manifest.GetMetadata("Title");
 			metadata.Description = Manifest.GetMetadata("Description");
@@ -71,8 +72,7 @@ namespace NuGet.Build.Packaging.Tasks
 			metadata.Language = Manifest.GetMetadata("Language");
 
 			metadata.Copyright = Manifest.GetMetadata("Copyright");
-			metadata.RequireLicenseAcceptance = string.IsNullOrEmpty(Manifest.GetMetadata("RequireLicenseAcceptance")) ? false :
-				bool.Parse(Manifest.GetMetadata("RequireLicenseAcceptance"));
+			metadata.RequireLicenseAcceptance = Manifest.GetBoolean("RequireLicenseAcceptance");
 
 			if (!string.IsNullOrEmpty(Manifest.GetMetadata("Authors")))
 				metadata.Authors = Manifest.GetMetadata("Authors").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -102,7 +102,8 @@ namespace NuGet.Build.Packaging.Tasks
 		void AddDependencies(Manifest manifest)
 		{
 			var dependencies = from item in Contents
-							   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency
+							   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency && 
+									 !item.GetBoolean(MetadataName.IsDevelopmentDependency)
 							   select new Dependency
 							   {
 								   Id = item.ItemSpec,
