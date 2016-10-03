@@ -77,6 +77,8 @@
       <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
     </Compile>
     <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
+    <Compile Include="ProjectExtender\NuGetExtender.cs" />
+    <Compile Include="ProjectExtender\NuGetExtenderProvider.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjConfiguredProject.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjProjectCapabilitiesProvider.cs" />
@@ -179,10 +181,10 @@
     <ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Authoring.Tasks\NuGet.Build.Packaging.Authoring.Tasks.csproj">
       <Project>{f145ce58-06aa-4499-89d5-e5144b38d8f3}</Project>
       <Name>NuGet.Build.Packaging.Authoring.Tasks</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <AdditionalProperties>PackOnBuild=true</AdditionalProperties>
       <IncludeOutputGroupsInVSIXLocalOnly>PackageOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
       <IncludeOutputGroupsInVSIX>PackageOutputGroup</IncludeOutputGroupsInVSIX>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

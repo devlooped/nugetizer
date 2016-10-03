@@ -102,9 +102,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Platform targets could turn @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to FrameworkReference, for example -->
 		<PackageItemKind Include="FrameworkReference" />
 
-		<!-- Platform targets cound turn other @(ReferencePath) that are resolved otherwise (i.e. {RawFile}) into AssemblyReference, for example -->
-		<PackageItemKind Include="AssemblyReference" />
-
 	</ItemGroup>
 
 	<PropertyGroup>
