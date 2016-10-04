@@ -16,12 +16,23 @@ namespace NuGet.Packaging.VisualStudio
 	public class NuGetExtender 
 	{
 		const string CategoryName = "NuGet";
+		const string BuildCategoryName = "NuGet Build";
 
 		readonly IVsBuildPropertyStorage propertyStorage;
 
 		internal NuGetExtender(IVsHierarchy hierarchy)
 		{
 			propertyStorage = (IVsBuildPropertyStorage)hierarchy;
+		}
+
+		[DefaultValue(false)]
+		[Description("Specifies if the output NuGet package should be generated on build.")]
+		[DisplayName("Pack On Build")]
+		[Category(BuildCategoryName)]
+		public bool PackOnBuild
+		{
+			get { return GetGlobalProperty(nameof(PackOnBuild), false); }
+			set { SetGlobalProperty(nameof(PackOnBuild), value, false); }
 		}
 
 		[DefaultValue("")]
