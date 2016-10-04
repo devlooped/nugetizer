@@ -15,6 +15,13 @@
 		</PropertyGroup>
 	</Target>
 
+	<Target Name="CopyVsixToOut" AfterTargets="CreateVsixContainer" DependsOnTargets="GetVersion" Condition="'$(Out)' != ''">
+		<ItemGroup>
+			<TargetVsixContainer Include="$(TargetVsixContainer)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(TargetVsixContainer)" DestinationFiles="$(Out)\%(TargetVsixContainer.Filename).$(Version)%(TargetVsixContainer.Extension)" />
+	</Target>
+
 	<!-- Because envdte comes from a nuget package, we can't set the EmbedInteropTypes to true in the project, so we do it here -->
 	<Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
 		<ItemGroup>

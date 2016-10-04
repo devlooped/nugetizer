@@ -21,8 +21,10 @@ test: off
 
 nuget:
   project_feed: true
-  disable_publish_on_pr: true
+  disable_publish_on_pr: false
   
 artifacts:
   - path: out\*.nupkg
     name: Package
+  - path: out\*.vsix
+    name: Extension

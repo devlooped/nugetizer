@@ -15,6 +15,7 @@
 		<Solution Include="external\clide\src\Clide.Tasks.sln" />
 		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
 		<TestProject Include="src\Build\**\*Tests.csproj" />
+		<PackSolution Include="src\Build\NuGet.Build.Packaging.sln" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
@@ -35,12 +36,29 @@
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 	</Target>
 
-  <Target Name="Package">
-    <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-    <MSBuild Projects="@(PackSolution)" Properties="$(CommonBuildProperties);PackageOutputPath=$(Out);PackOnBuild=true" />
-  </Target>
+	<Target Name="Package" DependsOnTargets="Build">
+		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+		<MSBuild Projects="@(PackSolution)" Properties="$(CommonBuildProperties);PackageOutputPath=$(Out);PackOnBuild=true" />
+	</Target>
 
 	<Target Name="Test" DependsOnTargets="Build">
+		<MSBuild Projects="@(TestProject)" BuildInParallel="true" Targets="GetTargetPath" Properties="$(CommonBuildProperties)">
+			<Output TaskParameter="TargetOutputs" ItemName="_TestAssembly" />
+		</MSBuild>
+		<ItemGroup>
+			<TestAssembly Include="@(_TestAssembly)" Condition="Exists('%(FullPath)')" />
+		</ItemGroup>
+		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+
+		<xunit Assemblies="@(TestAssembly)"
+			   Html="$(Out)\test.html"
+			   Xml="$(Out)\test.xml"
+			   ParallelizeAssemblies="true"
+			   ParallelizeTestCollections="true" />
+	</Target>
+
+	<Target Name="Coverage" DependsOnTargets="Build">
+		<!-- Run tests but using code coverage -->
 		<MSBuild Projects="@(TestProject)" BuildInParallel="true" Targets="GetTargetPath" Properties="$(CommonBuildProperties)">
 			<Output TaskParameter="TargetOutputs" ItemName="_TestAssembly" />
 		</MSBuild>
@@ -66,18 +84,12 @@
 			  StandardErrorImportance="high"
 			  StandardOutputImportance="normal" />
 
-		<!--<Exec Command="$(XunitConsole) @(TestAssembly, ' ') $(XunitOptions)"
-			  Condition=" '@(TestAssembly)' != '' "
-			  ContinueOnError="ErrorAndContinue" />-->
-
 		<MakeDir Directories="$(Out)\coverage" Condition="!Exists('$(Out)\coverage')" />
 		<Exec Command="$(ReportConsole) $(ReportOptions)"
 				  ConsoleToMSBuild="true"
 				  StandardErrorImportance="high"
 				  StandardOutputImportance="normal" />
-	</Target>
 
-	<Target Name="Coverage" DependsOnTargets="Test">
 		<Exec Command="start $(Out)\coverage\index.htm" />
 	</Target>
 
@@ -86,8 +98,13 @@
 	<PropertyGroup>
 		<GitInfoTargets>$(PackagesPath)\GitInfo\build\GitInfo.targets</GitInfoTargets>
 		<XunitConsole>$(PackagesPath)\xunit.runner.console\tools\xunit.console.x86.exe</XunitConsole>
-		<PendingRestore Condition=" !Exists('$(GitInfoTargets)') Or !Exists('$(XunitConsole)') ">true</PendingRestore>
+		<XunitBuildDir>$([System.IO.Path]::Combine('.nuget', 'packages', 'xunit.runner.msbuild', 'build'))</XunitBuildDir>
+		<XunitPlatformDir Condition=" Exists('$(XunitBuildDir)') ">$([System.IO.Directory]::GetDirectories($(XunitBuildDir))[0])</XunitPlatformDir>
+		<!-- This file is used to detect whether the restore has been performed or not -->
+		<XunitProps>$([System.IO.Path]::Combine($(XunitPlatformDir), 'xunit.runner.msbuild.props'))</XunitProps>
+		<PendingRestore Condition=" !Exists('$(GitInfoTargets)') Or !Exists('$(XunitConsole)') Or !Exists('$(XunitProps)') ">true</PendingRestore>
 	</PropertyGroup>
+	<Import Project="$(XunitProps)" Condition="Exists('$(XunitProps)')"/>
 
 	<Target Name="Configure" DependsOnTargets="DownloadNuGet">
 		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
