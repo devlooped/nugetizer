@@ -19,6 +19,9 @@
 		<ItemGroup>
 			<TargetVsixContainer Include="$(TargetVsixContainer)" />
 		</ItemGroup>
+		<!-- Copy the evergreen filename -->
+		<Copy SourceFiles="@(TargetVsixContainer)" DestinationFolder="$(Out)" />
+		<!-- And also a versioned filename -->
 		<Copy SourceFiles="@(TargetVsixContainer)" DestinationFiles="$(Out)\%(TargetVsixContainer.Filename).$(Version)%(TargetVsixContainer.Extension)" />
 	</Target>
 

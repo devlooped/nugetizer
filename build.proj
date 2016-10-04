@@ -39,6 +39,11 @@
 	<Target Name="Package" DependsOnTargets="Build">
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 		<MSBuild Projects="@(PackSolution)" Properties="$(CommonBuildProperties);PackageOutputPath=$(Out);PackOnBuild=true" />
+		<ItemGroup>
+			<OutputFile Include="$(Out)\*.nupkg" />
+			<OutputFile Include="$(Out)\*.vsix" />
+		</ItemGroup>
+		<Copy SourceFiles="@(OutputFile)" DestinationFolder="$(MSBuildThisFileDirectory)" Condition="'$(APPVEYOR)' == 'true'"/>
 	</Target>
 
 	<Target Name="Test" DependsOnTargets="Build">
@@ -118,7 +123,11 @@
 
 		<!-- For now this is an informative version #, used to update CI -->
 		<PropertyGroup>
-			<Version>%(GitInfo.GitSemVerMajor).%(GitInfo.GitSemVerMinor).%(GitInfo.GitSemVerPatch)%(GitInfo.GitSemVerDashLabel)</Version>
+			<GitSemVerDashLabel>%(GitInfo.GitSemVerDashLabel)</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'%(GitInfo.GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'%(GitInfo.GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+			<Version>%(GitInfo.GitSemVerMajor).%(GitInfo.GitSemVerMinor).%(GitInfo.GitSemVerPatch)$(GitSemVerDashLabel)</Version>
 		</PropertyGroup>
 
 		<Message Text="Building version $(Version)" Importance="high" />
