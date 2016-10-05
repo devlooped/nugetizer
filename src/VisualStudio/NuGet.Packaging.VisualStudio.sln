@@ -23,7 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\..\appveyor.yml = ..\..\appveyor.yml
 		..\..\build.proj = ..\..\build.proj
-		..\NuGet.Build.Packaging.IntellisenseFixup.targets = ..\NuGet.Build.Packaging.IntellisenseFixup.targets
 		..\NuGet.Build.Packaging.Shared.props = ..\NuGet.Build.Packaging.Shared.props
 		..\NuGet.Build.Packaging.Shared.targets = ..\NuGet.Build.Packaging.Shared.targets
 		NuGet.Packaging.VisualStudio.Shared.targets = NuGet.Packaging.VisualStudio.Shared.targets
