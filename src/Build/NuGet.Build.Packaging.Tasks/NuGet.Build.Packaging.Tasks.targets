@@ -11,6 +11,10 @@
 	<PropertyGroup>
 		<PackageId>NuGet.Build.Packaging</PackageId>
 		<Description>NuGet Packaging Targets</Description>
+		<!-- We add the outputs ourselves, so no need for all three below -->
+		<IncludeOutputs>false</IncludeOutputs>
+		<IncludeSymbols>false</IncludeSymbols>
+		<IncludeFrameworkReferences>false</IncludeFrameworkReferences>
 		<GetPackageContentsDependsOn>
 			AddBuiltOutput;
 			$(GetPackageContentsDependsOn)

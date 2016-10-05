@@ -5,6 +5,12 @@
 		<Description>NuGet Project System Targets</Description>
 		<!-- Turn on PackOnBuild when developing the VS integration, for F5 convenience. -->
 		<PackOnBuild Condition="'$(SolutionName)' == 'NuGet.Packaging.VisualStudio' and '$(BuildingInsideVisualStudio)' == 'true'">true</PackOnBuild>
+		<!-- We add the outputs ourselves, so no need for all three below -->
+		<IncludeOutputs>false</IncludeOutputs>
+		<IncludeSymbols>false</IncludeSymbols>
+		<IncludeFrameworkReferences>false</IncludeFrameworkReferences>
+		<!-- We have a build dependency on the Build tasks, but we don't want it to become a package dependency via the synthetic project reference -->
+		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 		<GetPackageContentsDependsOn>
 			AddBuiltOutput;
 			$(GetPackageContentsDependsOn)
