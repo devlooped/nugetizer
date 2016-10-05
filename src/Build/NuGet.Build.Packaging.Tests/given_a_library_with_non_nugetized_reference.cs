@@ -20,41 +20,113 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_getting_nugetized_target_path_then_it_contains_ispackable_metadata()
+		public void when_getting_contents_then_issues_warning_for_missing_nuget()
 		{
-			var result = Builder.BuildScenario(
-				nameof(given_a_library_with_non_nugetized_reference), 
-				target: "GetTargetPath",
-				output: output);
+			var result = Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), new
+			{
+				Configuration = "Release",
+				IncludeFrameworkReferences = "false",
+			}, projectName: "a", target: "GetPackageContents", output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-
-			Assert.True(result.Items[0].MetadataNames.OfType<string>().Contains(MetadataName.IsPackable));
+			Assert.Contains(result.Logger.Warnings, warning => warning.Code == "NG1001");
 		}
 
 		[Fact]
-		public void when_getting_non_nugetized_target_path_then_it_does_not_contains_ispackable_metadata()
+		public void when_getting_contents_then_includes_referenced_project_outputs()
 		{
-			var result = Builder.BuildScenario(
-				nameof(given_a_library_with_non_nugetized_reference),
-				projectName: "b",
-				target: "GetTargetPath",
-				output: output);
+			var result = Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), new
+			{
+				Configuration = "Release",
+				IncludeFrameworkReferences = "false",
+			}, projectName: "a", target: "GetPackageContents", output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
-			Assert.False(result.Items[0].MetadataNames.OfType<string>().Contains(MetadataName.IsPackable));
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\b.dll",
+			}));
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\b.xml",
+			}));
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\b.dll",
+			}));
 		}
 
 		[Fact]
-		public void when_getting_package_contents_then_fails_for_non_nugetized_reference()
+		public void when_getting_contents_then_includes_referenced_project_satellite_assembly()
 		{
-			var result = Builder.BuildScenario(
-				nameof(given_a_library_with_non_nugetized_reference),
-				target: "GetPackageContents",
-				output: output);
+			var result = Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), new
+			{
+				Configuration = "Release",
+				IncludeFrameworkReferences = "false",
+			}, projectName: "a", target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Failure, result.ResultCode);
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\es-AR\b.resources.dll",
+			}));
+		}
+
+		[Fact]
+		public void when_getting_contents_then_includes_referenced_project_dependencies()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), new
+			{
+				Configuration = "Release",
+				IncludeFrameworkReferences = "false",
+			}, projectName: "a", target: "GetPackageContents", output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\d.dll",
+			}));
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\d.dll",
+			}));
+		}
+
+		[Fact]
+		public void when_getting_contents_then_includes_referenced_project__dependency_satellite_assembly()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), new
+			{
+				Configuration = "Release",
+				IncludeFrameworkReferences = "false",
+			}, projectName: "a", target: "GetPackageContents", output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\es-AR\d.resources.dll",
+			}));
+		}
+
+		[Fact]
+		public void when_getting_contents_then_does_not_include_referenced_project_nuget_assembly_reference()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), new
+			{
+				Configuration = "Release",
+				IncludeFrameworkReferences = "false",
+			}, projectName: "a", target: "GetPackageContents", output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\Newtonsoft.Json.dll",
+			}));
 		}
 	}
 }

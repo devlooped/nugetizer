@@ -18,16 +18,22 @@
   <ItemGroup>
     <None Include="project.json" />
     <None Include="NuGet.Build.Packaging.Tests.targets" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\b.csproj" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\d.csproj" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\c.csproj" />
     <Content Include="Scenarios\given_a_localized_library\library.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\a.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\b.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\c.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\d.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\e.csproj" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\a.csproj" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b.csproj" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\a.csproj">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Scenarios\given_library_project_with_nugets\project.json" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.lock.json" />
+    <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.json" />
+    <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.lock.json" />
     <None Include="Scenarios\Scenario.props" />
     <None Include="Scenarios\Scenario.targets" />
   </ItemGroup>
@@ -79,6 +85,10 @@
   <ItemGroup>
     <Content Include="Scenarios\given_a_localized_library\Resources.es-AR.resx" />
     <Content Include="Scenarios\given_a_localized_library\Resources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\Resources.es-AR.resx" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\Resources.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.targets))\NuGet.Build.Packaging.Shared.targets" />

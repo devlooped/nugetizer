@@ -16,8 +16,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
 	<PropertyGroup>
-		<IncludeSymbols Condition="'$(IncludeSymbols)' == '' and '$(Configuration)' == 'Debug'">true</IncludeSymbols>
 		<IncludeOutputs Condition="'$(IncludeOutputs)' == ''">true</IncludeOutputs>
+		<IncludeSymbols Condition="'$(IncludeSymbols)' == '' and '$(IncludeOutputs)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbols>
 		<IncludeFrameworkReferences Condition="'$(IncludeFrameworkReferences)' == ''">true</IncludeFrameworkReferences>
 
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
@@ -126,7 +126,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
 				<RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
 				<RepositoryType>$(RepositoryType)</RepositoryType>
-				<PackageType>$(PackageType)</PackageType>
+				<PackageTypes>$(PackageTypes)</PackageTypes>
 			</PackageTargetPath>
 		</ItemGroup>
 	</Target>
@@ -168,8 +168,16 @@ Copyright (c) .NET Foundation. All rights reserved.
 			GetPackageTargetPath;
 			AssignProjectConfiguration;
 			_SplitProjectReferencesByFileExistence;
+			_SplitProjectReferencesByIsPackablePresence;
 			AllProjectOutputGroups;
-			_CollectAllPackageContents;
+		</_GetAllPackageContentsDependsOn>
+		<_GetAllPackageContentsDependsOn Condition="'$(IncludeOutputs)' == 'true'">
+			$(_GetAllPackageContentsDependsOn)
+			_CollectMissingIsPackableProjectReferencesOutputs;
+		</_GetAllPackageContentsDependsOn>
+		<_GetAllPackageContentsDependsOn>
+			$(_GetAllPackageContentsDependsOn)
+			_CollectAllPackageContents;			
 		</_GetAllPackageContentsDependsOn>
 	</PropertyGroup>
 
@@ -239,6 +247,178 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<Target Name="GetAllPackageContents" DependsOnTargets="$(_GetAllPackageContentsDependsOn)" Returns="@(_AllPackageContent)" />
 
+	<!-- This target separates project references that have the packaging targets from those that don't -->
+	<Target Name="_SplitProjectReferencesByIsPackablePresence" 
+			Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
+			Inputs="@(_MSBuildProjectReferenceExistent)"
+			Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
+		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+					 Targets="GetTargetPath"
+					 BuildInParallel="$(BuildInParallel)"
+					 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
+					 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectTargetPath" />
+		</MSBuild>
+
+		<PropertyGroup>
+			<_HasIsPackable Condition="'%(_ReferencedProjectTargetPath.IsPackable)' != ''">true</_HasIsPackable>
+		</PropertyGroup>
+	
+		<ItemGroup>
+			<_NoIsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_HasIsPackable)' != 'true'" />
+			<_IsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_HasIsPackable)' == 'true'" />
+		</ItemGroup>
+
+	</Target>
+	
+	<!-- Includes primary output and dependencies for non-nugetized projects -->
+	<Target Name="_CollectMissingIsPackableProjectReferencesOutputs" Condition="'@(_NoIsPackableProject)' != ''">
+		<Warning Text="Some project references do not have the 'NuGet.Build.Packaging' installed. Only primary output will be packaged.
+Please install the 'NuGet.Build.Packaging' package in the following projects to ensure proper packaging of all artifacts: @(_NoIsPackableProject)"
+				 Code="NG1001" />
+	
+		<!-- Main project and dependencies built output -->
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Targets="BuiltProjectOutputGroup"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectBuiltOutput" />
+		</MSBuild>
+
+		<ItemGroup>
+			<PackageFile Include="@(_ReferencedProjectBuiltOutput -> '%(FinalOutputPath)')">
+				<Kind>Lib</Kind>
+			</PackageFile>
+		</ItemGroup>
+		
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Targets="BuiltProjectOutputGroupDependencies"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectOutputDependency" />
+		</MSBuild>
+
+		<ItemGroup>
+			<!-- NOTE: this default heuristics does not include assemblies referenced from nuget v3 packages which look like the following:
+					BuiltProjectOutputGroupDependency: %UserProfile%\.nuget\packages\Newtonsoft.Json\6.0.4\lib\net45\Newtonsoft.Json.dll
+						CopyLocal=false
+						NuGetIsFrameworkReference=false
+						NuGetPackageId=Newtonsoft.Json
+						NuGetPackageVersion=6.0.4
+						NuGetSourceType=Package
+						ResolvedFrom={RawFileName}
+						
+				Since the dependencies include the actual closure of all transitive nuget package dependencies (from its 
+				lock.json or packages.config), we can't rely on these to provide the top-level dependencies we actually 
+				need either.
+			-->
+			<PackageFile Include="@(_ReferencedProjectOutputDependency -> '%(FullPath)')" 
+						 Condition="'%(_ReferencedProjectOutputDependency.CopyLocal)' == 'true' and
+						            '%(_ReferencedProjectOutputDependency.FrameworkFile)' != 'true' and 
+									'%(_ReferencedProjectOutputDependency.ResolvedFrom)' != '{TargetFrameworkDirectory}'">
+				<Kind>Lib</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<!-- Main project and dependencies symbols -->
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Condition="'$(IncludeSymbols)' == 'true'"
+				 Targets="DebugSymbolsProjectOutputGroup"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDebugSymbols" />
+		</MSBuild>
+
+		<ItemGroup>
+			<PackageFile Include="@(_ReferencedProjectDebugSymbols -> '%(FinalOutputPath)')">
+				<Kind>Symbols</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Condition="'$(IncludeSymbols)' == 'true'"
+				 Targets="DebugSymbolsProjectOutputGroupDependencies"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectOutputDependencySymbols" />
+		</MSBuild>
+
+		<ItemGroup>
+			<PackageFile Include="@(_ReferencedProjectOutputDependencySymbols -> '%(FullPath)')"
+						 Condition="'%(_ReferencedProjectOutputDependencySymbols.CopyLocal)' == 'true'">
+				<Kind>Symbols</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<!-- Main project and dependencies documentation -->
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Targets="DocumentationProjectOutputGroup"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDocumentation" />
+		</MSBuild>
+
+		<ItemGroup>
+			<PackageFile Include="@(_ReferencedProjectDocumentation -> '%(FinalOutputPath)')">
+				<Kind>Doc</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Targets="DocumentationProjectOutputGroupDependencies"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDocumentationDependency" />
+		</MSBuild>
+
+		<ItemGroup>
+			<PackageFile Include="@(_ReferencedProjectDocumentationDependency -> '%(FullPath)')"
+						 Condition="'%(_ReferencedProjectDocumentationDependency.CopyLocal)' == 'true'">
+				<Kind>Doc</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<!-- Main project and dependencies satellite assemblies -->
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Targets="SatelliteDllsProjectOutputGroup"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectSatelliteDll" />
+		</MSBuild>
+
+		<ItemGroup>
+			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
+			<PackageFile Include="@(_ReferencedProjectSatelliteDll -> '%(FullPath)')">
+				<Kind>Lib</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Targets="SatelliteDllsProjectOutputGroupDependencies"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDependencySatelliteDll" />
+		</MSBuild>
+
+		<ItemGroup>
+			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
+			<PackageFile Include="@(_ReferencedProjectDependencySatelliteDll -> '%(FullPath)')"
+						 Condition="'%(_ReferencedProjectDependencySatelliteDll.CopyLocal)' == 'true'">
+				<Kind>Lib</Kind>
+				<TargetPath Condition="'%(_ReferencedProjectDependencySatelliteDll.DestinationSubDirectory)' != ''">%(_ReferencedProjectDependencySatelliteDll.DestinationSubDirectory)%(_ReferencedProjectDependencySatelliteDll.Filename)%(_ReferencedProjectDependencySatelliteDll.Extension)</TargetPath>
+			</PackageFile>
+		</ItemGroup>
+
+	</Target>
+	
 	<!-- This is the actual inner target that authors extend when they provide a GetPackageContentsDependsOn target -->
 	<Target Name="_CollectAllPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_AllPackageContent)" >
 		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
@@ -271,7 +451,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</PackageFile>
 
 			<!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
-			     it also includes mscorlib which we don't need -->
+			     it also includes mscorlib which we don't need
+			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
 			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
 						 Condition="'$(IncludeFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
 				<Kind>FrameworkReference</Kind>
@@ -294,7 +475,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ItemGroup>
 			<!-- Specific framework targets would turn:
 				* @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to Kind=FrameworkReference
-				  (maybe ResolvedFrom=ImplicitlyExpandDesignTimeFacades too?)
 				* @(ReferencePath) are resolved otherwise (i.e. ResolvedFrom={RawFile}) to Kind=AssemblyReference
 			-->
 		</ItemGroup>
@@ -308,27 +488,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_AllPackageContent>
 		</ItemGroup>
 
-		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
-					 Targets="GetTargetPath"
-					 BuildInParallel="$(BuildInParallel)"
-					 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
-					 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
-					 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedTargetPath" />
-		</MSBuild>
-
-		<ItemGroup>
-			<UnknownPackableTargetPaths Include="@(_ReferencedTargetPath)" Condition="'%(_ReferencedTargetPath.IsPackable)' == ''" />
-		</ItemGroup>
-
-		<Error Text="Please install the required 'NuGet.Build.Packaging' package in the following projects: @(UnknownPackableTargetPaths-> '%(MSBuildSourceProjectFile)')" Code="NG1001" Condition="'@(UnknownPackableTargetPaths)' != ''" />
-
-		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+		<MSBuild Projects="@(_IsPackableProject)"
 					 Targets="GetAllPackageContents"
 					 BuildInParallel="$(BuildInParallel)"
-					 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
-					 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
-					 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+					 Properties="%(_IsPackableProject.SetConfiguration); %(_IsPackableProject.SetPlatform)"
+					 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_IsPackableProject)' != ''"
+					 RemoveProperties="%(_IsPackableProject.GlobalPropertiesToRemove)">
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
 		</MSBuild>
 

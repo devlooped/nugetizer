@@ -44,7 +44,7 @@ public class TestOutputLogger : ILogger
 		eventSource.AnyEventRaised += (sender, e) =>
 		{
 			if (!(e is BuildMessageEventArgs) && Verbosity > LoggerVerbosity.Normal)
-				output.WriteLine(e.Message);
+				output?.WriteLine(e.Message);
 		};
 
 		eventSource.MessageRaised += (sender, e) =>
@@ -63,21 +63,21 @@ public class TestOutputLogger : ILogger
 			}
 
 			if (Verbosity != LoggerVerbosity.Quiet && shouldLog)
-				output.WriteLine(e.Message);
+				output?.WriteLine(e.Message);
 
 			Messages.Add(e);
 		};
 
 		eventSource.ErrorRaised += (sender, e) =>
 		{
-			output.WriteLine(e.Message);
+			output?.WriteLine(e.Message);
 			Errors.Add(e);
 		};
 
 		eventSource.WarningRaised += (sender, e) =>
 		{
 			if (Verbosity != LoggerVerbosity.Quiet)
-				output.WriteLine(e.Message);
+				output?.WriteLine(e.Message);
 
 			Warnings.Add(e);
 		};

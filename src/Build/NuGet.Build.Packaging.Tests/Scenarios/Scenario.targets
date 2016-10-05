@@ -7,7 +7,7 @@
     <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
     <!-- Import the NuGet targets from the test project to allow easy diagnostics -->
     <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Tests.nuget.targets))\NuGet.Build.Packaging.Tests.nuget.targets"/>
-    <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" />
+    <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
 
     <!--<PropertyGroup>
 		<GetPackageContentsDependsOn>

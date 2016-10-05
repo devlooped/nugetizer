@@ -46,7 +46,7 @@
 		<Description>Package for '$(MSBuildProjectName)' project.</Description>
 	</PropertyGroup>
 
-	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.props" />
+	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.props" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')" />
 	<!-- Import the NuGet props from the test project to allow easy diagnostics -->
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Tests.nuget.props))\NuGet.Build.Packaging.Tests.nuget.props"/>
 

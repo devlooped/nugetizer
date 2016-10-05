@@ -15,7 +15,7 @@ using Xunit.Sdk;
 /// </summary>
 static partial class Builder
 {
-	public static ITargetResult BuildScenario(string scenarioName, object properties = null, string projectName = null, string target = "GetPackageContents", ITestOutputHelper output = null, LoggerVerbosity? verbosity = null)
+	public static TargetResult BuildScenario(string scenarioName, object properties = null, string projectName = null, string target = "GetPackageContents", ITestOutputHelper output = null, LoggerVerbosity? verbosity = null)
 	{
 		var scenarioDir = Path.Combine(ModuleInitializer.BaseDirectory, "Scenarios", scenarioName);
 
@@ -37,7 +37,7 @@ static partial class Builder
 		else
 			projectOrSolution = Directory.EnumerateFiles(scenarioDir, "*.csproj").First();
 
-		var logger = default(ILogger);
+		var logger = default(TestOutputLogger);
 		if (output != null)
 		{
 			if (verbosity == null)
@@ -49,13 +49,39 @@ static partial class Builder
 
 			logger = new TestOutputLogger(output, verbosity);
 		}
+		else
+		{
+			logger = new TestOutputLogger(null);
+		}
 
 		if (properties != null)
-			return Build(projectOrSolution, target,
+			return new TargetResult(Build(projectOrSolution, target,
 				properties: properties.GetType().GetProperties().ToDictionary(prop => prop.Name, prop => prop.GetValue(properties).ToString()),
-				logger: logger)[target];
+				logger: logger), target, logger);
 		else
-			return Build(projectOrSolution, target, logger: logger)[target];
+			return new TargetResult(Build(projectOrSolution, target, logger: logger), target, logger);
+	}
+
+	public class TargetResult : ITargetResult
+	{
+		public TargetResult(BuildResult result, string target, TestOutputLogger logger)
+		{
+			BuildResult = result;
+			Target = target;
+			Logger = logger;
+		}
+
+		public BuildResult BuildResult { get; private set; }
+
+		public TestOutputLogger Logger { get; private set; }
+
+		public string Target { get; private set; }
+
+		public Exception Exception => BuildResult[Target].Exception;
+
+		public ITaskItem[] Items => BuildResult[Target].Items;
+
+		public TargetResultCode ResultCode => BuildResult[Target].ResultCode;
 	}
 }
 
