@@ -24,7 +24,7 @@ nuget:
   disable_publish_on_pr: false
   
 artifacts:
-  - path: *.nupkg
+  - path: '*.nupkg'
     name: Package
-  - path: *.vsix
+  - path: '*.vsix'
     name: Extension
