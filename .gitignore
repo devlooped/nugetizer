@@ -9,16 +9,17 @@ temp
 *.userprefs
 *.user
 *.nupkg
+*.vsix
 *.sln.ide
 *.metaproj
 *.tmp
 *.cache
 
+NuGet.exe
 packages
 project.lock.json
 *.nuget.props
 *.nuget.targets
 
 log.txt
-NuGet.exe
 test.proj

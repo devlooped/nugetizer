@@ -12,6 +12,7 @@
     <RootNamespace>NuGet.Packaging.VisualStudio</RootNamespace>
     <AssemblyName>NuGet.Packaging.VisualStudio</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetVsixContainerName>NuGetizer3000.vsix</TargetVsixContainerName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
