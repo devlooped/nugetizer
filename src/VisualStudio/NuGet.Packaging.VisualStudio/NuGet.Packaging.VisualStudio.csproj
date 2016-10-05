@@ -187,6 +187,10 @@
       <IncludeOutputGroupsInVSIX>PackageOutputGroup</IncludeOutputGroupsInVSIX>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj">
+      <Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
+      <Name>NuGet.Build.Packaging.Tasks</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

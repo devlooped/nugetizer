@@ -3,6 +3,8 @@
 	<PropertyGroup>
 		<PackageId>NuGet.Build.Packaging.Authoring</PackageId>
 		<Description>NuGet Project System Targets</Description>
+		<!-- Turn on PackOnBuild when developing the VS integration, for F5 convenience. -->
+		<PackOnBuild Condition="'$(SolutionName)' == 'NuGet.Packaging.VisualStudio' and '$(BuildingInsideVisualStudio)' == 'true'">true</PackOnBuild>
 		<GetPackageContentsDependsOn>
 			AddBuiltOutput;
 			$(GetPackageContentsDependsOn)
