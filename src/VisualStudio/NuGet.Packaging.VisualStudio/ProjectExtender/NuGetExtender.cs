@@ -25,8 +25,38 @@ namespace NuGet.Packaging.VisualStudio
 			propertyStorage = (IVsBuildPropertyStorage)hierarchy;
 		}
 
+		[DefaultValue(true)]
+		[Description("Whether to include symbols in the package if 'Include Outputs' is 'true'. Defaults to 'true' for debug builds, 'false' otherwise.")]
+		[DisplayName("Include Symbols")]
+		[Category(BuildCategoryName)]
+		public bool IncludeSymbols
+		{
+			get { return GetGlobalProperty(nameof(IncludeSymbols), true); }
+			set { SetGlobalProperty(nameof(IncludeSymbols), value, true); }
+		}
+
+		[DefaultValue(true)]
+		[Description("Whether to include the primary outputs of this project in the package. Defaults to 'true'.")]
+		[DisplayName("Include Outputs")]
+		[Category(BuildCategoryName)]
+		public bool IncludeOutputs
+		{
+			get { return GetGlobalProperty(nameof(IncludeOutputs), true); }
+			set { SetGlobalProperty(nameof(IncludeOutputs), value, true); }
+		}
+
+		[DefaultValue("")]
+		[Description("The output directory for the generated NuGet package. Defaults to the project's $(OutputPath) property.")]
+		[DisplayName("Output Path")]
+		[Category(BuildCategoryName)]
+		public string PackageOutputPath
+		{
+			get { return GetGlobalProperty(nameof(PackageOutputPath), ""); }
+			set { SetGlobalProperty(nameof(PackageOutputPath), value, ""); }
+		}
+
 		[DefaultValue(false)]
-		[Description("Specifies if the output NuGet package should be generated on build.")]
+		[Description("Specifies if the output NuGet package should be generated on build. Only applies to projects that have a package Id set.")]
 		[DisplayName("Pack On Build")]
 		[Category(BuildCategoryName)]
 		public bool PackOnBuild
