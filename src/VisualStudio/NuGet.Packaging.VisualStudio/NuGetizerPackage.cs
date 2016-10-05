@@ -25,7 +25,7 @@
 		LanguageVsTemplate = "CSharp",
 		ShowOnlySpecifiedTemplatesVsTemplate = true)]
 	[ProvideMenuResource("2000", 1)]
-	public sealed class VsPackage : Package
+	public sealed class NuGetizerPackage : Package
 	{
 		protected override void Initialize()
 		{
