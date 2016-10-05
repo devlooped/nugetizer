@@ -9,6 +9,7 @@
 		public const string ProjectFileExtension = "." + ProjectExtension;
 
 		public const string Language = "NuGet.Packaging";
+		public const string NuGetAuthoringPathPropertyName = "NuGetAuthoringPath";
 
 		public class Platforms
 		{

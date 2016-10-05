@@ -81,6 +81,7 @@
     <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
     <Compile Include="ProjectExtender\NuGetExtender.cs" />
     <Compile Include="ProjectExtender\NuGetExtenderProvider.cs" />
+    <Compile Include="ProjectSystem.Dev14\GlobalPropertiesProvider.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjConfiguredProject.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjProjectCapabilitiesProvider.cs" />
@@ -132,6 +133,15 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="project.json" />
+    <Content Include="Targets\NuGet.Build.Packaging.Authoring.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Targets\NuGet.Build.Packaging.Authoring.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="Templates\Projects\Package\Project.json" />
     <None Include="Templates\Spikes\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Spikes\PortableClassLibrary\class1.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -166,6 +176,42 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Rules\content.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Rules\folder.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Rules\general.browseobject.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Rules\general.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Rules\none.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Rules\ProjectItemsSchema.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Rules\ProjectReference.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Rules\ResolvedProjectReference.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Rules\scc.xaml">
+      <SubType>Designer</SubType>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Page Include="Views\AddPlatformImplementationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -178,14 +224,6 @@
     <ProjectReference Include="..\..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
       <Project>{099bebd8-6b04-416d-ba44-e0201951542b}</Project>
       <Name>Clide.Interfaces</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Authoring.Tasks\NuGet.Build.Packaging.Authoring.Tasks.csproj">
-      <Project>{f145ce58-06aa-4499-89d5-e5144b38d8f3}</Project>
-      <Name>NuGet.Build.Packaging.Authoring.Tasks</Name>
-      <AdditionalProperties>PackOnBuild=true</AdditionalProperties>
-      <IncludeOutputGroupsInVSIXLocalOnly>PackageOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
-      <IncludeOutputGroupsInVSIX>PackageOutputGroup</IncludeOutputGroupsInVSIX>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj">

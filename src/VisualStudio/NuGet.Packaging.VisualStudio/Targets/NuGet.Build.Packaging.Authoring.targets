@@ -43,8 +43,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<Context>;BrowseObject</Context>
 		</PropertyPageSchema>
 
-		<ProjectCapability Include="ProjectReferences;ReferencesFolder" />
-		<ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
+    <ProjectCapability Include="ProjectReferences;PackageReferences;ReferencesFolder;AssemblyReferences;DeclaredSourceItems;UserSourceItems" />
+    <ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
 		<ProjectCapability Include="NuGet.Packaging" />
 	</ItemGroup>
 

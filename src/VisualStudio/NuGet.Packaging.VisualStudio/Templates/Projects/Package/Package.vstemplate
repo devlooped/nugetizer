@@ -16,6 +16,16 @@
   </TemplateData>
   <TemplateContent>
     <Project File="Package.nuproj" ReplaceParameters="true">
+      <ProjectItem>Project.json</ProjectItem> 
     </Project>
   </TemplateContent>
+  <WizardExtension>
+    <Assembly>NuGet.VisualStudio.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</Assembly>
+    <FullClassName>NuGet.VisualStudio.TemplateWizard</FullClassName>
+  </WizardExtension>
+  <WizardData>
+    <packages repository="extension" repositoryId="NuGet.Packaging">
+      <package id="NuGet.Build.Packaging" version="0.1.71-dev" />
+    </packages>
+  </WizardData>
 </VSTemplate>

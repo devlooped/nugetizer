@@ -15,6 +15,7 @@
 				 Condition="'$(BuildingInsideVisualStudio)' == 'true'">
 			<Link>%(Filename)%(Extension)</Link>
 			<IncludeInVSIX>true</IncludeInVSIX>
+			<VSIXSubPath>Packages</VSIXSubPath>
 		</Content>
 		<!-- We can't reference the project when building from VS because that will lock the output tasks assembly -->
 		<ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj"
@@ -25,6 +26,7 @@
 			<IncludeOutputGroupsInVSIXLocalOnly>PackageOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
 			<IncludeOutputGroupsInVSIX>PackageOutputGroup</IncludeOutputGroupsInVSIX>
 			<Private>False</Private>
+			<VSIXSubPath>Packages</VSIXSubPath>
 		</ProjectReference>
 	</ItemGroup>
 
