@@ -27,7 +27,7 @@
 	</Target>-->
 
     <Target Name="Dump" DependsOnTargets="GetPackageContents">
-        <!--<DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />-->
+        <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
         <!--<DumpItems Items="@(_MSBuildProjectReferenceExistent)" ItemName="_MSBuildProjectReferenceExistent" />-->
         <Message Importance="high" Text="%(_PackageContent.Filename)%(_PackageContent.Extension)
 	Kind=%(_PackageContent.Kind)

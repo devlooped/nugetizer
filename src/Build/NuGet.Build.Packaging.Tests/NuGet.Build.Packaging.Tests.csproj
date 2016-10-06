@@ -18,9 +18,10 @@
   <ItemGroup>
     <None Include="project.json" />
     <None Include="NuGet.Build.Packaging.Tests.targets" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\b.csproj" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\d.csproj" />
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\c.csproj" />
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\d.csproj" />
     <Content Include="Scenarios\given_a_localized_library\library.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\a.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\b.csproj" />

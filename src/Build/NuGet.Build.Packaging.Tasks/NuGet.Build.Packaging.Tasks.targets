@@ -1,27 +1,45 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.targets))\NuGet.Build.Packaging.Shared.targets" />
 
 	<PropertyGroup>
-		<CoreCompileDependsOn>
-			PackageItemKind;
-			$(CoreCompileDependsOn);
-		</CoreCompileDependsOn>
-		<PackageItemKindFile>$(IntermediateOutputPath)PackageItemKind.g$(DefaultLanguageSourceExtension)</PackageItemKindFile>
+		<GetPackageVersionDependsOn>
+			SetPackageVersion;
+			$(GetPackageVersionDependsOn)
+		</GetPackageVersionDependsOn>
 	</PropertyGroup>
+	<Target Name="SetPackageVersion" DependsOnTargets="GitVersion">
+		<PropertyGroup>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 
 	<PropertyGroup>
 		<PackageId>NuGet.Build.Packaging</PackageId>
+		<Authors>Microsoft</Authors>
+		<Owners>Microsoft</Owners>
+		<Copyright>&#169; .NET Foundation. All rights reserved.</Copyright>
+		<Title>NuGetizer-3000</Title>
 		<Description>NuGet Packaging Targets</Description>
+		<NeutralLanguage>en</NeutralLanguage>
+		<PackageLicenseUrl>https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
+		
 		<!-- We add the outputs ourselves, so no need for all three below -->
 		<IncludeOutputs>false</IncludeOutputs>
 		<IncludeSymbols>false</IncludeSymbols>
 		<IncludeFrameworkReferences>false</IncludeFrameworkReferences>
+		
 		<GetPackageContentsDependsOn>
 			AddBuiltOutput;
 			$(GetPackageContentsDependsOn)
 		</GetPackageContentsDependsOn>
 	</PropertyGroup>
 
-	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
+	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
+			Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
 
 	<Target Name="AddBuiltOutput" DependsOnTargets="ResolveReferences;AllProjectOutputGroups;AssignTargetPaths">
 		<ItemGroup>
@@ -39,6 +57,14 @@
 			</PackageFile>
 		</ItemGroup>
 	</Target>
+
+	<PropertyGroup>
+		<CoreCompileDependsOn>
+			PackageItemKind;
+			$(CoreCompileDependsOn);
+		</CoreCompileDependsOn>
+		<PackageItemKindFile>$(IntermediateOutputPath)PackageItemKind.g$(DefaultLanguageSourceExtension)</PackageItemKindFile>
+	</PropertyGroup>
 
 	<Target Name="PackageItemKind" BeforeTargets="BuildOnlySettings" DependsOnTargets="GeneratePackageItemKind">
 		<ItemGroup>
@@ -74,6 +100,24 @@ namespace $(RootNamespace)
 
 		<ItemGroup>
 			<FileWrites Include="$(PackageItemKindFile)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="AddMSBuildReferences" BeforeTargets="ResolveAssemblyReferences">
+		<ItemGroup>
+			<!-- TODO: to replace with the MSBuild nugets once they are more generally available -->
+			<Reference Include="Microsoft.Build">
+				<HintPath>$(MSBuildBinPath)\Microsoft.Build.dll</HintPath>
+			</Reference>
+			<Reference Include="Microsoft.Build.Framework">
+				<HintPath>$(MSBuildBinPath)\Microsoft.Build.Framework.dll</HintPath>
+			</Reference>
+			<Reference Include="Microsoft.Build.Tasks.Core">
+				<HintPath>$(MSBuildBinPath)\Microsoft.Build.Tasks.Core.dll</HintPath>
+			</Reference>
+			<Reference Include="Microsoft.Build.Utilities.Core">
+				<HintPath>$(MSBuildBinPath)\Microsoft.Build.Utilities.Core.dll</HintPath>
+			</Reference>
 		</ItemGroup>
 	</Target>
 
