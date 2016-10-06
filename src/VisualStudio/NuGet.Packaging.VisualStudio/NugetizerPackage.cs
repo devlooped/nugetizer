@@ -7,6 +7,7 @@
 	using Microsoft.VisualStudio.ComponentModelHost;
 	using EnvDTE;
 	using Microsoft.VisualStudio.Shell.Interop;
+	using ExtenderProviders;
 
 	[Guid(Guids.PackageGuid)]
 	[ProvideAutoLoad(UIContextGuids.SolutionExists)]
@@ -27,6 +28,8 @@
 	[ProvideMenuResource("2000", 1)]
 	public sealed class NuGetizerPackage : Package
 	{
+		IDisposable[] extenderProviders;
+
 		protected override void Initialize()
 		{
 			base.Initialize();
@@ -37,10 +40,23 @@
 			var extenders = this.GetService<ObjectExtenders>();
 			if (extenders != null)
 			{
-				var provider = new NuGetExtenderProvider();
-				foreach (var category in NuGetExtenderProvider.CategoryIds)
+				extenderProviders = new IDisposable[]
 				{
-					extenders.RegisterExtenderProvider(category, NuGetExtenderProvider.ExtenderName, provider);
+					new LibraryProjectExtenderProvider(extenders),
+					new NoneItemExtenderProvider(extenders),
+					new ProjectReferenceExtenderProvider(extenders),
+				};
+			}
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+			if (disposing)
+			{
+				foreach (var disposable in extenderProviders)
+				{
+					disposable.Dispose();
 				}
 			}
 		}

@@ -5,20 +5,40 @@ using System.Linq;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using VSLangProj;
 
-namespace NuGet.Packaging.VisualStudio
+namespace NuGet.Packaging.VisualStudio.ExtenderProviders
 {
-	public class NuGetExtenderProvider : EnvDTE.IExtenderProvider
+	public class NoneItemExtenderProvider : EnvDTE.IExtenderProvider, EnvDTE80.IInternalExtenderProvider, IDisposable
 	{
-		internal const string ExtenderName = "NuGetExtenderProvider";
+		internal const string ExtenderName = nameof(NoneItemExtender);
 		static bool inCanExtend = false;
 
-		public static IEnumerable<string> CategoryIds => new HashSet<string>(new[]
+		static ISet<string> CategoryIds => new HashSet<string>(new[]
 		{
-			PrjBrowseObjectCATID.prjCATIDCSharpProjectBrowseObject,
-			PrjBrowseObjectCATID.prjCATIDVBProjectBrowseObject,
+			VSConstants.CATID.CSharpFileProperties_string,
+			VSConstants.CATID.VBFileProperties_string,
 		}, StringComparer.OrdinalIgnoreCase);
+
+		static bool IsSupportedCATID(string ExtenderCATID) => CategoryIds.Contains(ExtenderCATID);
+
+		readonly ObjectExtenders extenders;
+		readonly int[] cookies;
+
+		public NoneItemExtenderProvider(ObjectExtenders extenders)
+		{
+			this.extenders = extenders;
+			cookies = CategoryIds
+				.Select(catId => this.extenders.RegisterExtenderProvider(catId, ExtenderName, this))
+				.ToArray();
+		}
+
+		public void Dispose()
+		{
+			foreach (var cookie in cookies)
+			{
+				extenders.UnregisterExtenderProvider(cookie);
+			}
+		}
 
 		public bool CanExtend(string ExtenderCATID, string ExtenderName, object ExtendeeObject)
 		{
@@ -32,7 +52,7 @@ namespace NuGet.Packaging.VisualStudio
 			if (inCanExtend) return false;
 
 			inCanExtend = true;
-			var returnValue = ExtenderName.Equals(ExtenderName)
+			bool returnValue = ExtenderName.Equals(NoneItemExtenderProvider.ExtenderName)
 				&& IsSupportedCATID(ExtenderCATID)
 				&& extendeeCATIDProp != null
 				&& IsSupportedCATID(extendeeCATIDProp.GetValue(ExtendeeObject).ToString());
@@ -42,33 +62,25 @@ namespace NuGet.Packaging.VisualStudio
 			return returnValue;
 		}
 
-		private bool IsSupportedCATID(string ExtenderCATID)
-		{
-			return CategoryIds.Contains(ExtenderCATID);
-		}
-
 		public object GetExtender(string ExtenderCATID,
 								  string ExtenderName,
 								  object ExtendeeObject,
-								  IExtenderSite ExtenderSite,
+								  EnvDTE.IExtenderSite ExtenderSite,
 								  int Cookie)
 		{
+			NoneItemExtender extender = null;
 			if (CanExtend(ExtenderCATID, ExtenderName, ExtendeeObject))
 			{
 				var browseObject = ExtendeeObject as IVsBrowseObject;
 				if (browseObject != null)
 				{
-					IVsHierarchy hierarchy;
+					IVsHierarchy hierarchyItem;
 					uint itemId;
-					int hr = browseObject.GetProjectItem(out hierarchy, out itemId);
-					if (ErrorHandler.Succeeded(hr) && hierarchy != null)
-					{
-						return new NuGetExtender(hierarchy);
-					}
+					browseObject.GetProjectItem(out hierarchyItem, out itemId);
+					extender = new NoneItemExtender(hierarchyItem, itemId, ExtenderSite, Cookie);
 				}
 			}
-
-			return null;
+			return extender;
 		}
 
 		public object GetExtenderNames(string ExtenderCATID, object ExtendeeObject)
