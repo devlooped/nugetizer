@@ -15,23 +15,104 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_getting_package_contents_then_retrieves_main_assembly()
+		public void when_getting_package_contents_then_includes_output_assembly()
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project));
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-
-			Assert.True(result.Items.Any(i => i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Lib"), "Did not include main output");
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				Extension = ".dll",
+				Kind = "Lib"
+			}));
 		}
 
 		[Fact]
-		public void when_getting_package_contents_then_retrieves_symbols()
+		public void when_include_outputs_in_package_is_false_then_does_not_include_main_assembly()
+		{
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
+			{
+				IncludeOutputsInPackage = false,
+			});
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				Extension = ".dll",
+				Kind = "Lib"
+			}));
+		}
+
+		[Fact]
+		public void when_getting_package_contents_then_includes_symbols()
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { Configuration = "Debug" });
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				Extension = ".pdb",
+			}));
+		}
 
-			Assert.True(result.Items.Any(i => i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == "Symbols"), "Did not include main symbols");
+		[Fact]
+		public void when_include_symbols_in_package_is_true_but_include_outputs_is_false_then_does_not_include_symbols()
+		{
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
+			{
+				IncludeOutputsInPackage = false,
+				IncludeSymbolsInPackage = true,
+			});
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				Extension = ".pdb",
+			}));
+		}
+
+		[Fact]
+		public void when_include_symbols_in_package_is_false_then_does_not_include_symbols()
+		{
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
+			{
+				IncludeSymbolsInPackage = false,
+			});
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				Extension = ".pdb",
+			}));
+		}
+
+		[Fact]
+		public void when_getting_package_contents_then_includes_xmldoc()
+		{
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project));
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				Extension = ".xml",
+				Kind = "Doc",
+			}));
+		}
+
+		[Fact]
+		public void when_include_output_in_package_is_false_then_does_not_include_xmldoc()
+		{
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
+			{
+				IncludeOutputsInPackage = false,
+			});
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				Extension = ".xml",
+				Kind = "Doc",
+			}));
 		}
 
 		[Fact]
@@ -40,18 +121,38 @@ namespace NuGet.Build.Packaging
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { PackageId = "Foo" }, output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-
-			Assert.True(result.Items.All(i => i.GetMetadata("PackageId") == "Foo"), "Did not annotate contents with package id.");
+			Assert.All(result.Items, item => Assert.Equal("Foo", item.GetMetadata("PackageId")));
 		}
 
 		[Fact]
-		public void when_getting_package_contents_then_contains_framework_reference()
+		public void when_getting_package_contents_then_includes_framework_reference()
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { PackageId = "Foo" }, output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-
-			Assert.True(result.Items.Any(i => i.ItemSpec == "System.Core" && i.GetMetadata("Kind") == "FrameworkReference"), "Did not add System.Core framework reference.");
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				Identity = "System.Core",
+				Kind = PackageItemKind.FrameworkReference,
+			}));
 		}
+
+		[Fact]
+		public void when_include_framework_references_in_package_is_false_then_does_not_include_framework_reference()
+		{
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
+			{
+				IncludeFrameworkReferencesInPackage = false,
+				PackageId = "Foo",
+			}, output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				Identity = "System.Core",
+				Kind = PackageItemKind.FrameworkReference,
+			}));
+		}
+
 	}
 }

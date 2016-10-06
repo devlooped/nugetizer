@@ -32,7 +32,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
-				IncludeContent = "false"
+				IncludeContentInPackage = "false"
 			});
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
@@ -68,10 +68,9 @@ namespace NuGet.Build.Packaging
 			});
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
-				ItemSpec = "none.txt",
+				Identity = "none.txt",
 			}));
 		}
 

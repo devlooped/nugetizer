@@ -16,10 +16,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
 	<PropertyGroup>
-		<IncludeOutputs Condition="'$(IncludeOutputs)' == ''">true</IncludeOutputs>
-		<IncludeSymbols Condition="'$(IncludeSymbols)' == '' and '$(IncludeOutputs)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbols>
-		<IncludeContent Condition="'$(IncludeContent)' == ''">true</IncludeContent>
-		<IncludeFrameworkReferences Condition="'$(IncludeFrameworkReferences)' == ''">true</IncludeFrameworkReferences>
+		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
+		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbolsInPackage>
+		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
+		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == ''">true</IncludeFrameworkReferencesInPackage>
 
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
@@ -161,7 +161,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			_GetPackageContents;
 		</_GetPackageContentsDependsOn>
 		<!-- Only depend on ResolveReferences if we need to include framework references -->
-		<_GetAllPackageContentsDependsOn Condition="'$(IncludeFrameworkReferences)' == 'true'">
+		<_GetAllPackageContentsDependsOn Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true'">
 			ResolveReferences
 		</_GetAllPackageContentsDependsOn>
 		<_GetAllPackageContentsDependsOn>
@@ -172,7 +172,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			_SplitProjectReferencesByIsPackablePresence;
 			AllProjectOutputGroups;
 		</_GetAllPackageContentsDependsOn>
-		<_GetAllPackageContentsDependsOn Condition="'$(IncludeOutputs)' == 'true'">
+		<_GetAllPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
 			$(_GetAllPackageContentsDependsOn)
 			_CollectMissingIsPackableProjectReferencesOutputs;
 		</_GetAllPackageContentsDependsOn>
@@ -325,7 +325,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 
 		<!-- Main project and dependencies symbols -->
 		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Condition="'$(IncludeSymbols)' == 'true'"
+				 Condition="'$(IncludeSymbolsInPackage)' == 'true'"
 				 Targets="DebugSymbolsProjectOutputGroup"
 				 BuildInParallel="$(BuildInParallel)"
 				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
@@ -340,7 +340,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 		</ItemGroup>
 
 		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Condition="'$(IncludeSymbols)' == 'true'"
+				 Condition="'$(IncludeSymbolsInPackage)' == 'true'"
 				 Targets="DebugSymbolsProjectOutputGroupDependencies"
 				 BuildInParallel="$(BuildInParallel)"
 				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
@@ -427,29 +427,29 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			 current project. -->
 		<ItemGroup>
 			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputs)' == 'true'">
+                         Condition="'$(IncludeOutputsInPackage)' == 'true'">
 				<Kind>Lib</Kind>
 			</PackageFile>
 
 			<PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputs)' == 'true'">
+                         Condition="'$(IncludeOutputsInPackage)' == 'true'">
 				<Kind>Doc</Kind>
 			</PackageFile>
 
 			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputs)' == 'true' and '$(IncludeSymbols)' == 'true'">
+                         Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true'">
 				<Kind>Symbols</Kind>
 			</PackageFile>
 
 			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
 			<PackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
-						 Condition="'$(IncludeOutputs)' == 'true'">
+						 Condition="'$(IncludeOutputsInPackage)' == 'true'">
 				<Kind>Lib</Kind>
 			</PackageFile>
 
 			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath->'%(FullPath)') -->
 			<PackageFile Include="@(ContentFilesProjectOutputGroupOutput)"
-						 Condition="'$(IncludeContent)' == 'true'">
+						 Condition="'$(IncludeContentInPackage)' == 'true'">
 				<Kind>Content</Kind>
 			</PackageFile>
 
@@ -466,7 +466,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			     it also includes mscorlib which we don't need
 			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
 			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
-						 Condition="'$(IncludeFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
+						 Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
 				<Kind>FrameworkReference</Kind>
 			</PackageFile>
 		</ItemGroup>
