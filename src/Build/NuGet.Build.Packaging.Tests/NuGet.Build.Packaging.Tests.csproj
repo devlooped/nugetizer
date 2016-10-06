@@ -18,6 +18,7 @@
   <ItemGroup>
     <None Include="project.json" />
     <None Include="NuGet.Build.Packaging.Tests.targets" />
+    <Content Include="Scenarios\given_a_library_with_content\library_with_content.csproj" />
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\b.csproj" />
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\c.csproj" />
@@ -53,6 +54,7 @@
     <Compile Include="Builder.NuGetizer.cs">
       <DependentUpon>Builder.cs</DependentUpon>
     </Compile>
+    <Compile Include="given_a_library_with_content.cs" />
     <Compile Include="given_a_localized_library.cs" />
     <Compile Include="given_a_complex_pack.cs" />
     <Compile Include="given_a_library_with_non_nugetized_reference.cs" />

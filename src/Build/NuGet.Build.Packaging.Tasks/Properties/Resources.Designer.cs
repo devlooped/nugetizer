@@ -63,9 +63,9 @@ namespace NuGet.Build.Packaging.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Package file &apos;{0}&apos; must have either &apos;Kind&apos; or &apos;PackagePath&apos; metadata..
         /// </summary>
-        public static string ErrorCode_NP0010 {
+        public static string ErrorCode_NG0010 {
             get {
-                return ResourceManager.GetString("ErrorCode_NP0010", resourceCulture);
+                return ResourceManager.GetString("ErrorCode_NG0010", resourceCulture);
             }
         }
     }

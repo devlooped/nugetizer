@@ -50,7 +50,7 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.False(task.Execute());
-			Assert.Equal(nameof(ErrorCode.NP0010), engine.LoggedErrorEvents[0].Code);
+			Assert.Equal(nameof(ErrorCode.NG0010), engine.LoggedErrorEvents[0].Code);
 		}
 
 		[Fact]
@@ -71,7 +71,10 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal("net45", task.AssignedFiles[0].GetMetadata(MetadataName.TargetFramework));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				TargetFramework = "net45"
+			}));
 		}
 
 		[Fact]
@@ -142,7 +145,10 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal("net45", task.AssignedFiles[0].GetMetadata(MetadataName.TargetFramework));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				TargetFramework = "net45"
+			}));
 		}
 
 		[Fact]
@@ -163,7 +169,10 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal("lib", task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackageFolder = "lib"
+			}));
 		}
 
 		[Fact]
@@ -184,10 +193,41 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal("lib", task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal("lib\\library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
-			Assert.Equal("", task.AssignedFiles[0].GetMetadata(MetadataName.TargetFramework));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackageFolder = "lib",
+				PackagePath = "lib\\library.dll",
+				TargetFramework = ""
+			}));
 		}
+
+		[Fact]
+		public void when_file_has_target_framework_and_tfm_then_existing_value_is_preserved()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("library.dll", new Metadata
+					{
+						{ "PackageId", "A" },
+						{ "Kind", "ContentFiles" },
+						{ "TargetFramework", "any" },
+						{ "TargetFrameworkMoniker", "MonoAndroid,Version=v2.5" },
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				TargetFramework = "any",
+			}));
+		}
+
 
 		// TODO: these all end up in all lowercase, but MonoAndroid, Xamarin.iOS are usually properly 
 		// cased in nupkgs out in the wild (i.e. Rx)
@@ -215,9 +255,13 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal("lib", task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal($"lib\\{expectedTargetFramework}\\library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
-			Assert.Equal(expectedTargetFramework, task.AssignedFiles[0].GetMetadata(MetadataName.TargetFramework));
+
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackageFolder = "lib",
+				PackagePath = $"lib\\{ expectedTargetFramework}\\library.dll",
+				TargetFramework = expectedTargetFramework,
+			}));
 		}
 
 		public static IEnumerable<object[]> GetMappedKnownKinds => kinds
@@ -247,8 +291,11 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal(mappedPackageFolder, task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal($"{mappedPackageFolder}\\net45\\library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackageFolder = mappedPackageFolder,
+				PackagePath = $"{mappedPackageFolder}\\net45\\library.dll",
+			}));
 		}
 
 		public static IEnumerable<object[]> GetUnmappedKnownKinds => kinds
@@ -277,9 +324,11 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal("", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackagePath = "",
+			}));
 		}
-
 
 		[Fact]
 		public void when_file_has_explicit_package_path_then_calculated_package_folder_is_empty_and_preserves_package_path()
@@ -301,8 +350,11 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Empty(task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal("docs\\readme.txt", task.AssignedFiles[0].GetMetadata("PackagePath"));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackageFolder = "",
+				PackagePath = "docs\\readme.txt"
+			}));
 		}
 
 		[InlineData("", "vb", "contentFiles\\vb\\any\\")]
@@ -357,13 +409,13 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-
-			var item = task.AssignedFiles[0];
-
-			Assert.Equal("cs", item.GetMetadata(MetadataName.ContentFile.CodeLanguage));
-			Assert.Equal("EmbeddedResource", item.GetMetadata(MetadataName.ContentFile.BuildAction));
-			Assert.Equal("true", item.GetMetadata(MetadataName.ContentFile.CopyToOutput));
-			Assert.Equal("true", item.GetMetadata(MetadataName.ContentFile.Flatten));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				BuildAction = "EmbeddedResource",
+				CodeLanguage = "cs",
+				CopyToOutput = "true",
+				Flatten = "true",
+			}));
 		}
 
 		[Fact]
@@ -385,8 +437,11 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Empty(task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal("readme.txt", task.AssignedFiles[0].GetMetadata("PackagePath"));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackageFolder = "",
+				PackagePath = "readme.txt",
+			}));
 		}
 
 		[Fact]
@@ -409,8 +464,11 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Empty(task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal(@"workbook\library.dll", task.AssignedFiles[0].GetMetadata("PackagePath"));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackageFolder = "",
+				PackagePath = @"workbook\library.dll",
+			}));
 		}
 
 		[Fact]
@@ -457,8 +515,11 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal(inferredPackageFolder, task.AssignedFiles[0].GetMetadata(MetadataName.PackageFolder));
-			Assert.Equal($"{inferredPackageFolder}\\net45\\library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackageFolder = inferredPackageFolder,
+				PackagePath = $"{inferredPackageFolder}\\net45\\library.dll",
+			}));
 		}
 
 		[Fact]
@@ -480,7 +541,10 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal(task.AssignedFiles[0].GetMetadata("PackagePath"), @"tools\sdk\bin\tool.exe");
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackagePath = @"tools\sdk\bin\tool.exe",
+			}));
 		}
 
 		[Fact]
@@ -503,7 +567,10 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.True(task.Execute());
-			Assert.Equal(@"tools\net45\sdk\bin\tool.exe", task.AssignedFiles[0].GetMetadata("PackagePath"));
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackagePath = @"tools\net45\sdk\bin\tool.exe",
+			}));
 		}
 	}
 }

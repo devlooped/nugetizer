@@ -27,12 +27,15 @@
 	</Target>-->
 
     <Target Name="Dump" DependsOnTargets="GetPackageContents">
-        <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
+        <!--<DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />-->
         <!--<DumpItems Items="@(_MSBuildProjectReferenceExistent)" ItemName="_MSBuildProjectReferenceExistent" />-->
         <Message Importance="high" Text="%(_PackageContent.Filename)%(_PackageContent.Extension)
 	Kind=%(_PackageContent.Kind)
 	PackageId=%(_PackageContent.PackageId)
 	PackagePath=%(_PackageContent.PackagePath)
+	TargetPath=%(_PackageContent.TargetPath)
+	OriginalTargetFramework=%(_PackageContent.OriginalTargetFramework)
+	OriginalTargetFrameworkMoniker=%(_PackageContent.OriginalTargetFrameworkMoniker)
 	TargetFramework=%(_PackageContent.TargetFramework)
 	TargetFrameworkMoniker=%(_PackageContent.TargetFrameworkMoniker)" />
 
@@ -43,4 +46,10 @@
     <Target Name="FodyTarget" />
     <Target Name="FodyVerifyTarget" />
 
+	<Target Name="RemoveXunit" BeforeTargets="AssignTargetPaths">
+		<ItemGroup>
+			<Content Remove="@(Content)" Condition="$([System.String]::new('%(Filename)').StartsWith('xunit'))" />
+		</ItemGroup>
+	</Target>
+	
 </Project>

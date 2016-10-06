@@ -57,10 +57,16 @@ namespace NuGet.Build.Packaging.Tasks
 
 			output.SetMetadata(MetadataName.PackageFolder, packageFolder);
 
-			var frameworkMoniker = file.GetTargetFrameworkMoniker();
-			var targetFramework = frameworkMoniker.GetShortFrameworkName() ?? "";
-			// At this point we have the correct target framework
-			output.SetMetadata(MetadataName.TargetFramework, targetFramework);
+			// NOTE: a declared TargetFramework metadata trumps TargetFrameworkMoniker, 
+			// which is defaulted to that of the project being built.
+			var targetFramework = output.GetMetadata(MetadataName.TargetFramework);
+			if (string.IsNullOrEmpty(targetFramework))
+			{
+				var frameworkMoniker = file.GetTargetFrameworkMoniker();
+				targetFramework = frameworkMoniker.GetShortFrameworkName() ?? "";
+				// At this point we have the correct target framework
+				output.SetMetadata(MetadataName.TargetFramework, targetFramework);
+			}
 
 			// If PackagePath already specified, we're done.
 			if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")))
@@ -79,7 +85,7 @@ namespace NuGet.Build.Packaging.Tasks
 			// If we got this far but there wasn't a Kind to process, it's an error.
 			if (string.IsNullOrEmpty(kind))
 			{
-				Log.LogErrorCode(nameof(ErrorCode.NP0010), ErrorCode.NP0010(file.ItemSpec));
+				Log.LogErrorCode(nameof(ErrorCode.NG0010), ErrorCode.NG0010(file.ItemSpec));
 				// We return the file anyway, since the task result will still be false.
 				return file;
 			}

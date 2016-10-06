@@ -1,6 +1,4 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.targets))\NuGet.Build.Packaging.Shared.targets" />
-
 	<PropertyGroup>
 		<GetPackageVersionDependsOn>
 			SetPackageVersion;

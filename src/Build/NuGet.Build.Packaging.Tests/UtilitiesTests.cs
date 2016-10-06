@@ -40,5 +40,19 @@ namespace NuGet.Build.Packaging
 
 			Assert.Equal(new FrameworkName(".NETFramework,Version=v4.6"), framework);
 		}
+
+		[Fact]
+		public void when_getting_any_target_framework_then_suceeds()
+		{
+			var item = new TaskItem("Foo", new Metadata
+			{
+				{ "TargetFramework", "any" },
+			});
+
+			var framework = item.GetTargetFramework();
+
+			Assert.Equal(new FrameworkName("Any,Version=v0.0"), framework);
+			Assert.Equal("any", framework.GetShortFrameworkName());
+		}
 	}
 }

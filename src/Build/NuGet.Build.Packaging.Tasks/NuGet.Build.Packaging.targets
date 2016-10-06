@@ -18,6 +18,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<IncludeOutputs Condition="'$(IncludeOutputs)' == ''">true</IncludeOutputs>
 		<IncludeSymbols Condition="'$(IncludeSymbols)' == '' and '$(IncludeOutputs)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbols>
+		<IncludeContent Condition="'$(IncludeContent)' == ''">true</IncludeContent>
 		<IncludeFrameworkReferences Condition="'$(IncludeFrameworkReferences)' == ''">true</IncludeFrameworkReferences>
 
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
@@ -446,6 +447,17 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 				<Kind>Lib</Kind>
 			</PackageFile>
 
+			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath->'%(FullPath)') -->
+			<PackageFile Include="@(ContentFilesProjectOutputGroupOutput)"
+						 Condition="'$(IncludeContent)' == 'true'">
+				<Kind>Content</Kind>
+			</PackageFile>
+
+			<PackageFile Include="@(_NoneWithTargetPath)"
+						 Condition="'%(_NoneWithTargetPath.IncludeInPackage)' == 'true'">
+				<Kind>None</Kind>
+			</PackageFile>
+
 			<PackageFile Include="@(PackageReference)">
 				<Kind>Dependency</Kind>
 			</PackageFile>
@@ -456,6 +468,13 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
 						 Condition="'$(IncludeFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
 				<Kind>FrameworkReference</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<!-- If packaging the project, provide the metadata as a non-file item -->
+		<ItemGroup Condition="'$(PackageId)' != ''">
+			<PackageFile Include="@(PackageTargetPath->'%(Id)')">
+				<Kind>Metadata</Kind>
 			</PackageFile>
 		</ItemGroup>
 
@@ -479,29 +498,31 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			-->
 		</ItemGroup>
 
-		<!-- If packaging the project, provide the metadata as a non-file item -->
-		<ItemGroup Condition="'$(PackageId)' != ''">
-			<_AllPackageContent Include="@(PackageTargetPath->'%(Id)')">
-				<Kind>Metadata</Kind>
-				<PackageId>$(PackageId)</PackageId>
-				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
-			</_AllPackageContent>
-		</ItemGroup>
-
 		<MSBuild Projects="@(_IsPackableProject)"
-					 Targets="GetAllPackageContents"
-					 BuildInParallel="$(BuildInParallel)"
-					 Properties="%(_IsPackableProject.SetConfiguration); %(_IsPackableProject.SetPlatform)"
-					 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_IsPackableProject)' != ''"
-					 RemoveProperties="%(_IsPackableProject.GlobalPropertiesToRemove)">
+				 Targets="GetAllPackageContents"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_IsPackableProject.SetConfiguration); %(_IsPackableProject.SetPlatform)"
+				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_IsPackableProject)' != ''"
+				 RemoveProperties="%(_IsPackableProject.GlobalPropertiesToRemove)">
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
 		</MSBuild>
 
-		<!-- Always annotate package contents with the declaring project target framework and package id -->
+		<!-- Always annotate package contents with the original target framework and moniker -->
+		<CreateItem Include="@(_ReferencedPackageContent)" PreserveExistingMetadata="true"
+					AdditionalMetadata="OriginalTargetFramework=%(TargetFramework);OriginalTargetFrameworkMoniker=%(TargetFrameworkMoniker)">
+			<Output TaskParameter="Include" ItemName="_ReferencedPackageContentWithOriginalValues"/>
+		</CreateItem>
+
 		<ItemGroup>
-			<_ReferencedPackageContent Condition="'%(_ReferencedPackageContent.PackageId)' == ''">
-				<!-- We preserve whatever package id the item had -->
+			<!-- Retarget content for the currently building package, if necessary -->
+			<_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
 				<PackageId>$(PackageId)</PackageId>
+				<!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
+				<!-- Only do this for Library assets that come from project references that don't build nugets (PackageId=='' above) -->
+				<TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Library' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Symbols' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Doc'"></TargetFramework>
 				<!-- NOTE: we're always overwriting the TFM in this case since 
 					 this item will end up making up the contents of this package 
 					 project in its current TFM configuration. 
@@ -510,14 +531,14 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 					 TODO: take into account multi-targetting.
 				-->
 				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
-			</_ReferencedPackageContent>
+			</_ReferencedPackageContentWithOriginalValues>
 		</ItemGroup>
 
 		<!-- Ensure referenced package content gets assigned a package path if it didn't provide one already.
 			 This happens for project references' that don't have a PackageId, since their package path will 
 			 depend on the referencing project's TFM.
 		-->
-		<AssignPackagePath Files="@(_ReferencedPackageContent)" Kinds="@(PackageItemKind)" Condition="'@(_ReferencedPackageContent)' != ''">
+		<AssignPackagePath Files="@(_ReferencedPackageContentWithOriginalValues)" Kinds="@(PackageItemKind)" Condition="'@(_ReferencedPackageContentWithOriginalValues)' != ''">
 			<Output TaskParameter="AssignedFiles" ItemName="_AllPackageContent" />
 		</AssignPackagePath>
 
