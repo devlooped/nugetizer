@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	class PlatformViewModel : INotifyPropertyChanged
+	public class PlatformViewModel : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 

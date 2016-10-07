@@ -12,6 +12,8 @@
       </Button>
 
       <Button guid="guidCommandSet" id="cmdidAddPlatformImplementation" priority="0x0100" type="Button">
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Add Platform Implementation</ButtonText>
         </Strings>
@@ -27,6 +29,11 @@
       <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
     </CommandPlacement>
   </CommandPlacements>
+
+  <VisibilityConstraints>
+    <!-- Restrict the AddPlatformImplementation for portable class libraries -->
+    <VisibilityItem guid="guidCommandSet" id="cmdidAddPlatformImplementation" context="guidPortableProjectTypeGuid"  />
+  </VisibilityConstraints>
   
   <Symbols>
     <!-- This is the package guid. -->
@@ -37,6 +44,8 @@
       <IDSymbol name="cmdidBuildNugetPackage" value="0x0100" />
       <IDSymbol name="cmdidAddPlatformImplementation" value="0x0101" />
     </GuidSymbol>
+
+    <GuidSymbol name="guidPortableProjectTypeGuid" value="{786C830F-07A1-408B-BD7F-6EE04809D6DB}" />
   </Symbols>
   
 </CommandTable>

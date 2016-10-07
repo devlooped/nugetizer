@@ -53,6 +53,9 @@ namespace NuGet.Packaging.VisualStudio
 		public IProjectNode GetProjectNode(string projectName) =>
 			GetProjectNode(solutionExplorer.Solution.FindProjects(), projectName);
 
+		public IProjectNode GetProjectNode(PlatformViewModel platform) =>	
+			GetProjectNode(solutionExplorer.Solution.FindProjects(), GetTargetProjectName(platform));
+
 		public string GetTargetProjectName(PlatformViewModel platform) =>
 			BaseProjectName + "." + Constants.Suffixes.GetSuffixForPlatform(platform.Id);
 	}

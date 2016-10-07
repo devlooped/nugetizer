@@ -86,6 +86,7 @@
     <Compile Include="ExtenderProviders\NoneItemExtenderProvider.cs" />
     <Compile Include="ExtenderProviders\LibraryProjectExtender.cs" />
     <Compile Include="ExtenderProviders\LibraryProjectExtenderProvider.cs" />
+    <Compile Include="Extensions\IVsUIShellExtensions.cs" />
     <Compile Include="ProjectSystem.Dev14\GlobalPropertiesProvider.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjConfiguredProject.cs" />
@@ -117,7 +118,10 @@
     </Compile>
     <Compile Include="LegacyProjectSystem\NuSpecPropertyStore.cs" />
     <Compile Include="Views\AddPlatformImplementationViewModel.cs" />
-    <Compile Include="Views\CrossPlatformViewModel.cs" />
+    <Compile Include="Views\MultiPlatformView.xaml.cs">
+      <DependentUpon>MultiPlatformView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MultiPlatformViewModel.cs" />
     <Compile Include="Views\IPlatformProvider.cs" />
     <Compile Include="Views\PlatformProvider.cs" />
     <Compile Include="Views\PlatformViewModel.cs" />
@@ -132,8 +136,7 @@
     <None Include="ProjectSystem.Dev15\NuProjProjectTreeModifier.cs" />
     <None Include="ProjectSystem.Dev15\NuProjUnconfiguredProject.cs" />
     <None Include="ProjectSystem.Dev15\NuProjValidProjectReferenceChecker.cs" />
-    <Compile Include="Wizards\CrossPlatformWizard.cs" />
-    <Compile Include="Wizards\CrossPlatformWizardModel.cs" />
+    <Compile Include="Wizards\MultiPlatformWizard.cs" />
     <None Include="NuGet.Packaging.VisualStudio.targets">
       <SubType>Designer</SubType>
     </None>
@@ -147,8 +150,8 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="Templates\Projects\Package\Project.json" />
-    <None Include="Templates\Spikes\PortableClassLibrary\assemblyinfo.cs" />
-    <None Include="Templates\Spikes\PortableClassLibrary\class1.cs" />
+    <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
+    <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -167,8 +170,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\Spikes\PortableClassLibrary\csPortableClassLibrary.vstemplate" />
-    <None Include="Templates\Spikes\PortableClassLibrary\PortableClassLibrary.csproj" />
+    <None Include="Templates\Projects\PortableClassLibrary\csPortableClassLibrary.vstemplate" />
+    <None Include="Templates\Projects\PortableClassLibrary\PortableClassLibrary.csproj" />
   </ItemGroup>
   <ItemGroup>
     <VSCTCompile Include="Commands.vsct">
@@ -176,7 +179,7 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\Projects\CrossPlatformLibrary\CrossPlatformLibrary.vstemplate">
+    <None Include="Templates\Projects\MultiPlatformLibrary\MultiPlatformLibrary.vstemplate">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -218,6 +221,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Page Include="Views\AddPlatformImplementationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MultiPlatformView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

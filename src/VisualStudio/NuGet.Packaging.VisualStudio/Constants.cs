@@ -2,6 +2,8 @@
 {
 	class Constants
 	{
+		public const string PortableClassLibraryCapability = "MultiTarget";
+
 		/// <summary>
 		/// The file extension of this project type.  No preceding period.
 		/// </summary>
@@ -41,6 +43,7 @@
 			public const string Android = "Xamarin.Android.ClassLibrary";
 			public const string NuGetPackage = "NuGet.Packaging.VisualStudio.Package";
 			public const string SharedProject = "Microsoft.CS.SharedProject";
+			public const string PortableClassLibrary = "NuGet.Packaging.VisualStudio.Portable";
 
 			public static string GetPlatformTemplate(string platformId)
 			{
