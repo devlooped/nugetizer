@@ -19,6 +19,8 @@ namespace NuGet.Build.Packaging.Tasks
 	/// </summary>
 	public class AssignPackagePath : Task
 	{
+		public string IsPackaging { get; set; }
+
 		[Required]
 		public ITaskItem[] Files { get; set; }
 
@@ -72,6 +74,14 @@ namespace NuGet.Build.Packaging.Tasks
 			if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")))
 				return output;
 
+			// If a packaging project is requesting the package path assignment, 
+			// perform it regardless of whether there is a PackageId on the items, 
+			// since they all need to be assigned at this point.
+			bool isPackaging = false;
+			isPackaging = !string.IsNullOrEmpty(IsPackaging) &&
+				bool.TryParse(IsPackaging, out isPackaging) &&
+				isPackaging;
+
 			// If no PackageId specified, we let referencing projects define the package path
 			// as it will be included in their package.
 			// NOTE: if we don't do this, the package path of a project would be determined 
@@ -79,7 +89,7 @@ namespace NuGet.Build.Packaging.Tasks
 			// would be incorrect (i.e. a referenced PCL project that does not build a 
 			// nuget itself, would end up in the PCL lib folder rather than the referencing 
 			// package's lib folder for its own TFM, i.e. 'lib\net45').
-			if (string.IsNullOrEmpty(file.GetMetadata("PackageId")))
+			if (string.IsNullOrEmpty(file.GetMetadata("PackageId")) && !isPackaging)
 				return output;
 
 			// If we got this far but there wasn't a Kind to process, it's an error.

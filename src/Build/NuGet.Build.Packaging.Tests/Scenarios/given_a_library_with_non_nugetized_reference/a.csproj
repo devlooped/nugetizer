@@ -16,15 +16,5 @@
 			<Name>c</Name>
 		</ProjectReference>
 	</ItemGroup>
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
-
-	<Target Name="Dump" DependsOnTargets="GetPackageContents">
-		<Message Importance="high" Text="%(_PackageContent.Filename)%(_PackageContent.Extension)
-	Kind=%(_PackageContent.Kind)
-	PackageId=%(_PackageContent.PackageId)
-	PackagePath=%(_PackageContent.PackagePath)
-	TargetFramework=%(_PackageContent.TargetFramework)
-	TargetFrameworkMoniker=%(_PackageContent.TargetFrameworkMoniker)" />
-	</Target>
-	
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />	
 </Project>

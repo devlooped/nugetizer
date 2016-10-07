@@ -35,7 +35,7 @@ static partial class Builder
 		if (File.Exists(Path.Combine(scenarioDir, $"{projectName}.csproj")))
 			projectOrSolution = Path.Combine(scenarioDir, $"{projectName}.csproj");
 		else
-			projectOrSolution = Directory.EnumerateFiles(scenarioDir, "*.csproj").First();
+			projectOrSolution = Directory.EnumerateFiles(scenarioDir, "*.*proj").FirstOrDefault();
 
 		var logger = default(TestOutputLogger);
 		if (output != null)

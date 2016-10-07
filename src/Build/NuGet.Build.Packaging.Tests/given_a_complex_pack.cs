@@ -174,14 +174,14 @@ namespace NuGet.Build.Packaging
 				group.TargetFramework.Equals(NuGetFramework.Parse("net45")) &&
 				group.Packages.Any(dep => dep.Id == "B" && dep.VersionRange.OriginalString == "2.0.0"));
 		}
-
+		
 		[Fact]
 		public void when_packing_b_then_contains_assemblies_and_direct_dependency()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "b", target: "Pack", output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-
+			
 			var manifest = result.Items[0].GetManifest();
 
 			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\b.dll");

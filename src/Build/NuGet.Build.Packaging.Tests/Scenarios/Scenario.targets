@@ -1,35 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
-    </PropertyGroup>
-
-    <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-    <!-- Import the NuGet targets from the test project to allow easy diagnostics -->
-    <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Tests.nuget.targets))\NuGet.Build.Packaging.Tests.nuget.targets"/>
-    <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
-
-    <!--<PropertyGroup>
-		<GetPackageContentsDependsOn>
-			AddPackageFile;
-			$(GetPackageContentsDependsOn);
-		</GetPackageContentsDependsOn>
+	<PropertyGroup>
+		<DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
+	
+    <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(IsPortable)' != 'true'" />
+	<Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
+			Condition="'$(IsPortable)' == 'true'" />
+	
+	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
 
-	<Target Name="AddPackageFile">
-		<ItemGroup>
-			<PackageFile Include="readme.txt">
-				<Kind>Content</Kind>
-				<CodeLanguage>any</CodeLanguage>
-				<TargetFramework>any</TargetFramework>
-			</PackageFile>
-		</ItemGroup>
-	</Target>-->
-
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)_._" />
+	</ItemGroup>
+	
     <Target Name="Dump" DependsOnTargets="GetPackageContents">
-        <!--<DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />-->
-        <!--<DumpItems Items="@(_MSBuildProjectReferenceExistent)" ItemName="_MSBuildProjectReferenceExistent" />-->
         <Message Importance="high" Text="%(_PackageContent.Filename)%(_PackageContent.Extension)
+	FullPath=%(_PackageContent.FullPath)
 	Kind=%(_PackageContent.Kind)
 	PackageId=%(_PackageContent.PackageId)
 	PackagePath=%(_PackageContent.PackagePath)
@@ -37,19 +24,87 @@
 	OriginalTargetFramework=%(_PackageContent.OriginalTargetFramework)
 	OriginalTargetFrameworkMoniker=%(_PackageContent.OriginalTargetFrameworkMoniker)
 	TargetFramework=%(_PackageContent.TargetFramework)
-	TargetFrameworkMoniker=%(_PackageContent.TargetFrameworkMoniker)" />
+	TargetFrameworkMoniker=%(_PackageContent.TargetFrameworkMoniker)"/>
 
+		<ItemGroup>
+			<Common Include="@(_PackageContent)" Condition="'%(Filename)' == 'Common'" />
+		</ItemGroup>
+		<Message Importance="high" Text="@(Common->Count())" />
+		<!--<DumpItems Items="@(Common)" ItemName="Common" />-->
+
+		<!--
+	OriginalTargetFramework=%(_PackageContent.OriginalTargetFramework)
+	OriginalTargetFrameworkMoniker=%(_PackageContent.OriginalTargetFrameworkMoniker)
+	-->
+		<!--<DumpItems Items="@(_ReferencedProjectDocumentationDependency)" ItemName="_ReferencedProjectDocumentationDependency" Condition="'%(Extension)' == '.xml'" />-->
     </Target>
 
+	<PropertyGroup>
+		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
+		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
+		<!-- In VS2013, the assembly contains the VS version. -->
+		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
+		<!-- In VS2015+, the assembly was renamed, hopefully this will be the last condition! -->
+		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' != '' And '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
+	</PropertyGroup>
 
-    <!-- Turn off Fody we use for ModuleInitializer in unit tests -->
-    <Target Name="FodyTarget" />
-    <Target Name="FodyVerifyTarget" />
-
-	<Target Name="RemoveXunit" BeforeTargets="AssignTargetPaths">
-		<ItemGroup>
-			<Content Remove="@(Content)" Condition="$([System.String]::new('%(Filename)').StartsWith('xunit'))" />
-		</ItemGroup>
-	</Target>
+	<!--
+    ============================================================
+              DumpItems Task
 	
+    /// Dumps items to the output log.
+    ///
+
+    Properties:
+    - Items: Microsoft.Build.Framework.ITaskItem[] (Input, Required)
+        /// Items to dump with full metadata.
+        ///
+
+    - ItemName: string (Input)
+        /// Optional item name of the dumped items.
+        ///
+
+	============================================================
+  -->
+	<UsingTask TaskName="DumpItems" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
+		<ParameterGroup>
+			<Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+			<ItemName />
+		</ParameterGroup>
+		<Task>
+			<Reference Include="Microsoft.Build" />
+			<Reference Include="Microsoft.CSharp" />
+			<Reference Include="System" />
+			<Reference Include="System.Core" />
+			<Using Namespace="Microsoft.Build.Framework" />
+			<Using Namespace="Microsoft.Build.Utilities" />
+			<Using Namespace="System" />
+			<Using Namespace="System.Linq" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+			var itemName = ItemName ?? "Item";
+			if (Items.Length == 0)
+				Log.LogMessage(MessageImportance.High, "No {0} items received to dump.", ItemName ?? "");
+			else
+				Log.LogMessage(MessageImportance.High, "Dumping {0} {1} items.", Items.Length, ItemName ?? "");
+
+			foreach (var item in Items.OrderBy(i => i.ItemSpec))
+			{
+				Log.LogMessage(MessageImportance.High, "{0}: {1}", itemName, item.ItemSpec);
+				foreach (var name in item.MetadataNames.OfType<string>().OrderBy(_ => _))
+				{
+					try
+					{
+						Log.LogMessage(MessageImportance.High, "\t{0}={1}", name, item.GetMetadata(name));
+					}
+					catch
+					{
+					}
+				}
+			}
+      ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
 </Project>
