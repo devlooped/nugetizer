@@ -43,9 +43,25 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<Context>;BrowseObject</Context>
 		</PropertyPageSchema>
 
-    <ProjectCapability Include="ProjectReferences;PackageReferences;ReferencesFolder;AssemblyReferences;DeclaredSourceItems;UserSourceItems" />
-    <ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
+		<ProjectCapability Include="ProjectReferences;PackageReferences;ReferencesFolder;AssemblyReferences;DeclaredSourceItems;UserSourceItems" />
+		<ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
 		<ProjectCapability Include="NuGet.Packaging" />
 	</ItemGroup>
+
+	<Target Name="CopyManifestProperties" BeforeTargets="GetPackageTargetPath">
+		<!-- Properties for the packaging project are slightly simpler since we 
+			 don't need to repeat 'Package' all over. -->
+		<PropertyGroup>
+			<PackageId>$(Id)</PackageId>
+			<PackageVersion>$(Version)</PackageVersion>
+			<NeutralLanguage>$(Language)</NeutralLanguage>
+			<PackageRequireLicenseAcceptance>$(RequireLicenseAcceptance)</PackageRequireLicenseAcceptance>
+			<PackageLicenseUrl>$(LicenseUrl)</PackageLicenseUrl>
+			<PackageProjectUrl>$(ProjectUrl)</PackageProjectUrl>
+			<PackageIconUrl>$(IconUrl)</PackageIconUrl>
+			<PackageTags>$(Tags)</PackageTags>
+			<PackageReleaseNotes>$(ReleaseNotes)</PackageReleaseNotes>
+		</PropertyGroup>
+	</Target>
 
 </Project>

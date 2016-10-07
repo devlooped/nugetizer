@@ -6,6 +6,7 @@
 		<StartArguments>/rootsuffix exp</StartArguments>
 
 		<NoGlobalAssemblyInfo>true</NoGlobalAssemblyInfo>
+		<XmlNs>&lt;Namespace Prefix='vs' Uri='http://schemas.microsoft.com/developer/vstemplate/2005'/&gt;</XmlNs>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -35,6 +36,49 @@
 			<Version Condition=" '$(Configuration)' == 'Release' ">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
 			<Version Condition=" '$(Configuration)' != 'Release' ">1.0.0</Version>
 		</PropertyGroup>
+	</Target>
+
+	<PropertyGroup>
+		<UpdateTemplatesDependsOn>
+			PrepareForBuild;
+			CopyOutOfDateSmartTemplateContent;
+			GetPackageVersion;
+			FindTemplates;
+			UpdateTemplatePackages
+		</UpdateTemplatesDependsOn>
+	</PropertyGroup>
+
+	<Target Name="UpdateTemplates" 
+			AfterTargets="CopyOutOfDateSmartTemplateContent" 
+			BeforeTargets="ZipSmartTemplateContent" 
+			DependsOnTargets="$(UpdateTemplatesDependsOn)" />
+
+	<Target Name="GetPackageVersion" DependsOnTargets="GitInfo">
+		<!-- NOTE: this is duplicated from NuGet.Build.Packaging.Tasks.targets -->
+		<PropertyGroup>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+		</PropertyGroup>
+	</Target>
+	
+	<Target Name="FindTemplates">
+		<ItemGroup>
+			<IntermediateTemplate Include="@(SmartTemplateContentWithTargetPath->'$(SmartTemplateIntermediateOutputPath)%(TargetPath)')"
+								  Condition="'%(Extension)' == '.vstemplate'"/>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="UpdateTemplatePackages"
+			Inputs="@(IntermediateTemplate)"
+			Outputs="%(IntermediateTemplate.Identity)-BATCH"
+			DependsOnTargets="FindTemplates">
+
+		<XmlPoke Namespaces="$(XmlNs)"
+				 XmlInputPath="%(IntermediateTemplate.FullPath)"
+				 Query="/vs:VSTemplate/vs:WizardData/vs:packages/vs:package[@id='NuGet.Build.Packaging']/@version"
+				 Value="$(PackageVersion)"/>
 	</Target>
 
 	<Target Name="CopyVsixToOut" AfterTargets="CreateVsixContainer" DependsOnTargets="GetVersion" Condition="'$(Out)' != ''">
