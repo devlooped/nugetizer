@@ -25,7 +25,7 @@
 		, @"\..\NullPath",
 		LanguageVsTemplate = "CSharp",
 		ShowOnlySpecifiedTemplatesVsTemplate = true)]
-	[ProvideMenuResource("2000", 1)]
+	[ProvideMenuResource("2000", 2)]
 	public sealed class NuGetizerPackage : Package
 	{
 		IDisposable[] extenderProviders;

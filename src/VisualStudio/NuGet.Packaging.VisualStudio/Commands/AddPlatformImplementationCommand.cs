@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.ComponentModel.Composition;
 using Clide;
+using System.Windows;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -31,7 +32,21 @@ namespace NuGet.Packaging.VisualStudio
 			var viewModel = new AddPlatformImplementationViewModel();
 
 			foreach (var platform in platformProvider.GetSupportedPlatforms())
+			{
+				platform.IsEnabled = context.GetProjectNode(platform) == null;
 				viewModel.Platforms.Add(platform);
+			}
+
+			if (!viewModel.Platforms.Any(x => x.IsEnabled))
+			{
+				MessageBox.Show(
+					"The available platform projects are already present in the current solution. Please select a different library or remove any of the platform projects.",
+					"Add Platform Implementation",
+					MessageBoxButton.OK,
+					MessageBoxImage.Exclamation);
+
+				return;
+			}
 
 			viewModel.IsSharedProjectEnabled = context.SharedProject == null;
 
@@ -56,6 +71,8 @@ namespace NuGet.Packaging.VisualStudio
 						Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
 				}
 
+				context.NuGetProject.AddReference(context.SelectedProject);
+
 				foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
 				{
 					var projectName = context.GetTargetProjectName(selectedPlatform);
@@ -66,7 +83,7 @@ namespace NuGet.Packaging.VisualStudio
 							Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
 							projectName);
 
-					if (context.SharedProject != null)
+					if (context.SharedProject != null && viewModel.UseSharedProject)
 						project.AddReference(context.SharedProject);
 
 					context.NuGetProject.AddReference(project);
