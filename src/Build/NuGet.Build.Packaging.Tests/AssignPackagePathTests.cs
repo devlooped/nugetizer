@@ -128,6 +128,28 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_file_has_no_package_id_but_is_packaging_true_then_package_path_is_specified()
+		{
+			var task = new AssignPackagePath
+			{
+				IsPackaging = "true",
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("library.dll", new Metadata
+					{
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", "Lib" }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Equal(@"lib\net45\library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+		}
+
+		[Fact]
 		public void when_file_has_no_package_id_then_target_framework_is_calculated_anyway()
 		{
 			var task = new AssignPackagePath

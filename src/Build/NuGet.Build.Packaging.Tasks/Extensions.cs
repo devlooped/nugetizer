@@ -48,7 +48,9 @@ namespace NuGet.Build.Packaging
 						!file.EndsWith(".psmdcp"))
 					.Select(file => new ManifestFile
 					{
-						Source = file.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar),
+						// Can't replicate the Source path as it was originally before adding 
+						// to the package, so leave it null to avoid false promises in tests.
+						//Source = file.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar),
 						Target = file.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
 					}));
 
@@ -71,6 +73,8 @@ namespace NuGet.Build.Packaging
 		public static FrameworkName GetTargetFrameworkMoniker(this ITaskItem item)
 		{
 			var value = item.GetMetadata(MetadataName.TargetFrameworkMoniker);
+			// \o/: Turn .NETPortable,Version=v5.0 into .NETPlatform,Version=v5.0, hardcoded for now?
+			// TODO: should be able to get .NETStandard,Version=v1.x from the item metadata somehow.
 
 			return string.IsNullOrEmpty(value) ?
 				NullFramework :

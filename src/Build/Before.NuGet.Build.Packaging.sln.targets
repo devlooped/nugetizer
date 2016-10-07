@@ -4,5 +4,6 @@
           Condition=" '$(NuGetRestoreImported)' != 'true' " />
   <ItemGroup>
   	<RestoreSolution Include="$(MSBuildThisFileDirectory)NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
+  	<RestoreSolution Include="$(MSBuildThisFileDirectory)NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln" />
   </ItemGroup>
 </Project>

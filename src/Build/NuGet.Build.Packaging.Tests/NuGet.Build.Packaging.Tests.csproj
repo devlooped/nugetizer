@@ -18,6 +18,15 @@
   <ItemGroup>
     <None Include="project.json" />
     <None Include="NuGet.Build.Packaging.Tests.targets" />
+    <Content Include="Scenarios\given_a_library_with_content\none.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-hdpi\Icon.png" />
+    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-mdpi\Icon.png" />
+    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xhdpi\Icon.png" />
+    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xxhdpi\Icon.png" />
+    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xxxhdpi\Icon.png" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\common\project.json" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\common\project.lock.json" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\forms.proj" />
     <Content Include="Scenarios\given_a_library_with_content\library_with_content.csproj" />
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\b.csproj" />
@@ -32,16 +41,23 @@
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\a.csproj">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Scenarios\given_a_multi_platform_solution\android\forms.android.csproj" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\common\common.csproj" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\forms.sln" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\ios\forms.ios.csproj" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\net\forms.net46.csproj" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\pcl\forms.pcl.csproj" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.json" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.lock.json" />
     <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.json" />
     <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.lock.json" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.json" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.lock.json" />
     <None Include="Scenarios\Scenario.props" />
     <None Include="Scenarios\Scenario.targets" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
-    <Content Include="Scenarios\dynamic.csproj" />
     <Content Include="Scenarios\given_library_project_with_nugets\a.csproj" />
     <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj" />
     <Content Include="Scenarios\given_a_library_with_project_reference\a.csproj" />
@@ -54,6 +70,7 @@
     <Compile Include="Builder.NuGetizer.cs">
       <DependentUpon>Builder.cs</DependentUpon>
     </Compile>
+    <Compile Include="given_a_multi_platform_solution.cs" />
     <Compile Include="given_a_library_with_content.cs" />
     <Compile Include="given_a_localized_library.cs" />
     <Compile Include="given_a_complex_pack.cs" />
@@ -61,6 +78,10 @@
     <Compile Include="given_library_project_with_nugets.cs" />
     <Compile Include="given_an_empty_library_project.cs" />
     <Compile Include="given_a_library_with_project_reference.cs" />
+    <Content Include="Scenarios\given_a_library_with_content\contentFiles\cs\monoandroid\sample.cs" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.cs" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.fs" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.vb" />
     <Compile Include="UtilitiesTests.cs" />
     <Compile Include="Utilities\FrameworkAssemblyReferenceComparer.cs" />
     <Compile Include="Utilities\ManifestContentFilesComparer.cs" />

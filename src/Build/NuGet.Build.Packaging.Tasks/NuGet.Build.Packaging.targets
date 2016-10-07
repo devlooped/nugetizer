@@ -15,17 +15,21 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
-	<PropertyGroup>
+	<PropertyGroup Condition="'$(IsPackagingProject)' != 'true'">
+		<!-- Only default to true if the project isn't a nuget project itself. -->
 		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
 		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbolsInPackage>
 		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
 		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == ''">true</IncludeFrameworkReferencesInPackage>
-
+	</PropertyGroup>
+	<PropertyGroup>
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
 		<!-- NOTE: we will always have this property in projects referencing this targets file. Can be used to detect this. -->
 		<IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
 		<IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
+		<!-- When the project is building a package, AssignPackagePath always assigns a PackagePath, regardless of the project PackageId -->
+		<BuildingPackage Condition="'$(BuildingPackage)' == '' and '$(IsPackagingProject)' == 'true'">true</BuildingPackage>
 
 		<!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)</PackageOutputPath>
@@ -178,7 +182,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</_GetAllPackageContentsDependsOn>
 		<_GetAllPackageContentsDependsOn>
 			$(_GetAllPackageContentsDependsOn)
-			_CollectAllPackageContents;			
+			_CollectAllPackageContents;
 		</_GetAllPackageContentsDependsOn>
 	</PropertyGroup>
 
@@ -249,7 +253,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Target Name="GetAllPackageContents" DependsOnTargets="$(_GetAllPackageContentsDependsOn)" Returns="@(_AllPackageContent)" />
 
 	<!-- This target separates project references that have the packaging targets from those that don't -->
-	<Target Name="_SplitProjectReferencesByIsPackablePresence" 
+	<Target Name="_SplitProjectReferencesByIsPackablePresence"
 			Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
 			Inputs="@(_MSBuildProjectReferenceExistent)"
 			Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
@@ -264,20 +268,20 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PropertyGroup>
 			<_HasIsPackable Condition="'%(_ReferencedProjectTargetPath.IsPackable)' != ''">true</_HasIsPackable>
 		</PropertyGroup>
-	
+
 		<ItemGroup>
 			<_NoIsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_HasIsPackable)' != 'true'" />
 			<_IsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_HasIsPackable)' == 'true'" />
 		</ItemGroup>
 
 	</Target>
-	
+
 	<!-- Includes primary output and dependencies for non-nugetized projects -->
 	<Target Name="_CollectMissingIsPackableProjectReferencesOutputs" Condition="'@(_NoIsPackableProject)' != ''">
 		<Warning Text="Some project references do not have the 'NuGet.Build.Packaging' installed. Only primary output will be packaged.
 Please install the 'NuGet.Build.Packaging' package in the following projects to ensure proper packaging of all artifacts: @(_NoIsPackableProject)"
 				 Code="NG1001" />
-	
+
 		<!-- Main project and dependencies built output -->
 		<MSBuild Projects="@(_NoIsPackableProject)"
 				 Targets="BuiltProjectOutputGroup"
@@ -292,7 +296,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 				<Kind>Lib</Kind>
 			</PackageFile>
 		</ItemGroup>
-		
+
 		<MSBuild Projects="@(_NoIsPackableProject)"
 				 Targets="BuiltProjectOutputGroupDependencies"
 				 BuildInParallel="$(BuildInParallel)"
@@ -315,7 +319,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 				lock.json or packages.config), we can't rely on these to provide the top-level dependencies we actually 
 				need either.
 			-->
-			<PackageFile Include="@(_ReferencedProjectOutputDependency -> '%(FullPath)')" 
+			<PackageFile Include="@(_ReferencedProjectOutputDependency -> '%(FullPath)')"
 						 Condition="'%(_ReferencedProjectOutputDependency.CopyLocal)' == 'true' and
 						            '%(_ReferencedProjectOutputDependency.FrameworkFile)' != 'true' and 
 									'%(_ReferencedProjectOutputDependency.ResolvedFrom)' != '{TargetFrameworkDirectory}'">
@@ -365,7 +369,14 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 		</MSBuild>
 
 		<ItemGroup>
-			<PackageFile Include="@(_ReferencedProjectDocumentation -> '%(FinalOutputPath)')">
+			<!-- Ensure FinalOutputPath is a full path. Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
+			<_ReferencedProjectDocumentationFullPath Include="@(_ReferencedProjectDocumentation)" Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'true'">
+				<FinalFullOutputPath>%(FinalOutputPath)</FinalFullOutputPath>
+			</_ReferencedProjectDocumentationFullPath>
+			<_ReferencedProjectDocumentationFullPath Include="@(_ReferencedProjectDocumentation)" Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">
+				<FinalFullOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">$([System.IO.Path]::GetDirectoryName('%(MSBuildSourceProjectFile)'))\%(FinalOutputPath)</FinalFullOutputPath>
+			</_ReferencedProjectDocumentationFullPath>
+			<PackageFile Include="@(_ReferencedProjectDocumentationFullPath -> '%(FinalFullOutputPath)')">
 				<Kind>Doc</Kind>
 			</PackageFile>
 		</ItemGroup>
@@ -419,7 +430,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 		</ItemGroup>
 
 	</Target>
-	
+
 	<!-- This is the actual inner target that authors extend when they provide a GetPackageContentsDependsOn target -->
 	<Target Name="_CollectAllPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_AllPackageContent)" >
 		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
@@ -431,7 +442,12 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 				<Kind>Lib</Kind>
 			</PackageFile>
 
-			<PackageFile Include="@(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+			<!-- Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
+			<_DocumentationProjectOutputGroupOutput Include="@(DocumentationProjectOutputGroupOutput)"
+													Condition="'$(IncludeOutputsInPackage)' == 'true'">
+				<FinalOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">$(MSBuildProjectDirectory)\%(FinalOutputPath)</FinalOutputPath>
+			</_DocumentationProjectOutputGroupOutput>
+			<PackageFile Include="@(_DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                          Condition="'$(IncludeOutputsInPackage)' == 'true'">
 				<Kind>Doc</Kind>
 			</PackageFile>
@@ -483,7 +499,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 				 TODO: take into account multi-targetting. -->
 			<PackageFile>
 				<PackageId>$(PackageId)</PackageId>
-				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
 
@@ -491,17 +507,10 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<Output TaskParameter="AssignedFiles" ItemName="_AllPackageContent" />
 		</AssignPackagePath>
 
-		<ItemGroup>
-			<!-- Specific framework targets would turn:
-				* @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to Kind=FrameworkReference
-				* @(ReferencePath) are resolved otherwise (i.e. ResolvedFrom={RawFile}) to Kind=AssemblyReference
-			-->
-		</ItemGroup>
-
 		<MSBuild Projects="@(_IsPackableProject)"
 				 Targets="GetAllPackageContents"
 				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_IsPackableProject.SetConfiguration); %(_IsPackableProject.SetPlatform)"
+				 Properties="%(_IsPackableProject.SetConfiguration); %(_IsPackableProject.SetPlatform); BuildingPackage=$(BuildingPackage)"
 				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_IsPackableProject)' != ''"
 				 RemoveProperties="%(_IsPackableProject.GlobalPropertiesToRemove)">
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
@@ -513,7 +522,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<Output TaskParameter="Include" ItemName="_ReferencedPackageContentWithOriginalValues"/>
 		</CreateItem>
 
-		<ItemGroup>
+		<ItemGroup Condition="'$(IsPackagingProject)' != 'true'">
 			<!-- Retarget content for the currently building package, if necessary -->
 			<_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
 				<PackageId>$(PackageId)</PackageId>
@@ -533,12 +542,29 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
 			</_ReferencedPackageContentWithOriginalValues>
 		</ItemGroup>
+		<!-- Otherwise, assign target paths based on the original TFM -->
+		<ItemGroup Condition="'$(IsPackagingProject)' == 'true'">
+			<!-- Retarget content for the currently building package, if necessary -->
+			<_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
+				<PackageId>$(PackageId)</PackageId>
+				<!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
+				<!-- Only do this for Library assets that come from project references that don't build nugets (PackageId=='' above) -->
+				<TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Library' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Symbols' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Doc'"></TargetFramework>
+				<TargetFrameworkMoniker>%(OriginalTargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</_ReferencedPackageContentWithOriginalValues>
+		</ItemGroup>
 
 		<!-- Ensure referenced package content gets assigned a package path if it didn't provide one already.
 			 This happens for project references' that don't have a PackageId, since their package path will 
 			 depend on the referencing project's TFM.
 		-->
-		<AssignPackagePath Files="@(_ReferencedPackageContentWithOriginalValues)" Kinds="@(PackageItemKind)" Condition="'@(_ReferencedPackageContentWithOriginalValues)' != ''">
+		<AssignPackagePath Files="@(_ReferencedPackageContentWithOriginalValues)" 
+						   Kinds="@(PackageItemKind)" 
+						   IsPackaging="$(BuildingPackage)"
+						   Condition="'@(_ReferencedPackageContentWithOriginalValues)' != ''">
 			<Output TaskParameter="AssignedFiles" ItemName="_AllPackageContent" />
 		</AssignPackagePath>
 
@@ -561,7 +587,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 	-->
 	<Target Name="Pack" DependsOnTargets="$(_PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'" />
 
-	<Target Name="_Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)">
+	<Target Name="_Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
 		<ItemGroup>
 			<_PackageManifest Include="@(_PackageContent -> WithMetadataValue('Kind', 'Metadata'))" Condition="'%(PackageId)' == '$(PackageId)'" />
 		</ItemGroup>

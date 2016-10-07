@@ -226,82 +226,46 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_creating_package_with_content_file_then_adds_as_content_file()
 		{
-			var none = Path.GetTempFileName();
 			var content = Path.GetTempFileName();
 			task.Contents = new[]
 			{
-				new TaskItem(none, new Metadata
-				{
-					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.None },
-					{ MetadataName.PackagePath, "readme.txt" }
-				}),
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.Kind, PackageItemKind.ContentFiles },
 					{ MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
-					{ MetadataName.PackagePath, "contentFiles/any/any/readme.txt" }
+					{ MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
 				}),
 			};
 
 			var manifest = ExecuteTask();
 
-			Assert.Equal(new[]
-				{
-					new ManifestFile { Source = none, Target = "readme.txt" }
-				},
-				manifest.Files,
-				ManifestFileComparer.Default);
-
-			Assert.Equal(new []
-				{
-					new ManifestContentFiles { Include = content }
-				},
-				manifest.Metadata.ContentFiles,
-				ManifestContentFilesComparer.Default);
+			Assert.Contains(manifest.Files, file => file.Target == @"contentFiles\any\any\readme.txt");
+			Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include == @"contentFiles\any\any\readme.txt");
 		}
 
 		[Fact]
 		public void when_creating_package_with_content_file_build_action_then_adds_as_content_file()
 		{
-			var none = Path.GetTempFileName();
 			var content = Path.GetTempFileName();
 			task.Contents = new[]
 			{
-				new TaskItem(none, new Metadata
-				{
-					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.None },
-					{ MetadataName.PackagePath, "readme.txt" }
-				}),
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.Kind, PackageItemKind.ContentFiles },
 					{ MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
 					{ MetadataName.ContentFile.BuildAction, "EmbeddedResource" },
-					{ MetadataName.PackagePath, "contentFiles/any/any/readme.txt" }
+					{ MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
 				}),
 			};
 
 			var manifest = ExecuteTask();
 
-			Assert.Equal(new[]
-				{
-					new ManifestFile { Source = none, Target = "readme.txt" }
-				},
-				manifest.Files,
-				ManifestFileComparer.Default);
-
-			Assert.Equal(new[]
-				{
-					new ManifestContentFiles { Include = content, BuildAction = "EmbeddedResource" }
-				},
-				manifest.Metadata.ContentFiles,
-				ManifestContentFilesComparer.Default);
+			Assert.Contains(manifest.Files, file => file.Target == @"contentFiles\any\any\readme.txt");
+			Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include == @"contentFiles\any\any\readme.txt" && file.BuildAction == "EmbeddedResource");
 		}
-
+		
 		[Fact]
 		public void when_creating_package_with_content_file_copy_to_output_then_adds_as_content_file()
 		{
@@ -309,19 +273,13 @@ namespace NuGet.Build.Packaging
 			var content = Path.GetTempFileName();
 			task.Contents = new[]
 			{
-				new TaskItem(none, new Metadata
-				{
-					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.None },
-					{ MetadataName.PackagePath, "readme.txt" }
-				}),
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.Kind, PackageItemKind.ContentFiles },
 					{ MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
 					{ MetadataName.ContentFile.CopyToOutput, "true" },
-					{ MetadataName.PackagePath, "contentFiles/any/any/readme.txt" }
+					{ MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
 				}),
 			};
 
@@ -329,17 +287,15 @@ namespace NuGet.Build.Packaging
 
 			Assert.Equal(new[]
 				{
-					new ManifestFile { Source = none, Target = "readme.txt" }
+					new ManifestFile { Target = @"contentFiles\any\any\readme.txt" }
 				},
-				manifest.Files,
-				ManifestFileComparer.Default);
+				manifest.Files, ManifestFileComparer.Default);
 
 			Assert.Equal(new[]
 				{
-					new ManifestContentFiles { Include = content, CopyToOutput = "true" }
+					new ManifestContentFiles { Include = @"contentFiles\any\any\readme.txt", CopyToOutput = "true" }
 				},
-				manifest.Metadata.ContentFiles,
-				ManifestContentFilesComparer.Default);
+				manifest.Metadata.ContentFiles, ManifestContentFilesComparer.Default);
 		}
 
 		[Fact]
@@ -349,19 +305,13 @@ namespace NuGet.Build.Packaging
 			var content = Path.GetTempFileName();
 			task.Contents = new[]
 			{
-				new TaskItem(none, new Metadata
-				{
-					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.None },
-					{ MetadataName.PackagePath, "readme.txt" }
-				}),
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.Kind, PackageItemKind.ContentFiles },
 					{ MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
 					{ MetadataName.ContentFile.Flatten, "true" },
-					{ MetadataName.PackagePath, "contentFiles/any/any/readme.txt" }
+					{ MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
 				}),
 			};
 
@@ -369,17 +319,22 @@ namespace NuGet.Build.Packaging
 
 			Assert.Equal(new[]
 				{
-					new ManifestFile { Source = none, Target = "readme.txt" }
+					new ManifestFile
+					{
+						Target = @"contentFiles\any\any\readme.txt"
+					}
 				},
-				manifest.Files,
-				ManifestFileComparer.Default);
+				manifest.Files,ManifestFileComparer.Default);
 
 			Assert.Equal(new[]
 				{
-					new ManifestContentFiles { Include = content, Flatten = "true" }
+					new ManifestContentFiles
+					{
+						Include = @"contentFiles\any\any\readme.txt",
+						Flatten = "true"
+					}
 				},
-				manifest.Metadata.ContentFiles,
-				ManifestContentFilesComparer.Default);
+				manifest.Metadata.ContentFiles, ManifestContentFilesComparer.Default);
 		}
 
 		[Fact]

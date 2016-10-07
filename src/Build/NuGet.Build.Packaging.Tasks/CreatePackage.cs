@@ -133,22 +133,24 @@ namespace NuGet.Build.Packaging.Tasks
 			var contents = Contents.Where(item => 
 				!string.IsNullOrEmpty(item.GetMetadata(MetadataName.PackagePath)));
 
-			var files = contents.Where(item => item.GetMetadata(MetadataName.PackageFolder) != PackagingConstants.Folders.ContentFiles);
-			var contentFiles = contents.Where(item => item.GetMetadata(MetadataName.PackageFolder) == PackagingConstants.Folders.ContentFiles);
-
-			manifest.Files.AddRange(files.Select(item => new ManifestFile
+			// All files need to be added so they are included in the nupkg
+			manifest.Files.AddRange(contents
+				.Select(item => new ManifestFile
 				{
 					Source = item.GetMetadata("FullPath"),
 					Target = item.GetMetadata(MetadataName.PackagePath),
 				}));
 
-			manifest.Metadata.ContentFiles = contentFiles.Select(item => new ManifestContentFiles
-			{
-				Include = item.GetMetadata("FullPath"), 
-				BuildAction = item.GetNullableMetadata(MetadataName.ContentFile.BuildAction),
-				CopyToOutput = item.GetNullableMetadata(MetadataName.ContentFile.CopyToOutput),
-				Flatten = item.GetNullableMetadata(MetadataName.ContentFile.Flatten),
-			}).ToArray();
+			// Additional metadata for the content files must be added separately
+			manifest.Metadata.ContentFiles = contents
+				.Where(item => item.GetMetadata(MetadataName.PackageFolder) == PackagingConstants.Folders.ContentFiles)
+				.Select(item => new ManifestContentFiles
+				{
+					Include = item.GetMetadata(MetadataName.PackagePath),
+					BuildAction = item.GetNullableMetadata(MetadataName.ContentFile.BuildAction),
+					CopyToOutput = item.GetNullableMetadata(MetadataName.ContentFile.CopyToOutput),
+					Flatten = item.GetNullableMetadata(MetadataName.ContentFile.Flatten),
+				}).ToArray();
 		}
 
 		void AddFrameworkAssemblies(Manifest manifest)

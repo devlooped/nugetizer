@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
+	<PropertyGroup>
+		<AssemblyName>Forms</AssemblyName>
+		<ProjectGuid>$(GuidA)</ProjectGuid>
+		<PackageId>Forms</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
+		<IsPackagingProject>true</IsPackagingProject>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="pcl\forms.pcl.csproj">
+			<Project>$(GuidB)</Project>
+			<Name>forms.pcl</Name>
+		</ProjectReference>
+		<ProjectReference Include="net\forms.net46.csproj">
+			<Project>$(GuidC)</Project>
+			<Name>forms.net46</Name>
+		</ProjectReference>
+		<ProjectReference Include="ios\forms.ios.csproj">
+			<Project>$(GuidD)</Project>
+			<Name>forms.ios</Name>
+		</ProjectReference>
+		<ProjectReference Include="android\forms.android.csproj">
+			<Project>$(GuidE)</Project>
+			<Name>forms.android</Name>
+		</ProjectReference>
+	</ItemGroup>
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
+</Project>
