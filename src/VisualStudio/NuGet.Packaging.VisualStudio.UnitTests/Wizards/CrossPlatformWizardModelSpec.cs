@@ -9,7 +9,7 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 		[Fact]
 		public void when_parsing_parameters_then_builtin_parameres_are_parsed()
 		{
-			var model = new CrossPlatformWizardModel();
+			var model = new MultiPlatformViewModel();
 
 			model.ParseParameters(new Dictionary<string, string>
 			{

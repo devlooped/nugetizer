@@ -4,10 +4,10 @@
             xmlns="http://schemas.microsoft.com/developer/vstemplate/2005"
             xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <Name>Cross Platform Library</Name>
+    <Name>Multiplatform Library</Name>
     <Description>A project template for creating cross platform library projects and its corresponding NuGet packages</Description>
     <Icon Package="{e57e2daf-a455-45db-962e-31b1c9c70860}" ID="400" />
-    <TemplateID>NuGet.Packaging.VisualStudio.CrossPlatformLibrary</TemplateID>
+    <TemplateID>NuGet.Packaging.VisualStudio.MultiPlatformLibrary</TemplateID>
     <ProjectType>CSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <SortOrder>700</SortOrder>
@@ -22,6 +22,6 @@
   </TemplateContent>
   <WizardExtension>
     <Assembly>NuGet.Packaging.VisualStudio, Version=1.0.0.0, Culture=neutral, PublicKeyToken=44c0b6b1fa7a936a</Assembly>
-    <FullClassName>NuGet.Packaging.VisualStudio.CrossPlatformWizard</FullClassName>
+    <FullClassName>NuGet.Packaging.VisualStudio.MultiPlatformWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>

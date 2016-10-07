@@ -2,22 +2,17 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <NuGetPackagingPath Condition=" '$(NuGetPackagingPath)' == '' ">$(LocalAppData)\CustomProjectSystems\NuGet.Packaging\</NuGetPackagingPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <MinimumVisualStudioVersion>$minimumvisualstudioversion$</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{$guid1$}</ProjectGuid>
-    $if$ ('$outputtypewinmdobj$' == 'true')<OutputType>winmdobj</OutputType>$else$<OutputType>Library</OutputType>$endif$
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>$safeprojectname$</RootNamespace>
     <AssemblyName>$safeprojectname$</AssemblyName>
-    <DefaultLanguage>$currentuiculturename$</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{267351FF-295D-442E-9F4C-B541870C8060};$projectypeguid$;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    $if$ ('$targetplatformidentifier$' != '')<TargetPlatformIdentifier>$targetplatformidentifier$</TargetPlatformIdentifier>$else$<TargetFrameworkProfile>$targetframeworkprofile$</TargetFrameworkProfile>$endif$
-    $if$ ('$targetplatformversion$' != '')<TargetPlatformVersion>$targetplatformversion$</TargetPlatformVersion>$else$<TargetFrameworkVersion>$targetframeworkversion$</TargetFrameworkVersion>$endif$
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile151</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,7 +31,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <Import Project="$(NuGetPackagingPath)\NuGet.Packaging.props" Condition="Exists('$(NuGetPackagingPath)\NuGet.Packaging.props')" />
   <PropertyGroup Label="Configuration">
     <Id>$safeprojectname$</Id>
     <Version>1.0.0</Version>
@@ -52,16 +46,10 @@
     <Tags>$safeprojectname$</Tags>
   </PropertyGroup>
   <ItemGroup>
-    $if$ ('$usesnuget$' == 'true')
-    <None Include="project.json" />$endif$
-    <!-- A reference to the entire .NET Framework is automatically included -->
-  </ItemGroup>$targetplatformsxml$
-  <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <Import Project="$commontargetsimport$" />
-  <Import Project="$(NuGetPackagingPath)\NuGet.Packaging.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -15,7 +15,7 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 		[Fact]
 		public void when_wizard_is_started_with_default_values_then_models_are_created()
 		{
-			var wizard = new CrossPlatformWizard(
+			var wizard = new MultiPlatformWizard(
 				platformProvider.Object, solutionExplorer.Object);
 
 			wizard.RunStarted(null, new Dictionary<string, string>(), WizardRunKind.AsNewProject, null);
@@ -27,7 +27,7 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 		[Fact]
 		public void when_wizard_is_started_then_supported_platforms_are_added()
 		{
-			var wizard = new CrossPlatformWizard(
+			var wizard = new MultiPlatformWizard(
 				platformProvider.Object, solutionExplorer.Object);
 
 			platformProvider
@@ -46,7 +46,7 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 		[Fact]
 		public void when_wizard_is_finished_then_selected_platforms_are_unfolded()
 		{
-			var wizard = new CrossPlatformWizard(
+			var wizard = new MultiPlatformWizard(
 				platformProvider.Object, solutionExplorer.Object);
 
 			var solution = new Mock<ISolutionNode>();
@@ -68,7 +68,7 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 					new PlatformViewModel { Id = "Xamarin.Android" }
 				});
 
-			wizard.WizardModel = new CrossPlatformWizardModel();
+			wizard.WizardModel = new MultiPlatformViewModel();
 			wizard.WizardModel.SolutionDirectory = @"c:\src\App";
 			wizard.WizardModel.SafeProjectName = "App";
 
