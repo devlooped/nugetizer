@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup Condition=" '$(IsCIBuild)' == '' ">
+		<!-- If build script did not receive IsCIBuild value, try to guess it from Wrench/TeamCity/AppVeyor/MyGet/Jenkins envvars. -->
+		<IsTeamCityBuild Condition=" '$(IsTeamCityBuild)' == '' And '$(TEAMCITY_VERSION)' != '' ">true</IsTeamCityBuild>
+		<IsWrenchBuild Condition=" '$(IsWrenchBuild)' == '' And '$(BUILD_COMMAND)' != '' ">true</IsWrenchBuild>
+		<IsAppVeyorBuild Condition=" '$(IsAppVeyorBuild)' == '' And '$(APPVEYOR)' != '' ">true</IsAppVeyorBuild>
+		<IsMyGetBuild Condition=" '$(IsMyGetBuild)' == '' And '$(BuildRunner)' == 'MyGet' ">true</IsMyGetBuild>
+		<IsJenkinsBuild Condition=" '$(IsJenkinsBuild)' == '' And '$(JENKINS_URL)' != '' ">true</IsJenkinsBuild>
+
+		<IsCIBuild Condition=" '$(IsTeamCityBuild)' == 'true' Or '$(IsWrenchBuild)' == 'true' Or '$(IsAppVeyorBuild)' == 'true' Or '$(IsMyGetBuild)' == 'true' Or '$(IsJenkinsBuild)' == 'true' ">true</IsCIBuild>
+	</PropertyGroup>
+
+</Project>
