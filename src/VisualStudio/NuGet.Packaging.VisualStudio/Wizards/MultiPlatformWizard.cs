@@ -23,10 +23,12 @@ namespace NuGet.Packaging.VisualStudio
 
 		internal MultiPlatformWizard(
 			IPlatformProvider platformProvider,
-			ISolutionExplorer solutionExplorer)
+			ISolutionExplorer solutionExplorer,
+			IVsUIShell uiShell)
 		{
 			this.platformProvider = platformProvider;
 			this.solutionExplorer = solutionExplorer;
+			this.uiShell = uiShell;
 		}
 
 		internal string SafeProjectName { get; set; }
@@ -36,6 +38,9 @@ namespace NuGet.Packaging.VisualStudio
 		internal MultiPlatformViewModel ViewModel { get; set; }
 
 		internal MultiPlatformView View { get; set; }
+
+		// Fix unit testing with this for now
+		internal bool ShowDialog { get; set; } = true;
 
 		public void BeforeOpeningFile(ProjectItem projectItem)
 		{
@@ -61,15 +66,18 @@ namespace NuGet.Packaging.VisualStudio
 			foreach (var platform in platformProvider.GetSupportedPlatforms())
 				ViewModel.Platforms.Add(platform);
 
-			if (View == null)
+			if (ShowDialog)
 			{
-				View = new MultiPlatformView();
-				View.DataContext = ViewModel;
-				uiShell.SetOwner(View);
-			}
+				if (View == null)
+				{
+					View = new MultiPlatformView();
+					View.DataContext = ViewModel;
+					uiShell.SetOwner(View);
+				}
 
-			if (!View.ShowDialog().GetValueOrDefault())
-				throw new WizardBackoutException();
+				if (!View.ShowDialog().GetValueOrDefault())
+					throw new WizardBackoutException();
+			}
 		}
 
 		public void RunFinished()
@@ -100,16 +108,9 @@ namespace NuGet.Packaging.VisualStudio
 			}
 			else
 			{
-				try
-				{
-					solutionContext.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
-						Constants.Templates.PortableClassLibrary,
-						SafeProjectName);
-				}
-				catch(Exception ex)
-				{
-
-				}
+				solutionContext.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
+					Constants.Templates.PortableClassLibrary,
+					SafeProjectName);
 			}
 		}
 
@@ -127,7 +128,7 @@ namespace NuGet.Packaging.VisualStudio
 
 		public bool ShouldAddProjectItem(string filePath) => true;
 
-		void ParseParameters(Dictionary<string, string> replacementsDictionary)
+		internal void ParseParameters(Dictionary<string, string> replacementsDictionary)
 		{
 			foreach (var param in replacementsDictionary)
 			{

@@ -16,8 +16,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Wizards\CrossPlatformWizardModelSpec.cs" />
-    <Compile Include="Wizards\CrossPlatformWizardSpec.cs" />
+    <Compile Include="Wizards\MultiPlatformWizardSpec.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
