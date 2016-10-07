@@ -2,6 +2,8 @@
 {
 	class Constants
 	{
+		public const string PortableClassLibraryCapability = "MultiTarget";
+
 		/// <summary>
 		/// The file extension of this project type.  No preceding period.
 		/// </summary>

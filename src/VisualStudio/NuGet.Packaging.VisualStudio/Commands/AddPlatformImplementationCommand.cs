@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using Clide;
 using System.Windows;
+using Microsoft.VisualStudio.Shell;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -26,69 +27,80 @@ namespace NuGet.Packaging.VisualStudio
 
 		protected override void Execute()
 		{
-			var context = new SolutionContext(solutionExplorer);
-			context.Initialize(solutionExplorer.Solution.ActiveProject);
-
-			var viewModel = new AddPlatformImplementationViewModel();
-
-			foreach (var platform in platformProvider.GetSupportedPlatforms())
+			if (CanExecute())
 			{
-				platform.IsEnabled = context.GetProjectNode(platform) == null;
-				viewModel.Platforms.Add(platform);
-			}
+				var context = new SolutionContext(solutionExplorer);
+				context.Initialize(solutionExplorer.Solution.ActiveProject);
 
-			if (!viewModel.Platforms.Any(x => x.IsEnabled))
-			{
-				MessageBox.Show(
-					"The available platform projects are already present in the current solution. Please select a different library or remove any of the platform projects.",
-					"Add Platform Implementation",
-					MessageBoxButton.OK,
-					MessageBoxImage.Exclamation);
+				var viewModel = new AddPlatformImplementationViewModel();
 
-				return;
-			}
-
-			viewModel.IsSharedProjectEnabled = context.SharedProject == null;
-
-			var view = new AddPlatformImplementationView();
-			view.DataContext = viewModel;
-
-			if (dialogService.ShowDialog(view) == true)
-			{
-				if (context.SharedProject == null && viewModel.UseSharedProject)
+				foreach (var platform in platformProvider.GetSupportedPlatforms())
 				{
-					context.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
-						Constants.Templates.SharedProject, context.SharedProjectName);
-
-					// Move PCL items to the shared project
-					context.SelectedProject.Accept(
-						new MoveProjectItemsToProjectVisitor(context.SharedProject));
+					platform.IsEnabled = context.GetProjectNode(platform) == null;
+					viewModel.Platforms.Add(platform);
 				}
 
-				if (context.NuGetProject == null)
+				if (!viewModel.Platforms.Any(x => x.IsEnabled))
 				{
-					context.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
-						Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
+					MessageBox.Show(
+						"The available platform projects are already present in the current solution. Please select a different library or remove any of the platform projects.",
+						"Add Platform Implementation",
+						MessageBoxButton.OK,
+						MessageBoxImage.Exclamation);
+
+					return;
 				}
 
-				context.NuGetProject.AddReference(context.SelectedProject);
+				viewModel.IsSharedProjectEnabled = context.SharedProject == null;
 
-				foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
+				var view = new AddPlatformImplementationView();
+				view.DataContext = viewModel;
+
+				if (dialogService.ShowDialog(view) == true)
 				{
-					var projectName = context.GetTargetProjectName(selectedPlatform);
-					var project = context.GetProjectNode(projectName);
+					if (context.SharedProject == null && viewModel.UseSharedProject)
+					{
+						context.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
+							Constants.Templates.SharedProject, context.SharedProjectName);
 
-					if (project == null)
-						project = solutionExplorer.Solution.UnfoldTemplate(
-							Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
-							projectName);
+						// Move PCL items to the shared project
+						context.SelectedProject.Accept(
+							new MoveProjectItemsToProjectVisitor(context.SharedProject));
+					}
 
-					if (context.SharedProject != null && viewModel.UseSharedProject)
-						project.AddReference(context.SharedProject);
+					if (context.NuGetProject == null)
+					{
+						context.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
+							Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
+					}
 
-					context.NuGetProject.AddReference(project);
+					context.NuGetProject.AddReference(context.SelectedProject);
+
+					foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
+					{
+						var projectName = context.GetTargetProjectName(selectedPlatform);
+						var project = context.GetProjectNode(projectName);
+
+						if (project == null)
+							project = solutionExplorer.Solution.UnfoldTemplate(
+								Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
+								projectName);
+
+						if (context.SharedProject != null && viewModel.UseSharedProject)
+							project.AddReference(context.SharedProject);
+
+						context.NuGetProject.AddReference(project);
+					}
 				}
 			}
 		}
+
+		protected override void CanExecute(OleMenuCommand command)
+		{
+			command.Checked = command.Visible = CanExecute();
+		}
+
+		bool CanExecute() =>
+				solutionExplorer.Solution.ActiveProject.Supports(Constants.PortableClassLibraryCapability);
 	}
 }

@@ -21,20 +21,20 @@ namespace NuGet.Packaging.VisualStudio
 
 		protected override void Execute()
 		{
-			var selectedProject = solutionExplorer.Solution.ActiveProject;
+			if (CanExecute())
+			{
+				var selectedProject = solutionExplorer.Solution.ActiveProject;
 
-			var buildNuGetPackage = true;
-			var openNuSpecPropertyPage = false;
-
-			if (!selectedProject.Supports(NuProjCapabilities.NuProj))
-				buildNuGetPackage = openNuSpecPropertyPage =
-					dialogService.ShowConfirmationMessage(Resources.AddNuProjToLibrary);
-
-			if (buildNuGetPackage)
 				selectedProject.BuildNuGetPackage();
-
-			if (openNuSpecPropertyPage)
-				selectedProject.OpenNuSpecPropertyPage();
+			}
 		}
+
+		protected override void CanExecute(OleMenuCommand command)
+		{
+			command.Checked = command.Visible = CanExecute();
+		}
+
+		bool CanExecute() =>
+			solutionExplorer.Solution.ActiveProject.Supports(NuProjCapabilities.NuProj);
 	}
 }
