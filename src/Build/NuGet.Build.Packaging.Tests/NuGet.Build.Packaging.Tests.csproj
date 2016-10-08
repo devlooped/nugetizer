@@ -18,6 +18,10 @@
   <ItemGroup>
     <None Include="project.json" />
     <None Include="NuGet.Build.Packaging.Tests.targets" />
+    <Content Include="Scenarios\given_a_library_with_content\content-with-include-true.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\content-with-include-false.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\none-with-include-false.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\none-with-include-true.txt" />
     <Content Include="Scenarios\given_a_library_with_content\none.txt" />
     <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-hdpi\Icon.png" />
     <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-mdpi\Icon.png" />
