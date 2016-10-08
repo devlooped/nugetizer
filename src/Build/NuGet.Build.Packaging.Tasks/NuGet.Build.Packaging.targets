@@ -40,28 +40,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</BuildDependsOn>
 	</PropertyGroup>
 
-	<!--
-	============================================================
-					GetTargetPath
-
-    This target is redefined from the common targets to add the 
-	%(IsPackable) metadata, which is used by the GetPacakgeContents 
-	target to detect project references that don't have this 
-	nuget package installed (and would therefore not behave 
-	properly when packed from the referencing project).
-	============================================================
-	-->
-	<Target Name="GetTargetPath"
-			DependsOnTargets="$(GetTargetPathDependsOn)"
-			Returns="@(TargetPathWithTargetPlatformMonikerAndIsPackable)">
-		<ItemGroup>
-			<TargetPathWithTargetPlatformMonikerAndIsPackable Include="$(TargetPath)">
-				<TargetPlatformMoniker>$(TargetPlatformMoniker)</TargetPlatformMoniker>
-				<TargetPlatformIdentifier>$(TargetPlatformIdentifier)</TargetPlatformIdentifier>
-				<IsPackable>$(IsPackable)</IsPackable>
-			</TargetPathWithTargetPlatformMonikerAndIsPackable>
-		</ItemGroup>
-	</Target>
+	<!-- Extends the built-in GetTargetPath output to signal that the project has been nugetized -->
+	<ItemDefinitionGroup> 
+		<TargetPathWithTargetPlatformMoniker>
+			<IsPackable>$(IsPackable)</IsPackable>
+		</TargetPathWithTargetPlatformMoniker>
+	</ItemDefinitionGroup>
 
 	<!--
 	============================================================
