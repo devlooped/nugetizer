@@ -131,13 +131,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     ============================================================
     -->
 	<PropertyGroup>
-		<AllProjectOutputGroupsDependsOn>
-			PackageOutputGroup;
-			$(AllProjectOutputGroupsDependsOn)
-		</AllProjectOutputGroupsDependsOn>
 		<PackageOutputGroupDependsOn>GetPackageTargetPath;$(PackageOutputGroupDependsOn)</PackageOutputGroupDependsOn>
 	</PropertyGroup>
-	<Target Name="PackageOutputGroup" Returns="@(PackageTargetPath)" DependsOnTargets="$(PackageOutputGroupDependsOn)" />
+	<Target Name="PackageOutputGroup" BeforeTargets="AllProjectOutputGroups" Returns="@(PackageTargetPath)" DependsOnTargets="$(PackageOutputGroupDependsOn)" />
 
 	<PropertyGroup>
 		<!-- NOTE: these are the "internal" DependsOn for our implementation of the collecting and filtering targets.
