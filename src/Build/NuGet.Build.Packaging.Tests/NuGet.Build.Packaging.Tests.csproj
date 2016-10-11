@@ -30,6 +30,8 @@
     <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xxxhdpi\Icon.png" />
     <Content Include="Scenarios\given_a_multi_platform_solution\common\project.json" />
     <Content Include="Scenarios\given_a_multi_platform_solution\common\project.lock.json" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\docs\gettingstarted.html" />
+    <Content Include="Scenarios\given_a_multi_platform_solution\docs\overview\index.html" />
     <Content Include="Scenarios\given_a_multi_platform_solution\forms.proj" />
     <Content Include="Scenarios\given_a_library_with_content\library_with_content.csproj" />
     <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />

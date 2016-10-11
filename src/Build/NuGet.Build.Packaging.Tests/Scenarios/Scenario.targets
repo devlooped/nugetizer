@@ -26,11 +26,7 @@
 	TargetFramework=%(_PackageContent.TargetFramework)
 	TargetFrameworkMoniker=%(_PackageContent.TargetFrameworkMoniker)"/>
 
-		<ItemGroup>
-			<Common Include="@(_PackageContent)" Condition="'%(Filename)' == 'Common'" />
-		</ItemGroup>
-		<Message Importance="high" Text="@(Common->Count())" />
-		<!--<DumpItems Items="@(Common)" ItemName="Common" />-->
+		<DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
 
 		<!--
 	OriginalTargetFramework=%(_PackageContent.OriginalTargetFramework)

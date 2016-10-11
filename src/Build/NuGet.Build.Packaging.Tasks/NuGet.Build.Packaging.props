@@ -96,7 +96,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<!-- PackageReference can contain a %(IsDevelopmentDependency)=true metadata -->
 		</PackageItemKind>
 
-		<!-- The package manifest item if the project generates a package -->
+		<!-- The package metadata item if the project generates a package -->
 		<PackageItemKind Include="Metadata" />
 
 		<!-- Platform targets could turn @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to FrameworkReference, for example -->
@@ -107,4 +107,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<NuGetBuildPackagingPropsImported>true</NuGetBuildPackagingPropsImported>
 	</PropertyGroup>
+
+	<Import Project="NuGet.Build.Packaging.Version.props" />
 </Project>

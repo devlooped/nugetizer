@@ -26,5 +26,13 @@
 			<Name>forms.android</Name>
 		</ProjectReference>
 	</ItemGroup>
+	<Target Name="AddDocs" BeforeTargets="GetPackageContents">
+		<ItemGroup>
+			<_Docs Include="docs\**\*.*" />
+			<PackageFile Include="@(_Docs)">
+				<PackagePath>docs\%(_Docs.RecursiveDir)%(_Docs.Filename)%(_Docs.Extension)</PackagePath>
+			</PackageFile>
+		</ItemGroup>
+	</Target>
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>

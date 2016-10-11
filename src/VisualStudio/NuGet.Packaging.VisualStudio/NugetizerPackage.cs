@@ -10,7 +10,7 @@
 	using ExtenderProviders;
 
 	[Guid(Guids.PackageGuid)]
-	[ProvideAutoLoad(UIContextGuids.SolutionExists)]
+	//[ProvideAutoLoad(UIContextGuids.SolutionExists)]
 	// TODO: make sure we only auto-load when there are C# and VB projects. (what about F#?)
 	//[ProvideAutoLoad("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}")]
 	//[ProvideAutoLoad("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}")]
@@ -28,7 +28,7 @@
 	[ProvideMenuResource("2000", 2)]
 	public sealed class NuGetizerPackage : Package
 	{
-		IDisposable[] extenderProviders;
+		IDisposable[] extenderProviders  = new IDisposable[0];
 
 		protected override void Initialize()
 		{
@@ -37,16 +37,17 @@
 			RegisterProjectFactory(new NuProjFlavoredProjectFactory(this));
 			RegisterCommands();
 
-			var extenders = this.GetService<ObjectExtenders>();
-			if (extenders != null)
-			{
-				extenderProviders = new IDisposable[]
-				{
-					new LibraryProjectExtenderProvider(extenders),
-					new NoneItemExtenderProvider(extenders),
-					new ProjectReferenceExtenderProvider(extenders),
-				};
-			}
+			// These crash VS, investigating at vsixdisc DL
+			//var extenders = this.GetService<ObjectExtenders>();
+			//if (extenders != null)
+			//{
+			//	extenderProviders = new IDisposable[]
+			//	{
+			//		new LibraryProjectExtenderProvider(extenders),
+			//		new NoneItemExtenderProvider(extenders),
+			//		new ProjectReferenceExtenderProvider(extenders),
+			//	};
+			//}
 		}
 
 		protected override void Dispose(bool disposing)

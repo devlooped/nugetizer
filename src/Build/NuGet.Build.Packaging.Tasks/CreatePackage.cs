@@ -20,6 +20,7 @@ namespace NuGet.Build.Packaging.Tasks
 		[Required]
 		public ITaskItem[] Contents { get; set; }
 
+		[Required]
 		public string TargetPath { get; set; }
 
 		[Output]
