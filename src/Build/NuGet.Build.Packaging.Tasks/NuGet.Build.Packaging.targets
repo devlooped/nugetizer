@@ -19,10 +19,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Only default to true if the project isn't a nuget project itself. -->
 		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
 		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbolsInPackage>
-		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
 		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == ''">true</IncludeFrameworkReferencesInPackage>
 	</PropertyGroup>
+	
 	<PropertyGroup>
+		<!-- We want to support Content in both packaging project as well as library projects -->
+		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
+
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
 		<!-- NOTE: we will always have this property in projects referencing this targets file. Can be used to detect this. -->
@@ -135,29 +138,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PackageOutputGroupDependsOn>GetPackageTargetPath;$(PackageOutputGroupDependsOn)</PackageOutputGroupDependsOn>
 	</PropertyGroup>
 	<Target Name="PackageOutputGroup" BeforeTargets="AllProjectOutputGroups" Returns="@(PackageTargetPath)" DependsOnTargets="$(PackageOutputGroupDependsOn)" />
-
-	<PropertyGroup>
-		<!-- Only depend on ResolveReferences if we need to include framework references -->
-		<_GetAllPackageContentsDependsOn Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true'">
-			ResolveReferences
-		</_GetAllPackageContentsDependsOn>
-		<_GetAllPackageContentsDependsOn>
-			$(_GetAllPackageContentsDependsOn);
-			GetPackageTargetPath;
-			AssignProjectConfiguration;
-			_SplitProjectReferencesByFileExistence;
-			_SplitProjectReferencesByIsPackablePresence;
-			AllProjectOutputGroups;
-		</_GetAllPackageContentsDependsOn>
-		<_GetAllPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
-			$(_GetAllPackageContentsDependsOn)
-			_CollectMissingIsPackableProjectReferencesOutputs;
-		</_GetAllPackageContentsDependsOn>
-		<_GetAllPackageContentsDependsOn>
-			$(_GetAllPackageContentsDependsOn)
-			_CollectAllPackageContents;
-		</_GetAllPackageContentsDependsOn>
-	</PropertyGroup>
 
 	<!--
 	============================================================
@@ -529,8 +509,12 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 	</Target>
 
 	<PropertyGroup>
-		<_PackDependsOn>
+		<_PackDependsOn Condition="'$(IsPackagingProject)' != 'true'">
 			CoreBuild;
+		</_PackDependsOn>
+		<_PackDependsOn>
+			$(_PackDependsOn)
+			GetPackageTargetPath;
 			GetPackageContents;
 			_Pack;
 		</_PackDependsOn>
@@ -546,19 +530,14 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 	<Target Name="Pack" DependsOnTargets="$(_PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'" />
 
 	<Target Name="_Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
-		<ItemGroup>
-			<_PackageManifest Include="@(_PackageContent -> WithMetadataValue('Kind', 'Metadata'))" Condition="'%(PackageId)' == '$(PackageId)'" />
-		</ItemGroup>
 		<!-- RepositoryUrl/RepositoryType/PackageType to be added -->
-		<CreatePackage Manifest="@(_PackageManifest)" Contents="@(_PackageContent)" TargetPath="$(PackageTargetPath)">
-			<Output TaskParameter="OutputPackage" ItemName="PackageTargetPath" />
+		<CreatePackage Manifest="@(PackageTargetPath)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
+			<Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
+			<Output TaskParameter="OutputPackage" ItemName="FileWrites" />
 		</CreatePackage>
-
-		<ItemGroup>
-			<FileWrites Include="$(PackageTargetPath)" />
-		</ItemGroup>
 		
-		<Message Importance="high" Text="Created package at $(PackageTargetPath)." />
+		<Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />
 	</Target>
 
+	<Import Project="NuGet.Build.Packaging.Authoring.targets" Condition="'$(IsPackagingProject)' == 'true'" />
 </Project>

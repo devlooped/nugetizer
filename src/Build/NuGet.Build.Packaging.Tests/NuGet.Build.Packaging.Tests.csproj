@@ -55,6 +55,7 @@
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\forms.pcl.csproj" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.json" />
     <Content Include="Scenarios\given_library_project_with_nugets\project.lock.json" />
+    <None Include="Scenarios\fakeframework.targets" />
     <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.json" />
     <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.lock.json" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.json" />
