@@ -19,8 +19,7 @@
         </StringProperty.DataSource>
     </StringProperty>
 
-    <StringProperty Name="Id" DisplayName="Package ID" />
-    <StringProperty Name="Version" DisplayName="Package Version" />
+    <StringProperty Name="PackageId" DisplayName="Package ID" />
     <StringProperty Name="Title" DisplayName="Title" />
 
 </Rule>

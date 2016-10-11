@@ -8,6 +8,7 @@
     <ProjectType>NuGet.Packaging</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <SortOrder>700</SortOrder>
+	<CreateInPlace>true</CreateInPlace>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>NuGetPackage</DefaultName>
@@ -17,6 +18,8 @@
   <TemplateContent>
     <Project File="Package.nuproj" ReplaceParameters="true">
       <ProjectItem>Project.json</ProjectItem> 
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">Readme.txt</ProjectItem> 
+      <ProjectItem TargetFileName="$projectname$.targets" ReplaceParameters="true">Package.targets</ProjectItem> 
     </Project>
   </TemplateContent>
   <WizardExtension>
