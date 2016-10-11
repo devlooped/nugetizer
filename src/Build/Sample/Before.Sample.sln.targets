@@ -13,5 +13,7 @@
 		<!-- Ensure we update the project.json before we build -->
 		<MSBuild Projects="Sample.csproj" Targets="UpdatePackageVersion"
 				 Properties="RestoringPackages=true" />
+		<!-- Restore again after the updates. -->
+		<MSBuild Projects="$(SolutionPath)" Targets="RestoreSolutions" Properties="RestoringPackages=true" />
 	</Target>
 </Project>
