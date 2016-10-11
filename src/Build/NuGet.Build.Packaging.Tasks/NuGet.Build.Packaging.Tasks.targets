@@ -25,15 +25,12 @@
 		<PackageLicenseUrl>https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
 		
-		<!-- We add the outputs ourselves, so no need for all three below -->
-		<IncludeOutputs>false</IncludeOutputs>
-		<IncludeSymbols>false</IncludeSymbols>
-		<IncludeFrameworkReferences>false</IncludeFrameworkReferences>
-		
+		<!-- Packaging projects don't include any of the default stuff -->
+		<IsPackagingProject>true</IsPackagingProject>
 		<GetPackageContentsDependsOn>
 			AddBuiltOutput;
 			$(GetPackageContentsDependsOn)
-		</GetPackageContentsDependsOn>
+		</GetPackageContentsDependsOn>		
 	</PropertyGroup>
 
 	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
@@ -42,7 +39,7 @@
 	<Target Name="AddBuiltOutput" DependsOnTargets="ResolveReferences;AllProjectOutputGroups;AssignTargetPaths">
 		<ItemGroup>
 			<PackageFile Include="@(ContentWithTargetPath)">
-				<PackagePath>build\%(TargetPath)</PackagePath>
+				<PackagePath>build\%(ContentWithTargetPath.TargetPath)</PackagePath>
 			</PackageFile>
 			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')">
 				<PackagePath>build\%(Filename)%(Extension)</PackagePath>

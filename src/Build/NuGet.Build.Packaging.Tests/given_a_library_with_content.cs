@@ -28,7 +28,7 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_include_content_is_false_then_does_not_contain_content_files()
+		public void when_global_include_content_is_false_then_does_not_contain_content_files()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
@@ -70,12 +70,12 @@ namespace NuGet.Build.Packaging
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
-				Identity = "none.txt",
+				TargetPath = "none.txt",
 			}));
 		}
 
 		[Fact]
-		public void when_none_item_has_include_in_package_then_it_is_included_in_specified_target_path()
+		public void when_none_item_has_include_in_package_true_then_it_is_included()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
@@ -83,16 +83,55 @@ namespace NuGet.Build.Packaging
 			});
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Filename = "sample",
-				Extension = ".cs",
-				Kind = PackageItemKind.None,
-				PackagePath = @"contentFiles\cs\monoandroid\sample.cs", 
-				TargetPath = @"contentFiles\cs\monoandroid\sample.cs",
+				TargetPath = "none-with-include-true.txt",
 			}));
 		}
 
+		[Fact]
+		public void when_none_item_has_include_in_package_false_then_it_is_included()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+			});
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				TargetPath = "none-with-include-false.txt",
+			}));
+		}
+
+		[Fact]
+		public void when_content_item_has_include_in_package_false_then_it_is_not_included()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+			});
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				TargetPath = "content-with-include-false.txt",
+			}));
+		}
+
+		[Fact]
+		public void when_content_item_has_include_in_package_true_then_it_is_included()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+			});
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				TargetPath = "content-with-include-true.txt",
+			}));
+		}
 	}
 }

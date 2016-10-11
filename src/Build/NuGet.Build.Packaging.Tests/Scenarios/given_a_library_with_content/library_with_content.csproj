@@ -13,6 +13,19 @@
 			<IncludeInPackage>true</IncludeInPackage>
 		</None>
 		<None Include="none.txt" />
+		<None Include="none-with-include-true.txt">
+			<IncludeInPackage>true</IncludeInPackage>
+		</None>
+		<None Include="none-with-include-false.txt">
+			<IncludeInPackage>false</IncludeInPackage>
+		</None>
+		<Content Include="content-with-include-false.txt">
+			<IncludeInPackage>false</IncludeInPackage>
+		</Content>
+		<Content Include="content-with-include-true.txt">
+			<IncludeInPackage>true</IncludeInPackage>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>
