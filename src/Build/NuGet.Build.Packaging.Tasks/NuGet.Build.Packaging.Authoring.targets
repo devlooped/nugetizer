@@ -14,7 +14,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<!-- The main output in this case will be the package itself. -->
 	<PropertyGroup>
 		<TargetName>$(PackageId)</TargetName>
-		<TargetExt>.nupkg</TargetExt>
 	</PropertyGroup>
 
 	<!-- Just to make it easy for consumers to request the TargetPath as usual but get the 
