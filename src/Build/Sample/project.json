@@ -6,7 +6,7 @@
     "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
     "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1",
-    "NuGet.Build.Packaging": "0.1.88-dev"
+    "NuGet.Build.Packaging": "0.1.85-dev"
   },
   "frameworks": {
     "netstandard1.4": {}
