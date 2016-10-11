@@ -26,6 +26,9 @@
     <Content Include="MSBuild\Microsoft.Common.Targets\ImportAfter\Microsoft.NuGet.Packaging.ImportAfter.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="NuGet.Build.Packaging.Authoring.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="NuGet.Build.Packaging.Version.props">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -33,6 +36,9 @@
     <None Include="NuGet.Build.Packaging.Tasks.targets">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="NuGet.Build.Packaging.Authoring.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup />

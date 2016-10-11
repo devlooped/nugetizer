@@ -108,6 +108,7 @@
     <Compile Include="IDialogService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
     <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
+    <Resource Include="Templates\Projects\Package\Readme.txt" />
     <None Include="ProjectSystem.Dev15\ProjectProperties.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
@@ -141,14 +142,15 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="project.json" />
-    <Content Include="Targets\NuGet.Build.Packaging.Authoring.props">
+    <Content Include="Targets\NuGet.Packaging.Authoring.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Targets\NuGet.Build.Packaging.Authoring.targets">
+    <Content Include="Targets\NuGet.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <None Include="Templates\Projects\Package\Package.targets" />
     <None Include="Templates\Projects\Package\Project.json" />
     <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-	<Import Project="$(NuGetAuthoringPath)\NuGet.Build.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Build.Packaging.Authoring.props')" />
+	<Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props')" />
 	<ItemGroup Label="ProjectConfigurations">
 		<ProjectConfiguration Include="Debug|AnyCPU">
 			<Configuration>Debug</Configuration>
@@ -13,28 +13,32 @@
 		</ProjectConfiguration>
 	</ItemGroup>
 	<PropertyGroup Label="Configuration">
-		<Id>$safeprojectname$</Id>
+		<PackageId>$safeprojectname$</PackageId>
 		<Title>$projectname$</Title>
 		<Authors>$username$</Authors>
 		<Owners>$username$</Owners>
 		<Summary>$projectname$</Summary>
 		<Description>$projectname$</Description>
-		<ReleaseNotes></ReleaseNotes>
-		<ProjectUrl></ProjectUrl>
-		<LicenseUrl></LicenseUrl>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<PackageProjectUrl></PackageProjectUrl>
+		<PackageLicenseUrl></PackageLicenseUrl>
 		<Copyright>Copyright © $username$</Copyright>
 		<Tags>$safeprojectname$</Tags>
 	</PropertyGroup>
+	<PropertyGroup Label="Globals">
+		<OutputPath>bin\$(Configuration)\</OutputPath>
+	</PropertyGroup>
 	<ItemGroup>
 		<None Include="project.json" />
+		<None Include="$projectname$.targets" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Readme.txt">
+			<IncludeInPackage>true</IncludeInPackage>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 	<Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
-	<Import Project="$(NuGetAuthoringPath)\NuGet.Build.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Build.Packaging.Authoring.targets')" />
-	<Target Name="GetPackageVersion" Returns="$(PackageVersion)">
-		<!-- NOTE: customize to determine your package version more dynamically -->
-		<PropertyGroup>
-			<PackageVersion Condition="'$(PackageVersion)' == '' and '$(Version)' != ''">$(Version)</PackageVersion>
-			<PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
-		</PropertyGroup>
-	</Target>
+	<Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
+	<Import Project="$projectname$.targets" />
 </Project>

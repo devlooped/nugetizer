@@ -11,6 +11,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<PropertyGroup>
+		<IsPackagingProject Condition="'$(IsPackagingProject)' == '' and '$(MSBuildProjectExtension)' == '.nuproj'">true</IsPackagingProject>
+	</PropertyGroup>
+
 	<ItemDefinitionGroup>
 		<PackageFile>
 			<Kind>None</Kind>
@@ -109,4 +113,5 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</PropertyGroup>
 
 	<Import Project="NuGet.Build.Packaging.Version.props" />
+	<Import Project="NuGet.Build.Packaging.Authoring.props" Condition="'$(IsPackagingProject)' == 'true'" />
 </Project>

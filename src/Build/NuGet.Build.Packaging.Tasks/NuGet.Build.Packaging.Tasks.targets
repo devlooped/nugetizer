@@ -24,9 +24,11 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
-		
-		<!-- Packaging projects don't include any of the default stuff -->
-		<IsPackagingProject>true</IsPackagingProject>
+
+		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
+		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
+		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
+
 		<GetPackageContentsDependsOn>
 			AddBuiltOutput;
 			$(GetPackageContentsDependsOn)

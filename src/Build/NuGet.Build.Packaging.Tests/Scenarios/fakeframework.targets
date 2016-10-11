@@ -2,6 +2,7 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<!-- Allows fake frameworks to compile without errors -->
 	<PropertyGroup>
+		<ResolveAssemblyReferencesDependsOn />
 		<_TargetFrameworkDirectories>$(MSBuildThisFileDirectory)</_TargetFrameworkDirectories>
 		<_FullFrameworkReferenceAssemblyPaths>$(MSBuildThisFileDirectory)</_FullFrameworkReferenceAssemblyPaths>
 	</PropertyGroup>
