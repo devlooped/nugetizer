@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="ReportPackageVersion" AfterTargets="Build" Condition="'$(PackagingTargetsVersion)' != ''">
+		<Message Importance="high" Text="Using NuGetizer version $(PackagingTargetsVersion)." />
+	</Target>
+	
+	<!-- Simple heuristics here: if NuGetPackageRoot is non-empty, it means package restore has been performed already -->
+	<Target Name="UpdatePackageVersion" BeforeTargets="PrepareForBuild" DependsOnTargets="GitVersion" Condition="'$(NuGetPackageRoot)' != ''">
+		<!-- NOTE: replace this with whatever approach you use to determine the current package version to update to -->
+		<PropertyGroup>
+			<!-- We use GitInfo nuget package for this. This logic matches how we version the nuget package we build. -->
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+			<CurrentPackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</CurrentPackageVersion>
+		</PropertyGroup>
+		
+		<!-- Retrieve existing package version for comparison -->
+		<JsonPeek JsonInputPath="$(MSBuildThisFileDirectory)project.json" JPath="dependencies['NuGet.Build.Packaging']">
+			<Output TaskParameter="Result" PropertyName="ExistingPackageVersion" />
+		</JsonPeek>
+		
+		<!-- Update if there's a mismatch -->
+		<JsonPoke JsonInputPath="$(MSBuildThisFileDirectory)project.json" JPath="dependencies['NuGet.Build.Packaging']" JValue="$(CurrentPackageVersion)"
+				  Condition="'$(ExistingPackageVersion)' != '$(CurrentPackageVersion)'"/>
+
+		<!-- Fail the build if we updated the file, to force a new restore -->
+		<Error Text="Updated existing package version '$(ExistingPackageVersion)' to '$(CurrentPackageVersion)'. Please build again so the package restore can be performed again." 
+			   Condition="'$(ExistingPackageVersion)' != '$(CurrentPackageVersion)' and '$(RestoringPackages)' != 'true'" />
+		<!-- NOTE: RestoringPackages is passed as 'true' from Before.Sample.sln.targets, so that a command line build succeeds on the first attempt. -->
+
+		<Message Text="Existing package version '$(ExistingPackageVersion)' matches the current version. No update was necessary."
+				 Condition="'$(ExistingPackageVersion)' == '$(CurrentPackageVersion)'"
+				 Importance="high" />
+	</Target>
+	
+</Project>

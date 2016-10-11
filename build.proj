@@ -115,7 +115,7 @@
 	<PropertyGroup>
 		<GitInfoTargets>$(PackagesPath)\GitInfo\build\GitInfo.targets</GitInfoTargets>
 		<XunitConsole>$(PackagesPath)\xunit.runner.console\tools\xunit.console.x86.exe</XunitConsole>
-		<XunitBuildDir>$([System.IO.Path]::Combine('.nuget', 'packages', 'xunit.runner.msbuild', 'build'))</XunitBuildDir>
+		<XunitBuildDir>$([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)', '.nuget', 'packages', 'xunit.runner.msbuild', 'build'))</XunitBuildDir>
 		<XunitPlatformDir Condition=" Exists('$(XunitBuildDir)') ">$([System.IO.Directory]::GetDirectories($(XunitBuildDir))[0])</XunitPlatformDir>
 		<!-- This file is used to detect whether the restore has been performed or not -->
 		<XunitProps>$([System.IO.Path]::Combine($(XunitPlatformDir), 'xunit.runner.msbuild.props'))</XunitProps>
