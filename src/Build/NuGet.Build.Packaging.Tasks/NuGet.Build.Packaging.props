@@ -107,4 +107,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<NuGetBuildPackagingPropsImported>true</NuGetBuildPackagingPropsImported>
 	</PropertyGroup>
+
+	<Import Project="NuGet.Build.Packaging.Version.props" />
 </Project>

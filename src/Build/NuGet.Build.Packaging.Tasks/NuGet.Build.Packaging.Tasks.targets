@@ -36,8 +36,19 @@
 	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
 			Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
 
-	<Target Name="AddBuiltOutput" DependsOnTargets="ResolveReferences;AllProjectOutputGroups;AssignTargetPaths">
+	<Target Name="AddBuiltOutput" DependsOnTargets="GetPackageVersion;ResolveReferences;AllProjectOutputGroups;AssignTargetPaths">
+		<!-- Update packaging version targets -->
+		<PropertyGroup>
+			<XmlNs>&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;</XmlNs>
+		</PropertyGroup>
+		<XmlPoke Namespaces="$(XmlNs)"
+				 XmlInputPath="$(OutputPath)NuGet.Build.Packaging.Version.props"
+				 Query="/msb:Project/msb:PropertyGroup/msb:PackagingTargetsVersion"
+				 Value="$(PackageVersion)"/>
 		<ItemGroup>
+			<PackageFile Include="$(OutputPath)NuGet.Build.Packaging.Version.props">
+				<PackagePath>build\NuGet.Build.Packaging.Version.props</PackagePath>
+			</PackageFile>
 			<PackageFile Include="@(ContentWithTargetPath)">
 				<PackagePath>build\%(ContentWithTargetPath.TargetPath)</PackagePath>
 			</PackageFile>

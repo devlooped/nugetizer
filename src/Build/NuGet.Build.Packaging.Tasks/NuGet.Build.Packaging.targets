@@ -553,6 +553,10 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<Output TaskParameter="OutputPackage" ItemName="PackageTargetPath" />
 		</CreatePackage>
 
+		<ItemGroup>
+			<FileWrites Include="$(PackageTargetPath)" />
+		</ItemGroup>
+		
 		<Message Importance="high" Text="Created package at $(PackageTargetPath)." />
 	</Target>
 
