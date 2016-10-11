@@ -154,5 +154,18 @@ namespace NuGet.Build.Packaging
 			}));
 		}
 
+		[Fact]
+		public void when_packing_with_empty_version_then_build_fails()
+		{
+			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
+			{
+				PackageId = "Library",
+				PackageVersion = "",
+				Version = "",
+			}, target: "Pack");
+
+			Assert.Equal(TargetResultCode.Failure, result.ResultCode);
+			Assert.Equal("NG1002", result.Logger.Errors[0].Code);
+		}
 	}
 }
