@@ -63,8 +63,8 @@ namespace NuGet.Build.Packaging
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
+				Id = "B",
 				Kind = "Dependency",
-				PackageId = "B",
 				Version = "2.0.0",
 			}));
 		}
@@ -99,8 +99,8 @@ namespace NuGet.Build.Packaging
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
+				Id = "C",
 				Kind = "Dependency",
-				PackageId = "C",
 				Version = "3.0.0",
 			}));
 		}

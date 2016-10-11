@@ -82,78 +82,20 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_packing_then_includes_same_content_as_items()
+		public void then_includes_platform_docs_from_before_get_package_contents()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_multi_platform_solution), target: "Pack", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_multi_platform_solution), output: output);
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
-			var manifest = result.Items[0].GetManifest();
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"docs\gettingstarted.html"
+			}));
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"docs\overview\index.html"
+			}));
 		}
-
-		/*
-  Forms
-        Kind=Metadata
-        PackageId=Forms
-        PackagePath=
-        TargetPath=
-        TargetFramework=
-        TargetFrameworkMoniker=
-  Forms.dll
-        Kind=Lib
-        PackageId=Forms
-        PackagePath=lib\portable50\Forms.dll
-        TargetPath=Forms.dll
-        TargetFramework=portable50
-        TargetFrameworkMoniker=.NETPortable,Version=v5.0
-  Forms.dll
-        Kind=Lib
-        PackageId=Forms
-        PackagePath=lib\net46\Forms.dll
-        TargetPath=Forms.dll
-        TargetFramework=net46
-        TargetFrameworkMoniker=.NETFramework,Version=v4.6
-  System.Core
-        Kind=FrameworkReference
-        PackageId=Forms
-        PackagePath=
-        TargetPath=
-        TargetFramework=net46
-        TargetFrameworkMoniker=.NETFramework,Version=v4.6
-  Common.dll
-        Kind=Lib
-        PackageId=Forms
-        PackagePath=lib\net46\Common.dll
-        TargetPath=Common.dll
-        TargetFramework=net46
-        TargetFrameworkMoniker=.NETFramework,Version=v4.6
-  Forms.dll
-        Kind=Lib
-        PackageId=Forms
-        PackagePath=lib\ios10\Forms.dll
-        TargetPath=Forms.dll
-        TargetFramework=ios10
-        TargetFrameworkMoniker=iOS,Version=v1.0
-  Common.dll
-        Kind=Lib
-        PackageId=Forms
-        PackagePath=lib\ios10\Common.dll
-        TargetPath=Common.dll
-        TargetFramework=ios10
-        TargetFrameworkMoniker=iOS,Version=v1.0
-  Forms.dll
-        Kind=Lib
-        PackageId=Forms
-        PackagePath=lib\android70\Forms.dll
-        TargetPath=Forms.dll
-        TargetFramework=android70
-        TargetFrameworkMoniker=Android,Version=v7.0
-  Common.dll
-        Kind=Lib
-        PackageId=Forms
-        PackagePath=lib\android70\Common.dll
-        TargetPath=Common.dll
-        TargetFramework=android70
-        TargetFrameworkMoniker=Android,Version=v7.0*/
 	}
 }

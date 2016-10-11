@@ -136,14 +136,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Target Name="PackageOutputGroup" BeforeTargets="AllProjectOutputGroups" Returns="@(PackageTargetPath)" DependsOnTargets="$(PackageOutputGroupDependsOn)" />
 
 	<PropertyGroup>
-		<!-- NOTE: these are the "internal" DependsOn for our implementation of the collecting and filtering targets.
-			 Users extend GetPackageContentsDependsOn instead. This ensures that our own dependencies will not 
-			 be accidentally overriden.
-		-->
-		<_GetPackageContentsDependsOn>
-			GetAllPackageContents;
-			_GetPackageContents;
-		</_GetPackageContentsDependsOn>
 		<!-- Only depend on ResolveReferences if we need to include framework references -->
 		<_GetAllPackageContentsDependsOn Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true'">
 			ResolveReferences
@@ -185,52 +177,176 @@ Copyright (c) .NET Foundation. All rights reserved.
 	with the project's $(PackageId), if any.
 	============================================================
 	-->
-	<Target Name="GetPackageContents" DependsOnTargets="$(_GetPackageContentsDependsOn)" Returns="@(_PackageContent)" />
-
-	<!-- This target's purpose is to remove from _PackageContent the items that are the contents of 
-		 indirect package dependencies that transitive project references build, turning those into 
-		 just a Dependency item for Pack.
-		 The Outputs="%(PackageId)-BATCH" groups the @(_PackageContent) into batches coming from the same 
-		 package for easier processing. The '-BATCH' ensures we also process the batch without a PackageId.
-	-->
-	<Target Name="_GetPackageContents"
-			DependsOnTargets="GetAllPackageContents"
-			Inputs="@(_AllPackageContent)"
-			Outputs="%(PackageId)-BATCH"
-			Returns="@(_PackageContent)">
+	<PropertyGroup>
+		<!-- Only depend on ResolveReferences if we need to include framework references -->
+		<GetPackageContentsDependsOn Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true'">
+			ResolveReferences
+		</GetPackageContentsDependsOn>
+		<GetPackageContentsDependsOn>
+			$(GetPackageContentsDependsOn);
+			GetPackageTargetPath;
+			AssignProjectConfiguration;
+			_SplitProjectReferencesByFileExistence;
+			_SplitProjectReferencesByIsPackablePresence;
+			AllProjectOutputGroups;
+		</GetPackageContentsDependsOn>
+		<!-- Only collect referenced projects' outputs if we need to include them -->
+		<GetPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
+			$(GetPackageContentsDependsOn)
+			_CollectMissingIsPackableProjectReferencesOutputs;
+		</GetPackageContentsDependsOn>
+	</PropertyGroup>
+	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
+		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
+			 NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
+			 current project. -->
 		<ItemGroup>
-			<!-- Attempt to grab a manifest for the current batch -->
-			<_DependencyManifest Include="@(_AllPackageContent)" Condition="'%(Kind)' == 'Metadata'" />
-		</ItemGroup>
-		<PropertyGroup>
-			<!-- Determine up-front if this batch belongs to the package being built.
-				 We do this by checking for empty %(MSBuildSourceProjectFile), since 
-				 that metadata is assigned for project references we execute GetPackageContents on.
-			-->
-			<IsSelfContent>@(_AllPackageContent -> AnyHaveMetadataValue("MSBuildSourceProjectFile", ""))</IsSelfContent>
-			<!-- If the group has a metadata item, then it's all part of a package dependency -->
-			<IsDependencyContent Condition="'$(IsSelfContent)' != 'true' and '@(_DependencyManifest)' != ''">true</IsDependencyContent>
-			<!-- Grab the dependency source project in this case, to use it right after -->
-			<DependencySourceProject Condition="'$(IsDependencyContent)' == 'true'">@(_DependencyManifest -> '%(MSBuildSourceProjectFile)')</DependencySourceProject>
-			<!-- Lookup the dependency project in the list of referenced MSBuild projects to detect a direct dependency -->
-			<IsDirectDependency Condition="'$(IsDependencyContent)' == 'true'">@(_MSBuildProjectReferenceExistent -> AnyHaveMetadataValue("FullPath", "$(DependencySourceProject)"))</IsDirectDependency>
-		</PropertyGroup>
+			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+                         Condition="'$(IncludeOutputsInPackage)' == 'true'">
+				<Kind>Lib</Kind>
+			</PackageFile>
 
-		<ItemGroup Condition="'$(IsDependencyContent)' == 'true'">
-			<!-- Only keep the package dependency if it's a direct project reference. 
-				 We don't need the transitive packages for pack -->
-			<_PackageContent Include="@(_DependencyManifest)" Condition="'$(IsDirectDependency)' == 'true'">
-				<!-- Change its kind to Dependency. It will already contain the Version metadata for further processing -->
+			<!-- Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
+			<_DocumentationProjectOutputGroupOutput Include="@(DocumentationProjectOutputGroupOutput)"
+													Condition="'$(IncludeOutputsInPackage)' == 'true'">
+				<FinalOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">$(MSBuildProjectDirectory)\%(FinalOutputPath)</FinalOutputPath>
+			</_DocumentationProjectOutputGroupOutput>
+			<PackageFile Include="@(_DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+                         Condition="'$(IncludeOutputsInPackage)' == 'true'">
+				<Kind>Doc</Kind>
+			</PackageFile>
+
+			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+                         Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true'">
+				<Kind>Symbols</Kind>
+			</PackageFile>
+
+			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
+			<PackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
+						 Condition="'$(IncludeOutputsInPackage)' == 'true'">
+				<Kind>Lib</Kind>
+			</PackageFile>
+
+			<!-- NOTE: Content is opt-out (must have IncludeInPackage=false to exclude) -->
+			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath->'%(FullPath)') -->
+			<PackageFile Include="@(ContentFilesProjectOutputGroupOutput)"
+						 Condition="'$(IncludeContentInPackage)' == 'true' and '%(ContentFilesProjectOutputGroupOutput.IncludeInPackage)' != 'false'">
+				<Kind>Content</Kind>
+			</PackageFile>
+
+			<!-- NOTE: None is opt-in (must have IncludeInPackage=true to include) -->
+			<PackageFile Include="@(_NoneWithTargetPath)"
+						 Condition="'%(_NoneWithTargetPath.IncludeInPackage)' == 'true'">
+				<Kind>None</Kind>
+			</PackageFile>
+
+			<PackageFile Include="@(PackageReference)">
 				<Kind>Dependency</Kind>
-			</_PackageContent>
-		</ItemGroup>
-		<ItemGroup Condition="'$(IsDependencyContent)' != 'true'">
-			<!-- Otherwise, bring it all in since there is no package to depend on -->
-			<_PackageContent Include="@(_AllPackageContent)" />
-		</ItemGroup>
-	</Target>
+			</PackageFile>
 
-	<Target Name="GetAllPackageContents" DependsOnTargets="$(_GetAllPackageContentsDependsOn)" Returns="@(_AllPackageContent)" />
+			<!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
+			     it also includes mscorlib which we don't need
+			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
+			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
+						 Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
+				<Kind>FrameworkReference</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<!-- If packaging the project, provide the metadata as a non-file item -->
+		<ItemGroup Condition="'$(PackageId)' != ''">
+			<PackageFile Include="@(PackageTargetPath->'%(Id)')">
+				<Kind>Metadata</Kind>
+			</PackageFile>
+		</ItemGroup>
+
+		<ItemGroup>
+			<PackageFile>
+				<PackageId>$(PackageId)</PackageId>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</PackageFile>
+		</ItemGroup>
+
+		<AssignPackagePath Files="@(PackageFile)" Kinds="@(PackageItemKind)">
+			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
+		</AssignPackagePath>
+
+		<MSBuild Projects="@(_IsPackableProject)"
+				 Targets="GetPackageContents"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_IsPackableProject.SetConfiguration); %(_IsPackableProject.SetPlatform); BuildingPackage=$(BuildingPackage)"
+				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_IsPackableProject)' != ''"
+				 RemoveProperties="%(_IsPackableProject.GlobalPropertiesToRemove)">
+			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
+		</MSBuild>
+	
+		<ItemGroup>
+			<_ReferencedPackageDependency Include="@(_ReferencedPackageContent)"
+										  Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.Kind)' == 'Metadata'">
+				<!-- For consistency, annotate like the rest -->
+				<PackageId>$(PackageId)</PackageId>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+				<Kind>Dependency</Kind>
+			</_ReferencedPackageDependency>
+			<!-- Remove the referenced package actual contents if it provides a manifest, since it will be a dependency in that case. -->
+			<_PackageContentFromDependency Include="@(_ReferencedPackageContent)"
+										   Condition="'%(_ReferencedPackageContent.PackageId)' != '' and 
+										              '%(_ReferencedPackageContent.PackageId)' != '$(PackageId)'" />
+			<_ReferencedPackageContent Remove="@(_PackageContentFromDependency)" />
+		</ItemGroup>
+
+		<!-- Always annotate package contents with the original target framework and moniker -->
+		<CreateItem Include="@(_ReferencedPackageContent)" PreserveExistingMetadata="true"
+					AdditionalMetadata="OriginalTargetFramework=%(TargetFramework);OriginalTargetFrameworkMoniker=%(TargetFrameworkMoniker)">
+			<Output TaskParameter="Include" ItemName="_ReferencedPackageContentWithOriginalValues"/>
+		</CreateItem>
+
+		<ItemGroup Condition="'$(IsPackagingProject)' != 'true'">
+			<!-- Retarget content for the currently building package, if necessary -->
+			<_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
+				<PackageId>$(PackageId)</PackageId>
+				<!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
+				<!-- Only do this for Library assets that come from project references that don't build nugets (PackageId=='' above) -->
+				<TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Library' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Symbols' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Doc'"></TargetFramework>
+				<!-- NOTE: we're always overwriting the TFM in this case since 
+					 this item will end up making up the contents of this package 
+					 project in its current TFM configuration. 
+					 TBD: we might want to preserve it anyways and adjust later 
+					 (i.e. net45 project references netstandard1.6 project)
+					 TODO: take into account multi-targetting.
+				-->
+				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</_ReferencedPackageContentWithOriginalValues>
+		</ItemGroup>
+		<!-- Otherwise, assign target paths based on the original TFM -->
+		<ItemGroup Condition="'$(IsPackagingProject)' == 'true'">
+			<!-- Retarget content for the currently building package, if necessary -->
+			<_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
+				<PackageId>$(PackageId)</PackageId>
+				<!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
+				<!-- Only do this for Library assets that come from project references that don't build nugets (PackageId=='' above) -->
+				<TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Library' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Symbols' or 
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Doc'"></TargetFramework>
+				<TargetFrameworkMoniker>%(OriginalTargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</_ReferencedPackageContentWithOriginalValues>
+		</ItemGroup>
+
+		<!-- Ensure referenced package content gets assigned a package path if it didn't provide one already.
+			 This happens for project references' that don't have a PackageId, since their package path will 
+			 depend on the referencing project's TFM.
+		-->
+		<AssignPackagePath Files="@(_ReferencedPackageContentWithOriginalValues);@(_ReferencedPackageDependency)"
+						   Kinds="@(PackageItemKind)"
+						   IsPackaging="$(BuildingPackage)"
+						   Condition="'@(_ReferencedPackageContentWithOriginalValues)' != ''">
+			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
+		</AssignPackagePath>
+	</Target>
 
 	<!-- This target separates project references that have the packaging targets from those that don't -->
 	<Target Name="_SplitProjectReferencesByIsPackablePresence"
@@ -348,13 +464,13 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDocumentation" />
 		</MSBuild>
 
-		<ItemGroup>
+		<ItemGroup Condition="'@(_ReferencedProjectDocumentation)' != ''">
 			<!-- Ensure FinalOutputPath is a full path. Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
-			<_ReferencedProjectDocumentationFullPath Include="@(_ReferencedProjectDocumentation)" Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'true'">
-				<FinalFullOutputPath>%(FinalOutputPath)</FinalFullOutputPath>
+			<_ReferencedProjectDocumentationFullPath Include="@(_ReferencedProjectDocumentation)" Condition="$([System.IO.Path]::IsPathRooted('%(_ReferencedProjectDocumentation.FinalOutputPath)')) == 'true'">
+				<FinalFullOutputPath>%(_ReferencedProjectDocumentation.FinalOutputPath)</FinalFullOutputPath>
 			</_ReferencedProjectDocumentationFullPath>
-			<_ReferencedProjectDocumentationFullPath Include="@(_ReferencedProjectDocumentation)" Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">
-				<FinalFullOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">$([System.IO.Path]::GetDirectoryName('%(MSBuildSourceProjectFile)'))\%(FinalOutputPath)</FinalFullOutputPath>
+			<_ReferencedProjectDocumentationFullPath Include="@(_ReferencedProjectDocumentation)" Condition="$([System.IO.Path]::IsPathRooted('%(_ReferencedProjectDocumentation.FinalOutputPath)')) == 'false'">
+				<FinalFullOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(_ReferencedProjectDocumentation.FinalOutputPath)')) == 'false'">$([System.IO.Path]::GetDirectoryName('%(_ReferencedProjectDocumentation.MSBuildSourceProjectFile)'))\%(_ReferencedProjectDocumentation.FinalOutputPath)</FinalFullOutputPath>
 			</_ReferencedProjectDocumentationFullPath>
 			<PackageFile Include="@(_ReferencedProjectDocumentationFullPath -> '%(FinalFullOutputPath)')">
 				<Kind>Doc</Kind>
@@ -369,7 +485,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDocumentationDependency" />
 		</MSBuild>
 
-		<ItemGroup>
+		<ItemGroup Condition="'@(_ReferencedProjectDocumentationDependency)' != ''">
 			<PackageFile Include="@(_ReferencedProjectDocumentationDependency -> '%(FullPath)')"
 						 Condition="'%(_ReferencedProjectDocumentationDependency.CopyLocal)' == 'true'">
 				<Kind>Doc</Kind>
@@ -385,7 +501,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectSatelliteDll" />
 		</MSBuild>
 
-		<ItemGroup>
+		<ItemGroup Condition="'@(_ReferencedProjectSatelliteDll)' != ''">
 			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
 			<PackageFile Include="@(_ReferencedProjectSatelliteDll -> '%(FullPath)')">
 				<Kind>Lib</Kind>
@@ -400,7 +516,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDependencySatelliteDll" />
 		</MSBuild>
 
-		<ItemGroup>
+		<ItemGroup Condition="'@(_ReferencedProjectDependencySatelliteDll)' != ''">
 			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
 			<PackageFile Include="@(_ReferencedProjectDependencySatelliteDll -> '%(FullPath)')"
 						 Condition="'%(_ReferencedProjectDependencySatelliteDll.CopyLocal)' == 'true'">
@@ -408,147 +524,6 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 				<TargetPath Condition="'%(_ReferencedProjectDependencySatelliteDll.DestinationSubDirectory)' != ''">%(_ReferencedProjectDependencySatelliteDll.DestinationSubDirectory)%(_ReferencedProjectDependencySatelliteDll.Filename)%(_ReferencedProjectDependencySatelliteDll.Extension)</TargetPath>
 			</PackageFile>
 		</ItemGroup>
-
-	</Target>
-
-	<!-- This is the actual inner target that authors extend when they provide a GetPackageContentsDependsOn target -->
-	<Target Name="_CollectAllPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_AllPackageContent)" >
-		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
-			 NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
-			 current project. -->
-		<ItemGroup>
-			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputsInPackage)' == 'true'">
-				<Kind>Lib</Kind>
-			</PackageFile>
-
-			<!-- Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
-			<_DocumentationProjectOutputGroupOutput Include="@(DocumentationProjectOutputGroupOutput)"
-													Condition="'$(IncludeOutputsInPackage)' == 'true'">
-				<FinalOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">$(MSBuildProjectDirectory)\%(FinalOutputPath)</FinalOutputPath>
-			</_DocumentationProjectOutputGroupOutput>
-			<PackageFile Include="@(_DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputsInPackage)' == 'true'">
-				<Kind>Doc</Kind>
-			</PackageFile>
-
-			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true'">
-				<Kind>Symbols</Kind>
-			</PackageFile>
-
-			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
-			<PackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
-						 Condition="'$(IncludeOutputsInPackage)' == 'true'">
-				<Kind>Lib</Kind>
-			</PackageFile>
-
-			<!-- NOTE: Content is opt-out (must have IncludeInPackage=false to exclude) -->
-			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath->'%(FullPath)') -->
-			<PackageFile Include="@(ContentFilesProjectOutputGroupOutput)"
-						 Condition="'$(IncludeContentInPackage)' == 'true' and '%(ContentFilesProjectOutputGroupOutput.IncludeInPackage)' != 'false'">
-				<Kind>Content</Kind>
-			</PackageFile>
-
-			<!-- NOTE: None is opt-in (must have IncludeInPackage=true to include) -->
-			<PackageFile Include="@(_NoneWithTargetPath)"
-						 Condition="'%(_NoneWithTargetPath.IncludeInPackage)' == 'true'">
-				<Kind>None</Kind>
-			</PackageFile>
-
-			<PackageFile Include="@(PackageReference)">
-				<Kind>Dependency</Kind>
-			</PackageFile>
-
-			<!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
-			     it also includes mscorlib which we don't need
-			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
-			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
-						 Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
-				<Kind>FrameworkReference</Kind>
-			</PackageFile>
-		</ItemGroup>
-
-		<!-- If packaging the project, provide the metadata as a non-file item -->
-		<ItemGroup Condition="'$(PackageId)' != ''">
-			<PackageFile Include="@(PackageTargetPath->'%(Id)')">
-				<Kind>Metadata</Kind>
-			</PackageFile>
-		</ItemGroup>
-
-		<ItemGroup>
-			<!-- Always annotate files with the declaring project target framework and package id. 
-				 TODO: take into account multi-targetting. -->
-			<PackageFile>
-				<PackageId>$(PackageId)</PackageId>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-
-		<AssignPackagePath Files="@(PackageFile)" Kinds="@(PackageItemKind)">
-			<Output TaskParameter="AssignedFiles" ItemName="_AllPackageContent" />
-		</AssignPackagePath>
-
-		<MSBuild Projects="@(_IsPackableProject)"
-				 Targets="GetAllPackageContents"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_IsPackableProject.SetConfiguration); %(_IsPackableProject.SetPlatform); BuildingPackage=$(BuildingPackage)"
-				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_IsPackableProject)' != ''"
-				 RemoveProperties="%(_IsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
-		</MSBuild>
-
-		<!-- Always annotate package contents with the original target framework and moniker -->
-		<CreateItem Include="@(_ReferencedPackageContent)" PreserveExistingMetadata="true"
-					AdditionalMetadata="OriginalTargetFramework=%(TargetFramework);OriginalTargetFrameworkMoniker=%(TargetFrameworkMoniker)">
-			<Output TaskParameter="Include" ItemName="_ReferencedPackageContentWithOriginalValues"/>
-		</CreateItem>
-
-		<ItemGroup Condition="'$(IsPackagingProject)' != 'true'">
-			<!-- Retarget content for the currently building package, if necessary -->
-			<_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
-				<PackageId>$(PackageId)</PackageId>
-				<!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
-				<!-- Only do this for Library assets that come from project references that don't build nugets (PackageId=='' above) -->
-				<TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Library' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Symbols' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Doc'"></TargetFramework>
-				<!-- NOTE: we're always overwriting the TFM in this case since 
-					 this item will end up making up the contents of this package 
-					 project in its current TFM configuration. 
-					 TBD: we might want to preserve it anyways and adjust later 
-					 (i.e. net45 project references netstandard1.6 project)
-					 TODO: take into account multi-targetting.
-				-->
-				<TargetFrameworkMoniker>$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
-			</_ReferencedPackageContentWithOriginalValues>
-		</ItemGroup>
-		<!-- Otherwise, assign target paths based on the original TFM -->
-		<ItemGroup Condition="'$(IsPackagingProject)' == 'true'">
-			<!-- Retarget content for the currently building package, if necessary -->
-			<_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
-				<PackageId>$(PackageId)</PackageId>
-				<!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
-				<!-- Only do this for Library assets that come from project references that don't build nugets (PackageId=='' above) -->
-				<TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Library' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Symbols' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Doc'"></TargetFramework>
-				<TargetFrameworkMoniker>%(OriginalTargetFrameworkMoniker)</TargetFrameworkMoniker>
-			</_ReferencedPackageContentWithOriginalValues>
-		</ItemGroup>
-
-		<!-- Ensure referenced package content gets assigned a package path if it didn't provide one already.
-			 This happens for project references' that don't have a PackageId, since their package path will 
-			 depend on the referencing project's TFM.
-		-->
-		<AssignPackagePath Files="@(_ReferencedPackageContentWithOriginalValues)" 
-						   Kinds="@(PackageItemKind)" 
-						   IsPackaging="$(BuildingPackage)"
-						   Condition="'@(_ReferencedPackageContentWithOriginalValues)' != ''">
-			<Output TaskParameter="AssignedFiles" ItemName="_AllPackageContent" />
-		</AssignPackagePath>
 
 	</Target>
 
