@@ -97,7 +97,7 @@ namespace NuGet.Packaging.VisualStudio
 
 		protected override void CanExecute(OleMenuCommand command)
 		{
-			command.Checked = command.Visible = CanExecute();
+			command.Enabled = command.Visible = CanExecute();
 		}
 
 		bool CanExecute() =>

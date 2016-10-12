@@ -9,10 +9,6 @@ namespace Clide
 {
 	static class IProjectNodeExtensions
 	{
-		public static void BuildNuGetPackage(this IProjectNode project)
-		{
-		}
-
 		public static void OpenNuSpecPropertyPage(this IProjectNode project)
 		{
 			var hierarchy = project.AsVsHierarchy();

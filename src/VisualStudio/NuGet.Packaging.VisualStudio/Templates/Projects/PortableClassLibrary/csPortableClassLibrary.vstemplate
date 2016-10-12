@@ -24,7 +24,7 @@
   </WizardExtension>
   <WizardData>
     <packages repository="extension" repositoryId="NuGet.Packaging">
-      <package id="NuGet.Build.Packaging" version="0.1.71-dev" />
+      <package id="NuGet.Build.Packaging" version="0.1.86-dev" />
     </packages>
   </WizardData>
 </VSTemplate>

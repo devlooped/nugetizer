@@ -87,6 +87,8 @@
     <Compile Include="ExtenderProviders\LibraryProjectExtender.cs" />
     <Compile Include="ExtenderProviders\LibraryProjectExtenderProvider.cs" />
     <Compile Include="Extensions\IVsUIShellExtensions.cs" />
+    <Compile Include="IMsBuildService.cs" />
+    <Compile Include="MsBuildService.cs" />
     <Compile Include="ProjectSystem.Dev14\GlobalPropertiesProvider.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjCapabilities.cs" />
     <Compile Include="ProjectSystem.Dev14\NuProjConfiguredProject.cs" />
