@@ -22,6 +22,7 @@
 		<Title>NuGetizer-3000</Title>
 		<Description>NuGet Packaging Targets</Description>
 		<NeutralLanguage>en</NeutralLanguage>
+		<IsDevelopmentDependency>true</IsDevelopmentDependency>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
 
