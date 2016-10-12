@@ -8,7 +8,9 @@
 		<PackOnBuild>true</PackOnBuild>
 	</PropertyGroup>
 
-	<Target Name="SetPackageVersion" DependsOnTargets="GitInfo" BeforeTargets="GetPackageVersion" Returns="$(PackageVersion)">
+	<Target Name="GitVersion" />
+	
+	<Target Name="SetPackageVersion" DependsOnTargets="GitVersion" BeforeTargets="GetPackageVersion" Returns="$(PackageVersion)">
 		<PropertyGroup>
 			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
 			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
