@@ -3,40 +3,50 @@
 	<Import Project="NuGet.Build.Packaging.props" Condition=" '$(NuGetPackagingPropsImported)' != 'true' " />
 
 	<PropertyGroup Condition=" '$(Language)' == 'C#' ">
-		<ThisAssemblyNameFile>$(IntermediateOutputPath)ThisAssembly.AssemblyName.g$(DefaultLanguageSourceExtension)</ThisAssemblyNameFile>
+		<ThisAssemblyExtensionFile>$(IntermediateOutputPath)ThisAssembly.Extension.g$(DefaultLanguageSourceExtension)</ThisAssemblyExtensionFile>
 		<CoreCompileDependsOn>
-			ThisAssemblyName;
+			ThisAssemblyExtension;
 			$(CoreCompileDependsOn)
 		</CoreCompileDependsOn>
 	</PropertyGroup>
 
-	<Target Name="ThisAssemblyName" BeforeTargets="BuildOnlySettings" Condition=" '$(ThisAssemblyNameFile)' != '' " DependsOnTargets="GenerateThisAssemblyName">
+	<Target Name="SetPackageVersion" DependsOnTargets="GitVersion">
+		<PropertyGroup>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="ThisAssemblyExtension" BeforeTargets="BuildOnlySettings" Condition=" '$(ThisAssemblyExtensionFile)' != '' " DependsOnTargets="GenerateThisAssemblyExtension">
 		<ItemGroup>
-			<Compile Include="$(ThisAssemblyNameFile)" />
+			<Compile Include="$(ThisAssemblyExtensionFile)" />
 		</ItemGroup>
 	</Target>
 
-	<Target Name="GenerateThisAssemblyName" Inputs="$(MSBuildProjectFullPath)" Outputs="$(ThisAssemblyNameFile)">
+	<Target Name="GenerateThisAssemblyExtension" Inputs="@(_GitInput)" Outputs="$(ThisAssemblyExtensionFile)"
+			DependsOnTargets="SetPackageVersion">
 		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
 		<WriteLinesToFile Lines='
 namespace $(ThisAssemblyNamespace)
 {
 	partial class ThisAssembly
 	{
-		/// &lt;summary&gt;AssemblyName: $(AssemblyName)&lt;/summary&gt;
-		public const string AssemblyName = "$(AssemblyName)"%3B
+		/// &lt;summary&gt;PackageVersion: $(AssemblyName)&lt;/summary&gt;
+		public const string PackageVersion = "$(PackageVersion)"%3B
 	}
 }
-' Overwrite='true' File='$(ThisAssemblyNameFile)' />
+' Overwrite='true' File='$(ThisAssemblyExtensionFile)' />
 	</Target>
 
-  <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
+	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
 
-  <ItemGroup Condition=" '$(NoGlobalAssemblyInfo)' != 'true' And '$(Language)' == 'C#' ">
-    <Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" Condition="'$(BuildingProject)' == 'true'" />
-  </ItemGroup>
-  
-  <PropertyGroup>
+	<ItemGroup Condition=" '$(NoGlobalAssemblyInfo)' != 'true' And '$(Language)' == 'C#' ">
+		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" Condition="'$(BuildingProject)' == 'true'" />
+	</ItemGroup>
+
+	<PropertyGroup>
 		<NuGetPackagingTargetsImported>true</NuGetPackagingTargetsImported>
 	</PropertyGroup>
 </Project>

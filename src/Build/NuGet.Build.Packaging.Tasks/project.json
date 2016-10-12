@@ -1,6 +1,7 @@
 ﻿{
   "dependencies": {
     "GitInfo": "1.1.32",
+    "MSBuilder.ThisAssembly.Project": "0.3.1",
     "netfx-System.StringResources": "3.0.14",
     "Newtonsoft.Json": "6.0.4",
     "NuGet.Client": "3.5.0-rtm-1938",

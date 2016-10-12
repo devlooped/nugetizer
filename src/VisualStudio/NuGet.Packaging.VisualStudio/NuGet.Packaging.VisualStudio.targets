@@ -12,8 +12,7 @@
 	<ItemGroup>
 		<!-- NOTE: this will only work if the solution was built at least once from the command line, 
 			 since the project reference below would have built the package in that case. -->
-		<Content Include="..\..\Build\NuGet.Build.Packaging.Tasks\bin\$(Configuration)\*.nupkg" 
-				 Condition="'$(BuildingInsideVisualStudio)' == 'true'">
+		<Content Include="$(Out)\*.nupkg" Condition="'$(BuildingInsideVisualStudio)' == 'true'">
 			<Link>%(Filename)%(Extension)</Link>
 			<IncludeInVSIX>true</IncludeInVSIX>
 			<VSIXSubPath>Packages</VSIXSubPath>
@@ -23,7 +22,7 @@
 						  Condition="'$(BuildingInsideVisualStudio)' != 'true'">
 			<Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
 			<Name>NuGet.Build.Packaging.Tasks</Name>
-			<AdditionalProperties>PackOnBuild=true</AdditionalProperties>
+			<AdditionalProperties>PackOnBuild=true;PackageOutputPath=$(Out)</AdditionalProperties>
 			<IncludeOutputGroupsInVSIXLocalOnly>PackageOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
 			<IncludeOutputGroupsInVSIX>PackageOutputGroup</IncludeOutputGroupsInVSIX>
 			<Private>False</Private>
@@ -42,7 +41,7 @@
 		<UpdateTemplatesDependsOn>
 			PrepareForBuild;
 			CopyOutOfDateSmartTemplateContent;
-			GetPackageVersion;
+			SetPackageVersion;
 			FindTemplates;
 			UpdateTemplatePackages
 		</UpdateTemplatesDependsOn>
@@ -53,16 +52,6 @@
 			BeforeTargets="ZipSmartTemplateContent" 
 			DependsOnTargets="$(UpdateTemplatesDependsOn)" />
 
-	<Target Name="GetPackageVersion" DependsOnTargets="GitInfo">
-		<!-- NOTE: this is duplicated from NuGet.Build.Packaging.Tasks.targets -->
-		<PropertyGroup>
-			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
-			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
-		</PropertyGroup>
-	</Target>
-	
 	<Target Name="FindTemplates">
 		<ItemGroup>
 			<IntermediateTemplate Include="@(SmartTemplateContentWithTargetPath->'$(SmartTemplateIntermediateOutputPath)%(TargetPath)')"

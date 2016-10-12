@@ -38,6 +38,9 @@
 		<Optimize>false</Optimize>
 	</PropertyGroup>
 
+	<!-- Redefined by the GitInfo targets import -->
+	<Target Name="GitVersion" />
+	
 	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
 
 	<PropertyGroup>

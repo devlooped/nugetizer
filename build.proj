@@ -17,7 +17,6 @@
 	<PropertyGroup>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
-		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
 		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);DeployExtension=$(DeployExtension);RunCodeAnalysis=$(RunCodeAnalysis)</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>

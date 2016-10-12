@@ -1,4 +1,6 @@
-﻿namespace NuGet.Packaging.VisualStudio
+﻿using NuGet.Build.Packaging;
+
+namespace NuGet.Packaging.VisualStudio
 {
 	class Constants
 	{
@@ -18,7 +20,7 @@
 			// TODO: We need to generate these values automatically
 			public const string RepositoryId = "NuGet.Packaging";
 			public const string BuildPackagingId = "NuGet.Build.Packaging";
-			public const string BuildPackagingVersion = "0.1.86-dev";
+			public const string BuildPackagingVersion = ThisAssembly.PackageVersion;
 		}
 
 		public class Platforms
