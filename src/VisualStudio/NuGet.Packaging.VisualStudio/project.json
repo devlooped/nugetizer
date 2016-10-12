@@ -12,6 +12,7 @@
     "Microsoft.VSSDK.BuildTools": "14.3.25420",
     "MSBuilder.DumpItems": "0.2.1",
     "MSBuilder.Introspect": "0.1.5",
+    "NuGet.VisualStudio": "3.3.0",
     "PropertyChanged.Fody": "1.51.3",
     "VSSDK.ComponentModelHost.11": "11.0.4",
     "VSSDK.DTE.8": "8.0.4",

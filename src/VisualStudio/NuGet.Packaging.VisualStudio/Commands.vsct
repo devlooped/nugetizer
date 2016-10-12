@@ -6,6 +6,8 @@
   <Commands package="guidPackage">
     <Buttons>
       <Button guid="guidCommandSet" id="cmdidBuildNugetPackage" priority="0x0100" type="Button">
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Build NuGet Package</ButtonText>
         </Strings>
