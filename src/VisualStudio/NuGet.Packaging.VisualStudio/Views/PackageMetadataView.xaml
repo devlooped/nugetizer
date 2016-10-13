@@ -34,7 +34,7 @@
             </local:PackageMetadataViewModel>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid d:DataContext="{StaticResource DesignDataContext}" DataContext="{StaticResource DesignDataContext}">
+    <Grid d:DataContext="{StaticResource DesignDataContext}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
@@ -137,7 +137,7 @@
         <!--Footer-->
         <Grid Opacity="1" Grid.Row="2" Style="{DynamicResource FooterGrid}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Padding="15,4" Margin="10" Content="Accept" Command="{Binding DefaultCommand}"/>
+                <Button Padding="15,4" Margin="10" Content="Accept" IsDefault="True" Click="OnAcceptButtonClicked" />
                 <Button Padding="15,4" Margin="0,10,20,10" IsCancel="True" Content="Cancel"/>
             </StackPanel>
         </Grid>

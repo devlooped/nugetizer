@@ -1,46 +1,54 @@
-﻿using Clide;
+﻿using System;
+using System.ComponentModel.Composition;
+using Clide;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using NuGet.Build.Packaging;
 using NuGet.VisualStudio;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
 
 namespace NuGet.Packaging.VisualStudio
 {
 	[Export(typeof(DynamicCommand))]
 	class EditNuGetPackageMetadataCommand : DynamicCommand
 	{
-		const string PackTargetName = "Pack";
-
 		readonly ISolutionExplorer solutionExplorer;
 		readonly IDialogService dialogService;
 		readonly IVsPackageInstallerServices packageInstallerServices;
-		readonly IMsBuildService msBuildService;
 
 		[ImportingConstructor]
 		public EditNuGetPackageMetadataCommand(
 			ISolutionExplorer solutionExplorer,
 			IDialogService dialogService,
-			IVsPackageInstallerServices packageInstallerServices,
-			IMsBuildService msBuildService)
+			IVsPackageInstallerServices packageInstallerServices)
 			: base(Commands.EditNugetPackageMetadataCommandId)
 		{
 			this.solutionExplorer = solutionExplorer;
 			this.dialogService = dialogService;
 			this.packageInstallerServices = packageInstallerServices;
-			this.msBuildService = msBuildService;
 		}
 
 		protected override void Execute()
 		{
 			if (CanExecute())
 			{
-				var view = new PackageMetadataView();
+				var vsBuildPropertyStorage = ActiveProject.AsVsHierarchy() as IVsBuildPropertyStorage;
+				if (vsBuildPropertyStorage != null)
+				{
+					var storage = new BuildPropertyStorage(vsBuildPropertyStorage);
+					var viewModel = new PackageMetadataViewModel(storage);
 
-				dialogService.ShowDialog(view);
+					var view = new PackageMetadataView()
+					{
+						DataContext = viewModel
+					};
+
+					if (dialogService.ShowDialog(view) == true)
+						storage.CommitChanges();
+				}
+				else
+				{
+					throw new NotSupportedException("Edit NuGet Package Metadata is not supported for the selected project");
+				}
 			}
 		}
 

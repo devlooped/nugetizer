@@ -21,5 +21,11 @@ namespace NuGet.Packaging.VisualStudio
 		{
 			InitializeComponent();
 		}
+
+		private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)
+		{
+			DialogResult = true;
+			Close();
+		}
 	}
 }

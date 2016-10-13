@@ -127,6 +127,9 @@
     <Compile Include="Theme\Brushes.cs" />
     <Compile Include="Theme\Colors.cs" />
     <Compile Include="Views\AddPlatformImplementationViewModel.cs" />
+    <Compile Include="Views\BuildPropertyStorage.cs" />
+    <Compile Include="Views\InMemoryPropertyStorage.cs" />
+    <Compile Include="Views\IPropertyStorage.cs" />
     <Compile Include="Views\MultiPlatformView.xaml.cs">
       <DependentUpon>MultiPlatformView.xaml</DependentUpon>
     </Compile>
