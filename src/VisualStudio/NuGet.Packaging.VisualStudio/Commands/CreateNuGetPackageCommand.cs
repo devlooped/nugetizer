@@ -42,9 +42,39 @@ namespace NuGet.Packaging.VisualStudio
 			if (CanExecute())
 			{
 				var project = ActiveProject.As<EnvDTE.Project>();
-
 				if (!IsBuildPackagingNuGetInstalled(project))
-					InstallBuildPackagingNuget(project);
+				{
+					var vsBuildPropertyStorage = ActiveProject.AsVsHierarchy() as IVsBuildPropertyStorage;
+					if (vsBuildPropertyStorage != null)
+					{
+						var storage = new BuildPropertyStorage(vsBuildPropertyStorage);
+						var viewModel = new PackageMetadataViewModel(storage)
+						{
+							// Default values
+							Id = project.Name,
+							Version = "1.0"
+						};
+
+						var view = new PackageMetadataView()
+						{
+							DataContext = viewModel
+						};
+
+						if (dialogService.ShowDialog(view) == true)
+						{
+							InstallBuildPackagingNuget(project);
+							storage.CommitChanges();
+						}
+						else
+						{
+							return;
+						}
+					}
+					else
+					{
+						throw new NotSupportedException("Edit NuGet Package Metadata is not supported for the selected project");
+					}
+				}
 
 				msBuildService.BeginBuild(project.FullName, PackTargetName);
 			}

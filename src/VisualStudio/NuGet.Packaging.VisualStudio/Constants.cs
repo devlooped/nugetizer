@@ -1,6 +1,4 @@
-﻿using NuGet.Build.Packaging;
-
-namespace NuGet.Packaging.VisualStudio
+﻿namespace NuGet.Packaging.VisualStudio
 {
 	class Constants
 	{
