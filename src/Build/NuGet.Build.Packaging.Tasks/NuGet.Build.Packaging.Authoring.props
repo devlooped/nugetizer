@@ -16,5 +16,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<SkipCopyBuildProduct>true</SkipCopyBuildProduct>
 		<!-- Speed-up build since we don't do assembly resolution -->
 		<ResolveAssemblyReferencesDependsOn />
+		<ResolveNuGetPackages>false</ResolveNuGetPackages>
 	</PropertyGroup>
 </Project>
