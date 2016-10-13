@@ -15,16 +15,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
-	<PropertyGroup Condition="'$(IsPackagingProject)' != 'true'">
-		<!-- Only default to true if the project isn't a nuget project itself. -->
+	<PropertyGroup>
+		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
 		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
 		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbolsInPackage>
-		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == ''">true</IncludeFrameworkReferencesInPackage>
-	</PropertyGroup>
-	
-	<PropertyGroup>
-		<!-- We want to support Content in both packaging project as well as library projects -->
-		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
+		<!-- Only default to true if the project isn't a nuget project itself. -->
+		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true'">true</IncludeFrameworkReferencesInPackage>
 
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
@@ -36,11 +32,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)</PackageOutputPath>
-
-		<BuildDependsOn Condition="'$(PackOnBuild)' == 'true' and '$(IsPackable)' == 'true'">
-			$(BuildDependsOn);
-			Pack;
-		</BuildDependsOn>
 	</PropertyGroup>
 
 	<!-- Extends the built-in GetTargetPath output to signal that the project has been nugetized -->
@@ -183,7 +174,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 			 current project. -->
 		<ItemGroup>
 			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputsInPackage)' == 'true'">
+                         Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
+						 <!-- Packaging projects don't contribute primary output -->
 				<Kind>Lib</Kind>
 			</PackageFile>
 
@@ -193,18 +185,21 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<FinalOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">$(MSBuildProjectDirectory)\%(FinalOutputPath)</FinalOutputPath>
 			</_DocumentationProjectOutputGroupOutput>
 			<PackageFile Include="@(_DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputsInPackage)' == 'true'">
+                         Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
+						 <!-- Packaging projects don't contribute primary docs -->
 				<Kind>Doc</Kind>
 			</PackageFile>
 
 			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                         Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true'">
+                         Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
+						 <!-- Packaging projects don't contribute primary symbols -->
 				<Kind>Symbols</Kind>
 			</PackageFile>
 
 			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
 			<PackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
-						 Condition="'$(IncludeOutputsInPackage)' == 'true'">
+						 Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
+						 <!-- Packaging projects don't contribute satellite dlls -->
 				<Kind>Lib</Kind>
 			</PackageFile>
 
@@ -354,10 +349,23 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</Target>
 
 	<!-- Includes primary output and dependencies for non-nugetized projects -->
-	<Target Name="_CollectMissingIsPackableProjectReferencesOutputs" Condition="'@(_NoIsPackableProject)' != ''">
-		<Warning Text="Some project references do not have the 'NuGet.Build.Packaging' installed. Only primary output will be packaged.
-Please install the 'NuGet.Build.Packaging' package in the following projects to ensure proper packaging of all artifacts: @(_NoIsPackableProject)"
+	<Target Name="_CollectMissingIsPackableProjectReferencesOutputs"
+			Inputs="@(_NoIsPackableProject)"
+			Outputs="%(_NoIsPackableProject.Identity)-BATCH"
+			Condition="'@(_NoIsPackableProject)' != ''">
+		<Warning Text="@(_NoIsPackableProject) does not have the 'NuGet.Build.Packaging' package installed. Only primary output will be packaged."
 				 Code="NG1001" />
+
+		<!-- Get TFM if the project is a packaging project, since we want to use the original project's TFM in that case -->
+		<MSBuild Projects="@(_NoIsPackableProject)"
+				 Targets="GetTargetFrameworkMoniker"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
+				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)"
+				 Condition="'$(IsPackagingProject)' == 'true'">
+			<Output TaskParameter="TargetOutputs" PropertyName="_ReferencedProjectTFM" />
+		</MSBuild>
+
 
 		<!-- Main project and dependencies built output -->
 		<MSBuild Projects="@(_NoIsPackableProject)"
@@ -371,6 +379,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 		<ItemGroup>
 			<PackageFile Include="@(_ReferencedProjectBuiltOutput -> '%(FinalOutputPath)')">
 				<Kind>Lib</Kind>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
 
@@ -401,6 +410,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 						            '%(_ReferencedProjectOutputDependency.FrameworkFile)' != 'true' and 
 									'%(_ReferencedProjectOutputDependency.ResolvedFrom)' != '{TargetFrameworkDirectory}'">
 				<Kind>Lib</Kind>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
 
@@ -417,6 +427,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 		<ItemGroup>
 			<PackageFile Include="@(_ReferencedProjectDebugSymbols -> '%(FinalOutputPath)')">
 				<Kind>Symbols</Kind>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
 
@@ -433,6 +444,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<PackageFile Include="@(_ReferencedProjectOutputDependencySymbols -> '%(FullPath)')"
 						 Condition="'%(_ReferencedProjectOutputDependencySymbols.CopyLocal)' == 'true'">
 				<Kind>Symbols</Kind>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
 
@@ -455,6 +467,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			</_ReferencedProjectDocumentationFullPath>
 			<PackageFile Include="@(_ReferencedProjectDocumentationFullPath -> '%(FinalFullOutputPath)')">
 				<Kind>Doc</Kind>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
 
@@ -470,6 +483,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<PackageFile Include="@(_ReferencedProjectDocumentationDependency -> '%(FullPath)')"
 						 Condition="'%(_ReferencedProjectDocumentationDependency.CopyLocal)' == 'true'">
 				<Kind>Doc</Kind>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
 
@@ -486,6 +500,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
 			<PackageFile Include="@(_ReferencedProjectSatelliteDll -> '%(FullPath)')">
 				<Kind>Lib</Kind>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
 
@@ -502,6 +517,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 			<PackageFile Include="@(_ReferencedProjectDependencySatelliteDll -> '%(FullPath)')"
 						 Condition="'%(_ReferencedProjectDependencySatelliteDll.CopyLocal)' == 'true'">
 				<Kind>Lib</Kind>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 				<TargetPath Condition="'%(_ReferencedProjectDependencySatelliteDll.DestinationSubDirectory)' != ''">%(_ReferencedProjectDependencySatelliteDll.DestinationSubDirectory)%(_ReferencedProjectDependencySatelliteDll.Filename)%(_ReferencedProjectDependencySatelliteDll.Extension)</TargetPath>
 			</PackageFile>
 		</ItemGroup>
@@ -509,15 +525,18 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
 	</Target>
 
 	<PropertyGroup>
-		<_PackDependsOn Condition="'$(IsPackagingProject)' != 'true'">
+		<BuildDependsOn Condition="'$(PackOnBuild)' == 'true' and '$(IsPackable)' == 'true'">
+			$(BuildDependsOn);
+			Pack;
+		</BuildDependsOn>
+		<PackDependsOn Condition="'$(IsPackagingProject)' != 'true'">
 			CoreBuild;
-		</_PackDependsOn>
-		<_PackDependsOn>
-			$(_PackDependsOn)
+		</PackDependsOn>
+		<PackDependsOn>
+			$(PackDependsOn)
 			GetPackageTargetPath;
 			GetPackageContents;
-			_Pack;
-		</_PackDependsOn>
+		</PackDependsOn>
 	</PropertyGroup>
 
 	<!--
@@ -527,10 +546,7 @@ Please install the 'NuGet.Build.Packaging' package in the following projects to 
     Creates the output .nupkg if the project is packable.
 	============================================================
 	-->
-	<Target Name="Pack" DependsOnTargets="$(_PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'" />
-
-	<Target Name="_Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
-		<!-- RepositoryUrl/RepositoryType/PackageType to be added -->
+	<Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
 		<CreatePackage Manifest="@(PackageTargetPath)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
 			<Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
 			<Output TaskParameter="OutputPackage" ItemName="FileWrites" />

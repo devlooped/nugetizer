@@ -13,9 +13,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<TargetFrameworkMoniker>NuGet,Version=v1.0</TargetFrameworkMoniker>
 		<TargetExt>.nupkg</TargetExt>
+		
+		<!-- The Pack target generates to the output path directly -->
 		<SkipCopyBuildProduct>true</SkipCopyBuildProduct>
-		<!-- Speed-up build since we don't do assembly resolution -->
-		<ResolveAssemblyReferencesDependsOn />
+
+		<!-- Packaging project doesn't need resolved nuget package dependencies -->
 		<ResolveNuGetPackages>false</ResolveNuGetPackages>
 	</PropertyGroup>
 </Project>
