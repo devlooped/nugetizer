@@ -14,6 +14,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<!-- The main output in this case will be the package itself. -->
 	<PropertyGroup>
 		<TargetName>$(PackageId)</TargetName>
+
+		<!-- Speed-up build since we don't do assembly resolution -->
+		<ResolveAssemblyReferencesDependsOn />
 	</PropertyGroup>
 
 	<!-- Just to make it easy for consumers to request the TargetPath as usual but get the 
@@ -27,7 +30,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</Target>
 
 	<Target Name="CreateManifestResourceNames" />
-
+	<Target Name="GetReferenceAssemblyPaths" />
+	
 	<Target Name="CoreCompile" DependsOnTargets="Pack" />
 
+	<Target Name="_CleanReferences" AfterTargets="ResolveAssemblyReferences">
+		<ItemGroup>
+			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+		</ItemGroup>
+	</Target>
+	
 </Project>
