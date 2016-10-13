@@ -6,15 +6,17 @@
   <Commands package="guidPackage">
     <Buttons>
       <Button guid="guidCommandSet" id="cmdidBuildNugetPackage" priority="0x0100" type="Button">
-        <CommandFlag>DefaultInvisible</CommandFlag>
+        <!-- TODO: Investigate why the DefaultInvisible does not trigger the package load -->
+        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Build NuGet Package</ButtonText>
+          <ButtonText>Create NuGet Package</ButtonText>
         </Strings>
       </Button>
 
       <Button guid="guidCommandSet" id="cmdidAddPlatformImplementation" priority="0x0100" type="Button">
-        <CommandFlag>DefaultInvisible</CommandFlag>
+        <!-- TODO: Investigate why the DefaultInvisible does not trigger the package load -->
+        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Add Platform Implementation</ButtonText>

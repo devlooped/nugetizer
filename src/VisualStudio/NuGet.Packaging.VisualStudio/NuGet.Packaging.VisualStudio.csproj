@@ -100,7 +100,7 @@
     <Compile Include="ProjectSystem.Dev14\ProjectProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionContext.cs" />
-    <Compile Include="Commands\BuildNuGetPackageCommand.cs" />
+    <Compile Include="Commands\CreateNuGetPackageCommand.cs" />
     <Compile Include="Commands\DynamicCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DialogService.cs" />

@@ -11,7 +11,7 @@ using System.ComponentModel.Composition;
 namespace NuGet.Packaging.VisualStudio
 {
 	[Export(typeof(DynamicCommand))]
-	class BuildNuGetPackageCommand : DynamicCommand
+	class CreateNuGetPackageCommand : DynamicCommand
 	{
 		const string PackTargetName = "Pack";
 
@@ -22,7 +22,7 @@ namespace NuGet.Packaging.VisualStudio
 		readonly IMsBuildService msBuildService;
 
 		[ImportingConstructor]
-		public BuildNuGetPackageCommand(
+		public CreateNuGetPackageCommand(
 			ISolutionExplorer solutionExplorer,
 			IDialogService dialogService,
 			IVsPackageInstaller packageInstaller,
