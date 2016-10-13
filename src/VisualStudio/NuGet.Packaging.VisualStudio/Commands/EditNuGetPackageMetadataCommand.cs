@@ -11,28 +11,25 @@ using System.ComponentModel.Composition;
 namespace NuGet.Packaging.VisualStudio
 {
 	[Export(typeof(DynamicCommand))]
-	class CreateNuGetPackageCommand : DynamicCommand
+	class EditNuGetPackageMetadataCommand : DynamicCommand
 	{
 		const string PackTargetName = "Pack";
 
 		readonly ISolutionExplorer solutionExplorer;
 		readonly IDialogService dialogService;
-		readonly IVsPackageInstaller packageInstaller;
 		readonly IVsPackageInstallerServices packageInstallerServices;
 		readonly IMsBuildService msBuildService;
 
 		[ImportingConstructor]
-		public CreateNuGetPackageCommand(
+		public EditNuGetPackageMetadataCommand(
 			ISolutionExplorer solutionExplorer,
 			IDialogService dialogService,
-			IVsPackageInstaller packageInstaller,
 			IVsPackageInstallerServices packageInstallerServices,
 			IMsBuildService msBuildService)
-			: base(Commands.CreateNuGetPackageCommandId)
+			: base(Commands.EditNugetPackageMetadataCommandId)
 		{
 			this.solutionExplorer = solutionExplorer;
 			this.dialogService = dialogService;
-			this.packageInstaller = packageInstaller;
 			this.packageInstallerServices = packageInstallerServices;
 			this.msBuildService = msBuildService;
 		}
@@ -41,12 +38,9 @@ namespace NuGet.Packaging.VisualStudio
 		{
 			if (CanExecute())
 			{
-				var project = ActiveProject.As<EnvDTE.Project>();
+				var view = new PackageMetadataView();
 
-				if (!IsBuildPackagingNuGetInstalled(project))
-					InstallBuildPackagingNuget(project);
-
-				msBuildService.BeginBuild(project.FullName, PackTargetName);
+				dialogService.ShowDialog(view);
 			}
 		}
 
@@ -58,20 +52,10 @@ namespace NuGet.Packaging.VisualStudio
 		IProjectNode ActiveProject => solutionExplorer.Solution.ActiveProject;
 
 		bool CanExecute() =>
-			!ActiveProject.Supports(NuProjCapabilities.NuProj); // For NuProj projects the built-in Build command should be used
+			!ActiveProject.Supports(NuProjCapabilities.NuProj) && // For NuProj projects the built-in Build command should be used
+			IsBuildPackagingNuGetInstalled(ActiveProject.As<EnvDTE.Project>());
 
 		bool IsBuildPackagingNuGetInstalled(Project project) =>
 			packageInstallerServices.IsPackageInstalled(project, Constants.NuGet.BuildPackagingId);
-
-		void InstallBuildPackagingNuget(Project project) =>
-			packageInstaller.InstallPackagesFromVSExtensionRepository(
-				Constants.NuGet.RepositoryId,
-				false,
-				true,
-				project,
-				new Dictionary<string, string>
-				{
-					{ Constants.NuGet.BuildPackagingId , Constants.NuGet.BuildPackagingVersion }
-				});
 	}
 }
