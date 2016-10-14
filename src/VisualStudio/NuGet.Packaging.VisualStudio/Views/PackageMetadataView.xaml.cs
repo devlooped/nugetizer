@@ -15,25 +15,16 @@ using Microsoft.VisualStudio.PlatformUI;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	/// <summary>
-	/// Interaction logic for AddPlatformImplementationView.xaml
-	/// </summary>
-	public partial class AddPlatformImplementationView : DialogWindow
+	public partial class PackageMetadataView : DialogWindow
 	{
-		public AddPlatformImplementationView()
+		public PackageMetadataView()
 		{
 			InitializeComponent();
 		}
 
-		void OnAcceptButtonClick(object sender, RoutedEventArgs e)
+		private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)
 		{
 			DialogResult = true;
-			Close();
-		}
-
-		void OnCancelButtonClick(object sender, RoutedEventArgs e)
-		{
-			DialogResult = false;
 			Close();
 		}
 	}

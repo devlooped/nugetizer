@@ -79,6 +79,10 @@
       <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
     </Compile>
     <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
+    <Compile Include="Commands\EditNuGetPackageMetadataCommand.cs" />
+    <Compile Include="Converters\ExtendedBooleanToVisiblityConverter.cs" />
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\ValueToVisibilityConverter.cs" />
     <Compile Include="ExtenderProviders\IVsBuildPropertyStorageExtensions.cs" />
     <Compile Include="ExtenderProviders\ProjectReferenceExtender.cs" />
     <Compile Include="ExtenderProviders\NoneItemExtender.cs" />
@@ -100,7 +104,7 @@
     <Compile Include="ProjectSystem.Dev14\ProjectProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionContext.cs" />
-    <Compile Include="Commands\BuildNuGetPackageCommand.cs" />
+    <Compile Include="Commands\CreateNuGetPackageCommand.cs" />
     <Compile Include="Commands\DynamicCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DialogService.cs" />
@@ -120,12 +124,21 @@
       <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
     </Compile>
     <Compile Include="LegacyProjectSystem\NuSpecPropertyStore.cs" />
+    <Compile Include="Theme\Brushes.cs" />
+    <Compile Include="Theme\Colors.cs" />
     <Compile Include="Views\AddPlatformImplementationViewModel.cs" />
+    <Compile Include="Views\BuildPropertyStorage.cs" />
+    <Compile Include="Views\InMemoryPropertyStorage.cs" />
+    <Compile Include="Views\IPropertyStorage.cs" />
     <Compile Include="Views\MultiPlatformView.xaml.cs">
       <DependentUpon>MultiPlatformView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MultiPlatformViewModel.cs" />
     <Compile Include="Views\IPlatformProvider.cs" />
+    <Compile Include="Views\PackageMetadataView.xaml.cs">
+      <DependentUpon>PackageMetadataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageMetadataViewModel.cs" />
     <Compile Include="Views\PlatformProvider.cs" />
     <Compile Include="Views\PlatformViewModel.cs" />
     <Compile Include="Views\AddPlatformImplementationView.xaml.cs">
@@ -224,11 +237,35 @@
       <SubType>Designer</SubType>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Theme\Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Theme\ThemeBase.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Theme\ThemedButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Theme\ThemedComboBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Theme\ThemedRadioButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Views\AddPlatformImplementationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MultiPlatformView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageMetadataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

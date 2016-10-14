@@ -11,7 +11,7 @@ using System.ComponentModel.Composition;
 namespace NuGet.Packaging.VisualStudio
 {
 	[Export(typeof(DynamicCommand))]
-	class BuildNuGetPackageCommand : DynamicCommand
+	class CreateNuGetPackageCommand : DynamicCommand
 	{
 		const string PackTargetName = "Pack";
 
@@ -22,13 +22,13 @@ namespace NuGet.Packaging.VisualStudio
 		readonly IMsBuildService msBuildService;
 
 		[ImportingConstructor]
-		public BuildNuGetPackageCommand(
+		public CreateNuGetPackageCommand(
 			ISolutionExplorer solutionExplorer,
 			IDialogService dialogService,
 			IVsPackageInstaller packageInstaller,
 			IVsPackageInstallerServices packageInstallerServices,
 			IMsBuildService msBuildService)
-			: base(Commands.BuildNuGetPackageCommandId)
+			: base(Commands.CreateNuGetPackageCommandId)
 		{
 			this.solutionExplorer = solutionExplorer;
 			this.dialogService = dialogService;
@@ -42,9 +42,39 @@ namespace NuGet.Packaging.VisualStudio
 			if (CanExecute())
 			{
 				var project = ActiveProject.As<EnvDTE.Project>();
-
 				if (!IsBuildPackagingNuGetInstalled(project))
-					InstallBuildPackagingNuget(project);
+				{
+					var vsBuildPropertyStorage = ActiveProject.AsVsHierarchy() as IVsBuildPropertyStorage;
+					if (vsBuildPropertyStorage != null)
+					{
+						var storage = new BuildPropertyStorage(vsBuildPropertyStorage);
+						var viewModel = new PackageMetadataViewModel(storage)
+						{
+							// Default values
+							PackageId = project.Name,
+							PackageVersion = "1.0"
+						};
+
+						var view = new PackageMetadataView()
+						{
+							DataContext = viewModel
+						};
+
+						if (dialogService.ShowDialog(view) == true)
+						{
+							InstallBuildPackagingNuget(project);
+							storage.CommitChanges();
+						}
+						else
+						{
+							return;
+						}
+					}
+					else
+					{
+						throw new NotSupportedException("Edit NuGet Package Metadata is not supported for the selected project");
+					}
+				}
 
 				msBuildService.BeginBuild(project.FullName, PackTargetName);
 			}

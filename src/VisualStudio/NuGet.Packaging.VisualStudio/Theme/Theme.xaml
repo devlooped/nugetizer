@@ -1,0 +1,162 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:theme="clr-namespace:NuGet.Packaging.VisualStudio.Theme;assembly=NuGet.Packaging.VisualStudio"
+                    xmlns:pc="clr-namespace:NuGet.Packaging.VisualStudio;assembly=NuGet.Packaging.VisualStudio"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ThemedRadioButton.xaml" />
+        <ResourceDictionary Source="ThemedComboBox.xaml" />
+        <ResourceDictionary Source="ThemedButton.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--Base VS Theme Aware Styles-->
+
+    <Style x:Key="TextBlockBaseStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.WindowForegroundKey}}"/>
+    </Style>
+    <Style x:Key="RadioButtonBaseStyle" TargetType="RadioButton" BasedOn="{StaticResource ThemedRadioButtonStyle}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.WindowForegroundKey}}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+    <Style x:Key="RadioViewboxBaseStyle" TargetType="Viewbox">
+        <Setter Property="Margin" Value="0,5"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+    <Style x:Key="ButtonBaseStyle" TargetType="Button">
+    </Style>
+    <Style x:Key="TextBoxBaseStyle" TargetType="TextBox">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource {x:Static theme:Brushes.EditableControlTextKey}}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.WindowForegroundKey}}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static theme:Brushes.EditableControlBorderKey}}"/>
+    </Style>
+    <Style x:Key="PasswordBoxBaseStyle" TargetType="PasswordBox">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource {x:Static theme:Brushes.EditableControlTextKey}}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.EditableControlTextKey}}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static theme:Brushes.EditableControlBorderKey}}"/>
+    </Style>
+
+
+    <!--Specialized Named Styles and Resources-->
+
+    <Style x:Key="KeyButtonsStyle" TargetType="Button" BasedOn="{StaticResource ButtonBaseStyle}">
+        <Setter Property="Padding" Value="10,5"/>
+    </Style>
+
+    <Style x:Key="TitleTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.WindowForegroundKey}}"/>
+        <Setter Property="Margin" Value="30,20,20,10"/>
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="Light"/>
+    </Style>
+
+    <Style x:Key="InfoGrid" TargetType="Grid">
+        <Setter Property="Background" Value="{DynamicResource {x:Static theme:Brushes.InfoBackgroundKey}}" />
+        <Setter Property="Grid.ColumnSpan" Value="50"/>
+    </Style>
+    <Style x:Key="InfoText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.InfoTextKey}}" />
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="FooterGrid" TargetType="Grid">
+        <Setter Property="Background" Value="{DynamicResource {x:Static theme:Brushes.ToolBarBackgroundKey}}" />
+        <Setter Property="Grid.ColumnSpan" Value="50"/>
+    </Style>
+    <Style x:Key="ToolbarGrid" TargetType="Grid">
+        <Setter Property="Background" Value="{DynamicResource {x:Static theme:Brushes.ToolBarBackgroundKey}}" />
+        <Setter Property="Grid.ColumnSpan" Value="50"/>
+    </Style>
+
+    <SolidColorBrush x:Key="ThemedPanelBackground"  Color="{DynamicResource {x:Static theme:Colors.WindowKey}}" />
+    <SolidColorBrush x:Key="ThemedDocumentBackground"  Color="{DynamicResource {x:Static theme:Colors.WindowBackgroundKey}}" />
+    <SolidColorBrush x:Key="ThemedDocumentForeground"  Color="{DynamicResource {x:Static theme:Colors.WindowForegroundKey}}" />
+
+    <Style x:Key="LabelRun" TargetType="Run">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.WindowForegroundKey}}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <Style x:Key="ValueRun" TargetType="Run">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.WindowGrayTextKey}}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <!--Default Styles-->
+
+    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource ThemedComboBox}">
+    </Style>
+
+    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxBaseStyle}"/>
+    
+    <Style TargetType="RadioButton" BasedOn="{StaticResource RadioButtonBaseStyle}">
+    </Style>
+
+    <Style TargetType="Viewbox" BasedOn="{StaticResource RadioViewboxBaseStyle}">
+    </Style>
+
+    <Style TargetType="UserControl">
+        <Setter Property="Background" Value="{DynamicResource {x:Static theme:Brushes.PanelBackground}}" />
+    </Style>
+
+    <Style TargetType="Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static theme:Brushes.WindowBorderKey}}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <SolidColorBrush x:Key="Grid.Border" Color="{DynamicResource {x:Static theme:Colors.WindowBorderKey}}"/>
+
+    <Style TargetType="Rectangle">
+        <Setter Property="Fill" Value="{DynamicResource {x:Static theme:Brushes.WindowBorderKey}}"/>
+    </Style>
+
+    <Style TargetType="GridSplitter">
+        <Setter Property="Background" Value="{DynamicResource {x:Static theme:Brushes.WindowBorderKey}}"/>
+    </Style>
+
+    <Style TargetType="ListView">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static theme:Brushes.WindowForegroundKey}}"/>
+    </Style>
+
+    <Style TargetType="PasswordBox" BasedOn="{StaticResource PasswordBoxBaseStyle}"/>
+
+    <!--Icons-->
+    <Viewbox x:Key="Icons.FileError" Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <Rectangle Width="16" Height="16">
+            <Rectangle.Fill>
+                <DrawingBrush>
+                    <DrawingBrush.Drawing>
+                        <DrawingGroup>
+                            <DrawingGroup.Children>
+                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M12,7.0508L12,3.5558 8.061,-0.000199999999999534 2,-0.000199999999999534C1.03,-0.000199999999999534,0,0.700800000000001,0,1.9998L0,11.9998C0,13.2988,1.03,13.9998,2,13.9998L7.762,13.9998C8.57,15.2048 9.943,15.9998 11.5,15.9998 13.981,15.9998 16,13.9818 16,11.4998 16,9.1898 14.244,7.3028 12,7.0508" />
+                                <GeometryDrawing Brush="#FF414141" Geometry="F1M7.0508,12L1.9998,12 1.9998,2 6.9998,2 6.9998,5 9.9998,5 9.9998,7.276C10.3188,7.163,10.6538,7.089,10.9998,7.051L10.9998,4 7.6408,1 1.9638,1C1.9638,1,0.9998,1,0.9998,2L0.9998,12C0.9998,13,1.9648,13,1.9648,13L7.2768,13C7.1628,12.682,7.0898,12.347,7.0508,12" />
+                                <GeometryDrawing Brush="#FFF0EFF1" Geometry="F1M7,11.5C7,9.547,8.258,7.897,10,7.276L10,5 7,5 7,2 2,2 2,12 7.051,12C7.032,11.834,7,11.671,7,11.5" />
+                                <GeometryDrawing Brush="#FFE51300" Geometry="F1M13.3535,12.6465L12.6465,13.3535 11.4995,12.2075 10.3535,13.3535 9.6465,12.6465 10.7925,11.5005 9.6465,10.3535 10.3535,9.6465 11.4995,10.7925 12.6465,9.6465 13.3535,10.3535 12.2075,11.5005z M11.4995,8.0005C9.5675,8.0005 7.9995,9.5675 7.9995,11.5005 7.9995,13.4325 9.5675,15.0005 11.4995,15.0005 13.4325,15.0005 14.9995,13.4325 14.9995,11.5005 14.9995,9.5675 13.4325,8.0005 11.4995,8.0005" />
+                                <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M13.3535,10.3535L12.6465,9.6465 11.4995,10.7925 10.3535,9.6465 9.6465,10.3535 10.7925,11.4995 9.6465,12.6465 10.3535,13.3535 11.4995,12.2075 12.6465,13.3535 13.3535,12.6465 12.2075,11.4995z" />
+                            </DrawingGroup.Children>
+                        </DrawingGroup>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+    </Viewbox>
+
+</ResourceDictionary>

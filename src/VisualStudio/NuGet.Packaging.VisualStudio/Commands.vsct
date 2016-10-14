@@ -5,16 +5,27 @@
 
   <Commands package="guidPackage">
     <Buttons>
-      <Button guid="guidCommandSet" id="cmdidBuildNugetPackage" priority="0x0100" type="Button">
-        <CommandFlag>DefaultInvisible</CommandFlag>
+      <Button guid="guidCommandSet" id="cmdidCreateNugetPackage" priority="0x0100" type="Button">
+        <!-- TODO: Investigate why the DefaultInvisible does not trigger the package load -->
+        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Build NuGet Package</ButtonText>
+          <ButtonText>Create NuGet Package</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidCommandSet" id="cmdidEditNugetPackageMetadata" priority="0x0101" type="Button">
+        <!-- TODO: Investigate why the DefaultInvisible does not trigger the package load -->
+        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Edit NuGet Package Metadata...</ButtonText>
         </Strings>
       </Button>
 
       <Button guid="guidCommandSet" id="cmdidAddPlatformImplementation" priority="0x0100" type="Button">
-        <CommandFlag>DefaultInvisible</CommandFlag>
+        <!-- TODO: Investigate why the DefaultInvisible does not trigger the package load -->
+        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Add Platform Implementation</ButtonText>
@@ -24,7 +35,10 @@
   </Commands>
 
   <CommandPlacements>
-    <CommandPlacement guid="guidCommandSet" id="cmdidBuildNugetPackage" priority="0xF000">
+    <CommandPlacement guid="guidCommandSet" id="cmdidCreateNugetPackage" priority="0xF000">
+      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidCommandSet" id="cmdidEditNugetPackageMetadata" priority="0xF010">
       <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
     </CommandPlacement>
     <CommandPlacement guid="guidCommandSet" id="cmdidAddPlatformImplementation" priority="0xF000">
@@ -43,8 +57,9 @@
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidCommandSet" value="{589286D3-5755-4E34-A8E4-0A7B670AF60A}">
-      <IDSymbol name="cmdidBuildNugetPackage" value="0x0100" />
+      <IDSymbol name="cmdidCreateNugetPackage" value="0x0100" />
       <IDSymbol name="cmdidAddPlatformImplementation" value="0x0101" />
+      <IDSymbol name="cmdidEditNugetPackageMetadata" value="0x0102" />
     </GuidSymbol>
 
     <GuidSymbol name="guidPortableProjectTypeGuid" value="{786C830F-07A1-408B-BD7F-6EE04809D6DB}" />

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -11,6 +13,14 @@ namespace NuGet.Packaging.VisualStudio
 	[Export(typeof(IDialogService))]
 	class DialogService : IDialogService
 	{
+		readonly IVsUIShell uiShell;
+
+		[ImportingConstructor]
+		public DialogService([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
+		{
+			this.uiShell = serviceProvider.GetService<SVsUIShell, IVsUIShell>();
+		}
+
 		public bool ShowConfirmationMessage(string message) =>
 			System.Windows.Forms.MessageBox.Show(
 				message,
@@ -19,6 +29,8 @@ namespace NuGet.Packaging.VisualStudio
 
 		public bool? ShowDialog<T>(T dialog) where T : Window
 		{
+			uiShell.SetOwner(dialog);
+
 			return dialog.ShowDialog();
 		}
 	}
