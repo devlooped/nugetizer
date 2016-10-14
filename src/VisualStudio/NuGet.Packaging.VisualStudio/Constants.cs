@@ -1,5 +1,7 @@
 ﻿namespace NuGet.Packaging.VisualStudio
 {
+	using BuildPaclagingAssembly = NuGet.Build.Packaging.ThisAssembly;
+
 	class Constants
 	{
 		public const string PortableClassLibraryCapability = "MultiTarget";
@@ -18,7 +20,7 @@
 			// TODO: We need to generate these values automatically
 			public const string RepositoryId = "NuGet.Packaging";
 			public const string BuildPackagingId = "NuGet.Build.Packaging";
-			public const string BuildPackagingVersion = ThisAssembly.PackageVersion;
+			public const string BuildPackagingVersion = BuildPaclagingAssembly.PackageVersion;
 		}
 
 		public class Platforms
