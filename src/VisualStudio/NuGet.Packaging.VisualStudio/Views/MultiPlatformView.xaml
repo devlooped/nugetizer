@@ -5,36 +5,61 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.11.0"
         xmlns:local="clr-namespace:NuGet.Packaging.VisualStudio"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource ThemedPanelBackground}"
         mc:Ignorable="d"
-        Title="New Multiplatform Library" Height="300" Width="300">
+        Title="New Multiplatform Library" Height="300" Width="400">
     <vs:DialogWindow.Resources>
-        <local:MultiPlatformViewModel x:Key="DesignDataContext"
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/NuGet.Packaging.VisualStudio;component/Theme/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local:MultiPlatformViewModel x:Key="DesignDataContext"
                                       UsePlatformSpecific="False" UseSinglePlatform="True">
-            <local:MultiPlatformViewModel.Platforms>
-                <local:PlatformViewModel DisplayName="Xamarin.iOS" IsEnabled="false" />
-                <local:PlatformViewModel DisplayName="Xamarin.Android" IsSelected="false" />
-            </local:MultiPlatformViewModel.Platforms>
-        </local:MultiPlatformViewModel>
+                <local:MultiPlatformViewModel.Platforms>
+                    <local:PlatformViewModel DisplayName="Xamarin.iOS" IsEnabled="false" />
+                    <local:PlatformViewModel DisplayName="Xamarin.Android" IsSelected="false" />
+                </local:MultiPlatformViewModel.Platforms>
+            </local:MultiPlatformViewModel>
+        </ResourceDictionary>
     </vs:DialogWindow.Resources>
-    <StackPanel d:DataContext="{StaticResource DesignDataContext}">
-        <Label>Target Platform:</Label>
-        <ListView ItemsSource="{Binding Platforms}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox Content="{Binding DisplayName}"
+
+    <Grid d:DataContext="{StaticResource DesignDataContext}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="45" />
+        </Grid.RowDefinitions>
+
+        <!--Title-->
+        <TextBlock Style="{DynamicResource TitleTextStyle}" Text="Configure your Multiplatform Library"
+				   FontSize="18" Margin="10"/>
+
+        <StackPanel Grid.Row="1" Margin="10,00">
+
+            <Label>Implementation:</Label>
+            <RadioButton Margin="5,5,0,0" Content="Platform Specific" IsChecked="{Binding UsePlatformSpecific}"  />
+            <RadioButton Margin="5,5,0,0" Content="Single for all platforms" IsChecked="{Binding UseSinglePlatform}" />
+
+            <Label Margin="0,10,0,0">Target Platforms:</Label>
+            <ListView ItemsSource="{Binding Platforms}" Margin="5,0,0,0" IsEnabled="{Binding UsePlatformSpecific}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox Content="{Binding DisplayName}" Margin="1"
                               IsChecked="{Binding IsSelected}" 
                               IsEnabled="{Binding IsEnabled}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-        <Label>Implementation:</Label>
-        <RadioButton Content="Platform Specific" IsChecked="{Binding UsePlatformSpecific}"  />
-        <RadioButton Content="Single for all platforms" IsChecked="{Binding UseSinglePlatform}" />
-
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="5" Content="Accept" IsDefault="True" Click="OnAcceptButtonClick" />
-            <Button Margin="5" Content="Cancel" IsCancel="True" Click="OnCancelButtonClick" />
         </StackPanel>
-    </StackPanel>
+
+        <!--Footer-->
+        <Grid Opacity="1" Grid.Row="2" Style="{DynamicResource FooterGrid}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Padding="15,4" Margin="10" Content="Accept" IsDefault="True" Click="OnAcceptButtonClick" />
+                <Button Padding="15,4" Margin="0,10,10,10" IsCancel="True" Content="Cancel"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
 </vs:DialogWindow>

@@ -11,13 +11,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.VisualStudio.PlatformUI;
 
 namespace NuGet.Packaging.VisualStudio
 {
 	/// <summary>
 	/// Interaction logic for AddPlatformImplementationView.xaml
 	/// </summary>
-	public partial class AddPlatformImplementationView : Window
+	public partial class AddPlatformImplementationView : DialogWindow
 	{
 		public AddPlatformImplementationView()
 		{
