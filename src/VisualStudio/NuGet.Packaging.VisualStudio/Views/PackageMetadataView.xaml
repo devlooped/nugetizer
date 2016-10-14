@@ -16,8 +16,8 @@
                 <ResourceDictionary Source="/NuGet.Packaging.VisualStudio;component/Theme/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <local:PackageMetadataViewModel x:Key="DesignDataContext"
-                                            Id="NuGet.Build.Packaging"
-                                            Version="0.1.104-dev"
+                                            PackageId="NuGet.Build.Packaging"
+                                            PackageVersion="0.1.104-dev"
                                             Title="Nugetizer-3000"
                                             Authors="Microsoft"
                                             Owners="Microsoft"
@@ -25,11 +25,11 @@
                                             ProjectUrl="https://github.com/NuGet/NuGet.Build.Packaging"
                                             Description="NuGet Packaging Targets"
                                             Summary=""
-                                            RequireLicenseAcceptance="false"
-                                            DevelopmentDependency="True"
-                                            ReleaseNotes=""
+                                            PackageRequireLicenseAcceptance="false"
+                                            IsDevelopmentDependency="True"
+                                            PackageReleaseNotes=""
                                             Copyright="© .NET Foundation. All rights reserved."
-                                            Language="en"
+                                            NeutralLanguage="en"
                                             >
             </local:PackageMetadataViewModel>
         </ResourceDictionary>
@@ -76,10 +76,10 @@
                 </Grid.ColumnDefinitions>
 
                 <Label>ID:</Label>
-                <TextBox Grid.Column="1" Margin="0,0,10,0" Text="{Binding Id}" />
+                <TextBox Grid.Column="1" Margin="0,0,10,0" Text="{Binding PackageId}" />
 
                 <Label Grid.Column="2" >Version:</Label>
-                <TextBox Grid.Column="3" Text="{Binding Version}" />
+                <TextBox Grid.Column="3" Text="{Binding PackageVersion}" />
             </Grid>
 
             <Label Grid.Row="1">Title:</Label>
@@ -112,17 +112,17 @@
             <Grid Grid.Row="10" Grid.ColumnSpan="2">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox Content="Require License Acceptance" 
-                      IsChecked="{Binding RequireLicenseAcceptance}"
+                      IsChecked="{Binding PackageRequireLicenseAcceptance}"
                       VerticalAlignment="Center" />
 
                     <CheckBox Margin="50,0,0,0" Content="Development Dependency" 
-                      IsChecked="{Binding DevelopmentDependency}"
+                      IsChecked="{Binding IsDevelopmentDependency}"
                       VerticalAlignment="Center" />
                 </StackPanel>
             </Grid>
 
             <Label Grid.Row="11">Language:</Label>
-            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Language}" />
+            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding NeutralLanguage}" />
 
             <Label Grid.Row="12">Release Notes:</Label>
             <TextBox Grid.Row="12" Grid.Column="1" 
@@ -130,7 +130,7 @@
                      Height="75"
                      VerticalContentAlignment="Top"
                      VerticalScrollBarVisibility="Auto"
-                     Text="{Binding ReleaseNotes}" />
+                     Text="{Binding PackageReleaseNotes}" />
 
         </Grid>
 

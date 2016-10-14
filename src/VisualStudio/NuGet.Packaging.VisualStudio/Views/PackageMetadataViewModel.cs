@@ -32,7 +32,7 @@ namespace NuGet.Packaging.VisualStudio
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public string Id
+		public string PackageId
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }
@@ -80,7 +80,7 @@ namespace NuGet.Packaging.VisualStudio
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public string Version
+		public string PackageVersion
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }
@@ -92,25 +92,25 @@ namespace NuGet.Packaging.VisualStudio
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public bool RequireLicenseAcceptance
+		public bool PackageRequireLicenseAcceptance
 		{
 			get { return storage.GetPropertyValue<bool>(); }
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public bool DevelopmentDependency
+		public bool IsDevelopmentDependency
 		{
 			get { return storage.GetPropertyValue<bool>(); }
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public string ReleaseNotes
+		public string PackageReleaseNotes
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public string Language
+		public string NeutralLanguage
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }

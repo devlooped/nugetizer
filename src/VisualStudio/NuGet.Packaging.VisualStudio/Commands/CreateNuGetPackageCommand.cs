@@ -51,8 +51,8 @@ namespace NuGet.Packaging.VisualStudio
 						var viewModel = new PackageMetadataViewModel(storage)
 						{
 							// Default values
-							Id = project.Name,
-							Version = "1.0"
+							PackageId = project.Name,
+							PackageVersion = "1.0"
 						};
 
 						var view = new PackageMetadataView()
