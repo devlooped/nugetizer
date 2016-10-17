@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace NuGet.Packaging.VisualStudio
 {
-	class PackageMetadataViewModel
+	class PackageMetadataViewModel : ViewModelBase
 	{
-		IPropertyStorage storage;
+		readonly IPropertyStorage storage;
 
 		/// <summary>
 		/// Default ctor for design data context
@@ -20,6 +22,7 @@ namespace NuGet.Packaging.VisualStudio
 			this.storage = storage;
 		}
 
+		[Required]
 		public string Authors
 		{
 			get { return storage.GetPropertyValue<string>(); }
@@ -32,6 +35,7 @@ namespace NuGet.Packaging.VisualStudio
 			set { storage.SetPropertyValue(value); }
 		}
 
+		[Required]
 		public string PackageId
 		{
 			get { return storage.GetPropertyValue<string>(); }
@@ -80,12 +84,14 @@ namespace NuGet.Packaging.VisualStudio
 			set { storage.SetPropertyValue(value); }
 		}
 
+		[Required]
 		public string PackageVersion
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }
 		}
 
+		[Required]
 		public string Description
 		{
 			get { return storage.GetPropertyValue<string>(); }
