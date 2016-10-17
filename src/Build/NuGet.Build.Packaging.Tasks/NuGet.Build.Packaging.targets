@@ -32,6 +32,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)</PackageOutputPath>
+    
+		<PackOnBuildFile>$(MSBuildProjectDirectory)\.packonbuild</PackOnBuildFile>
 	</PropertyGroup>
 
 	<!-- Extends the built-in GetTargetPath output to signal that the project has been nugetized -->
@@ -525,7 +527,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</Target>
 
 	<PropertyGroup>
-		<BuildDependsOn Condition="'$(PackOnBuild)' == 'true' and '$(IsPackable)' == 'true'">
+		<BuildDependsOn Condition="('$(PackOnBuild)' == 'true' Or Exists('$(PackOnBuildFile)')) and '$(IsPackable)' == 'true'">
 			$(BuildDependsOn);
 			Pack;
 		</BuildDependsOn>

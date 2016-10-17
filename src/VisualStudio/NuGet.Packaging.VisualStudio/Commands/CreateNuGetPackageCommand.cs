@@ -19,7 +19,7 @@ namespace NuGet.Packaging.VisualStudio
 		readonly IDialogService dialogService;
 		readonly IVsPackageInstaller packageInstaller;
 		readonly IVsPackageInstallerServices packageInstallerServices;
-		readonly IMsBuildService msBuildService;
+		readonly IBuildService buildService;
 
 		[ImportingConstructor]
 		public CreateNuGetPackageCommand(
@@ -27,14 +27,14 @@ namespace NuGet.Packaging.VisualStudio
 			IDialogService dialogService,
 			IVsPackageInstaller packageInstaller,
 			IVsPackageInstallerServices packageInstallerServices,
-			IMsBuildService msBuildService)
+			IBuildService msBuildService)
 			: base(Commands.CreateNuGetPackageCommandId)
 		{
 			this.solutionExplorer = solutionExplorer;
 			this.dialogService = dialogService;
 			this.packageInstaller = packageInstaller;
 			this.packageInstallerServices = packageInstallerServices;
-			this.msBuildService = msBuildService;
+			this.buildService = msBuildService;
 		}
 
 		protected override void Execute()
@@ -50,9 +50,11 @@ namespace NuGet.Packaging.VisualStudio
 						var storage = new BuildPropertyStorage(vsBuildPropertyStorage);
 						var viewModel = new PackageMetadataViewModel(storage)
 						{
-							// Default values
+							// Default values for required fields/properties
 							PackageId = project.Name,
-							PackageVersion = "1.0"
+							PackageVersion = "1.0",
+							Description = project.Name,
+							Authors = "MyCompany"
 						};
 
 						var view = new PackageMetadataView()
@@ -76,18 +78,17 @@ namespace NuGet.Packaging.VisualStudio
 					}
 				}
 
-				msBuildService.BeginBuild(project.FullName, PackTargetName);
+				buildService.Pack(ActiveProject);
 			}
 		}
 
-		protected override void CanExecute(OleMenuCommand command)
-		{
+		protected override void CanExecute(OleMenuCommand command) =>
 			command.Enabled = command.Visible = CanExecute();
-		}
 
 		IProjectNode ActiveProject => solutionExplorer.Solution.ActiveProject;
 
 		bool CanExecute() =>
+			!buildService.IsBusy &&
 			!ActiveProject.Supports(NuProjCapabilities.NuProj); // For NuProj projects the built-in Build command should be used
 
 		bool IsBuildPackagingNuGetInstalled(Project project) =>
