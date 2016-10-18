@@ -57,15 +57,15 @@
     </BoolProperty>
 
     <!-- NuGet Package Section -->
-    
-    <StringProperty Name="Id" DisplayName="Package ID" Description="The unique identifier for the package. This is the package name that is shown when packages are listed using the Package Manager Console. These are also used when installing a package using the Install-Package command within the Package Manager Console."
+
+	<StringProperty Name="PackageId" DisplayName="Package ID" Description="The unique identifier for the package. This is the package name that is shown when packages are listed using the Package Manager Console. These are also used when installing a package using the Install-Package command within the Package Manager Console."
                     Category="NuSpec">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </StringProperty.DataSource>
     </StringProperty>
 
-    <StringProperty Name="Version" DisplayName="Package Version" Description="The version of the package, in Semantic Versioning format."
+	<StringProperty Name="PackageVersion" DisplayName="Package Version" Description="The version of the package, in Semantic Versioning format."
                     Category="NuSpec">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
@@ -100,28 +100,28 @@
         </StringProperty.DataSource>
     </StringProperty>
 
-    <StringProperty Name="IconUrl" DisplayName="Icon URL" Description="A URL for the image to use as the icon for the package in the Manage NuGet Packages dialog box. This should be a 32x32-pixel .png file that has a transparent background."
+	<StringProperty Name="PackageIconUrl" DisplayName="Icon URL" Description="A URL for the image to use as the icon for the package in the Manage NuGet Packages dialog box. This should be a 32x32-pixel .png file that has a transparent background."
                     Category="NuSpec">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </StringProperty.DataSource>
     </StringProperty>
 
-    <StringProperty Name="ProjectUrl" DisplayName="Project URL" Description="A URL for the home page of the package."
+	<StringProperty Name="PackageProjectUrl" DisplayName="Project URL" Description="A URL for the home page of the package."
                     Category="NuSpec">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </StringProperty.DataSource>
     </StringProperty>
 
-    <StringProperty Name="LicenseUrl" DisplayName="License URL" Description="A link to the license that the package is under."
+	<StringProperty Name="PackageLicenseUrl" DisplayName="License URL" Description="A link to the license that the package is under."
                     Category="NuSpec">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </StringProperty.DataSource>
     </StringProperty>
 
-    <BoolProperty Name="RequireLicenseAcceptance" DisplayName="Require License Acceptance" Description="Specifies whether the client needs to ensure that the package license (described by License URL) is accepted before the package is installed."
+	<BoolProperty Name="PackageRequireLicenseAcceptance" DisplayName="Require License Acceptance" Description="Specifies whether the client needs to ensure that the package license (described by License URL) is accepted before the package is installed."
                   Category="NuSpec">
         <BoolProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
@@ -142,14 +142,14 @@
         </StringProperty.DataSource>
     </StringProperty>
 
-    <StringProperty Name="Tags" DisplayName="Tags" Description="A space-delimited list of tags and keywords that describe the package. This information is used to help make sure users can find the package using searches in the Add Package Reference dialog box or filtering in the Package Manager Console window."
+	<StringProperty Name="PackageTags" DisplayName="Tags" Description="A space-delimited list of tags and keywords that describe the package. This information is used to help make sure users can find the package using searches in the Add Package Reference dialog box or filtering in the Package Manager Console window."
                     Category="NuSpec">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </StringProperty.DataSource>
     </StringProperty>
 
-    <StringProperty Name="ReleaseNotes" DisplayName="Release Notes" Description="A description of the changes made in each release of the package. This field only shows up when the Updates tab is selected and the package is an update to a previously installed package. It is displayed where the Description would normally be displayed. "
+	<StringProperty Name="PackageReleaseNotes" DisplayName="Release Notes" Description="A description of the changes made in each release of the package. This field only shows up when the Updates tab is selected and the package is an update to a previously installed package. It is displayed where the Description would normally be displayed. "
                     Category="NuSpec">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
@@ -200,7 +200,7 @@
         </StringProperty.DataSource>
     </StringProperty>
 
-    <BoolProperty Name="DevelopmentDependency" DisplayName="Development dependency"
+	<BoolProperty Name="IsDevelopmentDependency" DisplayName="Development dependency"
                   Description="Specifies whether the package will be marked as a development-only dependency in the packages.config. This will cause the package to be excluded from the dependency list when the referencing project itself is later packaged."
                   Category="NuSpec">
         <BoolProperty.DataSource>
