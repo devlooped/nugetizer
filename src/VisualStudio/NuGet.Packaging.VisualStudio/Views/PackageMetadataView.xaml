@@ -22,8 +22,8 @@
                                             Title="Nugetizer-3000"
                                             Authors="Microsoft"
                                             Owners="Microsoft"
-                                            LicenseUrl="https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt"
-                                            ProjectUrl="https://github.com/NuGet/NuGet.Build.Packaging"
+                                            PackageLicenseUrl="https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt"
+                                            PackageProjectUrl="https://github.com/NuGet/NuGet.Build.Packaging"
                                             Description="NuGet Packaging Targets"
                                             Summary=""
                                             PackageRequireLicenseAcceptance="false"
@@ -117,13 +117,13 @@
             <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Copyright}" />
 
             <Label Grid.Row="7">Project URL:</Label>
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding ProjectUrl}" />
+            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding PackageProjectUrl}" />
 
             <Label Grid.Row="8">Icon URL:</Label>
-            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding IconUrl}" />
+            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding PackageIconUrl}" />
 
             <Label Grid.Row="9">License URL:</Label>
-            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding LicenseUrl}" />
+            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding PackageLicenseUrl}" />
 
             <Grid Grid.Row="10" Grid.ColumnSpan="2">
                 <StackPanel Orientation="Horizontal">

@@ -48,19 +48,19 @@ namespace NuGet.Packaging.VisualStudio
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public string ProjectUrl
+		public string PackageProjectUrl
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public string LicenseUrl
+		public string PackageLicenseUrl
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public string IconUrl
+		public string PackageIconUrl
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }
@@ -72,7 +72,7 @@ namespace NuGet.Packaging.VisualStudio
 			set { storage.SetPropertyValue(value); }
 		}
 
-		public string Tags
+		public string PackageTags
 		{
 			get { return storage.GetPropertyValue<string>(); }
 			set { storage.SetPropertyValue(value); }
