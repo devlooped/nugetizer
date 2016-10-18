@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.11.0"
         xmlns:local="clr-namespace:NuGet.Packaging.VisualStudio"
+        xmlns:theme="clr-namespace:NuGet.Packaging.VisualStudio.Theme;assembly=NuGet.Packaging.VisualStudio"
         ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
         mc:Ignorable="d"
         Width="700" Height="650"
@@ -21,8 +22,8 @@
                                             Title="Nugetizer-3000"
                                             Authors="Microsoft"
                                             Owners="Microsoft"
-                                            LicenseUrl="https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt"
-                                            ProjectUrl="https://github.com/NuGet/NuGet.Build.Packaging"
+                                            PackageLicenseUrl="https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt"
+                                            PackageProjectUrl="https://github.com/NuGet/NuGet.Build.Packaging"
                                             Description="NuGet Packaging Targets"
                                             Summary=""
                                             PackageRequireLicenseAcceptance="false"
@@ -32,6 +33,21 @@
                                             NeutralLanguage="en"
                                             >
             </local:PackageMetadataViewModel>
+            <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxBaseStyle}">
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="Tag" Value="{Binding RelativeSource={RelativeSource Self},Path=(Validation.Errors)[0].ErrorContent}"/>
+                        <Setter Property="ToolTip">
+                            <Setter.Value>
+                                <ToolTip Width="300" Tag="{Binding RelativeSource={RelativeSource Self},Path=PlacementTarget.Tag}" Height="Auto">
+                                    <TextBlock Foreground="{DynamicResource {x:Static theme:Brushes.InfoTextKey}}"
+                                        MaxWidth="250" TextWrapping="Wrap" Text="{Binding RelativeSource={RelativeSource AncestorType=ToolTip},Path=PlacementTarget.Tag}" Height="Auto" />
+                                </ToolTip>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Grid d:DataContext="{StaticResource DesignDataContext}">
@@ -76,38 +92,38 @@
                 </Grid.ColumnDefinitions>
 
                 <Label>ID:</Label>
-                <TextBox Grid.Column="1" Margin="0,0,10,0" Text="{Binding PackageId}" />
+                <TextBox Grid.Column="1" Margin="0,0,10,0" Text="{Binding PackageId, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Label Grid.Column="2" >Version:</Label>
-                <TextBox Grid.Column="3" Text="{Binding PackageVersion}" />
+                <TextBox Grid.Column="3" Text="{Binding PackageVersion, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
 
             <Label Grid.Row="1">Title:</Label>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Title}" />
 
             <Label Grid.Row="2">Description:</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Description}" />
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Description, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="3">Summary:</Label>
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Summary}" />
 
             <Label Grid.Row="4">Authors:</Label>
-            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Authors}" />
-            
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Authors, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
             <Label Grid.Row="5">Owners:</Label>
             <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Owners}" />
-            
+
             <Label Grid.Row="6">Copyright:</Label>
             <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Copyright}" />
-            
+
             <Label Grid.Row="7">Project URL:</Label>
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding ProjectUrl}" />
-            
+            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding PackageProjectUrl}" />
+
             <Label Grid.Row="8">Icon URL:</Label>
-            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding IconUrl}" />
+            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding PackageIconUrl}" />
 
             <Label Grid.Row="9">License URL:</Label>
-            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding LicenseUrl}" />
+            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding PackageLicenseUrl}" />
 
             <Grid Grid.Row="10" Grid.ColumnSpan="2">
                 <StackPanel Orientation="Horizontal">
@@ -137,7 +153,7 @@
         <!--Footer-->
         <Grid Opacity="1" Grid.Row="2" Style="{DynamicResource FooterGrid}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Padding="15,4" Margin="10" Content="Accept" IsDefault="True" Click="OnAcceptButtonClicked" />
+                <Button Padding="15,4" Margin="10" Content="Accept" IsDefault="True" Click="OnAcceptButtonClicked" IsEnabled="{Binding IsValid}" />
                 <Button Padding="15,4" Margin="0,10,20,10" IsCancel="True" Content="Cancel"/>
             </StackPanel>
         </Grid>

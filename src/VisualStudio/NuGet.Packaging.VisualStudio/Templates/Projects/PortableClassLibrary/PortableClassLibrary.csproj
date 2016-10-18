@@ -32,18 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Id>$safeprojectname$</Id>
-    <Version>1.0.0</Version>
+    <PackageId>$safeprojectname$</PackageId>
     <Title>$projectname$</Title>
     <Authors>$username$</Authors>
     <Owners>$username$</Owners>
     <Summary>$projectname$</Summary>
     <Description>$projectname$</Description>
-    <ReleaseNotes></ReleaseNotes>
-    <ProjectUrl></ProjectUrl>
-    <LicenseUrl></LicenseUrl>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <Copyright>Copyright © $username$</Copyright>
-    <Tags>$safeprojectname$</Tags>
+    <PackageTags>$safeprojectname$</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />

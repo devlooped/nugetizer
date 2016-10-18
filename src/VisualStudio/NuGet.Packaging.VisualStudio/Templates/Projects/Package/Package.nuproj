@@ -23,7 +23,7 @@
 		<PackageProjectUrl></PackageProjectUrl>
 		<PackageLicenseUrl></PackageLicenseUrl>
 		<Copyright>Copyright © $username$</Copyright>
-		<Tags>$safeprojectname$</Tags>
+    <PackageTags>$safeprojectname$</PackageTags>
 	</PropertyGroup>
 	<PropertyGroup Label="Globals">
 		<OutputPath>bin\$(Configuration)\</OutputPath>
