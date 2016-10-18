@@ -42,10 +42,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PropertyPageSchema Include="$(ProjectSystemRulesDir)ProjectReference.xaml">
 			<Context>;BrowseObject</Context>
 		</PropertyPageSchema>
-
-		<ProjectCapability Include="ProjectReferences;PackageReferences;ReferencesFolder;AssemblyReferences;DeclaredSourceItems;UserSourceItems" />
-		<ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
-		<ProjectCapability Include="NuGet.Packaging" />
 	</ItemGroup>
 
+	<!-- ProjectCapabilities in dev15 should be supported via NuGet packages -->
+	<ItemGroup>
+		<ProjectCapability Include="ProjectReferences;PackageReferences;ReferencesFolder;AssemblyReferences;DeclaredSourceItems;UserSourceItems" />
+		<ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
+		<ProjectCapability Include="SharedProjectReferences"/>
+		<ProjectCapability Include="PackagingProject" />
+	</ItemGroup>
+	
 </Project>
