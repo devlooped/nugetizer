@@ -1,4 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemGroup>
+		<ThisAssemblyProjectProperty Include="PackageId" />
+	</ItemGroup>
+	
 	<PropertyGroup>
 		<GetPackageVersionDependsOn>
 			SetPackageVersion;
@@ -54,6 +59,9 @@
 				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
 			</PackageFile>
 			<PackageFile Include="@(ReferencePath)" Condition="$([System.String]::new('%(Filename)').StartsWith('NuGet'))">
+				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
+			</PackageFile>
+			<PackageFile Include="@(ReferencePath)" Condition="$([System.String]::new('%(Filename)').StartsWith('Newtonsoft.Json'))">
 				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
 			</PackageFile>
 		</ItemGroup>

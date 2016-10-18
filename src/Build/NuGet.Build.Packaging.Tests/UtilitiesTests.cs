@@ -5,8 +5,10 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Build.Utilities;
+using Newtonsoft.Json.Linq;
 using NuGet.Build.Packaging.Tasks;
 using NuGet.Frameworks;
+using NuGet.ProjectManagement;
 using Xunit;
 using Metadata = System.Collections.Generic.Dictionary<string, string>;
 

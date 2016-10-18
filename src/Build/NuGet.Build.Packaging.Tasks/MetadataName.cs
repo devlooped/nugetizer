@@ -26,9 +26,9 @@
 		public const string PackagePath = nameof(PackagePath);
 
 		/// <summary>
-		/// Marks a @(PackageReference) as a development dependency when set to 'true'.
+		/// Marks a @(PackageReference) as a development dependency when set to 'All'.
 		/// </summary>
-		public const string IsDevelopmentDependency = nameof(IsDevelopmentDependency);
+		public const string PrivateAssets = nameof(PrivateAssets);
 
 		/// <summary>
 		/// Whether the project can be packed as a .nupkg.
