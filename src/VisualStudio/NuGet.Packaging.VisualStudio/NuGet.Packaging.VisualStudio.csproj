@@ -80,7 +80,6 @@
       <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
     </Compile>
     <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
-    <Compile Include="Commands\EditNuGetPackageMetadataCommand.cs" />
     <Compile Include="Converters\ExtendedBooleanToVisiblityConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\ValueToVisibilityConverter.cs" />
@@ -115,6 +114,7 @@
     <Compile Include="IDialogService.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
     <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
+    <None Include="Templates\Projects\PortableClassLibrary\Project.json" />
     <Resource Include="Templates\Projects\Package\Readme.txt" />
     <None Include="ProjectSystem.Dev15\ProjectProperties.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
@@ -190,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Templates\Projects\PortableClassLibrary\csPortableClassLibrary.vstemplate" />
+    <None Include="Templates\Projects\PortableClassLibrary\PortableClassLibrary.targets" />
     <None Include="Templates\Projects\PortableClassLibrary\PortableClassLibrary.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -276,11 +277,6 @@
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
-      <Project>{099bebd8-6b04-416d-ba44-e0201951542b}</Project>
-      <Name>Clide.Interfaces</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj">
       <Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
       <Name>NuGet.Build.Packaging.Tasks</Name>

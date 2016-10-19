@@ -6,29 +6,16 @@
   <Commands package="guidPackage">
     <Buttons>
       <Button guid="guidCommandSet" id="cmdidCreateNugetPackage" priority="0x0100" type="Button">
-        <!-- TODO: Investigate why the DefaultInvisible does not trigger the package load -->
-        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Create NuGet Package</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidCommandSet" id="cmdidEditNugetPackageMetadata" priority="0x0101" type="Button">
-        <!-- TODO: Investigate why the DefaultInvisible does not trigger the package load -->
-        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <Strings>
-          <ButtonText>Edit NuGet Package Metadata...</ButtonText>
+          <ButtonText>Create NuGet Package...</ButtonText>
         </Strings>
       </Button>
 
       <Button guid="guidCommandSet" id="cmdidAddPlatformImplementation" priority="0x0100" type="Button">
-        <!-- TODO: Investigate why the DefaultInvisible does not trigger the package load -->
-        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Add Platform Implementation</ButtonText>
+          <ButtonText>Add Platform Implementation...</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -38,19 +25,16 @@
     <CommandPlacement guid="guidCommandSet" id="cmdidCreateNugetPackage" priority="0xF000">
       <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
     </CommandPlacement>
-    <CommandPlacement guid="guidCommandSet" id="cmdidEditNugetPackageMetadata" priority="0xF010">
-      <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
-    </CommandPlacement>
     <CommandPlacement guid="guidCommandSet" id="cmdidAddPlatformImplementation" priority="0xF000">
       <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_ADD" />
     </CommandPlacement>
   </CommandPlacements>
 
   <VisibilityConstraints>
-    <!-- Restrict the AddPlatformImplementation for portable class libraries -->
-    <VisibilityItem guid="guidCommandSet" id="cmdidAddPlatformImplementation" context="guidPortableProjectTypeGuid"  />
+    <VisibilityItem guid="guidCommandSet" id="cmdidCreateNugetPackage" context="guidSolutionExistsAndNotBuildingAndNotDebuggingUIContext"  />
+    <VisibilityItem guid="guidCommandSet" id="cmdidAddPlatformImplementation" context="guidAddPlatformImplementationUIContext"  />
   </VisibilityConstraints>
-  
+
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidPackage" value="{e57e2daf-a455-45db-962e-31b1c9c70860}" />
@@ -59,10 +43,10 @@
     <GuidSymbol name="guidCommandSet" value="{589286D3-5755-4E34-A8E4-0A7B670AF60A}">
       <IDSymbol name="cmdidCreateNugetPackage" value="0x0100" />
       <IDSymbol name="cmdidAddPlatformImplementation" value="0x0101" />
-      <IDSymbol name="cmdidEditNugetPackageMetadata" value="0x0102" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidPortableProjectTypeGuid" value="{786C830F-07A1-408B-BD7F-6EE04809D6DB}" />
+    <GuidSymbol name="guidAddPlatformImplementationUIContext" value="{2590DF87-84EB-487A-A1FF-160BEAF4F9CA}" />
+    <GuidSymbol name="guidSolutionExistsAndNotBuildingAndNotDebuggingUIContext" value="{D0E4DEEC-1B53-4CDA-8559-D454583AD23B}" />
   </Symbols>
-  
+
 </CommandTable>

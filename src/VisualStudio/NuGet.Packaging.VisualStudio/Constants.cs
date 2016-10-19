@@ -15,6 +15,11 @@
 		public const string Language = "NuGet.Packaging";
 		public const string NuGetAuthoringPathPropertyName = "NuGetAuthoringPath";
 
+		public class UIContext
+		{
+			public const string AddPlatformImplementation = "2590DF87-84EB-487A-A1FF-160BEAF4F9CA";
+		}
+
 		public class NuGet
 		{
 			// TODO: We need to generate these values automatically

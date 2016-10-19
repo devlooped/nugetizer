@@ -8,7 +8,7 @@
 	using EnvDTE;
 	using Microsoft.VisualStudio.Shell.Interop;
 	using ExtenderProviders;
-
+	using Microsoft.VisualStudio;
 	[Guid(Guids.PackageGuid)]
 	//[ProvideAutoLoad(UIContextGuids.SolutionExists)]
 	// TODO: make sure we only auto-load when there are C# and VB projects. (what about F#?)
@@ -25,10 +25,16 @@
 		, @"\..\NullPath",
 		LanguageVsTemplate = "CSharp",
 		ShowOnlySpecifiedTemplatesVsTemplate = true)]
+	[ProvideUIContextRule(
+		Constants.UIContext.AddPlatformImplementation,
+		name: "Portable Class Library UI Context",
+		expression: "SolutionExistsAndNotBuildingAndNotDebugging & IsPortableClassLibrary",
+		termNames: new[] { "SolutionExistsAndNotBuildingAndNotDebugging", "IsPortableClassLibrary" },
+		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "ActiveProjectFlavor:786C830F-07A1-408B-BD7F-6EE04809D6DB" })]
 	[ProvideMenuResource("2000", 2)]
 	public sealed class NuGetizerPackage : Package
 	{
-		IDisposable[] extenderProviders  = new IDisposable[0];
+		IDisposable[] extenderProviders = new IDisposable[0];
 
 		protected override void Initialize()
 		{

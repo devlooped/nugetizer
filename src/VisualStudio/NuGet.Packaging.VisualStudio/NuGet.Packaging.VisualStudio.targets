@@ -4,7 +4,6 @@
 		<StartAction>Program</StartAction>
 		<StartProgram>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\Common7\IDE\devenv.exe</StartProgram>
 		<StartArguments>/rootsuffix exp</StartArguments>
-
 		<NoGlobalAssemblyInfo>true</NoGlobalAssemblyInfo>
 		<XmlNs>&lt;Namespace Prefix='vs' Uri='http://schemas.microsoft.com/developer/vstemplate/2005'/&gt;</XmlNs>
 	</PropertyGroup>
