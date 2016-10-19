@@ -10,21 +10,17 @@
 	using ExtenderProviders;
 	using Microsoft.VisualStudio;
 	[Guid(Guids.PackageGuid)]
-	//[ProvideAutoLoad(UIContextGuids.SolutionExists)]
-	// TODO: make sure we only auto-load when there are C# and VB projects. (what about F#?)
-	//[ProvideAutoLoad("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}")]
-	//[ProvideAutoLoad("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}")]
 	[PackageRegistration(UseManagedResourcesOnly = true)]
 	[ProvideObject(typeof(NuSpecPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
-	[ProvideProjectFactory(
-		typeof(NuProjFlavoredProjectFactory),
-		"NuGet.Packaging",
-		"#1100",
-		null,
-		null
-		, @"\..\NullPath",
-		LanguageVsTemplate = "CSharp",
-		ShowOnlySpecifiedTemplatesVsTemplate = true)]
+	//[ProvideProjectFactory(
+	//	typeof(NuProjFlavoredProjectFactory),
+	//	"NuGet.Packaging",
+	//	"#1100",
+	//	null,
+	//	null
+	//	, @"\..\NullPath",
+	//	LanguageVsTemplate = "CSharp",
+	//	ShowOnlySpecifiedTemplatesVsTemplate = true)]
 	[ProvideUIContextRule(
 		Constants.UIContext.AddPlatformImplementation,
 		name: "Portable Class Library UI Context",
@@ -40,7 +36,7 @@
 		{
 			base.Initialize();
 
-			RegisterProjectFactory(new NuProjFlavoredProjectFactory(this));
+			//RegisterProjectFactory(new NuProjFlavoredProjectFactory(this));
 			RegisterCommands();
 
 			// These crash VS, investigating at vsixdisc DL
