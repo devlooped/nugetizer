@@ -104,7 +104,7 @@ namespace NuGet.Build.Packaging.Tasks
 		{
 			var dependencies = from item in Contents
 							   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency && 
-									 !item.GetBoolean(MetadataName.IsDevelopmentDependency)
+									 !"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase)
 							   select new Dependency
 							   {
 								   Id = item.ItemSpec,

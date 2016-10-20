@@ -165,7 +165,7 @@ namespace NuGet.Build.Packaging
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.Version, "1.0.0" },
 					{ MetadataName.Kind, PackageItemKind.Dependency },
-					{ MetadataName.IsDevelopmentDependency, "true" },
+					{ MetadataName.PrivateAssets, "all" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" }
 				}),

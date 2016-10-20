@@ -19,13 +19,14 @@
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);DeployExtension=$(DeployExtension);RunCodeAnalysis=$(RunCodeAnalysis)</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
+		<PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Solution Include="src\Build\NuGet.Build.Packaging.sln" />
 		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
 		<TestProject Include="src\Build\**\*Tests.csproj" />
-		<PackSolution Include="src\Build\NuGet.Build.Packaging.sln" />
+		<PackSolution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
@@ -42,13 +43,13 @@
 	<Target Name="Build">
 		<Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" StandardOutputImportance="low" />
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-		<Message Text="Build properties: $(CommonBuildProperties)" Importance="high" />
-		<MSBuild Projects="@(Solution)" BuildInParallel="false" Properties="$(CommonBuildProperties)" />
+		<Message Text="Build properties: $(CommonBuildProperties)." Importance="high" />
+		<MSBuild Projects="@(Solution)" BuildInParallel="false" Properties="$(CommonBuildProperties);PackOnBuild=false;CreateVsixContainer=false" />
 	</Target>
 
 	<Target Name="Package" DependsOnTargets="Build">
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-		<MSBuild Projects="@(PackSolution)" Properties="$(CommonBuildProperties);PackageOutputPath=$(Out);PackOnBuild=true" />
+		<MSBuild Projects="@(PackSolution)" Properties="$(CommonBuildProperties);PackageOutputPath=$(Out);PackOnBuild=true" />		
 		<ItemGroup>
 			<OutputFile Include="$(Out)\*.nupkg" />
 			<OutputFile Include="$(Out)\*.vsix" />

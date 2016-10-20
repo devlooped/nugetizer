@@ -12,6 +12,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.AssignPackagePath" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ReadLegacyJsonDependencies" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ReadLegacyConfigDependencies" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
@@ -32,12 +34,16 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)</PackageOutputPath>
-    
+
 		<PackOnBuildFile>$(MSBuildProjectDirectory)\.packonbuild</PackOnBuildFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<ProjectCapability Include="Packable" Condition="'$(IsPackable)' == 'true'"/>
+	</ItemGroup>
+
 	<!-- Extends the built-in GetTargetPath output to signal that the project has been nugetized -->
-	<ItemDefinitionGroup> 
+	<ItemDefinitionGroup>
 		<TargetPathWithTargetPlatformMoniker>
 			<IsPackable>$(IsPackable)</IsPackable>
 		</TargetPathWithTargetPlatformMoniker>
@@ -163,6 +169,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			_SplitProjectReferencesByFileExistence;
 			_SplitProjectReferencesByIsPackablePresence;
 			AllProjectOutputGroups;
+			ReadLegacyDependencies;
 		</GetPackageContentsDependsOn>
 		<!-- Only collect referenced projects' outputs if we need to include them -->
 		<GetPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
@@ -171,13 +178,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</GetPackageContentsDependsOn>
 	</PropertyGroup>
 	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
+
 		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
 			 NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
 			 current project. -->
 		<ItemGroup>
 			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                          Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
-						 <!-- Packaging projects don't contribute primary output -->
+				<!-- Packaging projects don't contribute primary output -->
 				<Kind>Lib</Kind>
 			</PackageFile>
 
@@ -188,20 +196,20 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_DocumentationProjectOutputGroupOutput>
 			<PackageFile Include="@(_DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                          Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
-						 <!-- Packaging projects don't contribute primary docs -->
+				<!-- Packaging projects don't contribute primary docs -->
 				<Kind>Doc</Kind>
 			</PackageFile>
 
 			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                          Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
-						 <!-- Packaging projects don't contribute primary symbols -->
+				<!-- Packaging projects don't contribute primary symbols -->
 				<Kind>Symbols</Kind>
 			</PackageFile>
 
 			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
 			<PackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
 						 Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
-						 <!-- Packaging projects don't contribute satellite dlls -->
+				<!-- Packaging projects don't contribute satellite dlls -->
 				<Kind>Lib</Kind>
 			</PackageFile>
 
@@ -257,7 +265,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				 RemoveProperties="%(_IsPackableProject.GlobalPropertiesToRemove)">
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
 		</MSBuild>
-	
+
 		<ItemGroup>
 			<_ReferencedPackageDependency Include="@(_ReferencedPackageContent)"
 										  Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.Kind)' == 'Metadata'">
@@ -526,6 +534,21 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	</Target>
 
+	<Target Name="ReadLegacyDependencies">
+		<PropertyGroup>
+			<_ProjectJson>$(MSBuildProjectDirectory)\project.json</_ProjectJson>
+			<_PackagesConfig>$(MSBuildProjectDirectory)\packages.config</_PackagesConfig>
+		</PropertyGroup>
+		
+		<ReadLegacyJsonDependencies ProjectJsonPath="$(_ProjectJson)" Condition="Exists('$(_ProjectJson)')">
+			<Output TaskParameter="PackageReferences" ItemName="PackageReference" />
+		</ReadLegacyJsonDependencies>
+
+		<ReadLegacyConfigDependencies PackagesConfigPath="$(_PackagesConfig)" Condition="Exists('$(_PackagesConfig)')">
+			<Output TaskParameter="PackageReferences" ItemName="PackageReference" />
+		</ReadLegacyConfigDependencies>
+	</Target>
+	
 	<PropertyGroup>
 		<BuildDependsOn Condition="('$(PackOnBuild)' == 'true' Or Exists('$(PackOnBuildFile)')) and '$(IsPackable)' == 'true'">
 			$(BuildDependsOn);
@@ -553,7 +576,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
 			<Output TaskParameter="OutputPackage" ItemName="FileWrites" />
 		</CreatePackage>
-		
+
 		<Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />
 	</Target>
 

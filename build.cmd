@@ -31,9 +31,15 @@ IF "%Verbosity%"=="" (
     set Verbosity=minimal
 )
 
+:: Ensure we have no dangling MSBuild processes that might lock the output assemblies
+taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
+
 ECHO ON
 "%msb%" build.proj /v:%Verbosity% /nr:true /m %1 %2 %3 %4 %5 %6 %7 %8 %9
 @ECHO OFF
+
+:: Ensure we leave no dangling MSBuild processes
+taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
 
 POPD >NUL
 ENDLOCAL

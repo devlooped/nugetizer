@@ -17,8 +17,16 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<ItemDefinitionGroup>
 		<PackageFile>
+			<!-- See @(PackageItemKind) below -->
 			<Kind>None</Kind>
 		</PackageFile>
+		<PackageReference>
+			<!-- See https://github.com/NuGet/Home/wiki/PackageReference-Specification -->
+			<!-- A version range. See http://docs.nuget.org/ndocs/create-packages/dependency-versions#version-ranges -->
+			<Version />
+			<!-- When set to All, denotes a development dependency -->
+			<PrivateAssets />
+		</PackageReference>
 	</ItemDefinitionGroup>
 
 	<ItemGroup>
@@ -56,11 +64,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</PackageItemKind>
 		<PackageItemKind Include="ContentFiles">
 			<PackageFolder>contentFiles</PackageFolder>
-			<!-- Additional optional metadata: -->
-			<!-- CodeLanguage: any (default), cs, fs, vb -->
-			<!-- BuildAction: Compile (default), None, EmbeddedResource -->
-			<!-- CopyToOutput: false (default) / true -->
-			<!-- Flatten: false (default) / true -->
+			<!-- See https://docs.nuget.org/ndocs/schema/nuspec#using-the-contentfiles-element-for-content-files
+			Additional optional metadata for ContentFiles:
+				* CodeLanguage: any (default), cs, fs, vb 
+				* BuildAction: Compile (default), None, EmbeddedResource
+				* CopyToOutput: false (default) / true 
+				* Flatten: false (default) / true 
+			-->
 		</PackageItemKind>
 		<PackageItemKind Include="Native">
 			<PackageFolder>native</PackageFolder>
@@ -97,7 +107,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- PackageReference items end up as Dependency -->
 		<!-- Project references that build packages also end up as package dependencies -->
 		<PackageItemKind Include="Dependency">
-			<!-- PackageReference can contain a %(IsDevelopmentDependency)=true metadata -->
+			<!-- See https://github.com/NuGet/Home/wiki/PackageReference-Specification for the available metadata -->
 		</PackageItemKind>
 
 		<!-- The package metadata item if the project generates a package -->

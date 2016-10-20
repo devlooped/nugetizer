@@ -60,8 +60,10 @@
     <Content Include="Scenarios\given_a_multi_platform_solution\ios\forms.ios.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\net\forms.net46.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\forms.pcl.csproj" />
-    <Content Include="Scenarios\given_library_project_with_nugets\project.json" />
-    <Content Include="Scenarios\given_library_project_with_nugets\project.lock.json" />
+    <Content Include="Scenarios\given_library_with_config_dependencies\a.csproj" />
+    <Content Include="Scenarios\given_library_with_config_dependencies\a.sln" />
+    <Content Include="Scenarios\given_library_with_json_dependencies\project.json" />
+    <Content Include="Scenarios\given_library_with_json_dependencies\project.lock.json" />
     <None Include="Scenarios\fakeframework.targets" />
     <None Include="Scenarios\given_a_packaging_project\b\project.json" />
     <None Include="Scenarios\given_a_packaging_project\b\project.lock.json" />
@@ -69,12 +71,14 @@
     <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.lock.json" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.json" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.lock.json" />
+    <None Include="Scenarios\given_library_with_config_dependencies\packages.config" />
     <None Include="Scenarios\Scenario.props" />
     <None Include="Scenarios\Scenario.targets" />
+    <None Include="Scenarios\_._" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
-    <Content Include="Scenarios\given_library_project_with_nugets\a.csproj" />
+    <Content Include="Scenarios\given_library_with_json_dependencies\a.csproj" />
     <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj" />
     <Content Include="Scenarios\given_a_library_with_project_reference\a.csproj" />
     <Content Include="Scenarios\given_a_library_with_project_reference\b.csproj" />
@@ -92,13 +96,16 @@
     <Compile Include="given_a_localized_library.cs" />
     <Compile Include="given_a_complex_pack.cs" />
     <Compile Include="given_a_library_with_non_nugetized_reference.cs" />
-    <Compile Include="given_library_project_with_nugets.cs" />
+    <Compile Include="given_library_with_config_dependencies.cs" />
+    <Compile Include="given_library_with_json_dependencies.cs" />
     <Compile Include="given_an_empty_library_project.cs" />
     <Compile Include="given_a_library_with_project_reference.cs" />
     <Content Include="Scenarios\given_a_library_with_content\contentFiles\cs\monoandroid\sample.cs" />
     <Content Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.cs" />
     <Content Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.fs" />
     <Content Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.vb" />
+    <Compile Include="ReadLegacyJsonDependenciesTests.cs" />
+    <Compile Include="ReadLegacyConfigDependenciesTests.cs" />
     <Compile Include="UtilitiesTests.cs" />
     <Compile Include="Utilities\FrameworkAssemblyReferenceComparer.cs" />
     <Compile Include="Utilities\ManifestContentFilesComparer.cs" />
