@@ -112,7 +112,6 @@
     <Compile Include="Extensions\IProjectNodeExtensions.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="IDialogService.cs" />
-    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageExports.cs" />
     <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
     <None Include="Templates\Projects\PortableClassLibrary\Project.json" />
     <Resource Include="Templates\Projects\Package\Readme.txt" />
