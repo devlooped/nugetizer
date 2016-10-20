@@ -56,7 +56,7 @@ namespace NuGet.Packaging.VisualStudio
 				cleanupFilesOnBuildDone.Add(targetPackOnBuildFile);
 
 				buildManager.StartSimpleUpdateProjectConfiguration(hierarchy, null, null,
-					(uint)VSSOLNBUILDUPDATEFLAGS.SBF_OPERATION_BUILD, 0, 0);
+					(uint)(VSSOLNBUILDUPDATEFLAGS.SBF_OPERATION_FORCE_UPDATE | VSSOLNBUILDUPDATEFLAGS.SBF_OPERATION_BUILD), 0, 0);
 			}
 		}
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <Name>NuGet Package</Name>
+    <Name>Package</Name>
     <Description>A project template for creating NuGet packages (*.nupkg files)</Description>
     <Icon Package="{e57e2daf-a455-45db-962e-31b1c9c70860}" ID="400" />
     <TemplateID>NuGet.Packaging.VisualStudio.Package</TemplateID>
-    <ProjectType>NuGet.Packaging</ProjectType>
+    <ProjectType>NuGet</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <SortOrder>700</SortOrder>
 	<CreateInPlace>true</CreateInPlace>
