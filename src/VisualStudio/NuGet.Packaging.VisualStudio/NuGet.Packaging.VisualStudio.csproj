@@ -114,7 +114,7 @@
     <Compile Include="IDialogService.cs" />
     <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
     <None Include="Templates\Projects\PortableClassLibrary\Project.json" />
-    <Resource Include="Templates\Projects\Package\Readme.txt" />
+    <Resource Include="Templates\Projects\Nuget\Package\Readme.txt" />
     <None Include="ProjectSystem.Dev15\ProjectProperties.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
     <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
@@ -166,8 +166,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="Templates\Projects\Package\Package.targets" />
-    <None Include="Templates\Projects\Package\Project.json" />
+    <None Include="Templates\Projects\Nuget\Package\Package.targets" />
+    <None Include="Templates\Projects\Nuget\Package\Project.json" />
     <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
     <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -180,10 +180,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="source.extension.vsixmanifest" />
-    <None Include="Templates\Projects\Package\Package.nuproj" />
+    <None Include="Templates\Projects\Nuget\Package\Package.nuproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\Projects\Package\Package.vstemplate">
+    <None Include="Templates\Projects\Nuget\Package\Package.vstemplate">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -198,7 +198,7 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\Projects\MultiPlatformLibrary\MultiPlatformLibrary.vstemplate">
+    <None Include="Templates\Projects\CSharp\Cross-Platform\MultiPlatformLibrary\MultiPlatformLibrary.vstemplate">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

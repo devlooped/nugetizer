@@ -4,15 +4,13 @@
 
 	class Constants
 	{
-		public const string PortableClassLibraryCapability = "MultiTarget";
-
 		/// <summary>
 		/// The file extension of this project type.  No preceding period.
 		/// </summary>
 		public const string ProjectExtension = "nuproj";
 		public const string ProjectFileExtension = "." + ProjectExtension;
 
-		public const string Language = "NuGet.Packaging";
+		public const string Language = "NuGet";
 		public const string NuGetAuthoringPathPropertyName = "NuGetAuthoringPath";
 
 		public class UIContext

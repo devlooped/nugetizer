@@ -4,7 +4,7 @@
             xmlns="http://schemas.microsoft.com/developer/vstemplate/2005"
             xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <Name>Multiplatform Library</Name>
+    <Name>Class Library (Multi-Platform)</Name>
     <Description>A project template for creating cross platform library projects and its corresponding NuGet packages</Description>
     <Icon Package="{e57e2daf-a455-45db-962e-31b1c9c70860}" ID="400" />
     <TemplateID>NuGet.Packaging.VisualStudio.MultiPlatformLibrary</TemplateID>

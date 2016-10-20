@@ -8,7 +8,7 @@ namespace NuGet.Packaging.VisualStudio
 	[Export]
 	[AppliesTo(NuProjCapabilities.NuProj)]
 	[ProjectTypeRegistration(Guids.ProjectTypeGuid,
-							 "NuGet",
+							 "NuGet Project",
 							 "#2",
 							 Constants.ProjectExtension,
 							 Constants.Language,
