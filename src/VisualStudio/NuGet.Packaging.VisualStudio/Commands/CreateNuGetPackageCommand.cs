@@ -39,46 +39,31 @@ namespace NuGet.Packaging.VisualStudio
 
 		protected override void Execute()
 		{
-			if (CanExecute())
+			var project = ActiveProject.As<EnvDTE.Project>();
+			var vsBuildPropertyStorage = ActiveProject.AsVsHierarchy() as IVsBuildPropertyStorage;
+			if (vsBuildPropertyStorage != null)
 			{
-				var project = ActiveProject.As<EnvDTE.Project>();
+				var storage = new BuildPropertyStorage(vsBuildPropertyStorage);
+				var viewModel = new PackageMetadataViewModel(storage);
+
 				if (!IsBuildPackagingNuGetInstalled(project))
 				{
-					var vsBuildPropertyStorage = ActiveProject.AsVsHierarchy() as IVsBuildPropertyStorage;
-					if (vsBuildPropertyStorage != null)
-					{
-						var storage = new BuildPropertyStorage(vsBuildPropertyStorage);
-						var viewModel = new PackageMetadataViewModel(storage)
-						{
-							// Default values for required fields/properties
-							PackageId = project.Name,
-							PackageVersion = "1.0",
-							Description = project.Name,
-							Authors = "MyCompany"
-						};
-
-						var view = new PackageMetadataView()
-						{
-							DataContext = viewModel
-						};
-
-						if (dialogService.ShowDialog(view) == true)
-						{
-							InstallBuildPackagingNuget(project);
-							storage.CommitChanges();
-						}
-						else
-						{
-							return;
-						}
-					}
-					else
-					{
-						throw new NotSupportedException("Edit NuGet Package Metadata is not supported for the selected project");
-					}
+					// Provide default values for required fields/properties
+					viewModel.PackageId = project.Name;
+					viewModel.Description = project.Name;
+					viewModel.Authors = "MyCompany";
 				}
 
-				buildService.Pack(ActiveProject);
+				var view = new PackageMetadataView() { DataContext = viewModel };
+				if (dialogService.ShowDialog(view) == true)
+				{
+					storage.CommitChanges();
+
+					if (!IsBuildPackagingNuGetInstalled(project))
+						InstallBuildPackagingNuget(project);
+
+					buildService.Pack(ActiveProject);
+				}
 			}
 		}
 
@@ -88,7 +73,6 @@ namespace NuGet.Packaging.VisualStudio
 		IProjectNode ActiveProject => solutionExplorer.Solution.ActiveProject;
 
 		bool CanExecute() =>
-			!buildService.IsBusy &&
 			!ActiveProject.Supports(NuProjCapabilities.NuProj); // For NuProj projects the built-in Build command should be used
 
 		bool IsBuildPackagingNuGetInstalled(Project project) =>

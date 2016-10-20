@@ -1,4 +1,0 @@
-[submodule "external/clide"]
-	path = external/clide
-	url = https://github.com/clariuslabs/clide.git
-	branch = master

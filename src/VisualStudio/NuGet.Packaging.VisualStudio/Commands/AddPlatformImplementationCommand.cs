@@ -27,80 +27,65 @@ namespace NuGet.Packaging.VisualStudio
 
 		protected override void Execute()
 		{
-			if (CanExecute())
+			var context = new SolutionContext(solutionExplorer);
+			context.Initialize(solutionExplorer.Solution.ActiveProject);
+
+			var viewModel = new AddPlatformImplementationViewModel();
+
+			foreach (var platform in platformProvider.GetSupportedPlatforms())
 			{
-				var context = new SolutionContext(solutionExplorer);
-				context.Initialize(solutionExplorer.Solution.ActiveProject);
+				platform.IsEnabled = context.GetProjectNode(platform) == null;
+				viewModel.Platforms.Add(platform);
+			}
 
-				var viewModel = new AddPlatformImplementationViewModel();
+			if (!viewModel.Platforms.Any(x => x.IsEnabled))
+			{
+				MessageBox.Show(
+					"The available platform projects are already present in the current solution. Please select a different library or remove any of the platform projects.",
+					"Add Platform Implementation",
+					MessageBoxButton.OK,
+					MessageBoxImage.Exclamation);
 
-				foreach (var platform in platformProvider.GetSupportedPlatforms())
+				return;
+			}
+
+			viewModel.IsSharedProjectEnabled = context.SharedProject == null;
+
+			var view = new AddPlatformImplementationView();
+			view.DataContext = viewModel;
+
+			if (dialogService.ShowDialog(view) == true)
+			{
+				if (context.SharedProject == null && viewModel.UseSharedProject)
 				{
-					platform.IsEnabled = context.GetProjectNode(platform) == null;
-					viewModel.Platforms.Add(platform);
+					context.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
+						Constants.Templates.SharedProject, context.SharedProjectName);
 				}
 
-				if (!viewModel.Platforms.Any(x => x.IsEnabled))
+				if (context.NuGetProject == null)
 				{
-					MessageBox.Show(
-						"The available platform projects are already present in the current solution. Please select a different library or remove any of the platform projects.",
-						"Add Platform Implementation",
-						MessageBoxButton.OK,
-						MessageBoxImage.Exclamation);
-
-					return;
+					context.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
+						Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
 				}
 
-				viewModel.IsSharedProjectEnabled = context.SharedProject == null;
+				context.NuGetProject.AddReference(context.SelectedProject);
 
-				var view = new AddPlatformImplementationView();
-				view.DataContext = viewModel;
-
-				if (dialogService.ShowDialog(view) == true)
+				foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
 				{
-					if (context.SharedProject == null && viewModel.UseSharedProject)
-					{
-						context.SharedProject = solutionExplorer.Solution.UnfoldTemplate(
-							Constants.Templates.SharedProject, context.SharedProjectName);
+					var projectName = context.GetTargetProjectName(selectedPlatform);
+					var project = context.GetProjectNode(projectName);
 
-						// Move PCL items to the shared project
-						context.SelectedProject.Accept(
-							new MoveProjectItemsToProjectVisitor(context.SharedProject));
-					}
+					if (project == null)
+						project = solutionExplorer.Solution.UnfoldTemplate(
+							Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
+							projectName);
 
-					if (context.NuGetProject == null)
-					{
-						context.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
-							Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
-					}
+					if (context.SharedProject != null && viewModel.UseSharedProject)
+						project.AddReference(context.SharedProject);
 
-					context.NuGetProject.AddReference(context.SelectedProject);
-
-					foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
-					{
-						var projectName = context.GetTargetProjectName(selectedPlatform);
-						var project = context.GetProjectNode(projectName);
-
-						if (project == null)
-							project = solutionExplorer.Solution.UnfoldTemplate(
-								Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
-								projectName);
-
-						if (context.SharedProject != null && viewModel.UseSharedProject)
-							project.AddReference(context.SharedProject);
-
-						context.NuGetProject.AddReference(project);
-					}
+					context.NuGetProject.AddReference(project);
 				}
 			}
 		}
-
-		protected override void CanExecute(OleMenuCommand command)
-		{
-			command.Enabled = command.Visible = CanExecute();
-		}
-
-		bool CanExecute() =>
-				solutionExplorer.Solution.ActiveProject.Supports(Constants.PortableClassLibraryCapability);
 	}
 }

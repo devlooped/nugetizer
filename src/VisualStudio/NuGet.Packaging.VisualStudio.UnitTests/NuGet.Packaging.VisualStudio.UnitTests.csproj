@@ -19,10 +19,6 @@
     <Compile Include="Wizards\MultiPlatformWizardSpec.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\external\clide\src\Clide.Interfaces\Clide.Interfaces.csproj">
-      <Project>{099bebd8-6b04-416d-ba44-e0201951542b}</Project>
-      <Name>Clide.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NuGet.Packaging.VisualStudio\NuGet.Packaging.VisualStudio.csproj">
       <Project>{9617edcd-23bb-41ea-827d-f5729d45b0af}</Project>
       <Name>NuGet.Packaging.VisualStudio</Name>

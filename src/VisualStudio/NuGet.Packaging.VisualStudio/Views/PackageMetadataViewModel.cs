@@ -84,7 +84,6 @@ namespace NuGet.Packaging.VisualStudio
 			set { storage.SetPropertyValue(value); }
 		}
 
-		[Required]
 		public string PackageVersion
 		{
 			get { return storage.GetPropertyValue<string>(); }
