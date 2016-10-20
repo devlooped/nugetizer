@@ -27,6 +27,12 @@
 		expression: "SolutionExistsAndNotBuildingAndNotDebugging & IsPortableClassLibrary",
 		termNames: new[] { "SolutionExistsAndNotBuildingAndNotDebugging", "IsPortableClassLibrary" },
 		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "ActiveProjectFlavor:786C830F-07A1-408B-BD7F-6EE04809D6DB" })]
+	[ProvideUIContextRule(
+		Constants.UIContext.NonNuProj,
+		name: "Non NuProj UI Context",
+		expression: "SolutionExistsAndNotBuildingAndNotDebugging & !IsNuProj",
+		termNames: new[] { "SolutionExistsAndNotBuildingAndNotDebugging", "IsNuProj" },
+		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "ActiveProjectCapability:PackagingProject" })]
 	[ProvideMenuResource("2000", 2)]
 	public sealed class NuGetizerPackage : Package
 	{

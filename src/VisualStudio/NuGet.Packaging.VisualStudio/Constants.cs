@@ -4,6 +4,8 @@
 
 	class Constants
 	{
+		public const string PortableClassLibraryCapability = "MultiTarget";
+
 		/// <summary>
 		/// The file extension of this project type.  No preceding period.
 		/// </summary>
@@ -16,6 +18,7 @@
 		public class UIContext
 		{
 			public const string AddPlatformImplementation = "2590DF87-84EB-487A-A1FF-160BEAF4F9CA";
+			public const string NonNuProj = "08E11CF6-52EE-4880-AB1B-D3CC7B10A895";
 		}
 
 		public class NuGet

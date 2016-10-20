@@ -87,5 +87,13 @@ namespace NuGet.Packaging.VisualStudio
 				}
 			}
 		}
+
+		IProjectNode ActiveProject => solutionExplorer.Solution.ActiveProject;
+
+		protected override void CanExecute(OleMenuCommand command) =>
+			command.Enabled = command.Visible = CanExecute();
+
+		bool CanExecute() =>
+			ActiveProject.Supports(Constants.PortableClassLibraryCapability);
 	}
 }
