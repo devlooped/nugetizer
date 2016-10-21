@@ -30,16 +30,6 @@ namespace NuGet.Packaging.VisualStudio
 			buildManager.AdviseUpdateSolutionEvents(this, out updateSolutionEventsCookie);
 		}
 
-		public bool IsBusy
-		{
-			get
-			{
-				int buildManagerBusy;
-				return ErrorHandler.Succeeded(buildManager.QueryBuildManagerBusy(out buildManagerBusy)) &&
-					buildManagerBusy != 0;
-			}
-		}
-
 		public void Pack(IProjectNode project)
 		{
 			var hierarchy = project.AsVsHierarchy();
