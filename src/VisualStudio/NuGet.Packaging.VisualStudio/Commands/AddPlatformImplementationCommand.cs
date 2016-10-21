@@ -94,6 +94,7 @@ namespace NuGet.Packaging.VisualStudio
 			command.Enabled = command.Visible = CanExecute();
 
 		bool CanExecute() =>
+			KnownUIContexts.SolutionExistsAndNotBuildingAndNotDebuggingContext.IsActive &&
 			ActiveProject.Supports(Constants.PortableClassLibraryCapability);
 	}
 }
