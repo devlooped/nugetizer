@@ -15,6 +15,10 @@
 			<Project>$(GuidC)</Project>
 			<Name>c</Name>
 		</ProjectReference>
+		<ProjectReference Include="e.csproj">
+			<Project>$(GuidE)</Project>
+			<Name>e</Name>
+		</ProjectReference>
 	</ItemGroup>
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />	
 </Project>
