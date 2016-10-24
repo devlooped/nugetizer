@@ -80,7 +80,7 @@
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 	<Import Project="packages\IFluentInterface.2.0.3\build\IFluentInterface.targets" Condition="Exists('packages\IFluentInterface.2.0.3\build\IFluentInterface.targets')" />
 	<!-- From the gazillion added packages to packages.config, we only need to keep the top level Microsoft.CodeAnalysis -->
-	<Target Name="RemoveIFluentInterface" BeforeTargets="GetPackageContents">
+	<Target Name="RemoveUnnecessaryDependencies" BeforeTargets="GetPackageContents">
 		<ItemGroup>
 			<_CodeAnalysisDependency Include="@(PackageReference)"
 									 Condition="$([System.String]::new(%(Identity)).StartsWith('Microsoft.CodeAnalysis.'))" />
