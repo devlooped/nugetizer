@@ -366,11 +366,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 			Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
 			Inputs="@(_MSBuildProjectReferenceExistent)"
 			Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
+		
 		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
-					 Targets="GetTargetPath"
-					 BuildInParallel="$(BuildInParallel)"
-					 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
-					 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+				 Targets="GetTargetPath"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
+				 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectTargetPath" />
 		</MSBuild>
 
@@ -379,8 +380,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</PropertyGroup>
 
 		<ItemGroup>
-			<_NoIsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_HasIsPackable)' != 'true'" />
-			<_IsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_HasIsPackable)' == 'true'" />
+			<_NoIsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false' and '$(_HasIsPackable)' != 'true'" />
+			<_IsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false' and '$(_HasIsPackable)' == 'true'" />
 		</ItemGroup>
 
 	</Target>

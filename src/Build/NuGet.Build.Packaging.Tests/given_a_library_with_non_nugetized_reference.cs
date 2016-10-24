@@ -33,6 +33,29 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_include_in_package_false_then_does_not_include_referenced_project_outputs()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference),
+				properties: new { IncludeInPackage = "false" },
+				output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\b.dll",
+			}));
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\b.xml",
+			}));
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"lib\net46\b.dll",
+			}));
+		}
+
+		[Fact]
 		public void when_getting_contents_then_includes_referenced_project_outputs()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), new
