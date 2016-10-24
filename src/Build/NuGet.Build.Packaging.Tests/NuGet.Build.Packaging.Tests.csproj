@@ -60,6 +60,7 @@
     <Content Include="Scenarios\given_a_multi_platform_solution\ios\forms.ios.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\net\forms.net46.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\forms.pcl.csproj" />
+    <Content Include="Scenarios\given_a_packaging_project\e.csproj" />
     <Content Include="Scenarios\given_library_with_config_dependencies\a.csproj" />
     <Content Include="Scenarios\given_library_with_config_dependencies\a.sln" />
     <Content Include="Scenarios\given_library_with_json_dependencies\project.json" />

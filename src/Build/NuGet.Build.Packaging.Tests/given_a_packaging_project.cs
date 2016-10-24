@@ -80,7 +80,7 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_getting_contents_then_includes_referenced_project__dependency_satellite_assembly()
+		public void when_getting_contents_then_includes_referenced_project_dependency_satellite_assembly()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
 
@@ -89,6 +89,20 @@ namespace NuGet.Build.Packaging
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				PackagePath = @"lib\net46\es-AR\d.resources.dll",
+			}));
+		}
+
+		[Fact]
+		public void when_getting_contents_then_includes_referenced_packagable_project_as_dependency()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				Kind = "Dependency",
+				Identity = "E",
 			}));
 		}
 

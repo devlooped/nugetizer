@@ -18,10 +18,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
 	<PropertyGroup>
+		<!-- Whether to include @(Content) items in the package -->
 		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
+		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
 		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
+		<!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
 		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbolsInPackage>
-		<!-- Only default to true if the project isn't a nuget project itself. -->
+		<!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
+		<!-- Only default to true if the project isn't a nuget packaging project itself. -->
 		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true'">true</IncludeFrameworkReferencesInPackage>
 
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
@@ -283,6 +287,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- Always annotate package contents with the original target framework and moniker -->
 		<CreateItem Include="@(_ReferencedPackageContent)" PreserveExistingMetadata="true"
+					Condition="'@(_ReferencedPackageContent)' != ''"
 					AdditionalMetadata="OriginalTargetFramework=%(TargetFramework);OriginalTargetFrameworkMoniker=%(TargetFrameworkMoniker)">
 			<Output TaskParameter="Include" ItemName="_ReferencedPackageContentWithOriginalValues"/>
 		</CreateItem>
@@ -329,7 +334,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<AssignPackagePath Files="@(_ReferencedPackageContentWithOriginalValues);@(_ReferencedPackageDependency)"
 						   Kinds="@(PackageItemKind)"
 						   IsPackaging="$(BuildingPackage)"
-						   Condition="'@(_ReferencedPackageContentWithOriginalValues)' != ''">
+						   Condition="'@(_ReferencedPackageContentWithOriginalValues)' != '' Or '@(_ReferencedPackageDependency)' != ''">
 			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
 		</AssignPackagePath>
 	</Target>
