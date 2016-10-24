@@ -47,5 +47,26 @@ namespace NuGet.Build.Packaging
 				Identity = "Microsoft.CodeAnalysis",
 			}));
 		}
+
+		[Fact]
+		public void when_not_inferring_legacy_package_references_then_does_not_contain_package_reference_to_nuget()
+		{
+			var result = Builder.BuildScenario(nameof(given_library_with_config_dependencies),
+				properties: new { InferLegacyPackageReferences = false },
+				output: output);
+
+			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				Kind = PackageItemKind.Dependency,
+				Identity = "Newtonsoft.Json",
+			}));
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				Kind = PackageItemKind.Dependency,
+				Identity = "Microsoft.CodeAnalysis",
+			}));
+		}
 	}
 }

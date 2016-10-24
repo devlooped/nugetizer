@@ -18,6 +18,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
 	<PropertyGroup>
+		<!-- Infer PackageRererence elements from packages.config/project.json files in the project -->
+		<InferLegacyPackageReferences Condition="'$(InferLegacyPackageReferences)' == ''">true</InferLegacyPackageReferences>
 		<!-- Whether to include @(Content) items in the package -->
 		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
 		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
@@ -539,7 +541,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	</Target>
 
-	<Target Name="ReadLegacyDependencies">
+	<Target Name="ReadLegacyDependencies" Condition="'$(InferLegacyPackageReferences)' == 'true'">
 		<PropertyGroup>
 			<_ProjectJson>$(MSBuildProjectDirectory)\project.json</_ProjectJson>
 			<_PackagesConfig>$(MSBuildProjectDirectory)\packages.config</_PackagesConfig>
