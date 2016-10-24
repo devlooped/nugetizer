@@ -29,11 +29,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</PropertyGroup>
 	</Target>
 
+	<Target Name="CoreCompile" DependsOnTargets="Pack" />
 	<Target Name="CreateManifestResourceNames" />
 	<Target Name="GetReferenceAssemblyPaths" />
 	
-	<Target Name="CoreCompile" DependsOnTargets="Pack" />
-
 	<Target Name="_CleanReferences" AfterTargets="ResolveAssemblyReferences">
 		<ItemGroup>
 			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
