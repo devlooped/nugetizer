@@ -23,6 +23,8 @@
 		<PackageLicenseUrl>https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
 
+		<InferLegacyPackageReferences>false</InferLegacyPackageReferences>
+		<IncludeContentInPackage>false</IncludeContentInPackage>
 		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
 		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
 		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
@@ -36,7 +38,7 @@
 	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
 			Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
 
-	<Target Name="AddBuiltOutput" DependsOnTargets="GetPackageVersion;ResolveReferences;AllProjectOutputGroups;AssignTargetPaths">
+	<Target Name="AddBuiltOutput" BeforeTargets="GetPackageContents">
 		<!-- Update packaging version targets -->
 		<PropertyGroup>
 			<XmlNs>&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;</XmlNs>
@@ -129,5 +131,5 @@ namespace $(RootNamespace)
 			</Reference>
 		</ItemGroup>
 	</Target>
-
+	
 </Project>
