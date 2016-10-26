@@ -29,6 +29,10 @@
     <Content Include="NuGet.Build.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\..\external\ApiIntersect\ApiIntersect\app.config">
+      <Link>ApiIntersect.exe.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="NuGet.Build.Packaging.Version.props">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -39,9 +43,17 @@
     <Content Include="NuGet.Build.Packaging.Authoring.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="GenerateReferenceAssembly.csproj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj">
+      <Project>{cd767d93-6c99-4d6a-a303-3c139a73400e}</Project>
+      <Name>ApiIntersect</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -49,9 +61,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiIntersect.cs" />
     <Compile Include="AssignPackagePath.cs" />
     <Compile Include="CreatePackage.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="GenerateAssemblyInfo.cs" />
     <Compile Include="MetadataName.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

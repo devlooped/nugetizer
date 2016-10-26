@@ -14,6 +14,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ReadLegacyJsonDependencies" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ReadLegacyConfigDependencies" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ApiIntersect" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.GenerateAssemblyInfo" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
@@ -201,6 +203,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<GetPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
 			$(GetPackageContentsDependsOn)
 			_CollectMissingIsPackableProjectReferencesOutputs;
+			_GenerateReferenceAssemblies;
 		</GetPackageContentsDependsOn>
 	</PropertyGroup>
 	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
@@ -638,6 +641,63 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</CreatePackage>
 
 		<Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />
+	</Target>
+
+
+	<PropertyGroup>
+		<CleanDependsOn>$(CleanDependsOn);_CleanReferenceAssemblyIntermediateOutputs</CleanDependsOn>
+	</PropertyGroup>
+
+	<Target Name="_GenerateReferenceAssemblies" Condition=" '@(ReferenceAssemblyFramework)' != '' ">
+		<MSBuild
+			Projects="@(_IsPackableProject)"
+			Targets="GetTargetPath">
+			<Output TaskParameter="TargetOutputs" ItemName="IntersectionAssembly" />
+		</MSBuild>
+
+		<ApiIntersect
+			Framework="%(ReferenceAssemblyFramework.Identity)"
+			RootOutputDirectory="$(IntermediateOutputPath)"
+			IntersectionAssembly="@(IntersectionAssembly)"
+			ToolPath="$(ApiIntersectToolPath)"
+			ToolExe="$(ApiIntersectToolExe)">
+			<Output TaskParameter="OutputDirectory" ItemName="_ReferenceAssemblyBuildInfo" />
+		</ApiIntersect>
+
+		<GenerateAssemblyInfo
+			Assemblies="@(IntersectionAssembly)"
+			OutputDirectories="@(_ReferenceAssemblyBuildInfo->'%(Identity)Contract')">
+			<Output TaskParameter="AssemblyName" PropertyName="_ReferenceAssemblyName" />
+		</GenerateAssemblyInfo>
+
+		<MSBuild
+			Projects="$(MSBuildThisFileDirectory)GenerateReferenceAssembly.csproj"
+			Properties="
+				AssemblyName=$(_ReferenceAssemblyName);
+				SrcDir=%(_ReferenceAssemblyBuildInfo.FullPath);
+				OutputPath=%(_ReferenceAssemblyBuildInfo.FullPath)bin\;
+				IntermediateOutputPath=%(_ReferenceAssemblyBuildInfo.FullPath)obj\;
+				TargetFrameworkVersion=%(_ReferenceAssemblyBuildInfo.TargetFrameworkVersion);
+				TargetFrameworkProfile=%(_ReferenceAssemblyBuildInfo.TargetFrameworkProfile)" />
+
+		<ItemGroup>
+			<PackageFile Include="@(_ReferenceAssemblyBuildInfo->'%(Identity)bin\$(_ReferenceAssemblyName).dll')">
+				<Kind>Lib</Kind>
+				<TargetFrameworkMoniker>%(_ReferenceAssemblyBuildInfo.TargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</PackageFile>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_CleanReferenceAssemblyIntermediateOutputs" Condition=" '@(ReferenceAssemblyFramework)' != '' and Exists('$(IntermediateOutputPath)') ">
+		<PropertyGroup>
+			<_ReferenceAssemblyIntermediateOutputDirectories>$([System.IO.Directory]::GetDirectories('$(IntermediateOutputPath)'))</_ReferenceAssemblyIntermediateOutputDirectories>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_ReferenceAssemblyIntermediateOutputDirectory Include="$(_ReferenceAssemblyIntermediateOutputDirectories)" />
+		</ItemGroup>
+
+		<RemoveDir Directories="@(_ReferenceAssemblyIntermediateOutputDirectory)" />
 	</Target>
 
 	<Import Project="NuGet.Build.Packaging.Authoring.targets" Condition="'$(IsPackagingProject)' == 'true'" />
