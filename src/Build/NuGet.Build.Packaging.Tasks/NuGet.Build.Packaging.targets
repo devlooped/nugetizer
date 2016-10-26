@@ -649,8 +649,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</PropertyGroup>
 
 	<Target Name="_GenerateReferenceAssemblies" Condition=" '@(ReferenceAssemblyFramework)' != '' ">
+		<ItemGroup>
+			<_ReferenceAssemblyProjects Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false'" />
+		</ItemGroup>
+
 		<MSBuild
-			Projects="@(_IsPackableProject)"
+			Projects="@(_ReferenceAssemblyProjects)"
 			Targets="GetTargetPath">
 			<Output TaskParameter="TargetOutputs" ItemName="IntersectionAssembly" />
 		</MSBuild>
