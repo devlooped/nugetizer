@@ -61,6 +61,8 @@
     <Content Include="Scenarios\given_a_multi_platform_solution\net\forms.net46.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\forms.pcl.csproj" />
     <Content Include="Scenarios\given_a_packaging_project\e.csproj" />
+    <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\b.sln" />
+    <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\b\b.csproj" />
     <Content Include="Scenarios\given_library_with_config_dependencies\a.csproj" />
     <Content Include="Scenarios\given_library_with_config_dependencies\a.sln" />
     <Content Include="Scenarios\given_library_with_json_dependencies\project.json" />
@@ -72,6 +74,7 @@
     <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.lock.json" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.json" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.lock.json" />
+    <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\a.nuproj" />
     <None Include="Scenarios\given_library_with_config_dependencies\packages.config" />
     <None Include="Scenarios\Scenario.props" />
     <None Include="Scenarios\Scenario.targets" />
@@ -97,6 +100,7 @@
     <Compile Include="given_a_localized_library.cs" />
     <Compile Include="given_a_complex_pack.cs" />
     <Compile Include="given_a_library_with_non_nugetized_reference.cs" />
+    <Compile Include="given_a_packaging_project_with_reference_assembly.cs" />
     <Compile Include="given_library_with_config_dependencies.cs" />
     <Compile Include="given_library_with_json_dependencies.cs" />
     <Compile Include="given_an_empty_library_project.cs" />
@@ -107,6 +111,7 @@
     <Content Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.vb" />
     <Compile Include="ReadLegacyJsonDependenciesTests.cs" />
     <Compile Include="ReadLegacyConfigDependenciesTests.cs" />
+    <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\b\MyClass.cs" />
     <Compile Include="UtilitiesTests.cs" />
     <Compile Include="Utilities\FrameworkAssemblyReferenceComparer.cs" />
     <Compile Include="Utilities\ManifestContentFilesComparer.cs" />
@@ -120,6 +125,10 @@
     <Compile Include="Utilities\TestOutputLogger.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj">
+      <Project>{cd767d93-6c99-4d6a-a303-3c139a73400e}</Project>
+      <Name>ApiIntersect</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj">
       <Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
       <Name>NuGet.Build.Packaging.Tasks</Name>

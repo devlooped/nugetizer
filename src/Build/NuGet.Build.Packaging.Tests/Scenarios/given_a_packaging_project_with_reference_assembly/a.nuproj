@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
+	<PropertyGroup>
+		<TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+		<PackageId>a.package</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="b\b.csproj">
+			<Project>$(GuidB)</Project>
+			<Name>b</Name>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ReferenceAssemblyFramework Include=".NETPortable,Version=v4.5,Profile=Profile259" />
+	</ItemGroup>
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />	
+</Project>
