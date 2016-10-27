@@ -28,11 +28,6 @@
 		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
 		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
 		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
-
-		<GetPackageContentsDependsOn>
-			AddBuiltOutput;
-			$(GetPackageContentsDependsOn)
-		</GetPackageContentsDependsOn>		
 	</PropertyGroup>
 
 	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
