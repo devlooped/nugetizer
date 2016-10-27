@@ -676,7 +676,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_GenerateReferenceAssemblies" DependsOnTargets="_GetReferenceAssemblyTargetPaths" Condition=" '@(ReferenceAssemblyFramework)' != '' ">
+	<Target Name="_GenerateReferenceAssemblies"
+		DependsOnTargets="_GetReferenceAssemblyTargetPaths"
+		Condition=" '@(ReferenceAssemblyFramework)' != '' "
+		Inputs="@(IntersectionAssembly)"
+		Outputs="@(_ReferenceAssemblyTargetPath)">
+
 		<ApiIntersect
 			Framework="%(ReferenceAssemblyFramework.Identity)"
 			RootOutputDirectory="$(IntermediateOutputPath)"
