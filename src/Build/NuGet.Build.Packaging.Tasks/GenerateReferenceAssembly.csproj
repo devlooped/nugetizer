@@ -33,12 +33,8 @@
   </PropertyGroup>
 
   <Target Name="_CollectCompileFiles">
-    <!-- use property function since ** returns the same file twice with xbuild resulting in a compile warning. -->
-    <PropertyGroup>
-      <_CompileFiles>$([System.IO.Directory]::GetFiles('$(SrcDir)Contract\', '*.cs', SearchOption.AllDirectories))</_CompileFiles>
-    </PropertyGroup>
     <ItemGroup>
-      <Compile Include="$(_CompileFiles)" />
+      <Compile Include="$(SrcDir)Contract\**\*.cs" />
     </ItemGroup>
   </Target>
 </Project>
