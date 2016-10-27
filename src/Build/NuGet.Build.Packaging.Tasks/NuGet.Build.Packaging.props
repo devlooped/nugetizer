@@ -15,6 +15,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<IsPackagingProject Condition="'$(IsPackagingProject)' == '' and '$(MSBuildProjectExtension)' == '.nuproj'">true</IsPackagingProject>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<ApiIntersectToolPath Condition=" '$(ApiIntersectTool)' == '' ">$(MSBuildThisFileDirectory)</ApiIntersectToolPath>
+		<ApiIntersectToolExe Condition=" '$(ApiIntersectToolExe)' == '' ">ApiIntersect.exe</ApiIntersectToolExe>
+	</PropertyGroup>
+
 	<ItemDefinitionGroup>
 		<PackageFile>
 			<!-- See @(PackageItemKind) below -->

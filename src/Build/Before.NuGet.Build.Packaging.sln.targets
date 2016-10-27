@@ -6,5 +6,6 @@
 		<RestoreSolution Include="$(MSBuildThisFileDirectory)NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
 		<RestoreSolution Include="$(MSBuildThisFileDirectory)NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln" />
 		<RestoreSolution Include="$(MSBuildThisFileDirectory)NuGet.Build.Packaging.Tests\Scenarios\given_library_with_json_dependencies\project.json" />
+		<RestoreSolution Include="$(MSBuildThisFileDirectory)..\..\external\ApiIntersect\ApiIntersect.sln" />
 	</ItemGroup>
 </Project>

@@ -1,0 +1,3 @@
+[submodule "external/ApiIntersect"]
+	path = external/ApiIntersect
+	url = https://github.com/xamarin/ApiInteresect.git
