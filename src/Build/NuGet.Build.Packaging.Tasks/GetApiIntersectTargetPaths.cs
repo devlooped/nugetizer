@@ -35,9 +35,20 @@ namespace NuGet.Build.Packaging.Tasks
 
 		string GetAssemblyFileName()
 		{
-			return Assemblies.NullAsEmpty()
+			string[] fileNames = Assemblies.NullAsEmpty()
 				.Select(assembly => Path.GetFileName(assembly.ItemSpec))
-				.FirstOrDefault();
+				.ToArray();
+
+			if (fileNames.Distinct().Count() > 1)
+			{
+				Log.LogWarningCode("NG1003",
+					BuildEngine.ProjectFileOfTaskNode,
+					"Assembly names should be the same for a bait and switch NuGet package. Names: '{0}' Assemblies: {1}",
+					string.Join(", ", fileNames),
+					string.Join(", ", Assemblies.Select(assembly => assembly.ItemSpec)));
+			}
+
+			return fileNames.FirstOrDefault();
 		}
 
 		private ITaskItem GetTargetPath(ITaskItem framework, string assemblyFileName)

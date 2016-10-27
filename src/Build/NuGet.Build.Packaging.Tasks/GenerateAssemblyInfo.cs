@@ -37,7 +37,9 @@ namespace NuGet.Build.Packaging.Tasks
 			string[] allNames = assemblyNames.Select(name => name.Name).ToArray();
 			if (allNames.Distinct().Count() > 1)
 			{
-				Log.LogWarning("Assembly names should be the same for a bait and switch NuGet package. Names: '{0}' Assemblies: {1}",
+				Log.LogWarningCode("NG1003",
+					BuildEngine.ProjectFileOfTaskNode,
+					"Assembly names should be the same for a bait and switch NuGet package. Names: '{0}' Assemblies: {1}",
 					string.Join(", ", allNames),
 					string.Join(", ", Assemblies.Select(assembly => assembly.ItemSpec)));
 			}
@@ -45,7 +47,9 @@ namespace NuGet.Build.Packaging.Tasks
 			Version[] allVersions = assemblyNames.Select(name => name.Version).ToArray();
 			if (allVersions.Distinct().Count() > 1)
 			{
-				Log.LogWarning("Assembly versions should be the same for a bait and switch NuGet package. Versions: '{0}' Assemblies: {1}",
+				Log.LogWarningCode("NG1004",
+					BuildEngine.ProjectFileOfTaskNode,
+					"Assembly versions should be the same for a bait and switch NuGet package. Versions: '{0}' Assemblies: {1}",
 					string.Join(", ", allVersions.Select(version => version.ToString())),
 					string.Join(", ", Assemblies.Select(assembly => assembly.ItemSpec)));
 			}

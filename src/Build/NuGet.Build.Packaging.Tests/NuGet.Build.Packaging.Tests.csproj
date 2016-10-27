@@ -94,6 +94,7 @@
     <Compile Include="Builder.NuGetizer.cs">
       <DependentUpon>Builder.cs</DependentUpon>
     </Compile>
+    <Compile Include="GetApiIntersectTargetPathsTests.cs" />
     <Compile Include="given_a_packaging_project.cs" />
     <Compile Include="given_a_multi_platform_solution.cs" />
     <Compile Include="given_a_library_with_content.cs" />
