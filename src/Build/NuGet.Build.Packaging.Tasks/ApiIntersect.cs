@@ -61,7 +61,7 @@ namespace NuGet.Build.Packaging.Tasks
 
 		void CreateOutputDirectoryItem(NuGetFramework framework)
 		{
-			string fullOutputPath = Path.Combine(RootOutputDirectory.ItemSpec, GetOutputDirectoryName(framework));
+			string fullOutputPath = GetApiIntersectTargetPaths.GetOutputDirectory(RootOutputDirectory.ItemSpec, framework);
 			OutputDirectory = new TaskItem(fullOutputPath + Path.DirectorySeparatorChar);
 			OutputDirectory.SetMetadata("TargetFrameworkVersion", "v" + framework.Version.ToString(2));
 			OutputDirectory.SetMetadata("TargetFrameworkProfile", framework.Profile);
@@ -101,16 +101,6 @@ namespace NuGet.Build.Packaging.Tasks
 			return Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86, Environment.SpecialFolderOption.DoNotVerify),
 				@"Reference Assemblies\Microsoft\Framework\.NETPortable");
-		}
-
-		string GetOutputDirectoryName(NuGetFramework framework)
-		{
-			if (framework.IsPCL && framework.HasProfile)
-			{
-				return framework.Profile;
-			}
-
-			return framework.GetShortFolderName();
 		}
 	}
 }

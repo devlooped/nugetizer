@@ -66,6 +66,7 @@
     <Compile Include="CreatePackage.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GenerateAssemblyInfo.cs" />
+    <Compile Include="GetApiIntersectTargetPaths.cs" />
     <Compile Include="MetadataName.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
