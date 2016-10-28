@@ -43,6 +43,27 @@
 				 Query="/msb:Project/msb:PropertyGroup/msb:PackagingTargetsVersion"
 				 Value="$(PackageVersion)"/>
 		<ItemGroup>
+			<PackageFile Include="$(OutputPath)ApiIntersect.exe">
+				<PackagePath>build\ApiIntersect.exe</PackagePath>
+			</PackageFile>
+			<PackageFile Include="$(OutputPath)ApiIntersect.exe.config">
+				<PackagePath>build\ApiIntersect.exe.config</PackagePath>
+			</PackageFile>
+			<PackageFile Include="$(OutputPath)ICSharpCode.Decompiler.dll">
+				<PackagePath>build\ICSharpCode.Decompiler.dll</PackagePath>
+			</PackageFile>
+			<PackageFile Include="$(OutputPath)ICSharpCode.NRefactory.CSharp.dll">
+				<PackagePath>build\ICSharpCode.NRefactory.CSharp.dll</PackagePath>
+			</PackageFile>
+			<PackageFile Include="$(OutputPath)ICSharpCode.NRefactory.dll">
+				<PackagePath>build\ICSharpCode.NRefactory.dll</PackagePath>
+			</PackageFile>
+			<PackageFile Include="$(OutputPath)Mono.Cecil.dll">
+				<PackagePath>build\Mono.Cecil.dll</PackagePath>
+			</PackageFile>
+			<PackageFile Include="$(OutputPath)Mono.Options.dll">
+				<PackagePath>build\Mono.Options.dll</PackagePath>
+			</PackageFile>
 			<PackageFile Include="$(OutputPath)NuGet.Build.Packaging.Version.props">
 				<PackagePath>build\NuGet.Build.Packaging.Version.props</PackagePath>
 			</PackageFile>
