@@ -21,6 +21,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 
 	<PropertyGroup>
+		<!-- The Kind of primary output (build, symbols and doc) set if IncludeOutputsInPackage = true -->
+		<PrimaryOutputPackageFileKind Condition="'$(PrimaryOutputPackageFileKind)' == ''">Lib</PrimaryOutputPackageFileKind>
+		
 		<!-- Infer PackageRererence elements from packages.config/project.json files in the project -->
 		<InferLegacyPackageReferences Condition="'$(InferLegacyPackageReferences)' == ''">true</InferLegacyPackageReferences>
 		<!-- Whether to include @(Content) items in the package -->
@@ -49,12 +52,16 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<ItemGroup>
 		<ProjectCapability Include="Packable" Condition="'$(IsPackable)' == 'true'"/>
+		
+		<!-- Converts potentially multiple $(ReferenceAssemblyFrameworks) into @(ReferenceAssemblyFramework) -->
+		<ReferenceAssemblyFramework Include="$(ReferenceAssemblyFrameworks)" Condition="'$(ReferenceAssemblyFrameworks)' != ''" />
 	</ItemGroup>
 
 	<!-- Extends the built-in GetTargetPath output to signal that the project has been nugetized -->
 	<ItemDefinitionGroup>
 		<TargetPathWithTargetPlatformMoniker>
 			<IsPackable>$(IsPackable)</IsPackable>
+			<IsNuGetized>$(IsNuGetized)</IsNuGetized>
 		</TargetPathWithTargetPlatformMoniker>
 	</ItemDefinitionGroup>
 
@@ -216,7 +223,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                          Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute primary output -->
-				<Kind>Lib</Kind>
+				<Kind>$(PrimaryOutputPackageFileKind)</Kind>
 			</PackageFile>
 
 			<!-- Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
@@ -227,20 +234,20 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<PackageFile Include="@(_DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                          Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute primary docs -->
-				<Kind>Doc</Kind>
+				<Kind>$(PrimaryOutputPackageFileKind)</Kind>
 			</PackageFile>
 
 			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                          Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute primary symbols -->
-				<Kind>Symbols</Kind>
+				<Kind>$(PrimaryOutputPackageFileKind)</Kind>
 			</PackageFile>
 
 			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
 			<PackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
 						 Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute satellite dlls -->
-				<Kind>Lib</Kind>
+				<Kind>$(PrimaryOutputPackageFileKind)</Kind>
 			</PackageFile>
 
 			<!-- NOTE: Content is opt-out (must have IncludeInPackage=false to exclude) -->
@@ -279,6 +286,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ItemGroup>
 			<PackageFile>
 				<PackageId>$(PackageId)</PackageId>
+				<Platform>$(Platform)</Platform>
 				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
@@ -325,9 +333,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
 				<!-- Only do this for Library assets that come from project references that don't build nugets (PackageId=='' above) -->
 				<TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Library' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Symbols' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Doc'"></TargetFramework>
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib'"></TargetFramework>
 				<!-- NOTE: we're always overwriting the TFM in this case since 
 					 this item will end up making up the contents of this package 
 					 project in its current TFM configuration. 
@@ -346,9 +352,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
 				<!-- Only do this for Library assets that come from project references that don't build nugets (PackageId=='' above) -->
 				<TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Library' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Symbols' or 
-											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Doc'"></TargetFramework>
+											'%(_ReferencedPackageContentWithOriginalValues.Kind)' == 'Lib'"></TargetFramework>
 				<TargetFrameworkMoniker>%(OriginalTargetFrameworkMoniker)</TargetFrameworkMoniker>
 			</_ReferencedPackageContentWithOriginalValues>
 		</ItemGroup>
@@ -468,7 +472,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<ItemGroup>
 			<PackageFile Include="@(_ReferencedProjectDebugSymbols -> '%(FinalOutputPath)')">
-				<Kind>Symbols</Kind>
+				<Kind>Lib</Kind>
 				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
@@ -485,7 +489,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ItemGroup>
 			<PackageFile Include="@(_ReferencedProjectOutputDependencySymbols -> '%(FullPath)')"
 						 Condition="'%(_ReferencedProjectOutputDependencySymbols.CopyLocal)' == 'true'">
-				<Kind>Symbols</Kind>
+				<Kind>Lib</Kind>
 				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
@@ -508,7 +512,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<FinalFullOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(_ReferencedProjectDocumentation.FinalOutputPath)')) == 'false'">$([System.IO.Path]::GetDirectoryName('%(_ReferencedProjectDocumentation.MSBuildSourceProjectFile)'))\%(_ReferencedProjectDocumentation.FinalOutputPath)</FinalFullOutputPath>
 			</_ReferencedProjectDocumentationFullPath>
 			<PackageFile Include="@(_ReferencedProjectDocumentationFullPath -> '%(FinalFullOutputPath)')">
-				<Kind>Doc</Kind>
+				<Kind>Lib</Kind>
 				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>
@@ -524,7 +528,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ItemGroup Condition="'@(_ReferencedProjectDocumentationDependency)' != ''">
 			<PackageFile Include="@(_ReferencedProjectDocumentationDependency -> '%(FullPath)')"
 						 Condition="'%(_ReferencedProjectDocumentationDependency.CopyLocal)' == 'true'">
-				<Kind>Doc</Kind>
+				<Kind>Lib</Kind>
 				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>

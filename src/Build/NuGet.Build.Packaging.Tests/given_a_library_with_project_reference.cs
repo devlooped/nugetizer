@@ -26,8 +26,8 @@ namespace NuGet.Build.Packaging
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
 			// TODO: build some helpers to make this easier to assert.
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Lib"), "Did not include main project output as Library");
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == "Lib"), "Did not include referenced project output as Library");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include main project output as Library");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include referenced project output as Library");
 		}
 
 
@@ -39,8 +39,8 @@ namespace NuGet.Build.Packaging
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
 			// TODO: build some helpers to make this easier to assert.
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == "Symbols"), "Did not include main project symbols");
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == "Symbols"), "Did not include referenced project symbols");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include main project symbols");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include referenced project symbols");
 		}
 
 		[Fact]

@@ -95,7 +95,7 @@ namespace NuGet.Build.Packaging
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Extension = ".xml",
-				Kind = "Doc",
+				Kind = PackageItemKind.Lib,
 			}));
 		}
 
@@ -111,7 +111,7 @@ namespace NuGet.Build.Packaging
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				Extension = ".xml",
-				Kind = "Doc",
+				Kind = PackageItemKind.Lib,
 			}));
 		}
 
