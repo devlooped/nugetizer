@@ -37,15 +37,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<ItemGroup>
 		<!-- Default mapping between %(PackageFile.Kind) metadata and package folders inside .nupkg -->
 		<!-- PackageFolder should map to a supported folder as defined in PackagingConstants.Folders -->
-		<PackageItemKind Include="Library">
-			<PackageFolder>lib</PackageFolder>
-		</PackageItemKind>
-		<PackageItemKind Include="Symbols">
-			<PackageFolder>lib</PackageFolder>
-		</PackageItemKind>
-		<PackageItemKind Include="Doc">
-			<PackageFolder>lib</PackageFolder>
-		</PackageItemKind>
 		<PackageItemKind Include="Content">
 			<!-- Plain "content" is deprecated as of NuGet v3+ -->
 			<PackageFolder>contentFiles</PackageFolder>
@@ -124,6 +115,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</ItemGroup>
 
 	<PropertyGroup>
+		<!-- Flag this project as having been "nugetized" -->
+		<IsNuGetized>true</IsNuGetized>
 		<NuGetBuildPackagingPropsImported>true</NuGetBuildPackagingPropsImported>
 	</PropertyGroup>
 

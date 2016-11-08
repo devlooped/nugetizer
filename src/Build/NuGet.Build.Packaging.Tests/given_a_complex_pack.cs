@@ -144,14 +144,14 @@ namespace NuGet.Build.Packaging
 			{
 				Filename = "d",
 				Extension = ".dll",
-				Kind = "Lib",
+				Kind = PackageItemKind.Lib,
 				PackagePath = "",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Filename = "d",
 				Extension = ".xml",
-				Kind = "Doc",
+				Kind = PackageItemKind.Lib,
 				PackagePath = "",
 			}));
 		}
