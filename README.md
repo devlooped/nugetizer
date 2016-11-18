@@ -19,6 +19,10 @@ Install the following package:
 Add [NuGet properties to your MSBuild project](https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target) 
 ) and invoke the `/t:Pack` target to generated a `.nupkg` for the project.
 
-### IDE Early Preview
+## Issues
+
+Please report issues on the [NuGet/Home](https://github.com/NuGet/Home/issues?q=is%3Aopen+is%3Aissue+label%3AArea%3ANuGetizer) repo, and tag with `Area:NuGetizer`.
+
+### IDE Integration Early Preview
 
 Install the following VSIX from the evergreen CI URL: [http://bit.ly/nugetizer3000](http://bit.ly/nugetizer3000)
