@@ -641,6 +641,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     =================================================================================================
 	-->
 	<Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
+		<MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
 		<CreatePackage Manifest="@(PackageTargetPath)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
 			<Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
 			<Output TaskParameter="OutputPackage" ItemName="FileWrites" />
