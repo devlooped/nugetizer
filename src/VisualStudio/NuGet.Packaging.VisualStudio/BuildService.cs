@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Build.Evaluation;
-using Microsoft.Build.Execution;
 using System.ComponentModel.Composition;
 using Clide;
 using Microsoft.VisualStudio.Shell;

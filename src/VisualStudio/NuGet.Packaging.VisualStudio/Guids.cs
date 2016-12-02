@@ -1,6 +1,6 @@
 ﻿namespace NuGet.Packaging.VisualStudio
 {
-	class Guids
+	public class Guids
 	{
 		public const string PackageGuid = "e57e2daf-a455-45db-962e-31b1c9c70860";
 		public const string CommandSetGuid = "589286D3-5755-4E34-A8E4-0A7B670AF60A";

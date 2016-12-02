@@ -9,18 +9,9 @@
 	using Microsoft.VisualStudio.Shell.Interop;
 	using ExtenderProviders;
 	using Microsoft.VisualStudio;
+
 	[Guid(Guids.PackageGuid)]
 	[PackageRegistration(UseManagedResourcesOnly = true)]
-	[ProvideObject(typeof(NuSpecPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
-	//[ProvideProjectFactory(
-	//	typeof(NuProjFlavoredProjectFactory),
-	//	"NuGet.Packaging",
-	//	"#1100",
-	//	null,
-	//	null
-	//	, @"\..\NullPath",
-	//	LanguageVsTemplate = "CSharp",
-	//	ShowOnlySpecifiedTemplatesVsTemplate = true)]
 	[ProvideUIContextRule(
 		Constants.UIContext.AddPlatformImplementation,
 		name: "Portable Class Library UI Context",
@@ -34,6 +25,7 @@
 		termNames: new[] { "SolutionExistsAndNotBuildingAndNotDebugging", "IsNuProj" },
 		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "ActiveProjectCapability:PackagingProject" })]
 	[ProvideMenuResource("2000", 2)]
+	[ProvideBindingPath]
 	public sealed class NuGetizerPackage : Package
 	{
 		IDisposable[] extenderProviders = new IDisposable[0];

@@ -36,7 +36,6 @@
     <Content Include="Scenarios\given_a_packaging_project\c.csproj" />
     <Content Include="Scenarios\given_a_packaging_project\d.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\common\project.json" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\common\project.lock.json" />
     <Content Include="Scenarios\given_a_multi_platform_solution\docs\gettingstarted.html" />
     <Content Include="Scenarios\given_a_multi_platform_solution\docs\overview\index.html" />
     <Content Include="Scenarios\given_a_multi_platform_solution\forms.proj" />
@@ -66,14 +65,10 @@
     <Content Include="Scenarios\given_library_with_config_dependencies\a.csproj" />
     <Content Include="Scenarios\given_library_with_config_dependencies\a.sln" />
     <Content Include="Scenarios\given_library_with_json_dependencies\project.json" />
-    <Content Include="Scenarios\given_library_with_json_dependencies\project.lock.json" />
     <None Include="Scenarios\fakeframework.targets" />
     <None Include="Scenarios\given_a_packaging_project\b\project.json" />
-    <None Include="Scenarios\given_a_packaging_project\b\project.lock.json" />
     <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.json" />
-    <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.lock.json" />
     <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.json" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.lock.json" />
     <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\a.nuproj" />
     <None Include="Scenarios\given_library_with_config_dependencies\packages.config" />
     <None Include="Scenarios\Scenario.props" />

@@ -2,8 +2,10 @@
 {
 	using BuildPaclagingAssembly = NuGet.Build.Packaging.ThisAssembly;
 
-	class Constants
+	public class Constants
 	{
+		public const string NuProjCapability = "PackagingProject";
+
 		public const string PortableClassLibraryCapability = "MultiTarget";
 
 		/// <summary>

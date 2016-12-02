@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Package</Name>
+    <Description>A project template for creating NuGet packages (*.nupkg files)</Description>
+    <Icon Package="{e57e2daf-a455-45db-962e-31b1c9c70860}" ID="400" />
+    <TemplateID>NuGet.Packaging.VisualStudio.Package</TemplateID>
+    <ProjectType>NuGet</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>700</SortOrder>
+	<CreateInPlace>true</CreateInPlace>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>NuGetPackage</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="Package.nuproj" ReplaceParameters="true">
+      <ProjectItem>Project.json</ProjectItem> 
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">Readme.txt</ProjectItem> 
+      <ProjectItem TargetFileName="$projectname$.targets" ReplaceParameters="true">Package.targets</ProjectItem> 
+    </Project>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>NuGet.VisualStudio.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</Assembly>
+    <FullClassName>NuGet.VisualStudio.TemplateWizard</FullClassName>
+  </WizardExtension>
+  <WizardData>
+    <packages repository="extension" repositoryId="NuGet.Packaging">
+      <package id="NuGet.Build.Packaging" version="0.1.86-dev" />
+    </packages>
+  </WizardData>
+</VSTemplate>

@@ -1,5 +1,4 @@
 ﻿using Clide;
-using Microsoft.Build.Execution;
 
 namespace NuGet.Packaging.VisualStudio
 {

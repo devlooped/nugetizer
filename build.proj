@@ -5,28 +5,28 @@
 	<PropertyGroup Condition="'$(IsCIBuild)' != 'true'">
 		<!-- Local build defaults -->
 		<Configuration Condition=" '$(Configuration)' == ''">Debug</Configuration>
-		<DeployExtension Condition=" '$(DeployExtension)' == ''">true</DeployExtension>
 		<RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(IsCIBuild)' == 'true'">
 		<Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
-		<DeployExtension Condition=" '$(DeployExtension)' == ''">false</DeployExtension>
 		<RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">true</RunCodeAnalysis>
 	</PropertyGroup>
 	
 	<PropertyGroup>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);DeployExtension=$(DeployExtension);RunCodeAnalysis=$(RunCodeAnalysis)</CommonBuildProperties>
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis)</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 		<PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Solution Include="src\Build\NuGet.Build.Packaging.sln" />
-		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
+		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.14\NuGet.Packaging.VisualStudio.14.csproj" />
+		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
 		<TestProject Include="src\Build\**\*Tests.csproj" />
-		<PackSolution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
+		<PackSolution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.14\NuGet.Packaging.VisualStudio.14.csproj" />
+		<PackSolution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
@@ -41,6 +41,7 @@
 	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
 	<Target Name="Build">
+		<MSBuild Projects="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" Targets="RestorePackages"  />	
 		<Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" StandardOutputImportance="low" />
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 		<Message Text="Build properties: $(CommonBuildProperties)." Importance="high" />

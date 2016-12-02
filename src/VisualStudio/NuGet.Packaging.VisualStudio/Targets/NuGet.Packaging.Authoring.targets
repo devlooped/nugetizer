@@ -11,7 +11,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<Import Project="Microsoft.NuGet.Packaging.Authoring.props" Condition="'$(NuGetPackaginAuthoringPropsImported)' == ''" />
+	<Import Project="NuGet.Packaging.Authoring.props" Condition="'$(NuGetPackaginAuthoringPropsImported)' == ''" />
 
 	<PropertyGroup>
 		<ProjectSystemRulesDir Condition="'$(ProjectSystemRulesDir)' == ''">$(MSBuildThisFileDirectory)..\Rules\</ProjectSystemRulesDir>

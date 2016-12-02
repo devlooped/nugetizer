@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+	<Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props')" />
+	<ItemGroup Label="ProjectConfigurations">
+		<ProjectConfiguration Include="Debug|AnyCPU">
+			<Configuration>Debug</Configuration>
+			<Platform>AnyCPU</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Release|AnyCPU">
+			<Configuration>Release</Configuration>
+			<Platform>AnyCPU</Platform>
+		</ProjectConfiguration>
+	</ItemGroup>
+	<PropertyGroup Label="Configuration">
+		<PackageId>$safeprojectname$</PackageId>
+		<Title>$projectname$</Title>
+		<Authors>$username$</Authors>
+		<Owners>$username$</Owners>
+		<Summary>$projectname$</Summary>
+		<Description>$projectname$</Description>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<PackageProjectUrl></PackageProjectUrl>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<Copyright>Copyright © $username$</Copyright>
+    <PackageTags>$safeprojectname$</PackageTags>
+	</PropertyGroup>
+	<PropertyGroup Label="Globals">
+		<OutputPath>bin\$(Configuration)\</OutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="project.json" />
+		<None Include="$projectname$.targets" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Readme.txt">
+			<IncludeInPackage>true</IncludeInPackage>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+	<Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
+	<Import Project="$projectname$.targets" />
+</Project>

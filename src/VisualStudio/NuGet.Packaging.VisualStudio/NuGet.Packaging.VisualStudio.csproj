@@ -1,19 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
-    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
-  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.props))\NuGet.Build.Packaging.Shared.props" />
   <PropertyGroup>
-    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{9617EDCD-23BB-41EA-827D-F5729D45B0AF}</ProjectGuid>
     <RootNamespace>NuGet.Packaging.VisualStudio</RootNamespace>
     <AssemblyName>NuGet.Packaging.VisualStudio</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetVsixContainerName>NuGetizer3000.vsix</TargetVsixContainerName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -34,51 +28,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LegacyProjectSystem\NuSpecPropertyPageView.resx">
-      <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="VSPackage.resx">
-      <MergeWithCTO>true</MergeWithCTO>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\PropertyPageBase\Constants.cs">
-      <Link>PropertyPageBase\Constants.cs</Link>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\IPageView.cs">
-      <Link>PropertyPageBase\IPageView.cs</Link>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\IPageViewSite.cs">
-      <Link>PropertyPageBase\IPageViewSite.cs</Link>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\IPropertyPageUI.cs">
-      <Link>PropertyPageBase\IPropertyPageUI.cs</Link>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\IPropertyStore.cs">
-      <Link>PropertyPageBase\IPropertyStore.cs</Link>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\PageView.cs">
-      <Link>PropertyPageBase\PageView.cs</Link>
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\PropertyControlMap.cs">
-      <Link>PropertyPageBase\PropertyControlMap.cs</Link>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\PropertyControlTable.cs">
-      <Link>PropertyPageBase\PropertyControlTable.cs</Link>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\PropertyPage.cs">
-      <Link>PropertyPageBase\PropertyPage.cs</Link>
-    </Compile>
-    <Compile Include="..\PropertyPageBase\UserEditCompleteHandler.cs">
-      <Link>PropertyPageBase\UserEditCompleteHandler.cs</Link>
-    </Compile>
     <Compile Include="Commands\AddPlatformImplementationCommand.cs" />
     <Compile Include="Converters\ExtendedBooleanToVisiblityConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
@@ -93,15 +49,6 @@
     <Compile Include="Extensions\IVsUIShellExtensions.cs" />
     <Compile Include="IBuildService.cs" />
     <Compile Include="BuildService.cs" />
-    <Compile Include="ProjectSystem.Dev14\GlobalPropertiesProvider.cs" />
-    <Compile Include="ProjectSystem.Dev14\NuProjCapabilities.cs" />
-    <Compile Include="ProjectSystem.Dev14\NuProjConfiguredProject.cs" />
-    <Compile Include="ProjectSystem.Dev14\NuProjProjectCapabilitiesProvider.cs" />
-    <Compile Include="ProjectSystem.Dev14\NuProjProjectProperties.cs" />
-    <Compile Include="ProjectSystem.Dev14\NuProjProjectTreeModifier.cs" />
-    <Compile Include="ProjectSystem.Dev14\NuProjUnconfiguredProject.cs" />
-    <Compile Include="ProjectSystem.Dev14\NuProjValidProjectReferenceChecker.cs" />
-    <Compile Include="ProjectSystem.Dev14\ProjectProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionContext.cs" />
     <Compile Include="Commands\CreateNuGetPackageCommand.cs" />
@@ -113,17 +60,6 @@
     <Compile Include="Guids.cs" />
     <Compile Include="IDialogService.cs" />
     <Compile Include="MoveProjectItemsToProjectVisitor.cs" />
-    <None Include="Templates\Projects\PortableClassLibrary\Project.json" />
-    <Resource Include="Templates\Projects\Nuget\Package\Readme.txt" />
-    <None Include="ProjectSystem.Dev15\ProjectProperties.cs" />
-    <Compile Include="LegacyProjectSystem\NuSpecPropertyPage.cs" />
-    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="LegacyProjectSystem\NuSpecPropertyPageView.Designer.cs">
-      <DependentUpon>NuSpecPropertyPageView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LegacyProjectSystem\NuSpecPropertyStore.cs" />
     <Compile Include="Theme\Brushes.cs" />
     <Compile Include="Theme\Colors.cs" />
     <Compile Include="Views\AddPlatformImplementationViewModel.cs" />
@@ -144,14 +80,6 @@
     <Compile Include="Views\AddPlatformImplementationView.xaml.cs">
       <DependentUpon>AddPlatformImplementationView.xaml</DependentUpon>
     </Compile>
-    <None Include="ProjectSystem.Dev15\NuProjCapabilities.cs" />
-    <None Include="ProjectSystem.Dev15\NuProjConfiguredProject.cs" />
-    <Compile Include="LegacyProjectSystem\NuProjFlavoredProject.cs" />
-    <Compile Include="LegacyProjectSystem\NuProjFlavoredProjectFactory.cs" />
-    <None Include="ProjectSystem.Dev15\NuProjProjectProperties.cs" />
-    <None Include="ProjectSystem.Dev15\NuProjProjectTreeModifier.cs" />
-    <None Include="ProjectSystem.Dev15\NuProjUnconfiguredProject.cs" />
-    <None Include="ProjectSystem.Dev15\NuProjValidProjectReferenceChecker.cs" />
     <Compile Include="Views\ViewModelBase.cs" />
     <Compile Include="Wizards\MultiPlatformWizard.cs" />
     <None Include="NuGet.Packaging.VisualStudio.targets">
@@ -166,79 +94,16 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="Templates\Projects\Nuget\Package\Package.targets" />
-    <None Include="Templates\Projects\Nuget\Package\Project.json" />
-    <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
-    <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="NuGetizerPackage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="source.extension.vsixmanifest" />
-    <None Include="Templates\Projects\Nuget\Package\Package.nuproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\Projects\Nuget\Package\Package.vstemplate">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Templates\Projects\PortableClassLibrary\csPortableClassLibrary.vstemplate" />
-    <None Include="Templates\Projects\PortableClassLibrary\PortableClassLibrary.targets" />
-    <None Include="Templates\Projects\PortableClassLibrary\PortableClassLibrary.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <VSCTCompile Include="Commands.vsct">
-      <ResourceName>2000</ResourceName>
-    </VSCTCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Templates\Projects\CSharp\Cross-Platform\MultiPlatformLibrary\MultiPlatformLibrary.vstemplate">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Rules\content.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Rules\folder.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Rules\general.browseobject.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Rules\general.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Rules\none.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Rules\ProjectItemsSchema.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Rules\ProjectReference.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Rules\ResolvedProjectReference.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Rules\scc.xaml">
-      <SubType>Designer</SubType>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Resource Include="Theme\Theme.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -259,6 +124,42 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Content Include="Rules\content.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\folder.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\general.browseobject.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\general.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\none.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\ProjectItemsSchema.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\ProjectReference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\ResolvedProjectReference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\scc.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Page Include="Views\AddPlatformImplementationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -274,12 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj">
-      <Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
-      <Name>NuGet.Build.Packaging.Tasks</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\LICENSE.txt">

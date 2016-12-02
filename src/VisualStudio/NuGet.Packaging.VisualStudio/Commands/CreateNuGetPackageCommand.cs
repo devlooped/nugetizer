@@ -74,7 +74,7 @@ namespace NuGet.Packaging.VisualStudio
 
 		bool CanExecute() =>
 			KnownUIContexts.SolutionExistsAndNotBuildingAndNotDebuggingContext.IsActive &&
-			!ActiveProject.Supports(NuProjCapabilities.NuProj); // For NuProj projects the built-in Build command should be used
+			!ActiveProject.Supports(Constants.NuProjCapability); // For NuProj projects the built-in Build command should be used
 
 		bool IsBuildPackagingNuGetInstalled(Project project) =>
 			packageInstallerServices.IsPackageInstalled(project, Constants.NuGet.BuildPackagingId);
