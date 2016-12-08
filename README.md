@@ -25,4 +25,4 @@ Please report issues on the [NuGet/Home](https://github.com/NuGet/Home/issues?q=
 
 ### IDE Integration Early Preview
 
-Install the following VSIX from the evergreen CI URL: [http://bit.ly/nugetizer3000](http://bit.ly/nugetizer3000)
+Install the following VSIX from the evergreen CI URL: [NuGetizer 3000 for VS2015](http://bit.ly/nugetizer2015) or [NuGetizer 3000 for VS2017](http://bit.ly/nugetizer2017)
