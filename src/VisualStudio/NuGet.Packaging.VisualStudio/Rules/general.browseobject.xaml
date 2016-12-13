@@ -21,8 +21,5 @@
 
     <StringProperty Name="PackageId" DisplayName="Package ID" />
     <StringProperty Name="Title" DisplayName="Title" />
-    <StringProperty Name="ReferenceAssemblyFrameworks" 
-                    DisplayName="Reference Assembly Frameworks" 
-                    Description="Generate a reference assembly for the given target framework by intersecting the APIs of all referenced projects." />
 
 </Rule>

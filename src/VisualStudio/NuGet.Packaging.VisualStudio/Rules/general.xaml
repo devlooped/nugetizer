@@ -215,4 +215,13 @@
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </StringProperty.DataSource>
     </StringProperty>
+
+	<StringProperty Name="ReferenceAssemblyFrameworks" DisplayName="Reference Assembly Frameworks"
+                    Description="Generate a reference assembly for the given target framework by intersecting the APIs of all referenced projects."
+                    Category="NuSpec">
+		<StringProperty.DataSource>
+			<DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
+		</StringProperty.DataSource>
+	</StringProperty>
+
 </Rule>
