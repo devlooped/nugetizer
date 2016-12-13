@@ -72,9 +72,16 @@ namespace NuGet.Packaging.VisualStudio
 
 		IProjectNode ActiveProject => solutionExplorer.Solution.ActiveProject;
 
-		bool CanExecute() =>
-			KnownUIContexts.SolutionExistsAndNotBuildingAndNotDebuggingContext.IsActive &&
-			!ActiveProject.Supports(Constants.NuProjCapability); // For NuProj projects the built-in Build command should be used
+		bool CanExecute()
+		{
+			try
+			{
+				return
+					KnownUIContexts.SolutionExistsAndNotBuildingAndNotDebuggingContext.IsActive &&
+					!ActiveProject.Supports(Constants.NuProjCapability); // For NuProj projects the built-in Build command should be used
+			}
+			catch { return false; }
+		}
 
 		bool IsBuildPackagingNuGetInstalled(Project project) =>
 			packageInstallerServices.IsPackageInstalled(project, Constants.NuGet.BuildPackagingId);

@@ -21,9 +21,26 @@
 	[ProvideUIContextRule(
 		Constants.UIContext.NonNuProj,
 		name: "Non NuProj UI Context",
-		expression: "SolutionExistsAndNotBuildingAndNotDebugging & !IsNuProj",
-		termNames: new[] { "SolutionExistsAndNotBuildingAndNotDebugging", "IsNuProj" },
-		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "ActiveProjectCapability:PackagingProject" })]
+		expression: "SolutionExistsAndNotBuildingAndNotDebugging & !IsNuProj & (CSharpProjectContext | FSharpProjectContext | VBProjectContext | VCProjectContext)",
+		termNames: new[] 
+		{
+			"SolutionExistsAndNotBuildingAndNotDebugging",
+			"IsNuProj",
+			"CSharpProjectContext",
+			"VBProjectContext",
+			"FSharpProjectContext",
+			"VCProjectContext"
+		},
+		termValues: new[] 
+		{
+			VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string,
+			"ActiveProjectCapability:PackagingProject",
+			VSConstants.UICONTEXT.CSharpProject_string,
+			VSConstants.UICONTEXT.VBProject_string,
+			VSConstants.UICONTEXT.FSharpProject_string,
+			VSConstants.UICONTEXT.VCProject_string,
+
+		})]
 	[ProvideMenuResource("2000", 2)]
 	[ProvideBindingPath]
 	public sealed class NuGetizerPackage : Package
