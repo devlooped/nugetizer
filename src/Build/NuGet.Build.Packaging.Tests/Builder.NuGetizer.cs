@@ -82,7 +82,14 @@ static partial class Builder
 		public ITaskItem[] Items => BuildResult[Target].Items;
 
 		public TargetResultCode ResultCode => BuildResult[Target].ResultCode;
-	}
+
+        public override string ToString()
+        {
+            return string.Join(Environment.NewLine, Logger.Warnings
+                .Select(e => e.Message)
+                .Concat(Logger.Errors.Select(e => e.Message)));
+        }
+    }
 }
 
 /// <summary>
