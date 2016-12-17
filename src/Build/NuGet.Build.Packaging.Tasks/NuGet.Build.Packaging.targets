@@ -57,7 +57,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ReferenceAssemblyFramework Include="$(ReferenceAssemblyFrameworks)" Condition="'$(ReferenceAssemblyFrameworks)' != ''" />
 	</ItemGroup>
 
-	<!-- Extends the built-in GetTargetPath output to signal that the project has been nugetized -->
+	<!-- Extends the built-in GetTargetPathWithTargetPlatformMoniker output to signal that the project has been nugetized -->
 	<ItemDefinitionGroup>
 		<TargetPathWithTargetPlatformMoniker>
 			<IsPackable>$(IsPackable)</IsPackable>
@@ -376,7 +376,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
 		
 		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
-				 Targets="GetTargetPath"
+				 Targets="GetTargetPathWithTargetPlatformMoniker"
 				 BuildInParallel="$(BuildInParallel)"
 				 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
 				 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
@@ -662,7 +662,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<MSBuild
 			Projects="@(_ReferenceAssemblyProjects)"
-			Targets="GetTargetPath">
+			Targets="GetTargetPathWithTargetPlatformMoniker">
 			<Output TaskParameter="TargetOutputs" ItemName="IntersectionAssembly" />
 		</MSBuild>
 
