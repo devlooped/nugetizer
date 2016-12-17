@@ -23,7 +23,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<!-- The Kind of primary output (build, symbols and doc) set if IncludeOutputsInPackage = true -->
 		<PrimaryOutputPackageFileKind Condition="'$(PrimaryOutputPackageFileKind)' == ''">Lib</PrimaryOutputPackageFileKind>
-		
+
 		<!-- Infer PackageRererence elements from packages.config/project.json files in the project -->
 		<InferLegacyPackageReferences Condition="'$(InferLegacyPackageReferences)' == ''">true</InferLegacyPackageReferences>
 		<!-- Whether to include @(Content) items in the package -->
@@ -52,7 +52,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<ItemGroup>
 		<ProjectCapability Include="Packable" Condition="'$(IsPackable)' == 'true'"/>
-		
+
 		<!-- Converts potentially multiple $(ReferenceAssemblyFrameworks) into @(ReferenceAssemblyFramework) -->
 		<ReferenceAssemblyFramework Include="$(ReferenceAssemblyFrameworks)" Condition="'$(ReferenceAssemblyFrameworks)' != ''" />
 	</ItemGroup>
@@ -66,18 +66,19 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</ItemDefinitionGroup>
 
 	<!--
-    =================================================================================================
+	=================================================================================================
 	GetPackageVersion
-    =================================================================================================
+	=================================================================================================
 
-    This target sets the default $(PackageVersion) to $(Version) 
-	if empty, and returns it. 
+	This target sets the default $(PackageVersion) to $(Version) if empty, and returns it. 
+	The $(Version) property is the upcoming default way .NET projects are versioned. See 
+	https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/build/Microsoft.NET.GenerateAssemblyInfo.targets#L108
 	
 	It can be redefined to change how the package version is 
 	determined.
 	
-    OUTPUTS:
-        $(PackageVersion)            The determined package version
+	OUTPUTS:
+		$(PackageVersion)            The determined package version
 	
     =================================================================================================
 	-->
@@ -374,7 +375,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
 			Inputs="@(_MSBuildProjectReferenceExistent)"
 			Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
-		
+
 		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
 				 Targets="GetTargetPathWithTargetPlatformMoniker"
 				 BuildInParallel="$(BuildInParallel)"
@@ -575,7 +576,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<_ProjectJson>$(MSBuildProjectDirectory)\project.json</_ProjectJson>
 			<_PackagesConfig>$(MSBuildProjectDirectory)\packages.config</_PackagesConfig>
 		</PropertyGroup>
-		
+
 		<ReadLegacyJsonDependencies ProjectJsonPath="$(_ProjectJson)" Condition="Exists('$(_ProjectJson)')">
 			<Output TaskParameter="PackageReferences" ItemName="PackageReference" />
 		</ReadLegacyJsonDependencies>
@@ -612,7 +613,7 @@ Copyright (c) .NET Foundation. All rights reserved.
          to disable that. -->
 		<BuildProjectReferences Condition="'$(BuildProjectReferences)' == ''">true</BuildProjectReferences>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
 		<BuildDependsOn Condition="('$(PackOnBuild)' == 'true' Or Exists('$(PackOnBuildFile)')) and '$(IsPackable)' == 'true'">
 			$(BuildDependsOn);
