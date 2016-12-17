@@ -68,5 +68,14 @@ namespace NuGet.Build.Packaging.Properties {
                 return ResourceManager.GetString("ErrorCode_NG0010", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project references to include in package must be nugetized..
+        /// </summary>
+        public static string ErrorCode_NG0011 {
+            get {
+                return ResourceManager.GetString("ErrorCode_NG0011", resourceCulture);
+            }
+        }
     }
 }

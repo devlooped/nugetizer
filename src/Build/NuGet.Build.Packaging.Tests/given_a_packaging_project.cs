@@ -18,16 +18,7 @@ namespace NuGet.Build.Packaging
 		{
 			this.output = output;
 		}
-
-		[Fact]
-		public void when_getting_contents_then_issues_warning_for_missing_nuget()
-		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
-
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-			Assert.Contains(result.Logger.Warnings, warning => warning.Code == "NG1001");
-		}
-
+        
 		[Fact]
 		public void when_getting_contents_then_includes_referenced_project_outputs()
 		{

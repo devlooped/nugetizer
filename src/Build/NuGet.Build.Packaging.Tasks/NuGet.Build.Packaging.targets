@@ -204,18 +204,20 @@ Copyright (c) .NET Foundation. All rights reserved.
 			GetPackageTargetPath;
 			AssignProjectConfiguration;
 			_SplitProjectReferencesByFileExistence;
-			_SplitProjectReferencesByIsPackablePresence;
+			_SplitProjectReferencesByIsNuGetized;
 			AllProjectOutputGroups;
 			ReadLegacyDependencies;
 		</GetPackageContentsDependsOn>
 		<!-- Only collect referenced projects' outputs if we need to include them -->
 		<GetPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
 			$(GetPackageContentsDependsOn)
-			_CollectMissingIsPackableProjectReferencesOutputs;
 			_GetReferenceAssemblyTargetPaths;
 		</GetPackageContentsDependsOn>
 	</PropertyGroup>
 	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
+		<Error Condition="'@(_NonNuGetizedProjectReference)' != ''"
+			   Code="NG0011"
+			   Text="Some project references cannot be properly packaged. Please install the NuGet.Build.Packaging package on the following projects: @(_NonNuGetizedProjectReference)." />
 
 		<!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
 			 NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
@@ -296,12 +298,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
 		</AssignPackagePath>
 
-		<MSBuild Projects="@(_IsPackableProject)"
+		<MSBuild Projects="@(_NuGetizedProjectReference)"
 				 Targets="GetPackageContents"
 				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_IsPackableProject.SetConfiguration); %(_IsPackableProject.SetPlatform); BuildingPackage=$(BuildingPackage)"
-				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_IsPackableProject)' != ''"
-				 RemoveProperties="%(_IsPackableProject.GlobalPropertiesToRemove)">
+				 Properties="%(_NuGetizedProjectReference.SetConfiguration); %(_NuGetizedProjectReference.SetPlatform); BuildingPackage=$(BuildingPackage)"
+				 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_NuGetizedProjectReference)' != ''"
+				 RemoveProperties="%(_NuGetizedProjectReference.GlobalPropertiesToRemove)">
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
 		</MSBuild>
 
@@ -371,7 +373,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</Target>
 
 	<!-- This target separates project references that have the packaging targets from those that don't -->
-	<Target Name="_SplitProjectReferencesByIsPackablePresence"
+	<Target Name="_SplitProjectReferencesByIsNuGetized"
 			Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
 			Inputs="@(_MSBuildProjectReferenceExistent)"
 			Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
@@ -385,188 +387,16 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</MSBuild>
 
 		<PropertyGroup>
-			<_HasIsPackable Condition="'%(_ReferencedProjectTargetPath.IsPackable)' != ''">true</_HasIsPackable>
+			<_IsNuGetized Condition="'%(_ReferencedProjectTargetPath.IsNuGetized)' != ''">true</_IsNuGetized>
 		</PropertyGroup>
 
 		<ItemGroup>
-			<_NoIsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false' and '$(_HasIsPackable)' != 'true'" />
-			<_IsPackableProject Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false' and '$(_HasIsPackable)' == 'true'" />
-		</ItemGroup>
-
-	</Target>
-
-	<!-- Includes primary output and dependencies for non-nugetized projects -->
-	<Target Name="_CollectMissingIsPackableProjectReferencesOutputs"
-			Inputs="@(_NoIsPackableProject)"
-			Outputs="%(_NoIsPackableProject.Identity)-BATCH"
-			Condition="'@(_NoIsPackableProject)' != ''">
-		<Warning Text="@(_NoIsPackableProject) does not have the 'NuGet.Build.Packaging' package installed. Only primary output will be packaged."
-				 Code="NG1001" />
-
-		<!-- Get TFM if the project is a packaging project, since we want to use the original project's TFM in that case -->
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Targets="GetTargetFrameworkMoniker"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)"
-				 Condition="'$(IsPackagingProject)' == 'true'">
-			<Output TaskParameter="TargetOutputs" PropertyName="_ReferencedProjectTFM" />
-		</MSBuild>
-
-
-		<!-- Main project and dependencies built output -->
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Targets="BuiltProjectOutputGroup"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectBuiltOutput" />
-		</MSBuild>
-
-		<ItemGroup>
-			<PackageFile Include="@(_ReferencedProjectBuiltOutput -> '%(FinalOutputPath)')">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Targets="BuiltProjectOutputGroupDependencies"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectOutputDependency" />
-		</MSBuild>
-
-		<ItemGroup>
-			<!-- NOTE: this default heuristics does not include assemblies referenced from nuget v3 packages which look like the following:
-					BuiltProjectOutputGroupDependency: %UserProfile%\.nuget\packages\Newtonsoft.Json\6.0.4\lib\net45\Newtonsoft.Json.dll
-						CopyLocal=false
-						NuGetIsFrameworkReference=false
-						NuGetPackageId=Newtonsoft.Json
-						NuGetPackageVersion=6.0.4
-						NuGetSourceType=Package
-						ResolvedFrom={RawFileName}
-						
-				Since the dependencies include the actual closure of all transitive nuget package dependencies (from its 
-				lock.json or packages.config), we can't rely on these to provide the top-level dependencies we actually 
-				need either.
-			-->
-			<PackageFile Include="@(_ReferencedProjectOutputDependency -> '%(FullPath)')"
-						 Condition="'%(_ReferencedProjectOutputDependency.CopyLocal)' == 'true' and
-						            '%(_ReferencedProjectOutputDependency.FrameworkFile)' != 'true' and 
-									'%(_ReferencedProjectOutputDependency.ResolvedFrom)' != '{TargetFrameworkDirectory}'">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-
-		<!-- Main project and dependencies symbols -->
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Condition="'$(IncludeSymbolsInPackage)' == 'true'"
-				 Targets="DebugSymbolsProjectOutputGroup"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDebugSymbols" />
-		</MSBuild>
-
-		<ItemGroup>
-			<PackageFile Include="@(_ReferencedProjectDebugSymbols -> '%(FinalOutputPath)')">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Condition="'$(IncludeSymbolsInPackage)' == 'true'"
-				 Targets="DebugSymbolsProjectOutputGroupDependencies"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectOutputDependencySymbols" />
-		</MSBuild>
-
-		<ItemGroup>
-			<PackageFile Include="@(_ReferencedProjectOutputDependencySymbols -> '%(FullPath)')"
-						 Condition="'%(_ReferencedProjectOutputDependencySymbols.CopyLocal)' == 'true'">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-
-		<!-- Main project and dependencies documentation -->
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Targets="DocumentationProjectOutputGroup"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDocumentation" />
-		</MSBuild>
-
-		<ItemGroup Condition="'@(_ReferencedProjectDocumentation)' != ''">
-			<!-- Ensure FinalOutputPath is a full path. Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
-			<_ReferencedProjectDocumentationFullPath Include="@(_ReferencedProjectDocumentation)" Condition="$([System.IO.Path]::IsPathRooted('%(_ReferencedProjectDocumentation.FinalOutputPath)')) == 'true'">
-				<FinalFullOutputPath>%(_ReferencedProjectDocumentation.FinalOutputPath)</FinalFullOutputPath>
-			</_ReferencedProjectDocumentationFullPath>
-			<_ReferencedProjectDocumentationFullPath Include="@(_ReferencedProjectDocumentation)" Condition="$([System.IO.Path]::IsPathRooted('%(_ReferencedProjectDocumentation.FinalOutputPath)')) == 'false'">
-				<FinalFullOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(_ReferencedProjectDocumentation.FinalOutputPath)')) == 'false'">$([System.IO.Path]::GetDirectoryName('%(_ReferencedProjectDocumentation.MSBuildSourceProjectFile)'))\%(_ReferencedProjectDocumentation.FinalOutputPath)</FinalFullOutputPath>
-			</_ReferencedProjectDocumentationFullPath>
-			<PackageFile Include="@(_ReferencedProjectDocumentationFullPath -> '%(FinalFullOutputPath)')">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Targets="DocumentationProjectOutputGroupDependencies"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDocumentationDependency" />
-		</MSBuild>
-
-		<ItemGroup Condition="'@(_ReferencedProjectDocumentationDependency)' != ''">
-			<PackageFile Include="@(_ReferencedProjectDocumentationDependency -> '%(FullPath)')"
-						 Condition="'%(_ReferencedProjectDocumentationDependency.CopyLocal)' == 'true'">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-
-		<!-- Main project and dependencies satellite assemblies -->
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Targets="SatelliteDllsProjectOutputGroup"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectSatelliteDll" />
-		</MSBuild>
-
-		<ItemGroup Condition="'@(_ReferencedProjectSatelliteDll)' != ''">
-			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
-			<PackageFile Include="@(_ReferencedProjectSatelliteDll -> '%(FullPath)')">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-
-		<MSBuild Projects="@(_NoIsPackableProject)"
-				 Targets="SatelliteDllsProjectOutputGroupDependencies"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_NoIsPackableProject.SetConfiguration); %(_NoIsPackableProject.SetPlatform)"
-				 RemoveProperties="%(_NoIsPackableProject.GlobalPropertiesToRemove)">
-			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectDependencySatelliteDll" />
-		</MSBuild>
-
-		<ItemGroup Condition="'@(_ReferencedProjectDependencySatelliteDll)' != ''">
-			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
-			<PackageFile Include="@(_ReferencedProjectDependencySatelliteDll -> '%(FullPath)')"
-						 Condition="'%(_ReferencedProjectDependencySatelliteDll.CopyLocal)' == 'true'">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' == 'true'">$(_ReferencedProjectTFM)</TargetFrameworkMoniker>
-				<TargetPath Condition="'%(_ReferencedProjectDependencySatelliteDll.DestinationSubDirectory)' != ''">%(_ReferencedProjectDependencySatelliteDll.DestinationSubDirectory)%(_ReferencedProjectDependencySatelliteDll.Filename)%(_ReferencedProjectDependencySatelliteDll.Extension)</TargetPath>
-			</PackageFile>
+			<!-- We will fail for this first group: project references that aren't excluded from packaging, yet haven't been nugetized -->
+			<_NonNuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" 
+										   Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false' and '$(_IsNuGetized)' != 'true'" />
+			<!-- We will only process for packaging the project references that haven't been excluded from packaging and are nugetized -->
+			<_NuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" 
+										Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false' and '$(_IsNuGetized)' == 'true'" />
 		</ItemGroup>
 
 	</Target>

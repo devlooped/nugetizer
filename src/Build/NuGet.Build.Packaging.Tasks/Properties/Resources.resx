@@ -120,4 +120,7 @@
   <data name="ErrorCode_NG0010" xml:space="preserve">
     <value>Package file '{0}' must have either 'Kind' or 'PackagePath' metadata.</value>
   </data>
+  <data name="ErrorCode_NG0011" xml:space="preserve">
+    <value>Project references to include in package must be nugetized.</value>
+  </data>
 </root>

@@ -15,5 +15,5 @@
 			<Name>d</Name>
 		</ProjectReference>
 	</ItemGroup>
-	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>
