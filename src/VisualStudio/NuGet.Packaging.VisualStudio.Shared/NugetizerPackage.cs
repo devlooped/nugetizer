@@ -17,7 +17,7 @@
 		name: "Portable Class Library UI Context",
 		expression: "SolutionExistsAndNotBuildingAndNotDebugging & IsPortableClassLibrary",
 		termNames: new[] { "SolutionExistsAndNotBuildingAndNotDebugging", "IsPortableClassLibrary" },
-		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "ActiveProjectFlavor:786C830F-07A1-408B-BD7F-6EE04809D6DB" })]
+		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "SolutionHasProjectFlavor:786C830F-07A1-408B-BD7F-6EE04809D6DB" })]
 	[ProvideUIContextRule(
 		Constants.UIContext.NonNuProj,
 		name: "Non NuProj UI Context",
