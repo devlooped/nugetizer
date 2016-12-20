@@ -5,13 +5,6 @@
 	</ItemGroup>
 	
 	<PropertyGroup>
-		<GetPackageVersionDependsOn>
-			SetPackageVersion;
-			$(GetPackageVersionDependsOn)
-		</GetPackageVersionDependsOn>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<PackageId>NuGet.Build.Packaging</PackageId>
 		<Authors>Microsoft</Authors>
 		<Owners>Microsoft</Owners>

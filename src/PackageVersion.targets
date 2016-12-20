@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion" Returns="$(PackageVersion)">
+		<PropertyGroup>
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
+			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+		</PropertyGroup>
+	</Target>
+
+	<PropertyGroup>
+		<PackageVersionImported>true</PackageVersionImported>
+	</PropertyGroup>
+</Project>

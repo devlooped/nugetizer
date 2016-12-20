@@ -10,14 +10,6 @@
 		</CoreCompileDependsOn>
 	</PropertyGroup>
 
-	<Target Name="SetPackageVersion" DependsOnTargets="GitVersion">
-		<PropertyGroup>
-			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
-			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
-		</PropertyGroup>
-	</Target>
-
 	<Target Name="ThisAssemblyExtension" BeforeTargets="BuildOnlySettings" Condition=" '$(ThisAssemblyExtensionFile)' != '' " DependsOnTargets="GenerateThisAssemblyExtension">
 		<ItemGroup>
 			<Compile Include="$(ThisAssemblyExtensionFile)" />
@@ -25,7 +17,7 @@
 	</Target>
 
 	<Target Name="GenerateThisAssemblyExtension" Inputs="@(_GitInput)" Outputs="$(ThisAssemblyExtensionFile)"
-			DependsOnTargets="SetPackageVersion">
+			DependsOnTargets="GetPackageVersion">
 		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
 		<WriteLinesToFile Lines='
 namespace $(ThisAssemblyNamespace)
@@ -48,4 +40,6 @@ namespace $(ThisAssemblyNamespace)
 	<PropertyGroup>
 		<NuGetPackagingTargetsImported>true</NuGetPackagingTargetsImported>
 	</PropertyGroup>
+
+	<Import Project="PackageVersion.targets" Condition="$(PackageVersionImported) != 'true'" />
 </Project>

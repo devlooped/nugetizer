@@ -20,21 +20,6 @@
 		</ItemGroup>
 	</Target>
 
-  <PropertyGroup>
-    <GetPackageVersionDependsOn>
-      SetPackageVersion;
-      $(GetPackageVersionDependsOn)
-    </GetPackageVersionDependsOn>
-  </PropertyGroup>
-	<Target Name="SetPackageVersion" DependsOnTargets="GitVersion">
-		<PropertyGroup>
-			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
-			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
-		</PropertyGroup>
-	</Target>
-
 	<PropertyGroup>
 		<!-- We'll include the PackageFiles ourselves -->
 		<IncludeOutputs>false</IncludeOutputs>
@@ -47,7 +32,5 @@
 		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
 	</PropertyGroup>
 
-	<!-- TODO: 
-    * Generate ErrorCodes constants from .resx?
-  -->
+	<Import Project="PackageVersion.targets" Condition="$(PackageVersionImported) != 'true'" />
 </Project>

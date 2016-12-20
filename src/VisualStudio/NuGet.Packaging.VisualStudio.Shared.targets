@@ -49,7 +49,7 @@
 		<UpdateTemplatesDependsOn>
 			PrepareForBuild;
 			CopyOutOfDateSmartTemplateContent;
-			SetPackageVersion;
+			GetPackageVersion;
 			FindTemplates;
 			UpdateTemplatePackages
 		</UpdateTemplatesDependsOn>

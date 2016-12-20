@@ -122,8 +122,11 @@
 		<PendingRestore Condition=" !Exists('$(GitInfoTargets)') Or !Exists('$(XunitConsole)') Or !Exists('$(XunitProps)') ">true</PendingRestore>
 	</PropertyGroup>
 	<Import Project="$(XunitProps)" Condition="Exists('$(XunitProps)')"/>
+	<Target Name="GitVersion" />
+	<Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
+	<Import Project="src\PackageVersion.targets" />
 
-	<Target Name="Configure" DependsOnTargets="DownloadNuGet">
+	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GetPackageVersion">
 		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
 			  StandardOutputImportance="low"
 			  Condition=" '$(PendingRestore)' == 'true' " />
@@ -134,17 +137,10 @@
 		</MSBuild>
 
 		<!-- For now this is an informative version #, used to update CI -->
-		<PropertyGroup>
-			<GitSemVerDashLabel>%(GitInfo.GitSemVerDashLabel)</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'%(GitInfo.GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
-			<Version>%(GitInfo.GitSemVerMajor).%(GitInfo.GitSemVerMinor).%(GitInfo.GitSemVerPatch)$(GitSemVerDashLabel)</Version>
-		</PropertyGroup>
-
-		<Message Text="Building version $(Version)" Importance="high" />
+		<Message Text="Building version $(PackageVersion)" Importance="high" />
 
 		<!-- Update AppVeyor build # to match the actual one being used -->
-		<Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(APPVEYOR)' == 'true' "
+		<Exec Command="appveyor UpdateBuild -Version $(PackageVersion)" Condition=" '$(APPVEYOR)' == 'true' "
               ConsoleToMSBuild="true"
               ContinueOnError="WarnAndContinue" />
 	</Target>
