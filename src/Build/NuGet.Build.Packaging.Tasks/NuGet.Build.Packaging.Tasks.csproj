@@ -52,6 +52,7 @@
     <ProjectReference Include="..\..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj">
       <Project>{cd767d93-6c99-4d6a-a303-3c139a73400e}</Project>
       <Name>ApiIntersect</Name>
+      <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
