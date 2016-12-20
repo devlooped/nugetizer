@@ -3,7 +3,7 @@
     "Clarius.VisualStudio": "1.3.7",
     "Clide.Installer": "3.0.103-pre",
     "GitInfo": "1.1.32",
-    "Merq.Installer": "1.1.15-pre",
+    "Merq": "1.0.1-alpha",
     "Microsoft.VisualStudio.ProjectSystem.SDK": "15.0.594-pre",
     "Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
     "Microsoft.VisualStudio.Shell.Interop.11.0": "11.0.61030",
