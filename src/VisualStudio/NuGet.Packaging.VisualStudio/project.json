@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "Clide": "3.0.103-pre",
+    "Clide": "3.0.105-pre",
     "GitInfo": "1.1.32",
     "Merq": "1.0.1-alpha",
     "Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
