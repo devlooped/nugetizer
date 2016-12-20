@@ -136,7 +136,6 @@
 		<!-- For now this is an informative version #, used to update CI -->
 		<PropertyGroup>
 			<GitSemVerDashLabel>%(GitInfo.GitSemVerDashLabel)</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'%(GitInfo.GitBranch)' == 'dev'">-dev</GitSemVerDashLabel>
 			<GitSemVerDashLabel Condition="'%(GitInfo.GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
 			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
 			<Version>%(GitInfo.GitSemVerMajor).%(GitInfo.GitSemVerMinor).%(GitInfo.GitSemVerPatch)$(GitSemVerDashLabel)</Version>
