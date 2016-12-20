@@ -19,10 +19,18 @@ install:
 # we run the tests ourselves in build.proj for coverage
 test: off
 
+# build cache to preserve files/folders between builds
+cache:
+  - '%LocalAppData%\NuGet\Cache'
+  - '%USERPROFILE%\.nuget\packages'
+
 deploy:
   - provider: NuGet
     api_key:
       secure: 6IOnCr0vcNuRan0YWj7JRzsjZINxy7QuKAsg1HvdmYIOvTMV/ZbFyaRbL5X8OOmY
+    on:
+      # we only deploy to public NuGet gallery when tagging the repo
+      appveyor_repo_tag: true
 
 nuget:
   project_feed: true
