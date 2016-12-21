@@ -202,15 +202,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<GetPackageContentsDependsOn>
 			$(GetPackageContentsDependsOn);
 			GetPackageTargetPath;
+			ReadLegacyDependencies;
+		</GetPackageContentsDependsOn>
+		<GetPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
+			$(GetPackageContentsDependsOn)
 			AssignProjectConfiguration;
 			_SplitProjectReferencesByFileExistence;
 			_SplitProjectReferencesByIsNuGetized;
 			AllProjectOutputGroups;
-			ReadLegacyDependencies;
-		</GetPackageContentsDependsOn>
-		<!-- Only collect referenced projects' outputs if we need to include them -->
-		<GetPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
-			$(GetPackageContentsDependsOn)
 			_GetReferenceAssemblyTargetPaths;
 		</GetPackageContentsDependsOn>
 	</PropertyGroup>

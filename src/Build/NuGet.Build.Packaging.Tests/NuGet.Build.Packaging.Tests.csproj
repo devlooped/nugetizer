@@ -18,6 +18,7 @@
   <ItemGroup>
     <None Include="project.json" />
     <None Include="NuGet.Build.Packaging.Tests.targets" />
+    <Content Include="Scenarios\given_a_custom_build_project\Readme.txt" />
     <Content Include="Scenarios\given_a_library_with_content\content-with-include-true.txt" />
     <Content Include="Scenarios\given_a_library_with_content\content-with-include-false.txt" />
     <Content Include="Scenarios\given_a_library_with_content\none-with-include-false.txt" />
@@ -28,9 +29,8 @@
     <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xhdpi\Icon.png" />
     <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xxhdpi\Icon.png" />
     <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xxxhdpi\Icon.png" />
-    <None Include="Scenarios\given_a_packaging_project\a.nuproj">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Scenarios\given_a_custom_build_project\build.proj" />
+    <None Include="Scenarios\given_a_packaging_project\a.nuproj" />
     <Content Include="Scenarios\given_a_packaging_project\b.sln" />
     <Content Include="Scenarios\given_a_packaging_project\b\b.csproj" />
     <Content Include="Scenarios\given_a_packaging_project\c.csproj" />
@@ -50,9 +50,7 @@
     <Content Include="Scenarios\given_a_complex_pack\c.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\d.csproj" />
     <Content Include="Scenarios\given_a_complex_pack\e.csproj" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\a.csproj">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\a.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\android\forms.android.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\common\common.csproj" />
     <Content Include="Scenarios\given_a_multi_platform_solution\forms.sln" />
@@ -90,6 +88,7 @@
       <DependentUpon>Builder.cs</DependentUpon>
     </Compile>
     <Compile Include="GetApiIntersectTargetPathsTests.cs" />
+    <Compile Include="given_a_custom_build_project.cs" />
     <Compile Include="given_a_packaging_project.cs" />
     <Compile Include="given_a_multi_platform_solution.cs" />
     <Compile Include="given_a_library_with_content.cs" />
