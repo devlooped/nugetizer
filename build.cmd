@@ -13,12 +13,11 @@ IF "%msb%"=="" (
 )
 
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
-PUSHD "%~dp0" >NUL
 
 IF EXIST .nuget\nuget.exe goto restore
 IF NOT EXIST .nuget md .nuget
 echo Downloading latest version of NuGet.exe...
-@powershell -NoProfile -ExecutionPolicy unrestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile .nuget/nuget.exe"
+@powershell -NoProfile -ExecutionPolicy RemoteSigned -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile .nuget/nuget.exe"
 
 :restore
 :: Build script packages have no version in the path, so we install them to .nuget\packages to avoid conflicts with 
@@ -31,15 +30,4 @@ IF "%Verbosity%"=="" (
     set Verbosity=minimal
 )
 
-:: Ensure we have no dangling MSBuild processes that might lock the output assemblies
-taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
-
-ECHO ON
-"%msb%" build.proj /v:%Verbosity% /nr:true /m %1 %2 %3 %4 %5 %6 %7 %8 %9
-@ECHO OFF
-
-:: Ensure we leave no dangling MSBuild processes
-taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
-
-POPD >NUL
-ENDLOCAL
+"%msb%" build.proj /v:%Verbosity% %1 %2 %3 %4 %5 %6 %7 %8 %9

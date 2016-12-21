@@ -11,7 +11,11 @@ init:
     }
 
 build_script:
+# Ensure we have no dangling MSBuild processes that might lock the output assemblies
+- cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
 - cmd: build.cmd %BuildArgs%
+# Ensure we leave no dangling MSBuild processes
+- cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
 
 install:
 - cmd: git submodule update --init --recursive

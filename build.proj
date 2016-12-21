@@ -69,8 +69,7 @@
 		<xunit Assemblies="@(TestAssembly)"
 			   Html="$(Out)\test.html"
 			   Xml="$(Out)\test.xml"
-			   ParallelizeAssemblies="true"
-			   ParallelizeTestCollections="true" />
+			   Reporter="appveyor" />
 	</Target>
 
 	<Target Name="Coverage" DependsOnTargets="Build">
@@ -126,6 +125,10 @@
 	<Import Project="src\PackageVersion.targets" />
 
 	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GetPackageVersion">
+		<Message Importance="high" Text="************************************************************************************************************************" />
+		<Message Importance="high" Text="$([System.Environment]::CommandLine)" />
+		<Message Importance="high" Text="************************************************************************************************************************" />
+
 		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
 			  StandardOutputImportance="low"
 			  Condition=" '$(PendingRestore)' == 'true' " />
