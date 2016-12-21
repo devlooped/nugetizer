@@ -20,7 +20,7 @@ namespace NuGet.Build.Packaging
 			var result = Builder.BuildScenario(nameof(given_a_custom_build_project));
 
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-
+			
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				PackagePath = "Readme.txt",

@@ -14,7 +14,7 @@
 		<Authors>NuGet</Authors>
 		<Description>Package for '$(MSBuildProjectName)' project.</Description>
 		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
-		<IncludeFrameworkReferencesInPackage>true</IncludeFrameworkReferencesInPackage>
+		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageFile Include="Readme.txt" />
