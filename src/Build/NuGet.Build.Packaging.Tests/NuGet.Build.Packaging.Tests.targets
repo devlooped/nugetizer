@@ -5,13 +5,17 @@
 		<!-- Prevents Fody.VerifyTask from running -->
 		<NCrunch>1</NCrunch>
 	</PropertyGroup>
+
+	<Target Name="RemoveMergedAssemblies" Condition="'$(Configuration)' == 'Release'" AfterTargets="ResolveNuGetPackageAssets">
+		<ItemGroup>
+			<MergedAssemblies Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(FileName)').StartsWith('Newtonsoft'))" />
+			<MergedAssemblies Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(FileName)').StartsWith('NuGet'))" />
+			<Reference Remove="@(MergedAssemblies)" />
+		</ItemGroup>
+	</Target>
 	
 	<Target Name="AddMSBuildReferences" BeforeTargets="ResolveAssemblyReferences">
 		<ItemGroup>
-			<!-- TODO: to replace with the MSBuild nugets once they are more generally available -->
-			<!--<Reference Include="Microsoft.Build.Engine">
-				<HintPath>$(MSBuildBinPath)\Microsoft.Build.Engine.dll</HintPath>
-			</Reference>-->
 			<Reference Include="Microsoft.Build">
 				<HintPath>$(MSBuildBinPath)\Microsoft.Build.dll</HintPath>
 			</Reference>

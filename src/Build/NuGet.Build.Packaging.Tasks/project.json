@@ -1,12 +1,13 @@
 ﻿{
   "dependencies": {
     "GitInfo": "1.1.32",
+    "ILRepack": "2.0.12",
     "MSBuilder.ThisAssembly.Project": "0.3.1",
     "netfx-System.StringResources": "3.0.14",
     "Newtonsoft.Json": "6.0.4",
-    "NuGet.Client": "3.5.0-rtm-1938",
-    "NuGet.Packaging": "3.5.0-rtm-1938",
-    "NuGet.ProjectManagement": "3.5.0-rtm-1938"
+    "NuGet.Client": "3.5.0",
+    "NuGet.Packaging": "3.5.0",
+    "NuGet.ProjectManagement": "3.5.0"
   },
   "frameworks": {
     "net46": {}

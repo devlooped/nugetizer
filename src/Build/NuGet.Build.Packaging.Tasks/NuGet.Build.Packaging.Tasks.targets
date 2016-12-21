@@ -26,7 +26,7 @@
 	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
 			Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
 
-	<Target Name="AddBuiltOutput" BeforeTargets="GetPackageContents">
+	<Target Name="AddBuiltOutput" BeforeTargets="GetPackageContents" Returns="@(PackageFile)">
 		<!-- Update packaging version targets -->
 		<PropertyGroup>
 			<XmlNs>&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;</XmlNs>
@@ -67,12 +67,6 @@
 				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
 			</PackageFile>
 			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')">
-				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
-			</PackageFile>
-			<PackageFile Include="@(ReferencePath)" Condition="$([System.String]::new('%(Filename)').StartsWith('NuGet'))">
-				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
-			</PackageFile>
-			<PackageFile Include="@(ReferencePath)" Condition="$([System.String]::new('%(Filename)').StartsWith('Newtonsoft.Json'))">
 				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
 			</PackageFile>
 		</ItemGroup>
@@ -140,5 +134,45 @@ namespace $(RootNamespace)
 			</Reference>
 		</ItemGroup>
 	</Target>
-	
+
+	<PropertyGroup>
+		<ILMerge>$(NuGetPackageRoot)ILRepack\2.0.12\tools\ILRepack.exe</ILMerge>
+	</PropertyGroup>
+
+	<Target Name="ILMerge"
+			AfterTargets="CoreCompile"
+			DependsOnTargets="CoreCompile"
+			Inputs="@(IntermediateAssembly)"
+			Outputs="$(TargetPath)"
+			Returns="@(MergedAssemblies)"
+			Condition="'$(Configuration)' == 'Release' And '$(ILMerge)' != 'false'">
+		<GetReferenceAssemblyPaths BypassFrameworkInstallChecks="False" TargetFrameworkMoniker="$(TargetFrameworkMoniker)">
+			<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FullFrameworkReferenceAssemblyPaths" />
+		</GetReferenceAssemblyPaths>
+		<ItemGroup>
+			<MergedAssemblies Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(FileName)').StartsWith('Newtonsoft'))" />
+			<MergedAssemblies Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(FileName)').StartsWith('NuGet'))" />
+			<!--<UnmergedAssemblies Include="@(ReferenceCopyLocalPaths)" Exclude="@(MergedAssemblies)" />
+			<UnmergedAssembliesDir Include="@(UnmergedAssemblies -> '%(RootDir)%(Directory)')" />-->
+			<ReferenceCopyLocalDirs Include="@(ReferenceCopyLocalPaths -> '%(RootDir)%(Directory)')" />
+			<ReferenceCopyLocalPaths Remove="@(MergedAssemblies)" />
+			<LibDir Include="@(ReferenceCopyLocalDirs->Distinct())" />
+		</ItemGroup>
+		<PropertyGroup>
+			<ILMergeArgs Condition="'$(AssemblyOriginatorKeyFile)' != ''">/keyfile:&quot;$(AssemblyOriginatorKeyFile)&quot;</ILMergeArgs>
+		</PropertyGroup>
+		<Exec Command="&quot;$(ILMerge)&quot; @(LibDir->'/lib:&quot;%(Identity).&quot;', ' ') $(ILMergeArgs) /targetplatform:&quot;v4,$(FullFrameworkReferenceAssemblyPaths.TrimEnd(\\))&quot; /out:&quot;@(IntermediateAssembly->'%(FullPath)')&quot; &quot;@(IntermediateAssembly->'%(FullPath)')&quot; @(MergedAssemblies->'&quot;%(FullPath)&quot;', ' ')"
+			  WorkingDirectory="$(MSBuildProjectDirectory)\$(OutputPath)"
+			  StandardErrorImportance="high"
+			  StandardOutputImportance="low"
+			  ConsoleToMSBuild="true"
+			  ContinueOnError="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="ILMergeOutput"/>
+			<Output TaskParameter="ExitCode" PropertyName="ExitCode"/>
+		</Exec>
+		<Message Importance="high" Text="$(ILMergeOutput)" Condition="'$(ExitCode)' != '0'" />
+		<Error Text="$(ILMergeOutput)" Condition="'$(ExitCode)' != '0' And '$(ContinueOnError)' != 'true'" />
+		<Delete Files="@(MergedAssemblies -> '$(MSBuildProjectDirectory)\$(OutputPath)%(Filename)%(Extension)')" Condition="Exists('$(MSBuildProjectDirectory)\$(OutputPath)%(Filename)%(Extension)')" />
+	</Target>
+
 </Project>

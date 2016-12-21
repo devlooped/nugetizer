@@ -5,14 +5,13 @@
 	<PropertyGroup Condition="'$(IsCIBuild)' != 'true'">
 		<!-- Local build defaults -->
 		<Configuration Condition=" '$(Configuration)' == ''">Debug</Configuration>
-		<RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(IsCIBuild)' == 'true'">
 		<Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
-		<RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">true</RunCodeAnalysis>
 	</PropertyGroup>
 	
 	<PropertyGroup>
+		<RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis)</CommonBuildProperties>
