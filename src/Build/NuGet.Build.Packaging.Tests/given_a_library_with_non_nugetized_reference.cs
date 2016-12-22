@@ -27,7 +27,7 @@ namespace NuGet.Build.Packaging
 			{
 				Configuration = "Release",
 				IncludeFrameworkReferences = "false",
-			}, projectName: "a", target: "GetPackageContents", output: output);
+			}, projectName: "a", target: "GetPackageContents");
 
 			Assert.Equal(TargetResultCode.Failure, result.ResultCode);
 			Assert.Contains(result.Logger.Errors, error => error.Code == "NG0011");
