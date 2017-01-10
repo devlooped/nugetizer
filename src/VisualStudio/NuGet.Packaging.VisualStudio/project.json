@@ -2,7 +2,7 @@
   "dependencies": {
     "Clide": "3.0.105-pre",
     "GitInfo": "1.1.32",
-    "Merq": "1.0.1-alpha",
+    "Merq": "1.1.3-alpha",
     "Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
     "Microsoft.VisualStudio.Shell.Interop.11.0": "11.0.61030",
     "MSBuilder.ThisAssembly.Project": "0.3.1",
