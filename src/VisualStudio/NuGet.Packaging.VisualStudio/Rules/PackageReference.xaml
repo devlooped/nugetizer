@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<Rule
+    Name="PackageReference"
+    DisplayName="Package"
+    PageTemplate="generic"
+    Description="Package"
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+    
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" ItemType="PackageReference" HasConfigurationCondition="False" />
+    </Rule.DataSource>
+    
+    <StringProperty Name="Version"
+                    ReadOnly="True"
+                    DisplayName="Version"
+                    Description="Version of dependency.">
+        <StringProperty.DataSource>
+            <DataSource PersistenceStyle="Attribute" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="IncludeAssets" 
+                    Visible="True"
+                    DisplayName="IncludeAssets"
+                    Description="Assets to include from this reference" />
+
+    <StringProperty Name="ExcludeAssets" 
+                    Visible="True"
+                    DisplayName="ExcludeAssets"
+                    Description="Assets to exclude from this reference" />
+
+    <StringProperty Name="PrivateAssets" 
+                    Visible="True"
+                    DisplayName="PrivateAssets"
+                    Description="Assets that are private in this reference" />
+
+    <StringProperty Name="OriginalItemSpec" 
+                    Visible="False" 
+                    ReadOnly="True" 
+                    Description="The evaluated item name of the original reference item whose resolution resulted in this resolved reference item." />
+
+</Rule>

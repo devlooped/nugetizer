@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using EnvDTE;
 using Microsoft.VisualStudio.TemplateWizard;
-using System.IO;
-using Microsoft.VisualStudio.ComponentModelHost;
 using Clide;
 using Microsoft.VisualStudio.Shell.Interop;
-using System.Windows.Interop;
-using System.Windows;
+using NuGet.VisualStudio;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -17,6 +14,8 @@ namespace NuGet.Packaging.VisualStudio
 		IPlatformProvider platformProvider;
 		ISolutionExplorer solutionExplorer;
 		IVsUIShell uiShell;
+		IVsPackageInstaller packageInstaller;
+		IVsPackageInstallerServices packageInstallerServices;
 
 		public MultiPlatformWizard()
 		{ }
@@ -91,16 +90,30 @@ namespace NuGet.Packaging.VisualStudio
 					Constants.Templates.SharedProject,
 					SafeProjectName + "." + Constants.Suffixes.SharedProject);
 
+
+				// HACK (NuGetTemplate): dteSolution2.GetProjectTemplate ("NuGet.Packaging.VisualStudio.Package", "NuGet")
+				// is not working when "NuGet" is used as the language name
+				// So for now we replicate the template for CS and set its visibility to hidden
+
 				solutionContext.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
 					Constants.Templates.NuGetPackage,
-					SafeProjectName + "." + Constants.Suffixes.NuGetPackage,
-					Constants.Language);
+					SafeProjectName + "." + Constants.Suffixes.NuGetPackage);
+
+				//solutionContext.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
+				//	Constants.Templates.NuGetPackage,
+				//	SafeProjectName + "." + Constants.Suffixes.NuGetPackage,
+				//Constants.Language);
 
 				foreach (var selectedPlatform in ViewModel.Platforms.Where(x => x.IsSelected))
 				{
 					var platformProject = solutionExplorer.Solution.UnfoldTemplate(
 						Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
 						solutionContext.GetTargetProjectName(selectedPlatform));
+
+					var platformDteProject = platformProject.As<EnvDTE.Project>();
+
+					if (!packageInstallerServices.IsBuildPackagingNuGetInstalled(platformDteProject))
+						packageInstaller.InstallBuildPackagingNuget(platformDteProject);
 
 					platformProject.AddReference(solutionContext.SharedProject);
 					solutionContext.NuGetProject.AddReference(platformProject);
@@ -124,6 +137,12 @@ namespace NuGet.Packaging.VisualStudio
 
 			if (uiShell == null)
 				uiShell = ServiceLocator.Global.GetService<SVsUIShell, IVsUIShell>();
+
+			if (packageInstaller == null)
+				packageInstaller = ServiceLocator.Global.GetExport<IVsPackageInstaller>();
+
+			if (packageInstallerServices == null)
+				packageInstallerServices = ServiceLocator.Global.GetExport<IVsPackageInstallerServices>();
 		}
 
 		public bool ShouldAddProjectItem(string filePath) => true;

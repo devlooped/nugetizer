@@ -5,20 +5,23 @@
     <Description>A project template for creating NuGet packages (*.nupkg files)</Description>
     <Icon Package="{e57e2daf-a455-45db-962e-31b1c9c70860}" ID="400" />
     <TemplateID>NuGet.Packaging.VisualStudio.Package</TemplateID>
-    <ProjectType>NuGet</ProjectType>
+    <!--  -->
+    <ProjectType>CSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <SortOrder>700</SortOrder>
-	<CreateInPlace>true</CreateInPlace>
+    <CreateInPlace>true</CreateInPlace>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>NuGetPackage</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
+    <!-- WE NEED THIS TEMPLATE. Search for "HACK (NuGetTemplate)" in the MultiPlatformWizard class for more details  -->
+    <Hidden>true</Hidden>
   </TemplateData>
   <TemplateContent>
     <Project File="Package.nuproj" ReplaceParameters="true">
-      <ProjectItem ReplaceParameters="true" OpenInEditor="true">Readme.txt</ProjectItem> 
-      <ProjectItem TargetFileName="$projectname$.targets" ReplaceParameters="true">Package.targets</ProjectItem> 
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">Readme.txt</ProjectItem>
+      <ProjectItem TargetFileName="$projectname$.targets" ReplaceParameters="true">Package.targets</ProjectItem>
     </Project>
   </TemplateContent>
   <WizardExtension>

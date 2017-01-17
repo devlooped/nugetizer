@@ -23,7 +23,7 @@
       <Args>-verbosity quiet</Args>
     </RestoreSolution>
   </ItemDefinitionGroup>
-  <Target Name="RestorePackages" BeforeTargets="Build" DependsOnTargets="DownloadNuGet;EnsureBeforeSolutionImport;RestoreSolutions" Condition=" '$(RestorePackages)' != 'false' " />
+  <Target Name="RestorePackages" BeforeTargets="Build" DependsOnTargets="DownloadNuGet;RestoreSolutions" Condition=" '$(RestorePackages)' != 'false' " />
   <Target Name="EnsureBeforeSolutionImport">
     <Error Text="This targets file should ONLY be imported from a file named Before.$(SolutionFileName).targets alongside the solution file." Condition="!$(MSBuildProjectFile.Contains('$(SolutionFileName)'))" />
   </Target>

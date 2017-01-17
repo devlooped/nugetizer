@@ -17,10 +17,12 @@
 		public const string Language = "NuGet";
 		public const string NuGetAuthoringPathPropertyName = "NuGetAuthoringPath";
 
+		public const string PackageReferenceItemName = "PackageReference";
+
 		public class UIContext
 		{
 			public const string AddPlatformImplementation = "2590DF87-84EB-487A-A1FF-160BEAF4F9CA";
-			public const string NonNuProj = "08E11CF6-52EE-4880-AB1B-D3CC7B10A895";
+			public const string NuProj = "41F43535-FCA3-4171-8009-59A5116F71B4";
 		}
 
 		public class NuGet

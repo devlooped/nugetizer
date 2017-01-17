@@ -46,6 +46,8 @@
     <Compile Include="ExtenderProviders\NoneItemExtenderProvider.cs" />
     <Compile Include="ExtenderProviders\LibraryProjectExtender.cs" />
     <Compile Include="ExtenderProviders\LibraryProjectExtenderProvider.cs" />
+    <Compile Include="Extensions\IVsPackageInstallerExtensions.cs" />
+    <Compile Include="Extensions\IVsPackageInstallerServicesExtensions.cs" />
     <Compile Include="Extensions\IVsUIShellExtensions.cs" />
     <Compile Include="IBuildService.cs" />
     <Compile Include="BuildService.cs" />
@@ -93,6 +95,7 @@
     <Content Include="Targets\NuGet.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
+      <SubType>Designer</SubType>
     </Content>
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -157,6 +160,22 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Rules\scc.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\AssemblyReference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\PackageReference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\ResolvedAssemblyReference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rules\ResolvedPackageReference.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

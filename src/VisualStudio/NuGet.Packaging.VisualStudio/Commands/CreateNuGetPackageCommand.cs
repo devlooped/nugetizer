@@ -46,7 +46,7 @@ namespace NuGet.Packaging.VisualStudio
 				var storage = new BuildPropertyStorage(vsBuildPropertyStorage);
 				var viewModel = new PackageMetadataViewModel(storage);
 
-				if (!IsBuildPackagingNuGetInstalled(project))
+				if (!packageInstallerServices.IsBuildPackagingNuGetInstalled(project))
 				{
 					// Provide default values for required fields/properties
 					viewModel.PackageId = project.Name;
@@ -59,8 +59,8 @@ namespace NuGet.Packaging.VisualStudio
 				{
 					storage.CommitChanges();
 
-					if (!IsBuildPackagingNuGetInstalled(project))
-						InstallBuildPackagingNuget(project);
+					if (!packageInstallerServices.IsBuildPackagingNuGetInstalled(project))
+						packageInstaller.InstallBuildPackagingNuget(project);
 
 					buildService.Pack(ActiveProject);
 				}
@@ -72,29 +72,6 @@ namespace NuGet.Packaging.VisualStudio
 
 		IProjectNode ActiveProject => solutionExplorer.Solution.ActiveProject;
 
-		bool CanExecute()
-		{
-			try
-			{
-				return
-					KnownUIContexts.SolutionExistsAndNotBuildingAndNotDebuggingContext.IsActive &&
-					!ActiveProject.Supports(Constants.NuProjCapability); // For NuProj projects the built-in Build command should be used
-			}
-			catch { return false; }
-		}
-
-		bool IsBuildPackagingNuGetInstalled(Project project) =>
-			packageInstallerServices.IsPackageInstalled(project, Constants.NuGet.BuildPackagingId);
-
-		void InstallBuildPackagingNuget(Project project) =>
-			packageInstaller.InstallPackagesFromVSExtensionRepository(
-				Constants.NuGet.RepositoryId,
-				false,
-				true,
-				project,
-				new Dictionary<string, string>
-				{
-					{ Constants.NuGet.BuildPackagingId , Constants.NuGet.BuildPackagingVersion }
-				});
+		bool CanExecute() => KnownUIContexts.SolutionExistsAndNotBuildingAndNotDebuggingContext.IsActive;
 	}
 }

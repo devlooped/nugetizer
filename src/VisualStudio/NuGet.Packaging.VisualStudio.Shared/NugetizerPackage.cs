@@ -5,10 +5,9 @@
 	using Microsoft.VisualStudio.Shell;
 	using System.ComponentModel.Design;
 	using Microsoft.VisualStudio.ComponentModelHost;
-	using EnvDTE;
-	using Microsoft.VisualStudio.Shell.Interop;
-	using ExtenderProviders;
 	using Microsoft.VisualStudio;
+	using Clide;
+	using Microsoft.VisualStudio.Shell.Interop;
 
 	[Guid(Guids.PackageGuid)]
 	[PackageRegistration(UseManagedResourcesOnly = true)]
@@ -17,34 +16,19 @@
 		name: "Portable Class Library UI Context",
 		expression: "SolutionExistsAndNotBuildingAndNotDebugging & IsPortableClassLibrary",
 		termNames: new[] { "SolutionExistsAndNotBuildingAndNotDebugging", "IsPortableClassLibrary" },
-		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "SolutionHasProjectFlavor:786C830F-07A1-408B-BD7F-6EE04809D6DB" })]
+		termValues: new[] { VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string, "ActiveProjectFlavor:786C830F-07A1-408B-BD7F-6EE04809D6DB" })]
 	[ProvideUIContextRule(
-		Constants.UIContext.NonNuProj,
-		name: "Non NuProj UI Context",
-		expression: "SolutionExistsAndNotBuildingAndNotDebugging & !IsNuProj & (CSharpProjectContext | FSharpProjectContext | VBProjectContext | VCProjectContext)",
-		termNames: new[] 
-		{
-			"SolutionExistsAndNotBuildingAndNotDebugging",
-			"IsNuProj",
-			"CSharpProjectContext",
-			"VBProjectContext",
-			"FSharpProjectContext",
-			"VCProjectContext"
-		},
-		termValues: new[] 
-		{
-			VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_string,
-			"ActiveProjectCapability:PackagingProject",
-			VSConstants.UICONTEXT.CSharpProject_string,
-			VSConstants.UICONTEXT.VBProject_string,
-			VSConstants.UICONTEXT.FSharpProject_string,
-			VSConstants.UICONTEXT.VCProject_string,
-
-		})]
-	[ProvideMenuResource("2000", 2)]
+		Constants.UIContext.NuProj,
+		name: "NuProj Exists",
+		expression: "NuProj",
+		termNames: new[] { "NuProj" },
+		termValues: new[] { "SolutionHasProjectCapability:" + Constants.NuProjCapability })]
+	[ProvideMenuResource("2000", 3)]
 	[ProvideBindingPath]
 	public sealed class NuGetizerPackage : Package
 	{
+		static readonly Guid NuGetPackageGuid = new Guid("5fcc8577-4feb-4d04-ad72-d6c629b083cc");
+
 		IDisposable[] extenderProviders = new IDisposable[0];
 
 		protected override void Initialize()
@@ -65,6 +49,23 @@
 			//		new ProjectReferenceExtenderProvider(extenders),
 			//	};
 			//}
+		}
+
+		public IServiceProvider GetLoadedPackage(Guid packageId)
+		{
+			try
+			{
+				var vsPackage = default(IVsPackage);
+
+				var vsShell = GetService(typeof(SVsShell)) as IVsShell;
+				vsShell.IsPackageLoaded(ref packageId, out vsPackage);
+
+				if (vsPackage == null)
+					ErrorHandler.ThrowOnFailure(vsShell.LoadPackage(ref packageId, out vsPackage));
+
+				return (IServiceProvider)vsPackage;
+			}
+			catch { return null; }
 		}
 
 		protected override void Dispose(bool disposing)

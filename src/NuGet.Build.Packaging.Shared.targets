@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Restore.targets))\NuGet.Restore.targets"
+          Condition=" '$(NuGetRestoreImported)' != 'true' " />
+		  
 	<Import Project="NuGet.Build.Packaging.props" Condition=" '$(NuGetPackagingPropsImported)' != 'true' " />
 
 	<PropertyGroup Condition=" '$(Language)' == 'C#' ">

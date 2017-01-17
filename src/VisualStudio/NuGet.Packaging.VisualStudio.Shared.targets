@@ -98,6 +98,9 @@
 			<Reference Condition=" '%(Filename)' == 'NuGet.VisualStudio' ">
 				<EmbedInteropTypes>True</EmbedInteropTypes>
 			</Reference>
+			<Reference Condition=" '%(Filename)' == 'VSLangProj150' ">
+				<EmbedInteropTypes>True</EmbedInteropTypes>
+			</Reference>
 		</ItemGroup>
 	</Target>
 

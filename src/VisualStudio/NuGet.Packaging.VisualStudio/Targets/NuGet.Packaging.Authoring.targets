@@ -11,45 +11,86 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<Import Project="NuGet.Packaging.Authoring.props" Condition="'$(NuGetPackaginAuthoringPropsImported)' == ''" />
+  <Import Project="NuGet.Packaging.Authoring.props" Condition="'$(NuGetPackaginAuthoringPropsImported)' == ''" />
 
-	<PropertyGroup>
-		<ProjectSystemRulesDir Condition="'$(ProjectSystemRulesDir)' == ''">$(MSBuildThisFileDirectory)..\Rules\</ProjectSystemRulesDir>
-	</PropertyGroup>
+  <PropertyGroup>
+    <ProjectSystemRulesDir Condition="'$(ProjectSystemRulesDir)' == ''">$(MSBuildThisFileDirectory)..\Rules\</ProjectSystemRulesDir>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <NuGetTargetFramework>dotnet</NuGetTargetFramework>
+    <PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;netcore;netcore45;netcore451;netcore50;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netcoreapp1.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PropertyPageSchema Include="$(ProjectSystemRulesDir)ProjectItemsSchema.xaml">
-			<Context>Project</Context>
-		</PropertyPageSchema>
-		<PropertyPageSchema Include="$(ProjectSystemRulesDir)scc.xaml;">
-			<Context>Invisible</Context>
-		</PropertyPageSchema>
-		<PropertyPageSchema Include="$(ProjectSystemRulesDir)general.xaml">
-			<Context>Project;File</Context>
-		</PropertyPageSchema>
-		<PropertyPageSchema Include="$(ProjectSystemRulesDir)general.browseobject.xaml">
-			<Context>BrowseObject</Context>
-		</PropertyPageSchema>
-		<PropertyPageSchema Include="
+  <ItemGroup>
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)ProjectItemsSchema.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)scc.xaml;">
+      <Context>Invisible</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)general.xaml">
+      <Context>Project;File</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)general.browseobject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="
 							$(ProjectSystemRulesDir)folder.xaml;
 							$(ProjectSystemRulesDir)none.xaml;
 							$(ProjectSystemRulesDir)content.xaml">
-			<Context>File;BrowseObject</Context>
-		</PropertyPageSchema>
-		<PropertyPageSchema Include="$(ProjectSystemRulesDir)ResolvedProjectReference.xaml">
-			<Context>ProjectSubscriptionService;BrowseObject</Context>
-		</PropertyPageSchema>
-		<PropertyPageSchema Include="$(ProjectSystemRulesDir)ProjectReference.xaml">
-			<Context>;BrowseObject</Context>
-		</PropertyPageSchema>
-	</ItemGroup>
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
 
-	<!-- ProjectCapabilities in dev15 should be supported via NuGet packages -->
-	<ItemGroup>
-		<ProjectCapability Include="ProjectReferences;PackageReferences;ReferencesFolder;AssemblyReferences;DeclaredSourceItems;UserSourceItems" />
-		<ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
-		<ProjectCapability Include="SharedProjectReferences"/>
-		<ProjectCapability Include="PackagingProject" />
-	</ItemGroup>
-	
+
+    <!-- Project references -->
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)ProjectReference.xaml">
+      <Context>;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)ResolvedProjectReference.xaml">
+      <Context>ProjectSubscriptionService;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- Assembly references -->
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)AssemblyReference.xaml">
+      <Context>;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)ResolvedAssemblyReference.xaml">
+      <Context>ProjectSubscriptionService;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- Package references -->
+    <PropertyPageSchema Include="$(ProjectSystemRulesDir)PackageReference.xaml">
+      <Context>ProjectSubscriptionService;BrowseObject</Context>
+    </PropertyPageSchema>
+
+  </ItemGroup>
+
+  <!-- ProjectCapabilities in dev15 should be supported via NuGet packages -->
+  <ItemGroup>
+    <ProjectCapability Include="PackagingProject" />
+
+    <!-- DependenciesTree capability lights up a Dependencies tree node and it's sub node providers-->
+    <ProjectCapability Include="DependenciesTree" />
+
+    <ProjectCapability Include="ProjectConfigurationsInferredFromUsage" />
+
+    <ProjectCapability Include="
+                          AssemblyReferences;
+                          ProjectReferences;
+                          PackageReferences;
+                          OutputGroups;
+                          AllTargetOutputGroups;
+                          VisualStudioWellKnownOutputGroups;
+                          SingleFileGenerators;
+                          DeclaredSourceItems;
+                          UserSourceItems;" />
+
+    <!-- Reference Manager capabilities -->
+    <ProjectCapability Include="ReferenceManagerAssemblies" />
+    <ProjectCapability Include="ReferenceManagerBrowse" />
+    <ProjectCapability Include="ReferenceManagerProjects" />
+
+  </ItemGroup>
+
 </Project>
