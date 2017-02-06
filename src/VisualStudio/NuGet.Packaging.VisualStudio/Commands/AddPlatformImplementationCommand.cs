@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using Clide;
 using System.Windows;
 using Microsoft.VisualStudio.Shell;
+using NuGet.VisualStudio;
 
 namespace NuGet.Packaging.VisualStudio
 {
@@ -12,17 +13,23 @@ namespace NuGet.Packaging.VisualStudio
 		readonly ISolutionExplorer solutionExplorer;
 		readonly IDialogService dialogService;
 		readonly IPlatformProvider platformProvider;
+		readonly IVsPackageInstaller packageInstaller;
+		readonly IVsPackageInstallerServices packageInstallerServices;
 
 		[ImportingConstructor]
 		public AddPlatformImplementationCommand(
 			ISolutionExplorer solutionExplorer,
 			IPlatformProvider platformProvider,
-			IDialogService dialogService)
+			IDialogService dialogService,
+			IVsPackageInstaller packageInstaller,
+			IVsPackageInstallerServices packageInstallerServices)
 			: base(Commands.AddPlatformImplementationCommandId)
 		{
 			this.solutionExplorer = solutionExplorer;
 			this.platformProvider = platformProvider;
 			this.dialogService = dialogService;
+			this.packageInstaller = packageInstaller;
+			this.packageInstallerServices = packageInstallerServices;
 		}
 
 		protected override void Execute()
@@ -65,10 +72,12 @@ namespace NuGet.Packaging.VisualStudio
 				if (context.NuGetProject == null)
 				{
 					context.NuGetProject = solutionExplorer.Solution.UnfoldTemplate(
-						Constants.Templates.NuGetPackage, context.NuGetProjectName, Constants.Language);
+						Constants.Templates.NuGetPackage, context.NuGetProjectName);
 				}
 
 				context.NuGetProject.AddReference(context.SelectedProject);
+
+				EnsureBuildPackagingNugetInstalled(context.SelectedProject);
 
 				foreach (var selectedPlatform in viewModel.Platforms.Where(x => x.IsEnabled && x.IsSelected))
 				{
@@ -80,12 +89,22 @@ namespace NuGet.Packaging.VisualStudio
 							Constants.Templates.GetPlatformTemplate(selectedPlatform.Id),
 							projectName);
 
+					EnsureBuildPackagingNugetInstalled(project);
+
 					if (context.SharedProject != null && viewModel.UseSharedProject)
 						project.AddReference(context.SharedProject);
 
 					context.NuGetProject.AddReference(project);
 				}
 			}
+		}
+
+		void EnsureBuildPackagingNugetInstalled(IProjectNode project)
+		{
+			var dteProject = project.As<EnvDTE.Project>();
+
+			if (!packageInstallerServices.IsBuildPackagingNuGetInstalled(dteProject))
+				packageInstaller.InstallBuildPackagingNuget(dteProject);
 		}
 
 		IProjectNode ActiveProject => solutionExplorer.Solution.ActiveProject;
