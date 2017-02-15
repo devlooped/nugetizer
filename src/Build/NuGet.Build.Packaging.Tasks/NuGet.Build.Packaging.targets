@@ -523,6 +523,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			IntersectionAssembly="@(IntersectionAssembly)"
 			ReferencePath="$(IntersectionAssemblyReferencePath)"
 			ExcludeType="$(IntersectionExcludeType)"
+			RemoveAbstractTypeMembers="$(IntersectionRemoveAbstractTypeMembers)"
 			KeepInternalConstructors="$(IntersectionKeepInternalConstructors)"
 			KeepMarshalling="$(IntersectionKeepMarshalling)"
 			ToolPath="$(ApiIntersectToolPath)"
