@@ -517,11 +517,20 @@ Copyright (c) .NET Foundation. All rights reserved.
 		Inputs="@(IntersectionAssembly)"
 		Outputs="@(_ReferenceAssemblyTargetPath)">
 
+		<PropertyGroup>
+			<EnableDefaultIntersectionAssemblyReferencePath Condition="'$(EnableDefaultIntersectionAssemblyReferencePath)' == ''">true</EnableDefaultIntersectionAssemblyReferencePath>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_IntersectionReferencePath Include="@(IntersectionAssembly->'%(RootDir)%(Directory)')" Condition="'$(EnableDefaultIntersectionAssemblyReferencePath)' == 'true'" />
+			<_IntersectionReferencePath Include="$(IntersectionAssemblyReferencePath)" />
+		</ItemGroup>
+		
 		<ApiIntersect
 			Framework="%(ReferenceAssemblyFramework.Identity)"
 			RootOutputDirectory="$(IntermediateOutputPath)"
 			IntersectionAssembly="@(IntersectionAssembly)"
-			ReferencePath="$(IntersectionAssemblyReferencePath)"
+			ReferencePath="@(_IntersectionReferencePath)"
 			ExcludeType="$(IntersectionExcludeType)"
 			RemoveAbstractTypeMembers="$(IntersectionRemoveAbstractTypeMembers)"
 			ExcludeAssembly="@(IntersectionExcludeAssembly)"
