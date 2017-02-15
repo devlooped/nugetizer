@@ -522,6 +522,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			RootOutputDirectory="$(IntermediateOutputPath)"
 			IntersectionAssembly="@(IntersectionAssembly)"
 			ReferencePath="$(IntersectionAssemblyReferencePath)"
+			ExcludeType="$(IntersectionExcludeType)"
 			ToolPath="$(ApiIntersectToolPath)"
 			ToolExe="$(ApiIntersectToolExe)">
 			<Output TaskParameter="OutputDirectory" ItemName="_ReferenceAssemblyBuildInfo" />

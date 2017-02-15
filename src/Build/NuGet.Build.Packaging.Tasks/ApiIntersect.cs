@@ -17,6 +17,8 @@ namespace NuGet.Build.Packaging.Tasks
 
 		public ITaskItem[] ReferencePath { get; set; }
 
+		public ITaskItem[] ExcludeType { get; set; }
+
 		[Required]
 		public ITaskItem RootOutputDirectory { get; set; }
 
@@ -62,6 +64,14 @@ namespace NuGet.Build.Packaging.Tasks
 			{
 				builder.AppendSwitch("-r");
 				builder.AppendFileNameIfNotNull(referencePath.ItemSpec);
+			}
+
+			foreach (var excludeType in ExcludeType.NullAsEmpty())
+			{
+				builder.AppendSwitch("-b");
+				builder.AppendTextUnquoted(" \"");
+				builder.AppendTextUnquoted(excludeType.ItemSpec);
+				builder.AppendTextUnquoted("\"");
 			}
 
 			return builder.ToString();
