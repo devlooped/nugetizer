@@ -523,6 +523,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 			IntersectionAssembly="@(IntersectionAssembly)"
 			ReferencePath="$(IntersectionAssemblyReferencePath)"
 			ExcludeType="$(IntersectionExcludeType)"
+			KeepInternalConstructors="$(IntersectionKeepInternalConstructors)"
+			KeepMarshalling="$(IntersectionKeepMarshalling)"
 			ToolPath="$(ApiIntersectToolPath)"
 			ToolExe="$(ApiIntersectToolExe)">
 			<Output TaskParameter="OutputDirectory" ItemName="_ReferenceAssemblyBuildInfo" />
