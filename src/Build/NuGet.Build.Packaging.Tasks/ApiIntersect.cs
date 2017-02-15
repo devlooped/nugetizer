@@ -15,6 +15,18 @@ namespace NuGet.Build.Packaging.Tasks
 		[Required]
 		public ITaskItem[] IntersectionAssembly { get; set; }
 
+		public ITaskItem[] ReferencePath { get; set; }
+
+		public ITaskItem[] ExcludeType { get; set; }
+
+		public ITaskItem[] RemoveAbstractTypeMembers { get; set; }
+
+		public ITaskItem[] ExcludeAssembly { get; set; }
+
+		public string KeepInternalConstructors { get; set; }
+
+		public string KeepMarshalling { get; set; }
+
 		[Required]
 		public ITaskItem RootOutputDirectory { get; set; }
 
@@ -55,6 +67,38 @@ namespace NuGet.Build.Packaging.Tasks
 				builder.AppendSwitch("-i");
 				builder.AppendFileNameIfNotNull(assembly.ItemSpec);
 			}
+
+			foreach (var referencePath in ReferencePath.NullAsEmpty())
+			{
+				builder.AppendSwitch("-r");
+				builder.AppendFileNameIfNotNull(referencePath.ItemSpec);
+			}
+
+			foreach (var excludeType in ExcludeType.NullAsEmpty())
+			{
+				builder.AppendSwitch("-b");
+				builder.AppendTextUnquoted(" \"");
+				builder.AppendTextUnquoted(excludeType.ItemSpec);
+				builder.AppendTextUnquoted("\"");
+			}
+
+			foreach (var removeAbstractType in RemoveAbstractTypeMembers.NullAsEmpty())
+			{
+				builder.AppendSwitch("-a");
+				builder.AppendTextUnquoted(" \"");
+				builder.AppendTextUnquoted(removeAbstractType.ItemSpec);
+				builder.AppendTextUnquoted("\"");
+			}
+
+			foreach (var assembly in ExcludeAssembly.NullAsEmpty())
+			{
+				builder.AppendSwitch("-e");
+				builder.AppendFileNameIfNotNull(assembly.ItemSpec);
+			}
+
+			AppendSwitchIfTrue(builder, "-k", KeepInternalConstructors);
+
+			AppendSwitchIfTrue(builder, "-m", KeepMarshalling);
 
 			return builder.ToString();
 		}
@@ -101,6 +145,16 @@ namespace NuGet.Build.Packaging.Tasks
 			return Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86, Environment.SpecialFolderOption.DoNotVerify),
 				@"Reference Assemblies\Microsoft\Framework\.NETPortable");
+		}
+
+		static void AppendSwitchIfTrue(CommandLineBuilder builder, string switchName, string value)
+		{
+			if (string.IsNullOrEmpty(value))
+				return;
+
+			bool result;
+			if (bool.TryParse(value, out result))
+				builder.AppendSwitch(switchName);
 		}
 	}
 }
