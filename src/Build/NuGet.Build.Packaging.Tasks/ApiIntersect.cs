@@ -15,6 +15,8 @@ namespace NuGet.Build.Packaging.Tasks
 		[Required]
 		public ITaskItem[] IntersectionAssembly { get; set; }
 
+		public ITaskItem[] ReferencePath { get; set; }
+
 		[Required]
 		public ITaskItem RootOutputDirectory { get; set; }
 
@@ -54,6 +56,12 @@ namespace NuGet.Build.Packaging.Tasks
 			{
 				builder.AppendSwitch("-i");
 				builder.AppendFileNameIfNotNull(assembly.ItemSpec);
+			}
+
+			foreach (var referencePath in ReferencePath.NullAsEmpty())
+			{
+				builder.AppendSwitch("-r");
+				builder.AppendFileNameIfNotNull(referencePath.ItemSpec);
 			}
 
 			return builder.ToString();

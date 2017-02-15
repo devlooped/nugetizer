@@ -521,6 +521,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			Framework="%(ReferenceAssemblyFramework.Identity)"
 			RootOutputDirectory="$(IntermediateOutputPath)"
 			IntersectionAssembly="@(IntersectionAssembly)"
+			ReferencePath="$(IntersectionAssemblyReferencePath)"
 			ToolPath="$(ApiIntersectToolPath)"
 			ToolExe="$(ApiIntersectToolExe)">
 			<Output TaskParameter="OutputDirectory" ItemName="_ReferenceAssemblyBuildInfo" />
