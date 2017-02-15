@@ -21,6 +21,8 @@ namespace NuGet.Build.Packaging.Tasks
 
 		public ITaskItem[] RemoveAbstractTypeMembers { get; set; }
 
+		public ITaskItem[] ExcludeAssembly { get; set; }
+
 		public string KeepInternalConstructors { get; set; }
 
 		public string KeepMarshalling { get; set; }
@@ -86,6 +88,12 @@ namespace NuGet.Build.Packaging.Tasks
 				builder.AppendTextUnquoted(" \"");
 				builder.AppendTextUnquoted(removeAbstractType.ItemSpec);
 				builder.AppendTextUnquoted("\"");
+			}
+
+			foreach (var assembly in ExcludeAssembly.NullAsEmpty())
+			{
+				builder.AppendSwitch("-e");
+				builder.AppendFileNameIfNotNull(assembly.ItemSpec);
 			}
 
 			AppendSwitchIfTrue(builder, "-k", KeepInternalConstructors);

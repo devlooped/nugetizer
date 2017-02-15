@@ -524,6 +524,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			ReferencePath="$(IntersectionAssemblyReferencePath)"
 			ExcludeType="$(IntersectionExcludeType)"
 			RemoveAbstractTypeMembers="$(IntersectionRemoveAbstractTypeMembers)"
+			ExcludeAssembly="@(IntersectionExcludeAssembly)"
 			KeepInternalConstructors="$(IntersectionKeepInternalConstructors)"
 			KeepMarshalling="$(IntersectionKeepMarshalling)"
 			ToolPath="$(ApiIntersectToolPath)"
