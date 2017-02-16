@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Packaging.VisualStudi
 		{BFA9BCE1-030C-40F1-94FE-A421C6103344} = {BFA9BCE1-030C-40F1-94FE-A421C6103344}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Client.Fix", "NuGet.Client.Fix\NuGet.Client.Fix.csproj", "{7454A1EC-4033-4803-97C8-F0C8C04DBE4D}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		NuGet.Packaging.VisualStudio.Shared\NuGet.Packaging.VisualStudio.Shared.projitems*{70d9bbbc-b982-4210-9f66-5a02aea268fe}*SharedItemsImports = 13
@@ -58,6 +60,10 @@ Global
 		{CD844274-2306-4273-8D2C-E1B040457D79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD844274-2306-4273-8D2C-E1B040457D79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD844274-2306-4273-8D2C-E1B040457D79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7454A1EC-4033-4803-97C8-F0C8C04DBE4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7454A1EC-4033-4803-97C8-F0C8C04DBE4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7454A1EC-4033-4803-97C8-F0C8C04DBE4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7454A1EC-4033-4803-97C8-F0C8C04DBE4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

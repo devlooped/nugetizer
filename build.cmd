@@ -30,4 +30,5 @@ IF "%Verbosity%"=="" (
     set Verbosity=minimal
 )
 
+"%msb%" src\VisualStudio\NuGet.Packaging.VisualStudio.sln /t:Restore
 "%msb%" build.proj /v:%Verbosity% %1 %2 %3 %4 %5 %6 %7 %8 %9

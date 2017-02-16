@@ -15,6 +15,7 @@
 	<Assets>
 		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="NuGet.Packaging.VisualStudio" Path="|NuGet.Packaging.VisualStudio|"/>
 		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="NuGet.Packaging.VisualStudio.15" Path="|NuGet.Packaging.VisualStudio.15|"/>
+		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="NuGet.Client.Fix" Path="|NuGet.Client.Fix|"/>
 		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="NuGet.Packaging.VisualStudio.15" Path="|NuGet.Packaging.VisualStudio.15;PkgdefProjectOutputGroup|" />
 		<Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="NuGet.Packaging.VisualStudio.15" Path="Templates\Projects" d:VsixSubPath="Templates\Projects" />
 		<Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" Path="|NuGet.Packaging.VisualStudio|" />

@@ -82,6 +82,10 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NuGet.Client.Fix\NuGet.Client.Fix.csproj">
+      <Project>{7454a1ec-4033-4803-97c8-f0c8c04dbe4d}</Project>
+      <Name>NuGet.Client.Fix</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NuGet.Packaging.VisualStudio\NuGet.Packaging.VisualStudio.csproj">
       <Project>{9617edcd-23bb-41ea-827d-f5729d45b0af}</Project>
       <Name>NuGet.Packaging.VisualStudio</Name>

@@ -40,7 +40,7 @@
 	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
 	<Target Name="Build">
-		<MSBuild Projects="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" Targets="RestorePackages"  />	
+		<MSBuild Projects="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" Targets="Restore"  />	
 		<Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" StandardOutputImportance="low" />
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 		<Message Text="Build properties: $(CommonBuildProperties)." Importance="high" />
