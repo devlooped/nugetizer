@@ -74,8 +74,8 @@
 	</Target>
 
 	<Target Name="Restore">
-		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)" -Verbosity quiet' />
-		<Exec Command='"$(NuGet)" Restore "src\VisualStudio\NuGet.Packaging.VisualStudio.sln" -Verbosity quiet' />
+		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)" -Verbosity quiet -Config src\NuGet.Config' />
+		<Exec Command='"$(NuGet)" Restore "src\VisualStudio\NuGet.Packaging.VisualStudio.sln" -Verbosity quiet -Config src\NuGet.Config' />
 	</Target>
 
 	<Target Name="Coverage" DependsOnTargets="Build">
