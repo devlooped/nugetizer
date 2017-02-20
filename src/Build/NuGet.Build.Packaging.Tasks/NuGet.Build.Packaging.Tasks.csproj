@@ -5,7 +5,6 @@
   <PropertyGroup>
     <ProjectGuid>{A3D231D7-31E4-4A70-8CD1-7246C7D069F6}</ProjectGuid>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -29,10 +28,6 @@
     <Content Include="NuGet.Build.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="..\..\..\external\ApiIntersect\ApiIntersect\app.config">
-      <Link>ApiIntersect.exe.config</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="NuGet.Build.Packaging.Version.props">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

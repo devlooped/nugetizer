@@ -40,7 +40,7 @@ nuget:
   disable_publish_on_pr: false
   
 artifacts:
-  - path: 'bin\Release\*.nupkg'
+  - path: 'out\*.nupkg'
     name: Package
-  - path: 'bin\Release\*.vsix'
+  - path: 'out\*.vsix'
     name: Extension

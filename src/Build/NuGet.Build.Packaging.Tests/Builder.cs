@@ -16,14 +16,14 @@ public static partial class Builder
 	public static BuildResult Build(string projectOrSolution, string targets, Dictionary<string, string> properties = null, ILogger logger = null)
 	{
 		if (!Path.IsPathRooted(projectOrSolution))
-			projectOrSolution = Path.Combine(ModuleInitializer.BaseDirectory, projectOrSolution);
+			projectOrSolution = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, projectOrSolution);
 
 		if (!File.Exists(projectOrSolution))
 			throw new FileNotFoundException($"Project or solution to build {projectOrSolution} was not found.", projectOrSolution);
 
 		// Without this, builds end up running in process and colliding with each other, 
 		// especially around the current directory used to resolve relative paths in projects.
-		Environment.SetEnvironmentVariable("MSBUILDNOINPROCNODE", "1");
+		//Environment.SetEnvironmentVariable("MSBUILDNOINPROCNODE", "1", EnvironmentVariableTarget.Process);
 		using (var manager = new BuildManager(Guid.NewGuid().ToString()))
 		{
 			properties = properties ?? new Dictionary<string, string>();
@@ -36,12 +36,21 @@ public static partial class Builder
 			var parameters = new BuildParameters
 			{
 				GlobalProperties = properties,
+				DisableInProcNode = true,
+				EnableNodeReuse = false,
+				ShutdownInProcNodeOnBuildFinish = true,
+				// Without this, builds end up running in process and colliding with each other, 
+				// especially around the current directory used to resolve relative paths in projects.
+				LogInitialPropertiesAndItems = true,
+				LogTaskInputs = true,
 			};
 
 			if (logger != null)
 				parameters.Loggers = new[] { logger };
 
-			return manager.Build(parameters, request);
+			var result = manager.Build(parameters, request);
+			//manager.ShutdownAllNodes();
+			return result;
 		}
 	}
 

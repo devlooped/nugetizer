@@ -5,7 +5,7 @@
 		"GitInfo": "1.1.32",
 		"Merq": "1.1.3-alpha",
 		"Merq.Async": "1.1.3-alpha",
-		"Microsoft.Build": "15.1.0-preview-000458-02",
+		"Microsoft.Build": "15.1.262-preview5",
 		"Microsoft.VisualStudio.ProjectSystem.SDK": "15.0.594-pre",
 		"Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
 		"Microsoft.VisualStudio.Shell.Interop.11.0": "11.0.61030",
@@ -18,10 +18,10 @@
 		"VSLangProj150": "1.0.0",
 		"VSSDK.ComponentModelHost.11": "11.0.4"
 	},
-  "frameworks": {
-    "net46": {}
-  },
-  "runtimes": {
-    "win": {}
-  }
+	"frameworks": {
+		"net46": {}
+	},
+	"runtimes": {
+		"win": {}
+	}
 }

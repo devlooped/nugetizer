@@ -17,7 +17,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
-    <None Include="NuGet.Build.Packaging.Tests.targets" />
+    <None Include="NuGet.Build.Packaging.Tests.targets">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Scenarios\given_a_custom_build_project\Readme.txt" />
     <Content Include="Scenarios\given_a_library_with_content\content-with-include-true.txt" />
     <Content Include="Scenarios\given_a_library_with_content\content-with-include-false.txt" />
@@ -74,7 +76,6 @@
     <None Include="Scenarios\_._" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FodyWeavers.xml" />
     <Content Include="Scenarios\given_library_with_json_dependencies\a.csproj" />
     <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj" />
     <Content Include="Scenarios\given_a_library_with_project_reference\a.csproj" />
@@ -111,7 +112,6 @@
     <Compile Include="Utilities\FrameworkAssemblyReferenceComparer.cs" />
     <Compile Include="Utilities\ManifestContentFilesComparer.cs" />
     <Compile Include="Utilities\MockBuildEngine.cs" />
-    <Compile Include="Utilities\ModuleInitializer.cs" />
     <Compile Include="Utilities\ManifestFileComparer.cs" />
     <Compile Include="Utilities\PackageDependencyComparer.cs" />
     <Compile Include="Utilities\PackageDependencyGroupComparer.cs" />

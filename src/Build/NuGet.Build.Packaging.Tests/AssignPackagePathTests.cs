@@ -9,6 +9,7 @@ using System.Linq;
 using NuGet.Build.Packaging.Tasks;
 using static NuGet.Build.Packaging.Properties.Strings;
 using Metadata = System.Collections.Generic.Dictionary<string, string>;
+using System;
 
 namespace NuGet.Build.Packaging
 {
@@ -20,7 +21,7 @@ namespace NuGet.Build.Packaging
 
 		static AssignPackagePathTests()
 		{
-			kinds = new Project(Path.Combine(ModuleInitializer.BaseDirectory, "NuGet.Build.Packaging.props"), null, null, new ProjectCollection())
+			kinds = new Project(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "NuGet.Build.Packaging.props"), null, null, new ProjectCollection())
 				.GetItems("PackageItemKind")
 				.Select(item => new TaskItem(item.UnevaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
 				.ToArray();
