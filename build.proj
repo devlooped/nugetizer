@@ -9,8 +9,10 @@
 	<PropertyGroup Condition="'$(IsCIBuild)' == 'true'">
 		<Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
+		<NuGetUrl Condition=" '$(NuGetUrl)' == '' ">https://dist.nuget.org/win-x86-commandline/v3.4.4/NuGet.exe</NuGetUrl>
+		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
 		<RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
@@ -40,7 +42,6 @@
 	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
 	<Target Name="Build">
-		<MSBuild Projects="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" Targets="Restore"  />	
 		<Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" StandardOutputImportance="low" />
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 		<Message Text="Build properties: $(CommonBuildProperties)." Importance="high" />
@@ -70,6 +71,11 @@
 			   Html="$(Out)\test.html"
 			   Xml="$(Out)\test.xml"
 			   Reporter="appveyor" />
+	</Target>
+
+	<Target Name="Restore">
+		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)" -Verbosity quiet' />
+		<Exec Command='"$(NuGet)" Restore "src\VisualStudio\NuGet.Packaging.VisualStudio.sln" -Verbosity quiet' />
 	</Target>
 
 	<Target Name="Coverage" DependsOnTargets="Build">

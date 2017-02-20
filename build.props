@@ -12,7 +12,8 @@
 		<IsCIBuild Condition=" '$(IsTeamCityBuild)' == 'true' Or '$(IsWrenchBuild)' == 'true' Or '$(IsAppVeyorBuild)' == 'true' Or '$(IsMyGetBuild)' == 'true' Or '$(IsJenkinsBuild)' == 'true' ">true</IsCIBuild>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
-	</PropertyGroup>
+	<Target Name="GetVsInstallRoot" Returns="$(VsInstallRoot)">
+		<Message Importance="high" Text="$(VsInstallRoot)" />
+	</Target>
+
 </Project>
