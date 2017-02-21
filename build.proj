@@ -45,7 +45,7 @@
 		<Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" StandardOutputImportance="low" />
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 		<Message Text="Build properties: $(CommonBuildProperties)." Importance="high" />
-		<MSBuild Projects="@(Solution)" BuildInParallel="false" Properties="$(CommonBuildProperties);PackOnBuild=false;CreateVsixContainer=false" />
+		<MSBuild Projects="@(Solution)" BuildInParallel="false" Properties="$(CommonBuildProperties);PackOnBuild=false;CreateVsixContainer=false;DeployExtension=false" />
 	</Target>
 
 	<Target Name="Package" DependsOnTargets="Build">

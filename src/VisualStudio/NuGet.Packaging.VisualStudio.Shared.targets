@@ -40,7 +40,10 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<Target Name="EnsureNuGetizerPackage" DependsOnTargets="GetVersion" BeforeTargets="DeployVsixExtensionFiles;CreateVsixContainer">
+	<Target Name="EnsureNuGetizerPackage"
+			Condition="'$(CreateVsixContainer)' != 'false' And '$(DeployExtension)' != 'false'"
+			DependsOnTargets="GetVersion" 
+			BeforeTargets="DeployVsixExtensionFiles;CreateVsixContainer">
 		<ItemGroup>
 			<_NuGetizerPackage Include="$(Out)\*.nupkg" />
 			<_CurrentNuGetizerPackage Include="@(_NuGetizerPackage)"
