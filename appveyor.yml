@@ -30,7 +30,7 @@ cache:
 deploy:
   - provider: NuGet
     api_key:
-      secure: 6IOnCr0vcNuRan0YWj7JRzsjZINxy7QuKAsg1HvdmYIOvTMV/ZbFyaRbL5X8OOmY
+      secure: 7MS5+XWaFchMXFqzgneQCqo9U0DlxiPXe/KWWUnbCBDEizVn06EjdQZkWu1gbNOJ
     on:
       # we only deploy to public NuGet gallery when tagging the repo
       appveyor_repo_tag: true
