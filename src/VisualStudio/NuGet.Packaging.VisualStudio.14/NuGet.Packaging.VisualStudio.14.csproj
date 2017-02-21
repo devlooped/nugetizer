@@ -14,7 +14,7 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetVsixContainerName>NuGetizer3000-VS2015.vsix</TargetVsixContainerName>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
-	<DeployExtension Condition="'$(DeployExtension)' == '' And '$(Configuration)' == 'Release'">false</DeployExtension>
+    <DeployExtension Condition="'$(DeployExtension)' == '' And '$(Configuration)' == 'Release'">false</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

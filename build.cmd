@@ -1,33 +1,111 @@
-:: Optional batch file to quickly build with some defaults.
-:: Alternatively, this batch file can be invoked passing msbuild parameters, like: build.cmd "/v:detailed" "/t:Rebuild"
+@echo off
+setlocal enabledelayedexpansion
 
-@ECHO OFF
+set BatchFile=%0
+set Root=%~dp0
+set BuildConfiguration=Debug
+set MSBuildTarget=All
+set NodeReuse=true
+set MultiProcessor=/m
 
-:: Ensure MSBuild can be located. Allows for a better error message below.
-where msbuild > %TEMP%\msbuild.txt
-set /p msb=<%TEMP%\msbuild.txt
+:ParseArguments
+if "%1" == "" goto :DoneParsing
+if /I "%1" == "/?" call :Usage && exit /b 1
+if /I "%1" == "/debug" set BuildConfiguration=Debug&&shift&& goto :ParseArguments
+if /I "%1" == "/release" set BuildConfiguration=Release&&shift&& goto :ParseArguments
+if /I "%1" == "/build" set MSBuildTarget=Build&&shift&& goto :ParseArguments
+if /I "%1" == "/rebuild" set MSBuildTarget=Rebuild&&shift&& goto :ParseArguments
+if /I "%1" == "/package" set MSBuildTarget=Package&&shift&& goto :ParseArguments
+if /I "%1" == "/test" set MSBuildTarget=Test&&shift&& goto :ParseArguments
+if /I "%1" == "/restore" set MSBuildTarget=Restore&&shift&& goto :ParseArguments
+if /I "%1" == "/no-node-reuse" set NodeReuse=false&&shift&& goto :ParseArguments
+if /I "%1" == "/no-multi-proc" set MultiProcessor=&&shift&& goto :ParseArguments
+MSBuildAdditionalArguments="%1 %MSBuildAdditionalArguments"%&&shift&& goto :ParseArguments
+:DoneParsing
 
-IF "%msb%"=="" (
-    echo Please run %~n0 from a Visual Studio Developer Command Prompt.
-    exit /b -1
+:: Detect if MSBuild is in the path
+for /f "delims=" %%i in ('where msbuild') do set "MSBuildPath=%%i" & goto :MSBuildPathDone
+:MSBuildPathDone
+
+if not exist "%MSBuildPath%" (
+  call :PrintColor Red "To build this repository, MSBuild.exe must be in the PATH."
+  echo MSBuild is included with Visual Studio 2017 or later.
+  echo.
+  echo If Visual Studio is not installed, visit this page to download:
+  echo.
+  echo https://www.visualstudio.com/vs/
+  echo.
+  exit /b 1
 )
 
-SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
-
-IF EXIST .nuget\nuget.exe goto restore
-IF NOT EXIST .nuget md .nuget
-echo Downloading latest version of NuGet.exe...
-@powershell -NoProfile -ExecutionPolicy RemoteSigned -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile .nuget/nuget.exe"
-
-:restore
-:: Build script packages have no version in the path, so we install them to .nuget\packages to avoid conflicts with 
-:: solution/project packages.
-IF NOT EXIST packages.config goto run
-.nuget\nuget.exe install packages.config -OutputDirectory .nuget\packages -ExcludeVersion -Verbosity quiet
-
-:run
-IF "%Verbosity%"=="" (
-    set Verbosity=minimal
+:: Detect MSBuild version >= 15
+for /f "delims=" %%i in ('msbuild -nologo -version') do set MSBuildFullVersion=%%i
+for /f "delims=. tokens=1" %%a in ("%MSBuildFullVersion%") do (
+  set MSBuildMajorVersion=%%a
 )
 
-"%msb%" build.proj /v:%Verbosity% %1 %2 %3 %4 %5 %6 %7 %8 %9
+if %MSBuildMajorVersion% LSS 15 (
+  call :PrintColor Red "To build this repository, the MSBuild.exe in the PATH needs to be 15.0 or higher."
+  echo MSBuild 15.0 is included with Visual Studio 2017 or later.
+  echo.
+  echo If Visual Studio is not installed, visit this page to download:
+  echo.
+  echo https://www.visualstudio.com/vs/
+  echo.
+  echo Located MSBuild in the PATH was "%MSBuildPath%".
+  exit /b 1
+)
+
+:: Ensure developer command prompt variables are set
+if "%VisualStudioVersion%" == "" (
+  for /f "delims=" %%i in ('msbuild build.props -nologo /t:GetVsInstallRoot') do set "VsInstallRoot=%%i" & goto :VsInstallRootDone
+:VsInstallRootDone
+  for /f "tokens=* delims= " %%i in ("%VsInstallRoot%") do set "VsInstallRoot=%%i"
+  set "DeveloperCommandPrompt=%VsInstallRoot%\Common7\Tools\VsDevCmd.bat"
+  if not exist "%DeveloperCommandPrompt%" (
+    call :PrintColor Red "Failed to locate 'Common7\Tools\VsDevCmd.bat' under the reported Visual Studio installation root '%VsInstallRoot%'."
+    echo.
+    echo If Visual Studio is not installed, visit this page to download:
+    echo.
+    echo https://www.visualstudio.com/vs/
+    echo.
+    exit /b 1  
+  )
+  call "%DeveloperCommandPrompt%" || goto :BuildFailed
+)
+
+msbuild /nologo /nodeReuse:%NodeReuse% /t:"%MSBuildTarget%" /p:Configuration="%BuildConfiguration%" %MSBuildAdditionalArguments%
+if ERRORLEVEL 1 (
+    echo.
+    call :PrintColor Red "Build failed, for full log see msbuild.log."
+    exit /b 1
+)
+
+echo.
+call :PrintColor Green "Build completed successfully, for full log see msbuild.log"
+exit /b 0
+
+:Usage
+echo Usage: %BatchFile% [/build^|/rebuild^|/test^|/restore^] [/debug^|/release] [/no-node-reuse] [/no-multi-proc]
+echo.
+echo   Build targets:
+echo     /build                   Perform build
+echo     /rebuild                 Perform a clean, then build
+echo     /package                 Packages the product
+echo     /test                    Builds and runs tests only
+echo     /restore                 Only restore NuGet packages
+echo.
+echo   Build options:
+echo     /debug                   Perform debug build (default)
+echo     /release                 Perform release build
+echo     /no-node-reuse           Prevents MSBuild from reusing existing MSBuild instances,
+echo                              useful for avoiding unexpected behavior on build machines
+echo     /no-multi-proc           No multi-proc build, useful for diagnosing build logs
+goto :eof
+
+:BuildFailed
+call :PrintColor Red "Build failed with ERRORLEVEL %ERRORLEVEL%"
+exit /b 1
+
+:PrintColor
+"%Windir%\System32\WindowsPowerShell\v1.0\Powershell.exe" -noprofile write-host -foregroundcolor %1 "'%2'"

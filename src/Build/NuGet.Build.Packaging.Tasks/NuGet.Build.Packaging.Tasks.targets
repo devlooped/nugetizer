@@ -117,25 +117,7 @@ namespace $(RootNamespace)
 			<FileWrites Include="$(PackageItemKindFile)" />
 		</ItemGroup>
 	</Target>
-
-	<Target Name="AddMSBuildReferences" BeforeTargets="ResolveAssemblyReferences">
-		<ItemGroup>
-			<!-- TODO: to replace with the MSBuild nugets once they are more generally available -->
-			<Reference Include="Microsoft.Build">
-				<HintPath>$(MSBuildBinPath)\Microsoft.Build.dll</HintPath>
-			</Reference>
-			<Reference Include="Microsoft.Build.Framework">
-				<HintPath>$(MSBuildBinPath)\Microsoft.Build.Framework.dll</HintPath>
-			</Reference>
-			<Reference Include="Microsoft.Build.Tasks.Core">
-				<HintPath>$(MSBuildBinPath)\Microsoft.Build.Tasks.Core.dll</HintPath>
-			</Reference>
-			<Reference Include="Microsoft.Build.Utilities.Core">
-				<HintPath>$(MSBuildBinPath)\Microsoft.Build.Utilities.Core.dll</HintPath>
-			</Reference>
-		</ItemGroup>
-	</Target>
-
+	
 	<PropertyGroup>
 		<ILMerge>$(NuGetPackageRoot)ILRepack\2.0.12\tools\ILRepack.exe</ILMerge>
 	</PropertyGroup>

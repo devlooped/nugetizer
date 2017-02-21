@@ -2,6 +2,8 @@
   "dependencies": {
     "GitInfo": "1.1.32",
     "ILRepack": "2.0.12",
+    "Microsoft.Build": "14.3.0",
+    "Microsoft.Build.Tasks.Core": "14.3.0",
     "MSBuilder.ThisAssembly.Project": "0.3.1",
     "netfx-System.StringResources": "3.0.14",
     "Newtonsoft.Json": "6.0.4",

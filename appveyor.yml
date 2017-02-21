@@ -1,4 +1,4 @@
-os: Visual Studio 2015
+os: Visual Studio 2017 RC
 
 init:
 - ps: >-
@@ -11,11 +11,10 @@ init:
     }
 
 build_script:
-# Ensure we have no dangling MSBuild processes that might lock the output assemblies
-- cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
-- cmd: build.cmd %BuildArgs%
-# Ensure we leave no dangling MSBuild processes
-- cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
+  - cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
+  - cmd: build.cmd /restore
+  - cmd: build.cmd
+  - cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
 
 install:
 - cmd: git submodule update --init --recursive
@@ -41,7 +40,7 @@ nuget:
   disable_publish_on_pr: false
   
 artifacts:
-  - path: '*.nupkg'
+  - path: 'out\*.nupkg'
     name: Package
-  - path: '*.vsix'
+  - path: 'out\*.vsix'
     name: Extension
