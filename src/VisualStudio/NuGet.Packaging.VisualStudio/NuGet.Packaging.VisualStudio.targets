@@ -1,84 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<StartAction>Program</StartAction>
-		<StartProgram>$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\Common7\IDE\devenv.exe</StartProgram>
-		<StartArguments>/rootsuffix exp</StartArguments>
-		<NoGlobalAssemblyInfo>true</NoGlobalAssemblyInfo>
-		<XmlNs>&lt;Namespace Prefix='vs' Uri='http://schemas.microsoft.com/developer/vstemplate/2005'/&gt;</XmlNs>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<!-- NOTE: this will only work if the solution was built at least once from the command line, 
-			 since the project reference below would have built the package in that case. -->
-		<Content Include="$(Out)\*.nupkg" Condition="'$(BuildingInsideVisualStudio)' == 'true' Or '$(PackOnBuild)' == 'false'">
-			<Link>%(Filename)%(Extension)</Link>
-			<IncludeInVSIX>true</IncludeInVSIX>
-			<VSIXSubPath>Packages</VSIXSubPath>
-		</Content>
-		<!-- We can't reference the project when building from VS because that will lock the output tasks assembly -->
-		<ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj"
-						  Condition="'$(BuildingInsideVisualStudio)' != 'true' And '$(PackOnBuild)' != 'false'">
-			<Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
-			<Name>NuGet.Build.Packaging.Tasks</Name>
-			<AdditionalProperties>PackOnBuild=true;PackageOutputPath=$(Out)</AdditionalProperties>
-			<IncludeOutputGroupsInVSIXLocalOnly>PackageOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
-			<IncludeOutputGroupsInVSIX>PackageOutputGroup</IncludeOutputGroupsInVSIX>
-			<Private>False</Private>
-			<VSIXSubPath>Packages</VSIXSubPath>
-		</ProjectReference>
-	</ItemGroup>
-
-	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
-		<PropertyGroup>
-			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
-		</PropertyGroup>
-	</Target>
-
-	<PropertyGroup>
-		<UpdateTemplatesDependsOn>
-			PrepareForBuild;
-			CopyOutOfDateSmartTemplateContent;
-			GetPackageVersion;
-			FindTemplates;
-			UpdateTemplatePackages
-		</UpdateTemplatesDependsOn>
-	</PropertyGroup>
-
-	<Target Name="UpdateTemplates" 
-			AfterTargets="CopyOutOfDateSmartTemplateContent" 
-			BeforeTargets="ZipSmartTemplateContent" 
-			DependsOnTargets="$(UpdateTemplatesDependsOn)" />
-
-	<Target Name="FindTemplates">
-		<ItemGroup>
-			<IntermediateTemplate Include="@(SmartTemplateContentWithTargetPath->'$(SmartTemplateIntermediateOutputPath)%(TargetPath)')"
-								  Condition="'%(Extension)' == '.vstemplate'"/>
-		</ItemGroup>
-	</Target>
-
-	<Target Name="UpdateTemplatePackages"
-			Inputs="@(IntermediateTemplate)"
-			Outputs="%(IntermediateTemplate.Identity)-BATCH"
-			DependsOnTargets="FindTemplates">
-
-		<XmlPoke Namespaces="$(XmlNs)"
-				 XmlInputPath="%(IntermediateTemplate.FullPath)"
-				 Query="/vs:VSTemplate/vs:WizardData/vs:packages/vs:package[@id='NuGet.Build.Packaging']/@version"
-				 Value="$(PackageVersion)"/>
-	</Target>
-
-	<Target Name="CopyVsixToOut" AfterTargets="CreateVsixContainer" DependsOnTargets="GetVersion" 
-			Condition="'$(Out)' != '' And '$(CreateVsixContainer)' == 'true' And Exists('$(TargetVsixContainer)')">
-		<ItemGroup>
-			<TargetVsixContainer Include="$(TargetVsixContainer)" />
-		</ItemGroup>
-		<!-- Copy the evergreen filename -->
-		<Copy SourceFiles="@(TargetVsixContainer)" DestinationFolder="$(Out)" />
-		<!-- And also a versioned filename -->
-		<Copy SourceFiles="@(TargetVsixContainer)" DestinationFiles="$(Out)\%(TargetVsixContainer.Filename).$(Version)%(TargetVsixContainer.Extension)" />
-	</Target>
-
+	
 	<!-- Because envdte comes from a nuget package, we can't set the EmbedInteropTypes to true in the project, so we do it here -->
 	<Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
 		<ItemGroup>
@@ -90,4 +12,5 @@
 			</Reference>
 		</ItemGroup>
 	</Target>
+	
 </Project>
