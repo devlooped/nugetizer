@@ -7,6 +7,7 @@
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>NuGet.Build.Packaging</RootNamespace>
+		
 		<OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Configuration)\</OutputPath>
 		<OutputType>Library</OutputType>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
