@@ -16,4 +16,9 @@
 		<Message Importance="high" Text="$(VsInstallRoot)" />
 	</Target>
 
+	<PropertyGroup>
+		<!-- Keep this property here, since this .props file is also imported from the Shared.props file -->
+		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
+	</PropertyGroup>
+
 </Project>

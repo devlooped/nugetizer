@@ -13,7 +13,6 @@
 	<PropertyGroup>
 		<NuGetUrl Condition=" '$(NuGetUrl)' == '' ">https://dist.nuget.org/win-x86-commandline/v3.4.4/NuGet.exe</NuGetUrl>
 		<RestorePackages>false</RestorePackages>
-		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
 		<RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
