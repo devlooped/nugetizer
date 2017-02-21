@@ -18,6 +18,7 @@
 		<XmlNs>&lt;Namespace Prefix='vs' Uri='http://schemas.microsoft.com/developer/vstemplate/2005'/&gt;</XmlNs>
 	</PropertyGroup>
 
+	<!-- Embeds the NuGetizer package into the VSIX -->
 	<ItemGroup>
 		<!-- NOTE: this will only work if the solution was built at least once from the command line, 
 			 since the project reference below would have built the package in that case. -->
@@ -38,6 +39,28 @@
 			<VSIXSubPath>Packages</VSIXSubPath>
 		</ProjectReference>
 	</ItemGroup>
+
+	<Target Name="EnsureNuGetizerPackage" DependsOnTargets="GetVersion" BeforeTargets="DeployVsixExtensionFiles;CreateVsixContainer">
+		<ItemGroup>
+			<_NuGetizerPackage Include="$(Out)\*.nupkg" />
+			<_CurrentNuGetizerPackage Include="@(_NuGetizerPackage)"
+									  Condition="$([System.String]::New('%(Filename)').Replace('NuGet.Build.Packaging.', '')) == '$(Version)'" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_NuGetizerPackageExists Condition="'@(_NuGetizerPackage -> Count())' != '0'">true</_NuGetizerPackageExists>
+			<_CurrentNuGetizerPackageExists Condition="'@(_CurrentNuGetizerPackage -> Count())' != '0'">true</_CurrentNuGetizerPackageExists>
+		</PropertyGroup>
+
+		<Delete Files="$(TargetPath)" Condition="'$(_NuGetizerPackageExists)' != 'true' Or '$(_CurrentNuGetizerPackageExists)' != 'true'" />
+
+		<Error Condition="'$(_NuGetizerPackageExists)' != 'true'" Text="NuGetizer nuget package was not found under '$(Out)'. 
+  Run 'build.cmd' at least once, or run 'msbuild' from the 'src\Build' folder to build the nuget package." />
+		
+		<Error Condition="'$(_CurrentNuGetizerPackageExists)' != 'true'" Text="Required NuGetizer nuget package version '$(Version)' was not found under '$(Out)'. 
+  Run 'build.cmd' at least once, or run 'msbuild' from the 'src\Build' folder to build the nuget package.
+  Packages found were: %0a@(_NuGetizerPackage -> '    %(Filename)%(Extension)', '%0a')" />
+	</Target>
 
 	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
 		<PropertyGroup>

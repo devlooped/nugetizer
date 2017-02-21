@@ -84,6 +84,9 @@
     </Compile>
     <Compile Include="Views\ViewModelBase.cs" />
     <Compile Include="Wizards\MultiPlatformWizard.cs" />
+    <None Include="..\NuGet.Packaging.VisualStudio.Shared.targets">
+      <Link>NuGet.Packaging.VisualStudio.Shared.targets</Link>
+    </None>
     <None Include="NuGet.Packaging.VisualStudio.targets">
       <SubType>Designer</SubType>
     </None>
