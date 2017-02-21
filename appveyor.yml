@@ -13,7 +13,7 @@ init:
 build_script:
   - cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
   - cmd: build.cmd /restore
-  - cmd: build.cmd /release
+  - cmd: build.cmd
   - cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
 
 install:
