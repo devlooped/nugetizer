@@ -33,9 +33,11 @@
   <ItemGroup>
     <Reference Include="NuGet.PackageManagement.VisualStudio">
       <HintPath>$(NuGetExtensionPath)\NuGet.PackageManagement.VisualStudio.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="NuGet.VisualStudio.Facade">
       <HintPath>$(NuGetExtensionPath)\NuGet.VisualStudio.Facade.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
