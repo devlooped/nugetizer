@@ -1,3 +1,6 @@
 [submodule "external/ApiIntersect"]
 	path = external/ApiIntersect
 	url = https://github.com/xamarin/ApiInteresect.git
+[submodule "external/NuGetizerWorkaroundForVS2017RTW"]
+	path = external/NuGetizerWorkaroundForVS2017RTW
+	url = https://github.com/xamarin/NuGetizerWorkaroundForVS2017RTW.git

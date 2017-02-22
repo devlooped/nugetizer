@@ -11,7 +11,7 @@
     <AssemblyName>NuGet.Client.Fix</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetExtensionPath>$(VsInstallRoot)\Common7\IDE\CommonExtensions\Microsoft\NuGet</NuGetExtensionPath>
+    <NuGetExtensionPath>..\..\..\external\NuGetizerWorkaroundForVS2017RTW\lib</NuGetExtensionPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
