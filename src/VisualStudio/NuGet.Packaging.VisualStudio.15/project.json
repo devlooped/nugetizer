@@ -1,27 +1,28 @@
 ﻿{
-	"dependencies": {
-		"Clarius.VisualStudio": "1.3.7",
-		"Clide.Installer": "3.0.105-pre",
-		"GitInfo": "1.1.32",
-		"Merq": "1.1.3-alpha",
-		"Merq.Async": "1.1.3-alpha",
-		"Microsoft.Build": "15.1.262-preview5",
-		"Microsoft.VisualStudio.ProjectSystem.SDK": "15.0.594-pre",
-		"Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
-		"Microsoft.VisualStudio.Shell.Interop.11.0": "11.0.61030",
-		"Microsoft.VSSDK.BuildTools": "15.0.26201",
-		"MSBuilder.DumpItems": "0.2.1",
-		"MSBuilder.Introspect": "0.1.5",
-		"MSBuilder.ThisAssembly.Project": "0.3.1",
-		"MSBuilder.VsixDependency": "0.2.2",
-		"MSBuilder.VsixInstaller": "0.2.9",
-		"VSLangProj150": "1.0.0",
-		"VSSDK.ComponentModelHost.11": "11.0.4"
-	},
-	"frameworks": {
-		"net46": {}
-	},
-	"runtimes": {
-		"win": {}
-	}
+  "dependencies": {
+    "Clarius.VisualStudio": "1.3.7",
+    "Clide": "3.0.106-pre",
+    "Clide.Installer": "3.0.106-pre",
+    "GitInfo": "1.1.32",
+    "Merq": "1.1.3-alpha",
+    "Merq.Async": "1.1.3-alpha",
+    "Microsoft.Build": "15.1.262-preview5",
+    "Microsoft.VisualStudio.ProjectSystem.SDK": "15.0.594-pre",
+    "Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
+    "Microsoft.VisualStudio.Shell.Interop.11.0": "11.0.61030",
+    "Microsoft.VSSDK.BuildTools": "15.0.26201",
+    "MSBuilder.DumpItems": "0.2.1",
+    "MSBuilder.Introspect": "0.1.5",
+    "MSBuilder.ThisAssembly.Project": "0.3.1",
+    "MSBuilder.VsixDependency": "0.2.4",
+    "MSBuilder.VsixInstaller": "0.2.9",
+    "VSLangProj150": "1.0.0",
+    "VSSDK.ComponentModelHost.11": "11.0.4"
+  },
+  "frameworks": {
+    "net46": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
 }

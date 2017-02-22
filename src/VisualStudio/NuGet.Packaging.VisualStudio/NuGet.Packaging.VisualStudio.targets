@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<SkipValidatePackageReferences>true</SkipValidatePackageReferences>
+	</PropertyGroup>
 	
 	<!-- Because envdte comes from a nuget package, we can't set the EmbedInteropTypes to true in the project, so we do it here -->
 	<Target Name="EmbedInteropTypes" AfterTargets="ResolveNuGetPackageAssets">
@@ -12,5 +16,14 @@
 			</Reference>
 		</ItemGroup>
 	</Target>
-	
+
+	<Target Name="CopyLocalAssemblies" AfterTargets="ResolveNuGetPackageAssets">
+		<ItemGroup>
+			<Reference Condition=" '%(Filename)' == 'Clide.Interfaces' ">
+				<CopyLocal>true</CopyLocal>
+				<Private>true</Private>
+			</Reference>
+		</ItemGroup>
+	</Target>
+
 </Project>

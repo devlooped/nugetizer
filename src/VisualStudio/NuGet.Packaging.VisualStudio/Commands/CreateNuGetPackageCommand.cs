@@ -39,6 +39,9 @@ namespace NuGet.Packaging.VisualStudio
 
 		protected override void Execute()
 		{
+			if (ActiveProject == null)
+				return;
+
 			var project = ActiveProject.As<EnvDTE.Project>();
 			var vsBuildPropertyStorage = ActiveProject.AsVsHierarchy() as IVsBuildPropertyStorage;
 			if (vsBuildPropertyStorage != null)
@@ -72,6 +75,6 @@ namespace NuGet.Packaging.VisualStudio
 
 		IProjectNode ActiveProject => solutionExplorer.Solution.ActiveProject;
 
-		bool CanExecute() => KnownUIContexts.SolutionExistsAndNotBuildingAndNotDebuggingContext.IsActive;
+		bool CanExecute() => KnownUIContexts.SolutionExistsAndNotBuildingAndNotDebuggingContext.IsActive && ActiveProject != null;
 	}
 }

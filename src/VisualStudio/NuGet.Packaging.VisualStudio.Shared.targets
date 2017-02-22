@@ -9,7 +9,8 @@
 
 	<PropertyGroup>
 		<DeployExtension Condition="'$(Configuration)' != 'Debug' Or '$(VisualStudioVersion)' != '$(TargetVSVersion)'" >false</DeployExtension>
-
+		<SkipValidatePackageReferences>true</SkipValidatePackageReferences>
+		
 		<StartAction>Program</StartAction>
 		<StartProgram Condition="'$(VisualStudioVersion)' &lt; '15.0'">$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\Common7\IDE\devenv.exe</StartProgram>
 		<StartProgram Condition="'$(VisualStudioVersion)' &gt;= '15.0'">$(VsInstallRoot)\Common7\IDE\devenv.exe</StartProgram>
@@ -126,6 +127,15 @@
 			</Reference>
 			<Reference Condition=" '%(Filename)' == 'VSLangProj150' ">
 				<EmbedInteropTypes>True</EmbedInteropTypes>
+			</Reference>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="CopyLocalAssemblies" AfterTargets="ResolveNuGetPackageAssets">
+		<ItemGroup>
+			<Reference Condition=" '%(Filename)' == 'Clide.Interfaces' ">
+				<CopyLocal>true</CopyLocal>
+				<Private>true</Private>
 			</Reference>
 		</ItemGroup>
 	</Target>
