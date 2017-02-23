@@ -25,5 +25,5 @@ Please report issues on the [NuGet/Home](https://github.com/NuGet/Home/issues?q=
 
 ### IDE Integration Early Preview
 
-Install the following VSIX from the evergreen CI URL [NuGetizer 3000 for VS2017](http://bit.ly/nugetizer2017). Alternatively, you can download the specific build artifact for specifc builds from our [AppVeyor CI](https://ci.appveyor.com/project/MobileEssentials/nuget-build-packaging)
+Install the following VSIX from the evergreen CI URL [NuGetizer 3000 for VS2017](http://bit.ly/nugetizer-2017). Alternatively, you can download the specific build artifact for specifc builds from our [AppVeyor CI](https://ci.appveyor.com/project/MobileEssentials/nuget-build-packaging)
 
