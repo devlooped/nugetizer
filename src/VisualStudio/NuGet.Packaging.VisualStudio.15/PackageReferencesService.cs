@@ -104,7 +104,11 @@ namespace NuGet.Packaging.VisualStudio
 
 				item.SetMetadataValue(VersionMetadataName, bstrVersion);
 				for (int i = 0; i < pbstrMetadataElements.Length; i++)
-					item.SetMetadataValue((string)pbstrMetadataElements.GetValue(i), (string)pbstrMetadataValues.GetValue(i)); ;
+					item.SetMetadataValue((string)pbstrMetadataElements.GetValue(i), (string)pbstrMetadataValues.GetValue(i));
+
+				// Hack/fix for: https://github.com/NuGet/Home/issues/4125#issuecomment-282023729
+				if (bstrName == Constants.NuGet.BuildPackagingId)
+					item.SetMetadataValue("PrivateAssets", "all");
 
 			}, lockType: LockType.Write);
 		}
