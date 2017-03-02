@@ -98,8 +98,6 @@
                 <Label Grid.Column="2" >Version:</Label>
                 <TextBox Grid.Column="3" 
                          Text="{Binding PackageVersion, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock Grid.Column="3" Text="from targets"  FontStyle="Italic" Opacity="0.5" IsHitTestVisible="False" Margin="5,5,0,0" 
-                           Visibility="{Binding PackageVersion, Converter={StaticResource ValueToVisibilityConverter}}" />
             </Grid>
 
             <Label Grid.Row="1">Title:</Label>

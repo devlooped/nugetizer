@@ -16,7 +16,6 @@
     <Project File="PortableClassLibrary.csproj" ReplaceParameters="true">
       <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" OpenInEditor="true">Class1.cs</ProjectItem>
-      <ProjectItem TargetFileName="$projectname$.targets" ReplaceParameters="true">PortableClassLibrary.targets</ProjectItem>
     </Project>
   </TemplateContent>
   <WizardExtension>

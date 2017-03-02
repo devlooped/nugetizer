@@ -18,7 +18,6 @@
   <TemplateContent>
     <Project File="Package.nuproj" ReplaceParameters="true">
       <ProjectItem ReplaceParameters="true" OpenInEditor="true">Readme.txt</ProjectItem> 
-      <ProjectItem TargetFileName="$projectname$.targets" ReplaceParameters="true">Package.targets</ProjectItem> 
     </Project>
   </TemplateContent>
   <WizardExtension>

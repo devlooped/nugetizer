@@ -33,6 +33,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <PackageId>$safeprojectname$</PackageId>
+    <PackageVersion Condition="'$(PackageVersion)' == ''" >1.0.0</PackageVersion>
     <Title>$projectname$</Title>
     <Authors>$username$</Authors>
     <Owners>$username$</Owners>
@@ -48,11 +49,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$projectname$.targets" />
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <Import Project="$projectname$.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

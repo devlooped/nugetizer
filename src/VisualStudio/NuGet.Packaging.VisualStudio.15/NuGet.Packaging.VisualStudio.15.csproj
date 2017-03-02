@@ -56,7 +56,6 @@
     <Compile Include="TemplateWizard.cs" />
     <None Include="NuGet.Packaging.VisualStudio.15.targets" />
     <None Include="Templates\Projects\CSharp\Package-Workaround\Package.nuproj" />
-    <None Include="Templates\Projects\CSharp\Package-Workaround\Package.targets" />
     <None Include="Templates\Projects\PortableClassLibrary\class1.cs" />
     <None Include="Templates\Projects\PortableClassLibrary\assemblyinfo.cs" />
     <Compile Include="ProjectSystem\ProjectProperties.cs" />
@@ -68,8 +67,6 @@
     <Compile Include="ProjectSystem\NuProjValidProjectReferenceChecker.cs" />
     <None Include="project.json" />
     <None Include="Templates\Projects\Nuget\Package\Package.nuproj" />
-    <None Include="Templates\Projects\Nuget\Package\Package.targets" />
-    <None Include="Templates\Projects\PortableClassLibrary\PortableClassLibrary.targets" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

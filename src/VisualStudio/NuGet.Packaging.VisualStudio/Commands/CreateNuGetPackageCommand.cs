@@ -53,6 +53,7 @@ namespace NuGet.Packaging.VisualStudio
 				{
 					// Provide default values for required fields/properties
 					viewModel.PackageId = project.Name;
+					viewModel.PackageVersion = "1.0.0";
 					viewModel.Description = project.Name;
 					viewModel.Authors = "MyCompany";
 				}
