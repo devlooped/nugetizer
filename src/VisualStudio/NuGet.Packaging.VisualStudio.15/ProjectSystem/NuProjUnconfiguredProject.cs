@@ -14,7 +14,8 @@ namespace NuGet.Packaging.VisualStudio
                              Constants.Language,
                              Guids.PackageGuid,
                              PossibleProjectExtensions = Constants.ProjectExtension,
-                             ProjectTemplatesDir = @"..\..\Templates\Projects\NuProj")]
+                             ProjectTemplatesDir = @"..\..\Templates\Projects\NuProj",
+                             Capabilities = NuProjCapabilities.DefaultCapabilities)]
     internal sealed class NuProjUnconfiguredProject
     {
         [Import]

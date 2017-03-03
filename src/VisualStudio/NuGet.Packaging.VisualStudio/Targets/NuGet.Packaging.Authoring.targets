@@ -84,9 +84,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                           VisualStudioWellKnownOutputGroups;
                           SingleFileGenerators;
                           DeclaredSourceItems;
-                          UserSourceItems;
-                          HandlesOwnReload;
-                          OpenProjectFile" />
+                          UserSourceItems" />
 
     <!-- Reference Manager capabilities -->
     <ProjectCapability Include="ReferenceManagerAssemblies" />
