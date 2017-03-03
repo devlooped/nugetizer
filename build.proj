@@ -23,10 +23,8 @@
 
 	<ItemGroup>
 		<Solution Include="src\Build\NuGet.Build.Packaging.sln" />
-		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.14\NuGet.Packaging.VisualStudio.14.csproj" />
 		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
 		<TestProject Include="src\Build\**\*Tests.csproj" />
-		<PackSolution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.14\NuGet.Packaging.VisualStudio.14.csproj" />
 		<PackSolution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
 	</ItemGroup>
 
