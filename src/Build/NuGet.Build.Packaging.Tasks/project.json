@@ -5,12 +5,12 @@
     "GitInfo": "1.1.32",
     "Microsoft.Build": "14.3.0",
     "Microsoft.Build.Tasks.Core": "14.3.0",
-    "MSBuilder.ThisAssembly.Project": "0.3.1",
+    "MSBuilder.ThisAssembly.Project": "0.3.3",
     "netfx-System.StringResources": "3.0.14",
-    "Newtonsoft.Json": "6.0.4",
-    "NuGet.Client": "3.5.0",
-    "NuGet.Packaging": "3.5.0",
-    "NuGet.ProjectManagement": "3.5.0"
+    "Newtonsoft.Json": "6.0.8",
+    "NuGet.Client": "4.0.0",
+    "NuGet.Packaging": "4.0.0",
+    "NuGet.ProjectManagement": "4.0.0"
   },
   "frameworks": {
     "net46": {}

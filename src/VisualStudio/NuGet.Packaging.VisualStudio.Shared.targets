@@ -127,4 +127,5 @@
 		</ItemGroup>
 	</Target>
 
+  <Import Project="$(VsSDKInstall)\Microsoft.VsSDK.targets" Condition="'$(VsSDKInstall)' != ''" />
 </Project>
