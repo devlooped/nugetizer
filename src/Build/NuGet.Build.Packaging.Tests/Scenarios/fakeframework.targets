@@ -3,9 +3,9 @@
 	<!-- Allows fake frameworks to compile without errors -->
 	<PropertyGroup>
 		<ResolveAssemblyReferencesDependsOn />
-		<_TargetFrameworkDirectories>$(MSBuildThisFileDirectory)</_TargetFrameworkDirectories>
-		<_FullFrameworkReferenceAssemblyPaths>$(MSBuildThisFileDirectory)</_FullFrameworkReferenceAssemblyPaths>
-	</PropertyGroup>
+    <TargetFrameworkRootPath>$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\</TargetFrameworkRootPath>
+    <FrameworkPathOverride>$(TargetFrameworkRootPath).NETFramework\v4.6</FrameworkPathOverride>
+  </PropertyGroup>
 	<Target Name="CleanReferences" AfterTargets="ResolveAssemblyReferences">
 		<ItemGroup>
 			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
