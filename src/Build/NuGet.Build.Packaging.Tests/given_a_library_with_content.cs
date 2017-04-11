@@ -19,7 +19,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content));
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -35,7 +35,7 @@ namespace NuGet.Build.Packaging
 				IncludeContentInPackage = "false"
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
@@ -51,7 +51,7 @@ namespace NuGet.Build.Packaging
 				PackageId = "ContentPackage"
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -67,7 +67,8 @@ namespace NuGet.Build.Packaging
 				PackageId = "ContentPackage",
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
+
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				TargetPath = "none.txt",
@@ -82,7 +83,8 @@ namespace NuGet.Build.Packaging
 				PackageId = "ContentPackage",
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
+
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				TargetPath = "none-with-include-true.txt",
@@ -97,7 +99,8 @@ namespace NuGet.Build.Packaging
 				PackageId = "ContentPackage",
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
+
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				TargetPath = "none-with-include-false.txt",
@@ -112,7 +115,8 @@ namespace NuGet.Build.Packaging
 				PackageId = "ContentPackage",
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
+
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				TargetPath = "content-with-include-false.txt",
@@ -127,7 +131,8 @@ namespace NuGet.Build.Packaging
 				PackageId = "ContentPackage",
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
+
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				TargetPath = "content-with-include-true.txt",

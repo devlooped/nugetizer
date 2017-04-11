@@ -20,7 +20,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_library_with_config_dependencies), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
@@ -34,7 +34,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_library_with_config_dependencies), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
@@ -78,7 +78,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_library_with_config_dependencies), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -94,7 +94,7 @@ namespace NuGet.Build.Packaging
 				properties: new { InferLegacyPackageReferences = false }, 
 				output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{

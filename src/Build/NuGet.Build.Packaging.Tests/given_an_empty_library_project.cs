@@ -19,7 +19,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project));
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Extension = ".dll",
@@ -35,7 +35,7 @@ namespace NuGet.Build.Packaging
 				IncludeOutputsInPackage = false,
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				Extension = ".dll",
@@ -48,7 +48,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { Configuration = "Debug" });
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Extension = ".pdb",
@@ -64,7 +64,7 @@ namespace NuGet.Build.Packaging
 				IncludeSymbolsInPackage = true,
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				Extension = ".pdb",
@@ -79,7 +79,7 @@ namespace NuGet.Build.Packaging
 				IncludeSymbolsInPackage = false,
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				Extension = ".pdb",
@@ -107,7 +107,7 @@ namespace NuGet.Build.Packaging
 				IncludeOutputsInPackage = false,
 			});
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				Extension = ".xml",
@@ -120,7 +120,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { PackageId = "Foo" }, output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.All(result.Items, item => Assert.Equal("Foo", item.GetMetadata("PackageId")));
 		}
 
@@ -129,7 +129,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { PackageId = "Foo" }, output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Identity = "System.Core",
@@ -146,7 +146,7 @@ namespace NuGet.Build.Packaging
 				PackageId = "Foo",
 			}, output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				Identity = "System.Core",

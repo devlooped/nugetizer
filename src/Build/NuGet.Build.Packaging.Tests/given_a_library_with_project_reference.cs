@@ -23,7 +23,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			// TODO: build some helpers to make this easier to assert.
 			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include main project output as Library");
@@ -36,7 +36,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			// TODO: build some helpers to make this easier to assert.
 			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include main project symbols");
@@ -50,7 +50,7 @@ namespace NuGet.Build.Packaging
 				properties: new { IncludeInPackage = "false" },
 				output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{

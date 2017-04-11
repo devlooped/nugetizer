@@ -19,7 +19,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_localized_library));
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.True(result.Items.Any(i => i.GetMetadata("PackagePath") == "lib\\net45\\es-AR\\library.resources.dll"));
 		}

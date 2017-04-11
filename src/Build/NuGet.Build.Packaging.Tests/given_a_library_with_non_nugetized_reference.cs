@@ -43,7 +43,7 @@ namespace NuGet.Build.Packaging
 				IncludeInPackage = "false"
 			}, projectName: "a", target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 		}
 	}
 }
