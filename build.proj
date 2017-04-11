@@ -16,7 +16,7 @@
 		<RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis)</CommonBuildProperties>
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackOnBuild=true;;PackageOutputPath=$(Out)</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 		<PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
 	</PropertyGroup>
@@ -25,7 +25,7 @@
 		<Solution Include="src\Build\NuGet.Build.Packaging.sln" />
 		<Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
 		<TestProject Include="src\Build\**\*Tests.csproj" />
-		<PackSolution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
+    <PackProject Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
@@ -43,12 +43,12 @@
 		<Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" StandardOutputImportance="low" />
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 		<Message Text="Build properties: $(CommonBuildProperties)." Importance="high" />
-		<MSBuild Projects="@(Solution)" BuildInParallel="false" Properties="$(CommonBuildProperties);PackOnBuild=false;CreateVsixContainer=false;DeployExtension=false" />
+		<MSBuild Projects="@(Solution)" BuildInParallel="false" Properties="$(CommonBuildProperties);CreateVsixContainer=false;DeployExtension=false" />
 	</Target>
 
 	<Target Name="Package" DependsOnTargets="Build">
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-		<MSBuild Projects="@(PackSolution)" Properties="$(CommonBuildProperties);PackageOutputPath=$(Out);PackOnBuild=true" />		
+		<MSBuild Projects="@(PackProject)" Properties="$(CommonBuildProperties)" />
 		<ItemGroup>
 			<OutputFile Include="$(Out)\*.nupkg" />
 			<OutputFile Include="$(Out)\*.vsix" />
@@ -74,15 +74,17 @@
 	</Target>
 
 	<Target Name="Restore">
+    <ItemGroup>
+      <RestoreSolution Include="external\ApiIntersect\ApiIntersect.sln" />
+      <RestoreSolution Include="src\Build\NuGet.Build.Packaging.sln" />
+      <RestoreSolution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
+
+      <RestoreSolution Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
+      <RestoreSolution Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln" />
+      <RestoreSolution Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_library_with_json_dependencies\a.csproj" />
+    </ItemGroup>
 		
-		<Exec Command='"$(NuGet)" Restore "external\ApiIntersect\ApiIntersect.sln" -Verbosity quiet' />
-		<Exec Command='"$(NuGet)" Restore "src\Build\NuGet.Build.Packaging.sln" -Verbosity quiet -Config src\NuGet.Config' />
-		<Exec Command='"$(NuGet)" Restore "src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln"' />
-		<Exec Command='"$(NuGet)" Restore "src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln"' />
-		<Exec Command='"$(NuGet)" Restore "src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_library_with_json_dependencies\project.json"' />
-		
-		<!-- Ignore error code here since NuGet will detect an incompatibility between VS2017 ProjectSystem NuGet on MSBuild 15+, and the tasks' MSBuild 14, which is intentional -->
-		<Exec Command='"$(NuGet)" Restore "src\VisualStudio\NuGet.Packaging.VisualStudio.sln" -Verbosity quiet -Config src\NuGet.Config' IgnoreExitCode='true' />
+		<Exec Command='"$(MSBuildBinPath)\MSBuild.exe" /t:Restore "%(RestoreSolution.Identity)" /v:Minimal' />
 	</Target>
 
 	<Target Name="Coverage" DependsOnTargets="Build">

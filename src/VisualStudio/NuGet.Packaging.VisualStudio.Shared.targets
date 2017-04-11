@@ -21,24 +21,11 @@
 
 	<!-- Embeds the NuGetizer package into the VSIX -->
 	<ItemGroup>
-		<!-- NOTE: this will only work if the solution was built at least once from the command line, 
-			 since the project reference below would have built the package in that case. -->
-		<Content Include="$(Out)\*.nupkg" Condition="'$(BuildingInsideVisualStudio)' == 'true' Or '$(PackOnBuild)' == 'false'">
+		<Content Include="$(Out)\*.nupkg">
 			<Link>%(Filename)%(Extension)</Link>
 			<IncludeInVSIX>true</IncludeInVSIX>
 			<VSIXSubPath>Packages</VSIXSubPath>
 		</Content>
-		<!-- We can't reference the project when building from VS because that will lock the output tasks assembly -->
-		<ProjectReference Include="..\..\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj"
-						  Condition="'$(BuildingInsideVisualStudio)' != 'true' And '$(PackOnBuild)' != 'false'">
-			<Project>{a3d231d7-31e4-4a70-8cd1-7246c7d069f6}</Project>
-			<Name>NuGet.Build.Packaging.Tasks</Name>
-			<AdditionalProperties>PackOnBuild=true;PackageOutputPath=$(Out)</AdditionalProperties>
-			<IncludeOutputGroupsInVSIXLocalOnly>PackageOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
-			<IncludeOutputGroupsInVSIX>PackageOutputGroup</IncludeOutputGroupsInVSIX>
-			<Private>False</Private>
-			<VSIXSubPath>Packages</VSIXSubPath>
-		</ProjectReference>
 	</ItemGroup>
 
 	<Target Name="EnsureNuGetizerPackage"
