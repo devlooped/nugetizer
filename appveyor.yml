@@ -44,3 +44,5 @@ artifacts:
     name: Package
   - path: 'out\*.vsix'
     name: Extension
+  - path: 'msbuild.log'
+    name: Log
