@@ -75,11 +75,8 @@ namespace NuGet.Packaging.VisualStudio.UnitTests.Wizards
 			wizard.SafeProjectName = "App";
 
 			wizard.ViewModel = new MultiPlatformViewModel();
-			wizard.ViewModel.Platforms.AddRange (new[]
-			{
-				new PlatformViewModel { Id = "Xamarin.iOS", IsSelected = true },
-				new PlatformViewModel { Id = "Xamarin.Android", IsSelected = false }
-			});
+			wizard.ViewModel.Platforms.Add(new PlatformViewModel { Id = "Xamarin.iOS", IsSelected = true });
+			wizard.ViewModel.Platforms.Add(new PlatformViewModel { Id = "Xamarin.Android", IsSelected = false });
 
 			var sharedProject = new Mock<IProjectNode>();
 			var nuGetProject = new Mock<IProjectNode>();

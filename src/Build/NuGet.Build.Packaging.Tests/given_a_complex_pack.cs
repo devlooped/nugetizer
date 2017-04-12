@@ -23,7 +23,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "a", target: "GetPackageTargetPath", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			var metadata = result.Items.FirstOrDefault();
 
@@ -38,7 +38,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "a", target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -74,7 +74,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "b", target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -110,7 +110,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "c", target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -138,7 +138,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "d", target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -180,8 +180,8 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "b", target: "Pack", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-			
+			result.AssertSuccess(output);
+
 			var manifest = result.Items[0].GetManifest();
 
 			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\b.dll");
@@ -199,7 +199,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "c", target: "Pack", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			var manifest = result.Items[0].GetManifest();
 

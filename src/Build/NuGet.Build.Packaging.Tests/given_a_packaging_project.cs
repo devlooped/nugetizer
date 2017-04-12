@@ -24,7 +24,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -45,7 +45,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -58,7 +58,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -75,7 +75,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -88,7 +88,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -102,7 +102,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
@@ -115,7 +115,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
-using NuGet.Packaging;
+using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -83,7 +82,15 @@ static partial class Builder
 
 		public TargetResultCode ResultCode => BuildResult[Target].ResultCode;
 
-        public override string ToString()
+		public void AssertSuccess(ITestOutputHelper output)
+		{
+			if (ResultCode != TargetResultCode.Success)
+				output.WriteLine(this.ToString());
+
+			Assert.Equal(TargetResultCode.Success, ResultCode);
+		}
+
+		public override string ToString()
         {
             return string.Join(Environment.NewLine, Logger.Warnings
                 .Select(e => e.Message)

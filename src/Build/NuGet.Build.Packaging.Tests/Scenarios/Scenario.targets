@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
-	
-    <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(IsPortable)' != 'true'" />
-	<Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
-			Condition="'$(IsPortable)' == 'true'" />
-	
-	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
+  <PropertyGroup>
+    <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Compile Include="$(MSBuildThisFileDirectory)_._" />
-	</ItemGroup>
-	
-    <Target Name="Dump" DependsOnTargets="GetPackageContents">
-        <Message Importance="high" Text="%(_PackageContent.Filename)%(_PackageContent.Extension)
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(IsPortable)' != 'true'" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
+			Condition="'$(IsPortable)' == 'true'" />
+
+  <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)_._" />
+  </ItemGroup>
+
+  <Target Name="Dump" DependsOnTargets="GetPackageContents">
+    <Message Importance="high" Text="%(_PackageContent.Filename)%(_PackageContent.Extension)
 	FullPath=%(_PackageContent.FullPath)
 	Kind=%(_PackageContent.Kind)
 	PackageId=%(_PackageContent.PackageId)
@@ -26,25 +26,25 @@
 	TargetFramework=%(_PackageContent.TargetFramework)
 	TargetFrameworkMoniker=%(_PackageContent.TargetFrameworkMoniker)"/>
 
-		<DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
+    <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
 
-		<!--
+    <!--
 	OriginalTargetFramework=%(_PackageContent.OriginalTargetFramework)
 	OriginalTargetFrameworkMoniker=%(_PackageContent.OriginalTargetFrameworkMoniker)
 	-->
-		<!--<DumpItems Items="@(_ReferencedProjectDocumentationDependency)" ItemName="_ReferencedProjectDocumentationDependency" Condition="'%(Extension)' == '.xml'" />-->
-    </Target>
+    <!--<DumpItems Items="@(_ReferencedProjectDocumentationDependency)" ItemName="_ReferencedProjectDocumentationDependency" Condition="'%(Extension)' == '.xml'" />-->
+  </Target>
 
-	<PropertyGroup>
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
-		<!-- In VS2013, the assembly contains the VS version. -->
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
-		<!-- In VS2015+, the assembly was renamed, hopefully this will be the last condition! -->
-		<CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' != '' And '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
-	</PropertyGroup>
+  <PropertyGroup>
+    <CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
+    <CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
+    <!-- In VS2013, the assembly contains the VS version. -->
+    <CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
+    <!-- In VS2015+, the assembly was renamed, hopefully this will be the last condition! -->
+    <CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' != '' And '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
+  </PropertyGroup>
 
-	<!--
+  <!--
     ============================================================
               DumpItems Task
 	
@@ -62,22 +62,22 @@
 
 	============================================================
   -->
-	<UsingTask TaskName="DumpItems" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
-		<ParameterGroup>
-			<Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-			<ItemName />
-		</ParameterGroup>
-		<Task>
-			<Reference Include="Microsoft.Build" />
-			<Reference Include="Microsoft.CSharp" />
-			<Reference Include="System" />
-			<Reference Include="System.Core" />
-			<Using Namespace="Microsoft.Build.Framework" />
-			<Using Namespace="Microsoft.Build.Utilities" />
-			<Using Namespace="System" />
-			<Using Namespace="System.Linq" />
-			<Code Type="Fragment" Language="cs">
-				<![CDATA[
+  <UsingTask TaskName="DumpItems" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
+    <ParameterGroup>
+      <Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <ItemName />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="Microsoft.Build" />
+      <Reference Include="Microsoft.CSharp" />
+      <Reference Include="System" />
+      <Reference Include="System.Core" />
+      <Using Namespace="Microsoft.Build.Framework" />
+      <Using Namespace="Microsoft.Build.Utilities" />
+      <Using Namespace="System" />
+      <Using Namespace="System.Linq" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
 			var itemName = ItemName ?? "Item";
 			if (Items.Length == 0)
 				Log.LogMessage(MessageImportance.High, "No {0} items received to dump.", ItemName ?? "");
@@ -99,8 +99,8 @@
 				}
 			}
       ]]>
-			</Code>
-		</Task>
-	</UsingTask>
+      </Code>
+    </Task>
+  </UsingTask>
 
 </Project>

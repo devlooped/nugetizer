@@ -23,7 +23,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_multi_platform_solution), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -44,7 +44,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_multi_platform_solution), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -65,7 +65,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_multi_platform_solution), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -86,7 +86,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_multi_platform_solution), output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
