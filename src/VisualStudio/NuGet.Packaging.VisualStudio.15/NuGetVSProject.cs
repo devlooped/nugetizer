@@ -10,7 +10,6 @@ using VSLangProj150;
 using VSLangProj140;
 using VSLangProj80;
 using Merq;
-using NuGet.Protocol.Core.Types;
 
 namespace NuGet.Packaging.VisualStudio
 {
