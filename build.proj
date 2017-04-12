@@ -16,7 +16,7 @@
     <RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
     <IntermediateOutputPath>.nuget\</IntermediateOutputPath>
     <PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
-    <CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackOnBuild=true;PackageOutputPath=$(Out)</CommonBuildProperties>
+    <CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackageOutputPath=$(Out)</CommonBuildProperties>
     <DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
     <PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
   </PropertyGroup>
@@ -49,7 +49,7 @@
 
   <Target Name="Package" DependsOnTargets="Build">
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-    <MSBuild Projects="@(PackProject)" Properties="$(CommonBuildProperties)" />
+    <MSBuild Projects="@(PackProject)" Properties="$(CommonBuildProperties);PackOnBuild=true" />
     <ItemGroup>
       <OutputFile Include="$(Out)\*.nupkg" />
       <OutputFile Include="$(Out)\*.vsix" />
