@@ -16,7 +16,7 @@
     <RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
     <IntermediateOutputPath>.nuget\</IntermediateOutputPath>
     <PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
-    <CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackOnBuild=true;;PackageOutputPath=$(Out)</CommonBuildProperties>
+    <CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackOnBuild=true;PackageOutputPath=$(Out)</CommonBuildProperties>
     <DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
     <PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
   </PropertyGroup>
@@ -25,6 +25,7 @@
     <Solution Include="src\Build\NuGet.Build.Packaging.sln" />
     <Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
     <TestProject Include="src\Build\**\*Tests.csproj" />
+    <PackProject Include="src\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj" />
     <PackProject Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
   </ItemGroup>
 
