@@ -18,6 +18,7 @@
 		<NoWarn>1692;$(NoWarn)</NoWarn>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<ThisAssemblyNamespace>$(RootNamespace)</ThisAssemblyNamespace>
+		<GenerateExports>false</GenerateExports>
 	</PropertyGroup>
 
 	<!-- Default to unsigned assemblies unless explicitly told to sign -->
