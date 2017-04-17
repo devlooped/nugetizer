@@ -1,8 +1,8 @@
 ﻿{
   "dependencies": {
     "Clarius.VisualStudio": "2.0.13",
-    "Clide": "3.0.106-pre",
-    "Clide.Installer": "3.0.106-pre",
+    "Clide": "3.0.107-pre",
+    "Clide.Installer": "3.0.107-pre",
     "GitInfo": "1.1.32",
     "Merq": "1.1.17-rc",
     "Merq.Async": "1.1.17-rc",
