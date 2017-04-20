@@ -5,6 +5,9 @@
   <PropertyGroup>
     <ProjectGuid>{A3D231D7-31E4-4A70-8CD1-7246C7D069F6}</ProjectGuid>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <OutputType>Exe</OutputType>
+    <TargetExt>.dll</TargetExt>
+    <StartupObject>NuGet.Build.Packaging.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -58,6 +61,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ApiIntersect.cs" />
     <Compile Include="AssignPackagePath.cs" />
     <Compile Include="CreatePackage.cs" />
@@ -65,6 +71,7 @@
     <Compile Include="GenerateAssemblyInfo.cs" />
     <Compile Include="GetApiIntersectTargetPaths.cs" />
     <Compile Include="MetadataName.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

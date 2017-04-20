@@ -15,7 +15,6 @@
 		<StartProgram Condition="'$(VisualStudioVersion)' &lt; '15.0'">$(MSBuildProgramFiles32)\Microsoft Visual Studio $(VisualStudioVersion)\Common7\IDE\devenv.exe</StartProgram>
 		<StartProgram Condition="'$(VisualStudioVersion)' &gt;= '15.0'">$(VsInstallRoot)\Common7\IDE\devenv.exe</StartProgram>
 		<StartArguments>/rootsuffix exp</StartArguments>
-		<NoGlobalAssemblyInfo>true</NoGlobalAssemblyInfo>
 		<XmlNs>&lt;Namespace Prefix='vs' Uri='http://schemas.microsoft.com/developer/vstemplate/2005'/&gt;</XmlNs>
 	</PropertyGroup>
 

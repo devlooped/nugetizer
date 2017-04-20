@@ -8,7 +8,7 @@ using NuGet.Build.Packaging;
 [assembly: AssemblyCopyright ("Copyright © 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyTitle(ThisAssembly.AssemblyName)]
+[assembly: AssemblyTitle(ThisAssembly.Project.AssemblyName)]
 
 
 #if DEBUG

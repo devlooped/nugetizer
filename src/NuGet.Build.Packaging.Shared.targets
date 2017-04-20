@@ -33,10 +33,6 @@ namespace $(ThisAssemblyNamespace)
 
 	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
 
-	<ItemGroup Condition=" '$(NoGlobalAssemblyInfo)' != 'true' And '$(Language)' == 'C#' ">
-		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" Condition="'$(BuildingProject)' == 'true'" />
-	</ItemGroup>
-
 	<PropertyGroup>
 		<NuGetPackagingTargetsImported>true</NuGetPackagingTargetsImported>
 	</PropertyGroup>
