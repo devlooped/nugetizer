@@ -24,6 +24,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PackageFile>
 			<!-- See @(PackageItemKind) below -->
 			<Kind>None</Kind>
+			<!-- By default, we consider all PackageFile items to be explicitly added by the user
+				 the automatic discovery will annotate those with Implicit instead. 
+				 This allows the duplicate item detection to either warn (Implicit) or error (Explicit). -->
+			<Source>Explicit</Source>
 		</PackageFile>
 		<PackageReference>
 			<!-- See https://github.com/NuGet/Home/wiki/PackageReference-Specification -->

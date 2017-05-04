@@ -254,9 +254,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</PackageFile>
 
 			<!-- NOTE: Content is opt-out (must have IncludeInPackage=false to exclude) -->
-			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath->'%(FullPath)') -->
-			<PackageFile Include="@(ContentFilesProjectOutputGroupOutput)"
-							   Condition="'$(IncludeContentInPackage)' == 'true' and '%(ContentFilesProjectOutputGroupOutput.IncludeInPackage)' != 'false'">
+			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath -> '%(FullPath)') -->
+			<PackageFile Include="@(ContentWithTargetPath->'%(FullPath)')"
+							   Condition="'$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.IncludeInPackage)' != 'false'">
 				<Kind>Content</Kind>
 			</PackageFile>
 

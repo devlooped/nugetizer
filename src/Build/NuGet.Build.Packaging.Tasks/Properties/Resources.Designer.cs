@@ -19,7 +19,7 @@ namespace NuGet.Build.Packaging.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -75,6 +75,15 @@ namespace NuGet.Build.Packaging.Properties {
         public static string ErrorCode_NG0011 {
             get {
                 return ResourceManager.GetString("ErrorCode_NG0011", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate package source files detected for target package file path &apos;{0}&apos;..
+        /// </summary>
+        public static string ErrorCode_NG0012 {
+            get {
+                return ResourceManager.GetString("ErrorCode_NG0012", resourceCulture);
             }
         }
     }

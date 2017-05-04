@@ -9,6 +9,7 @@ using NuGet.Frameworks;
 using NuGet.Packaging.Core;
 using NuGet.Packaging;
 using System.Collections.Generic;
+using static NuGet.Build.Packaging.Properties.Strings;
 
 namespace NuGet.Build.Packaging.Tasks
 {
@@ -38,7 +39,7 @@ namespace NuGet.Build.Packaging.Tasks
 				OutputPackage = new TaskItem(TargetPath);
 				Manifest.CopyMetadataTo(OutputPackage);
 					 
-				return true;
+				return !Log.HasLoggedErrors;
 			}
 			catch (Exception ex)
 			{
@@ -133,6 +134,15 @@ namespace NuGet.Build.Packaging.Tasks
 		{
 			var contents = Contents.Where(item => 
 				!string.IsNullOrEmpty(item.GetMetadata(MetadataName.PackagePath)));
+
+			var duplicates = contents.GroupBy(item => item.GetMetadata(MetadataName.PackagePath))
+				.Where(x => x.Count() > 1)
+				.Select(x => x.Key);
+
+			foreach (var duplicate in duplicates)
+			{
+				Log.LogErrorCode(nameof(ErrorCode.NG0012), ErrorCode.NG0012(duplicate));
+			}
 
 			// All files need to be added so they are included in the nupkg
 			manifest.Files.AddRange(contents

@@ -21,6 +21,10 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Scenarios\given_a_custom_build_project\Readme.txt" />
+    <Content Include="Scenarios\given_duplicate_package_files\a.csproj" />
+    <Content Include="Scenarios\given_duplicate_package_files\b.csproj" />
+    <Content Include="Scenarios\given_duplicate_package_files\content\content.txt" />
+    <Content Include="Scenarios\given_duplicate_package_files\content\inferred.txt" />
     <Content Include="Scenarios\given_a_library_with_content\content-with-include-true.txt" />
     <Content Include="Scenarios\given_a_library_with_content\content-with-include-false.txt" />
     <Content Include="Scenarios\given_a_library_with_content\none-with-include-false.txt" />
@@ -62,6 +66,7 @@
     <Content Include="Scenarios\given_a_packaging_project\e.csproj" />
     <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\b.sln" />
     <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\b\b.csproj" />
+    <Content Include="Scenarios\given_duplicate_package_files\content\web\js\nuget.js" />
     <Content Include="Scenarios\given_library_with_config_dependencies\a.csproj" />
     <Content Include="Scenarios\given_library_with_config_dependencies\a.sln" />
     <Content Include="Scenarios\given_library_with_json_dependencies\project.json" />
@@ -90,6 +95,7 @@
     </Compile>
     <Compile Include="GetApiIntersectTargetPathsTests.cs" />
     <Compile Include="given_a_custom_build_project.cs" />
+    <Compile Include="given_duplicate_package_files.cs" />
     <Compile Include="given_a_packaging_project.cs" />
     <Compile Include="given_a_multi_platform_solution.cs" />
     <Compile Include="given_a_library_with_content.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Linq;
 using Microsoft.Build.Evaluation;
@@ -36,9 +37,9 @@ public static partial class Builder
 			var parameters = new BuildParameters
 			{
 				GlobalProperties = properties,
-				DisableInProcNode = true,
+				DisableInProcNode = !Debugger.IsAttached,
 				EnableNodeReuse = false,
-				ShutdownInProcNodeOnBuildFinish = true,
+				ShutdownInProcNodeOnBuildFinish = !Debugger.IsAttached,
 				// Without this, builds end up running in process and colliding with each other, 
 				// especially around the current directory used to resolve relative paths in projects.
 				LogInitialPropertiesAndItems = true,

@@ -123,4 +123,7 @@
   <data name="ErrorCode_NG0011" xml:space="preserve">
     <value>Project references to include in package must be nugetized.</value>
   </data>
+  <data name="ErrorCode_NG0012" xml:space="preserve">
+    <value>Duplicate package source files detected for target package file path '{0}'.</value>
+  </data>
 </root>
