@@ -13,6 +13,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<PropertyGroup>
 		<IsPackagingProject Condition="'$(IsPackagingProject)' == '' and '$(MSBuildProjectExtension)' == '.nuproj'">true</IsPackagingProject>
+		<ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
 	</PropertyGroup>
 
 	<PropertyGroup>
