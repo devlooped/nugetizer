@@ -6,6 +6,8 @@ NuGetizer 3000 is here, and will be beyond awesome!
 
 Check out the [spec](https://github.com/NuGet/Home/wiki/NuGetizer-3000) for more details.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/7wfadgtkhcwt0wrm?svg=true)](https://ci.appveyor.com/project/MobileEssentials/nuget-build-packaging)
+
 ## Installing
 
 Add the following NuGet feed to Visual Studio:
