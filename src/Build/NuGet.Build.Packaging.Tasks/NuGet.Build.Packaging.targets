@@ -51,7 +51,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectCapability Include="Packable" Condition="'$(IsPackable)' == 'true'"/>
+		<!-- This is the capability that CPS in .NETStandard/.NETCore uses to enable the Pack context menu. Unify with that -->
+		<ProjectCapability Include="Pack" Condition="'$(IsPackable)' == 'true'" />
 
 		<!-- Converts potentially multiple $(ReferenceAssemblyFrameworks) into @(ReferenceAssemblyFramework) -->
 		<ReferenceAssemblyFramework Include="$(ReferenceAssemblyFrameworks)" Condition="'$(ReferenceAssemblyFrameworks)' != ''" />
