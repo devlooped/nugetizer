@@ -6,11 +6,11 @@ using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
 {
-	public class given_library_with_config_dependencies
+	public class given_a_library_with_config_dependencies
 	{
 		ITestOutputHelper output;
 
-		public given_library_with_config_dependencies(ITestOutputHelper output)
+		public given_a_library_with_config_dependencies(ITestOutputHelper output)
 		{
 			this.output = output;
 		}
@@ -18,7 +18,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_getting_package_contents_then_does_not_contain_development_dependency()
 		{
-			var result = Builder.BuildScenario(nameof(given_library_with_config_dependencies), output: output);
+			var result = Builder.BuildScenario(nameof(given_a_library_with_config_dependencies), output: output);
 
 			result.AssertSuccess(output);
 
@@ -32,7 +32,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_getting_package_contents_then_can_remove_arbitrary_dependencies()
 		{
-			var result = Builder.BuildScenario(nameof(given_library_with_config_dependencies), output: output);
+			var result = Builder.BuildScenario(nameof(given_a_library_with_config_dependencies), output: output);
 
 			result.AssertSuccess(output);
 
@@ -76,7 +76,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_getting_package_contents_then_contains_package_reference_to_nuget()
 		{
-			var result = Builder.BuildScenario(nameof(given_library_with_config_dependencies), output: output);
+			var result = Builder.BuildScenario(nameof(given_a_library_with_config_dependencies), output: output);
 
 			result.AssertSuccess(output);
 
@@ -90,7 +90,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_not_inferring_legacy_package_references_then_does_not_contain_package_reference_to_nuget()
 		{
-			var result = Builder.BuildScenario(nameof(given_library_with_config_dependencies), 
+			var result = Builder.BuildScenario(nameof(given_a_library_with_config_dependencies), 
 				properties: new { InferLegacyPackageReferences = false }, 
 				output: output);
 
