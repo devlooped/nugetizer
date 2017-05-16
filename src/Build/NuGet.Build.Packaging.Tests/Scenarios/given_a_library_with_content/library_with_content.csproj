@@ -29,4 +29,9 @@
 	</ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), fakeframework.targets))\fakeframework.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
+	<Target Name="RemoveContent" Condition="'$(RemoveContent)' == 'true'" BeforeTargets="GetPackageContents">
+		<ItemGroup>
+			<PackageFile Remove="@(PackageFile)" Condition="'%(Kind)' == 'Content' Or '%(Kind)' == 'None'" />
+    </ItemGroup>
+  </Target>
 </Project>

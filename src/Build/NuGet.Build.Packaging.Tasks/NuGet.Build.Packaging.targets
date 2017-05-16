@@ -197,24 +197,34 @@ Copyright (c) .NET Foundation. All rights reserved.
 	-->
 	<PropertyGroup>
 		<!-- Only depend on ResolveReferences if we need to include framework references -->
-		<GetPackageContentsDependsOn Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true'">
+		<InferPackageContentsDependsOn Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true'">
 			ResolveReferences
-		</GetPackageContentsDependsOn>
-		<GetPackageContentsDependsOn>
-			$(GetPackageContentsDependsOn);
+		</InferPackageContentsDependsOn>
+		<InferPackageContentsDependsOn>
+			$(InferPackageContentsDependsOn);
 			GetPackageTargetPath;
-			ReadLegacyDependencies;
-		</GetPackageContentsDependsOn>
-		<GetPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
-			$(GetPackageContentsDependsOn)
+			ReadLegacyDependencies
+		</InferPackageContentsDependsOn>
+		<InferPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
+			$(InferPackageContentsDependsOn);
 			AssignProjectConfiguration;
 			_SplitProjectReferencesByFileExistence;
 			_SplitProjectReferencesByIsNuGetized;
 			AllProjectOutputGroups;
-			_GetReferenceAssemblyTargetPaths;
-		</GetPackageContentsDependsOn>
+			_GetReferenceAssemblyTargetPaths
+		</InferPackageContentsDependsOn>
+		<GetPackageContentsDependsOn>InferPackageContents</GetPackageContentsDependsOn>
 	</PropertyGroup>
+	
 	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
+		<!-- We batch depending on the IsPackaging metadata, which is only specified for referenced content 
+			 if the current project is building a package, to force retargeting of the referenced content. -->
+		<AssignPackagePath Files="@(PackageFile)" Kinds="@(PackageItemKind)" IsPackaging="%(PackageFile.IsPackaging)">
+			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
+		</AssignPackagePath>
+	</Target>
+
+	<Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
 		<Error Condition="'@(_NonNuGetizedProjectReference)' != ''"
 				   Code="NG0011"
 				   Text="Some project references cannot be properly packaged. Please install the NuGet.Build.Packaging package on the following projects: @(_NonNuGetizedProjectReference)." />
@@ -295,10 +305,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</PackageFile>
 		</ItemGroup>
 
-		<AssignPackagePath Files="@(PackageFile)" Kinds="@(PackageItemKind)">
-			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
-		</AssignPackagePath>
-
 		<MSBuild Projects="@(_NuGetizedProjectReference)"
 					 Targets="GetPackageContents"
 					 BuildInParallel="$(BuildInParallel)"
@@ -361,16 +367,15 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_ReferencedPackageContentWithOriginalValues>
 		</ItemGroup>
 
-		<!-- Ensure referenced package content gets assigned a package path if it didn't provide one already.
-			 This happens for project references' that don't have a PackageId, since their package path will 
-			 depend on the referencing project's TFM.
-		-->
-		<AssignPackagePath Files="@(_ReferencedPackageContentWithOriginalValues);@(_ReferencedPackageDependency)"
-							   Kinds="@(PackageItemKind)"
-							   IsPackaging="$(BuildingPackage)"
-							   Condition="'@(_ReferencedPackageContentWithOriginalValues)' != '' Or '@(_ReferencedPackageDependency)' != ''">
-			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
-		</AssignPackagePath>
+		<ItemGroup>
+			<!-- Ensure referenced package content gets assigned a package path if it didn't provide one already.
+				 This happens for project references' that don't have a PackageId, since their package path will 
+				 depend on the referencing project's TFM.
+			-->
+			<PackageFile Include="@(_ReferencedPackageContentWithOriginalValues);@(_ReferencedPackageDependency)">
+				<IsPackaging>$(BuildingPackage)</IsPackaging>
+			</PackageFile>
+		</ItemGroup>
 	</Target>
 
 	<!-- This target separates project references that have the packaging targets from those that don't -->

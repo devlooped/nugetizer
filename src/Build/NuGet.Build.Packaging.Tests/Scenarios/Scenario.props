@@ -3,13 +3,6 @@
 	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
 
 	<PropertyGroup>
-		<!-- This will be the right path when we run from xunit in the bin/$(Configuration) folder -->
-		<NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.props))</NuGetTargetsPath>
-		<!-- This will be the right path when we run from MSBuild from the source location inside the tests project -->
-		<NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')">$(MSBuildThisFileDirectory)..\..\NuGet.Build.Packaging.Tasks\bin\Debug</NuGetTargetsPath>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<OutputPath>bin\$(MSBuildProjectName)</OutputPath>
@@ -47,6 +40,11 @@
 		<!-- Required package metadata -->
 		<Authors>NuGet</Authors>
 		<Description>Package for '$(MSBuildProjectName)' project.</Description>
+
+		<!-- This will be the right path when we run from xunit in the bin/$(Configuration) folder -->
+		<NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.props))</NuGetTargetsPath>
+		<!-- This will be the right path when we run from MSBuild from the source location inside the tests project -->
+		<NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')">$(MSBuildThisFileDirectory)..\..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)</NuGetTargetsPath>
 	</PropertyGroup>
 
 	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.props" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')" />

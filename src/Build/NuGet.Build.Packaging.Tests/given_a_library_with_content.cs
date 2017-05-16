@@ -92,7 +92,7 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_none_item_has_include_in_package_false_then_it_is_included()
+		public void when_none_item_has_include_in_package_false_then_it_is_not_included()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
@@ -137,6 +137,20 @@ namespace NuGet.Build.Packaging
 			{
 				TargetPath = "content-with-include-true.txt",
 			}));
+		}
+
+		[Fact]
+		public void when_removing_inferred_package_file_from_content_then_content_is_not_included()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+				RemoveContent = "true",
+			});
+
+			result.AssertSuccess(output);
+
+			Assert.DoesNotContain(result.Items, item => item.GetMetadata("PackagePath").StartsWith("contentFiles"));
 		}
 	}
 }

@@ -82,9 +82,9 @@
 	<!-- From the gazillion added packages to packages.config, we only need to keep the top level Microsoft.CodeAnalysis -->
 	<Target Name="RemoveUnnecessaryDependencies" BeforeTargets="GetPackageContents" Condition="'@(PackageReference)' != ''">
 		<ItemGroup>
-			<_CodeAnalysisDependency Include="@(PackageReference)"
-									 Condition="$([System.String]::new(%(Identity)).StartsWith('Microsoft.CodeAnalysis.'))" />
-			<PackageReference Remove="@(_CodeAnalysisDependency)" />
+			<_CodeAnalysisDependency Include="@(PackageFile)"
+									 Condition="'%(Kind)' == 'Dependency' And $([System.String]::new(%(Identity)).StartsWith('Microsoft.CodeAnalysis.'))" />
+			<PackageFile Remove="@(_CodeAnalysisDependency)" />
 		</ItemGroup>
 	</Target>
 </Project>

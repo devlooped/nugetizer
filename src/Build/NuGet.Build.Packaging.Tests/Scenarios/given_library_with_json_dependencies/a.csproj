@@ -11,7 +11,7 @@
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 	<Target Name="RemoveIFluentInterface" BeforeTargets="GetPackageContents">
 		<ItemGroup>
-			<PackageReference Remove="IFluentInterface" />
+			<PackageFile Remove="IFluentInterface" />
 		</ItemGroup>
 	</Target>
 </Project>
