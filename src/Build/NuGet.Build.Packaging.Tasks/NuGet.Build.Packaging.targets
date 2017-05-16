@@ -451,12 +451,15 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<BuildDependsOn Condition="('$(PackOnBuild)' == 'true' Or Exists('$(PackOnBuildFile)')) and '$(IsPackable)' == 'true'">
+		<!-- If we're packing on build, just add Pack as a dependency for Build -->
+		<_ShouldPackOnBuild Condition="('$(PackOnBuild)' == 'true' Or Exists('$(PackOnBuildFile)')) And '$(IsPackable)' == 'true'">true</_ShouldPackOnBuild>
+		<BuildDependsOn Condition="'$(_ShouldPackOnBuild)' == 'true'">
 			$(BuildDependsOn);
 			Pack;
 		</BuildDependsOn>
-		<PackDependsOn Condition="'$(IsPackagingProject)' != 'true'">
-			CoreBuild;
+		<!-- If we're not packing on build, set up a dependency from Pack>Build for non-NuProj that are packable, so Build runs before Pack -->
+		<PackDependsOn Condition="'$(IsPackagingProject)' != 'true' And '$(_ShouldPackOnBuild)' != 'true' And '$(IsPackable)' == 'true'">
+			Build;
 		</PackDependsOn>
 		<PackDependsOn>
 			$(PackDependsOn)
