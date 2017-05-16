@@ -13,6 +13,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<PropertyGroup>
 		<IsPackagingProject Condition="'$(IsPackagingProject)' == '' and '$(MSBuildProjectExtension)' == '.nuproj'">true</IsPackagingProject>
+
+		<!-- Disable built-in Pack -->
+		<NuGetBuildTasksPackTargets>NO-SDK-PACK</NuGetBuildTasksPackTargets>
 		<ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
 	</PropertyGroup>
 
