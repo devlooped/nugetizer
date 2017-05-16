@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+	<Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props')" />
+
+	<PropertyGroup>
+		<!-- This will be the right path when we run from xunit in the bin/$(Configuration) folder -->
+		<NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.props))</NuGetTargetsPath>
+		<!-- This will be the right path when we run from MSBuild from the source location inside the tests project -->
+		<NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')">$(MSBuildThisFileDirectory)..\..\..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)</NuGetTargetsPath>
+	</PropertyGroup>
+	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.props" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')" />
+
+	<PropertyGroup>
+		<PackageId>a.package</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
+
+		<!-- From the Authoring.targets -->
+		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+		<TargetFrameworkMoniker>NuGet,Version=v1.0</TargetFrameworkMoniker>
+		<PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;netcore;netcore45;netcore451;netcore50;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netcoreapp1.0;netcoreapp2.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="b\b.csproj">
+			<Project>$(GuidB)</Project>
+			<Name>b</Name>
+		</ProjectReference>
+	</ItemGroup>
+
+	<Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
+</Project>
