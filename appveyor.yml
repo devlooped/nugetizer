@@ -11,21 +11,15 @@ init:
     }
 
 build_script:
-  - cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
+  - cmd: echo /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" >> msbuild.rsp
   - cmd: build.cmd /restore
   - cmd: build.cmd /release
-  - cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
 
 install:
 - cmd: git submodule update --init --recursive
 
 # we run the tests ourselves in build.proj for coverage
 test: off
-
-# build cache to preserve files/folders between builds
-cache:
-  - '%LocalAppData%\NuGet\Cache'
-  - '%USERPROFILE%\.nuget\packages'
 
 deploy:
   - provider: NuGet

@@ -7,6 +7,7 @@ set BuildConfiguration=Debug
 set MSBuildTarget=All
 set NodeReuse=true
 set MultiProcessor=/m
+set MSBuildAdditionalArguments=/m
 
 :ParseArguments
 if "%1" == "" goto :DoneParsing
@@ -20,7 +21,7 @@ if /I "%1" == "/test" set MSBuildTarget=Test&&shift&& goto :ParseArguments
 if /I "%1" == "/restore" set MSBuildTarget=Restore&&shift&& goto :ParseArguments
 if /I "%1" == "/no-node-reuse" set NodeReuse=false&&shift&& goto :ParseArguments
 if /I "%1" == "/no-multi-proc" set MultiProcessor=&&shift&& goto :ParseArguments
-MSBuildAdditionalArguments="%1 %MSBuildAdditionalArguments"%&&shift&& goto :ParseArguments
+set MSBuildAdditionalArguments=%1 %MSBuildAdditionalArguments%&&shift&& goto :ParseArguments
 :DoneParsing
 
 :: Detect if MSBuild is in the path
