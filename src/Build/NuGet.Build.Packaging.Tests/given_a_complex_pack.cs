@@ -161,7 +161,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "a", target: "Pack", output: output);
 
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
+			result.AssertSuccess(output);
 
 			var manifest = result.Items[0].GetManifest();
 

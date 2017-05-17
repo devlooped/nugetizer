@@ -80,6 +80,7 @@
       <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
       <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln" />
       <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_json_dependencies\project.json" />
+      <MSBuildRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_packaging_project_with_netstandard\a.nuproj" />
 
       <MSBuildRestore Include="src\Build\NuGet.Build.Packaging.sln" />
       <MSBuildRestore Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />

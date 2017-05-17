@@ -17,11 +17,12 @@
     <Content Include="FodyWeavers.xml" />
     <Content Include="NuGet.Build.Packaging.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="NuGet.Build.Packaging.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="NuGet.Build.Packaging.CrossTargeting.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="MSBuild\Imports\Microsoft.Common.Props\ImportBefore\Microsoft.NuGet.Packaging.ImportBefore.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -31,9 +32,9 @@
     </Content>
     <Content Include="NuGet.Build.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="NuGet.Build.Packaging.Version.props">
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="NuGet.Build.Packaging.Tasks.targets">

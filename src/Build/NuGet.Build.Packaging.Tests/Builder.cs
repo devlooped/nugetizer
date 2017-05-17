@@ -14,6 +14,12 @@ using Microsoft.Build.Framework;
 /// </summary>
 public static partial class Builder
 {
+#if DEV15
+	const string ToolsVersion = "15.0";
+#else
+	const string ToolsVersion = "14.0";
+#endif
+
 	public static BuildResult Build(string projectOrSolution, string targets, Dictionary<string, string> properties = null, ILogger logger = null)
 	{
 		if (!Path.IsPathRooted(projectOrSolution))
@@ -33,7 +39,7 @@ public static partial class Builder
 			if (Path.GetExtension(projectOrSolution) != ".sln")
 				AddSolutionConfiguration(projectOrSolution, properties);
 
-			var request = new BuildRequestData(projectOrSolution, properties, "14.0", targets.Split(','), null);
+			var request = new BuildRequestData(projectOrSolution, properties, ToolsVersion, targets.Split(','), null);
 			var parameters = new BuildParameters
 			{
 				GlobalProperties = properties,
