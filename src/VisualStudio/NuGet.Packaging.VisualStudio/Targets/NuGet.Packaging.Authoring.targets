@@ -16,8 +16,8 @@ Copyright (c) .NET Foundation. All rights reserved.
   <PropertyGroup>
     <ProjectSystemRulesDir Condition="'$(ProjectSystemRulesDir)' == ''">$(MSBuildThisFileDirectory)..\Rules\</ProjectSystemRulesDir>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <TargetFrameworkMoniker>NETFramework,Version=v1.0</TargetFrameworkMoniker>
-    <PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;netcore;netcore45;netcore451;netcore50;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netcoreapp1.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;netcore;netcore45;netcore451;netcore50;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netcoreapp1.0;netcoreapp2.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>
@@ -72,8 +72,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- DependenciesTree capability lights up a Dependencies tree node and it's sub node providers-->
     <ProjectCapability Include="DependenciesTree" />
-
-    <ProjectCapability Include="ProjectConfigurationsInferredFromUsage" />
 
     <ProjectCapability Include="
                           AssemblyReferences;
