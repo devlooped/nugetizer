@@ -21,7 +21,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_getting_package_contents_then_retrieves_main_assembly_transitively()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output);
+			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, verbosity: LoggerVerbosity.Diagnostic);
 
 			result.AssertSuccess(output);
 
@@ -29,7 +29,6 @@ namespace NuGet.Build.Packaging
 			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include main project output as Library");
 			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include referenced project output as Library");
 		}
-
 
 		[Fact]
 		public void when_getting_package_contents_then_retrieves_symbols_transitively()

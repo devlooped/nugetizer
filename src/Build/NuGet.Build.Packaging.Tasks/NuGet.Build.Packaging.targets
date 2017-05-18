@@ -62,7 +62,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<ItemDefinitionGroup>
 		<TargetPathWithTargetPlatformMoniker>
 			<IsPackable>$(IsPackable)</IsPackable>
-			<IsNuGetized>$(IsNuGetized)</IsNuGetized>
+			<IsNuGetized>true</IsNuGetized>
 		</TargetPathWithTargetPlatformMoniker>
 	</ItemDefinitionGroup>
 
@@ -581,4 +581,5 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</Target>
 
 	<Import Project="NuGet.Build.Packaging.Authoring.targets" Condition="'$(IsPackagingProject)' == 'true'" />
+	<Import Project="NuGet.Build.Packaging.CrossTargeting.targets" Condition="'$(IsCrossTargetingBuild)' == 'true' And '$(FromPackagingProject)' == 'true'" />
 </Project>

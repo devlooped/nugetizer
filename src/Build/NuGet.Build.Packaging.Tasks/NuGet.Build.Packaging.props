@@ -17,6 +17,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Disable built-in Pack -->
 		<NuGetBuildTasksPackTargets>NO-SDK-PACK</NuGetBuildTasksPackTargets>
 		<ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
+		<!-- Ensure the right value is always available  -->
+		<IsCrossTargetingBuild Condition="'$(IsCrossTargetingBuild)' == '' and '$(TargetFrameworks)' != '' and '$(TargetFramework)' == ''">true</IsCrossTargetingBuild>
 	</PropertyGroup>
 
 	<PropertyGroup>

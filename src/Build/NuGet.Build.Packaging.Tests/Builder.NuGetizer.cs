@@ -84,6 +84,12 @@ static partial class Builder
 
 		public void AssertSuccess(ITestOutputHelper output)
 		{
+			if (!BuildResult.ResultsByTarget.ContainsKey(Target))
+			{
+				output.WriteLine(this.ToString());
+				Assert.False(true, "Build results do not contain output for target " + Target);
+			}
+
 			if (ResultCode != TargetResultCode.Success)
 				output.WriteLine(this.ToString());
 

@@ -1,0 +1,61 @@
+<!--
+***********************************************************************************************
+Microsoft.NuGet.Build.Packaging.CrossTargeting.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="GetNativeManifest" />
+	<Target Name="GetCopyToOutputDirectoryItems" />
+
+	<!--
+    ============================================================
+					GetTargetPathWithTargetPlatformMoniker
+	NOTE: depends on Microsoft.Common.CrossTargeting.targets
+
+	When cross-targeting and the authoring project references a 
+	nugetized library, return all the determined target paths.
+    ============================================================
+    -->
+	<Target Name="GetTargetPathWithTargetPlatformMoniker"
+			DependsOnTargets="_SetGetTargetPathWithTargetPlatformMonikerInnerTarget;DispatchToInnerBuilds"
+			Returns="@(InnerOutput)">
+		<ItemGroup>
+			<InnerOutput>
+				<IsNuGetized>true</IsNuGetized>
+			</InnerOutput>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_SetGetTargetPathWithTargetPlatformMonikerInnerTarget">
+		<PropertyGroup>
+			<InnerTargets>GetTargetPathWithTargetPlatformMoniker</InnerTargets>
+		</PropertyGroup>
+	</Target>
+
+	<!--
+	============================================================
+                             GetPackageContents
+   Cross-targeting version of GetPackageContents. 
+   NOTE: depends on Microsoft.Common.CrossTargeting.targets
+   
+   [OUT]
+   @(InnerOutput) - The combined output items of the inner targets across
+                    all builds.
+  ============================================================
+  -->
+	<Target Name="GetPackageContents" DependsOnTargets="_SetGetPackageContentsInnerTarget;DispatchToInnerBuilds" Returns="@(InnerOutput)" />
+
+	<Target Name="_SetGetPackageContentsInnerTarget">
+		<PropertyGroup>
+			<InnerTargets>GetPackageContents</InnerTargets>
+		</PropertyGroup>
+	</Target>
+
+</Project>

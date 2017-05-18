@@ -19,6 +19,20 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ResolveAssemblyReferencesDependsOn />
 	</PropertyGroup>
 
+	<ItemDefinitionGroup>
+		<!-- This turns off _GetProjectReferenceTargetFrameworkProperties which passes down 
+			 our TF to referenced projects and causes build to fail even if we don't really 
+			 need to match up with referenced projects outputs. We're basically using the 
+			 documented escape hatch, see 
+			 https://github.com/Microsoft/msbuild/blob/2634f05a660b14c64ae4e924d900dd200d5032e7/src/Tasks/Microsoft.Common.CurrentVersion.targets#L1537
+		-->
+		<_MSBuildProjectReferenceExistent>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<AdditionalProperties>FromPackagingProject=true</AdditionalProperties>
+		</_MSBuildProjectReferenceExistent>
+	</ItemDefinitionGroup>
+
 	<!-- Just to make it easy for consumers to request the TargetPath as usual but get the 
 		 actual package file, which contains the PackageVersion and will be dynamic therefore. -->
 	<Target Name="UpdateTargetPath" 
