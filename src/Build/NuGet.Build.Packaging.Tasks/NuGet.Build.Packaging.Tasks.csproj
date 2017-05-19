@@ -9,7 +9,7 @@
     <TargetExt>.dll</TargetExt>
     <StartupObject>NuGet.Build.Packaging.Program</StartupObject>
     <PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
-	  <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\..\out</PackageOutputPath>
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\..\out</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -64,7 +64,6 @@
     <Content Include="GenerateReferenceAssembly.csproj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj">
