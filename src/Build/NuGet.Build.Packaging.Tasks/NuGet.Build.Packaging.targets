@@ -282,7 +282,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<Kind>None</Kind>
 			</PackageFile>
 
-			<PackageFile Include="@(PackageReference)">
+			<PackageFile Include="@(PackageReference)" Condition="'%(Identity)' != 'NuGet.Build.Packaging'">
 				<Kind>Dependency</Kind>
 			</PackageFile>
 

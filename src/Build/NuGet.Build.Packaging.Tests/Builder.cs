@@ -20,28 +20,18 @@ public static partial class Builder
 	const string ToolsVersion = "14.0";
 #endif
 
-	public static BuildResult Build(string projectOrSolution, string targets, Dictionary<string, string> properties = null, ILogger logger = null)
+	public static BuildResult Build(ProjectInstance project, string targets, Dictionary<string, string> properties = null, ILogger logger = null)
 	{
-		if (!Path.IsPathRooted(projectOrSolution))
-			projectOrSolution = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, projectOrSolution);
-
-		if (!File.Exists(projectOrSolution))
-			throw new FileNotFoundException($"Project or solution to build {projectOrSolution} was not found.", projectOrSolution);
+		properties = properties ?? new Dictionary<string, string>();
 
 		// Without this, builds end up running in process and colliding with each other, 
 		// especially around the current directory used to resolve relative paths in projects.
 		//Environment.SetEnvironmentVariable("MSBUILDNOINPROCNODE", "1", EnvironmentVariableTarget.Process);
 		using (var manager = new BuildManager(Guid.NewGuid().ToString()))
 		{
-			properties = properties ?? new Dictionary<string, string>();
-
-			// If file is not a solution, build up a fake solution configuration so P2P references just work
-			if (Path.GetExtension(projectOrSolution) != ".sln")
-				AddSolutionConfiguration(projectOrSolution, properties);
-
-			var request = new BuildRequestData(projectOrSolution, properties, ToolsVersion, targets.Split(','), null);
+			var request = new BuildRequestData(project, targets.Split(','), null);
 			var parameters = new BuildParameters
-			{
+			{ 
 				GlobalProperties = properties,
 				DisableInProcNode = !Debugger.IsAttached,
 				EnableNodeReuse = false,
@@ -59,6 +49,25 @@ public static partial class Builder
 			//manager.ShutdownAllNodes();
 			return result;
 		}
+	}
+
+	public static BuildResult Build(string projectOrSolution, string targets, Dictionary<string, string> properties = null, ILogger logger = null)
+	{
+		if (!Path.IsPathRooted(projectOrSolution))
+			projectOrSolution = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, projectOrSolution);
+
+		if (!File.Exists(projectOrSolution))
+			throw new FileNotFoundException($"Project or solution to build {projectOrSolution} was not found.", projectOrSolution);
+
+		properties = properties ?? new Dictionary<string, string>();
+
+		// If file is not a solution, build up a fake solution configuration so P2P references just work
+		if (Path.GetExtension(projectOrSolution) != ".sln")
+			AddSolutionConfiguration(projectOrSolution, properties);
+
+		var projectInstance = new ProjectInstance(projectOrSolution, properties, ToolsVersion);
+
+		return Build(projectInstance, targets, properties, logger);
 	}
 
 	static void AddSolutionConfiguration(string projectFile, Dictionary<string, string> properties)
