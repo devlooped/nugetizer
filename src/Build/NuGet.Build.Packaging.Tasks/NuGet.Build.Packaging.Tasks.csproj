@@ -8,25 +8,27 @@
     <OutputType>Exe</OutputType>
     <TargetExt>.dll</TargetExt>
     <StartupObject>NuGet.Build.Packaging.Program</StartupObject>
+    <PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
+	  <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\..\out</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Costura.Fody" Version="1.3.3" />
-		<PackageReference Include="Fody" Version="1.29.4" />
-		<PackageReference Include="GitInfo" Version="1.*" />
- 		<PackageReference Include="netfx-System.StringResources" Version="*" />
-		<PackageReference Include="Microsoft.Build" Version="14.3.0" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" />
-		<PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" />
-		<PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
-		<PackageReference Include="NuGet.Client" Version="4.0.0" />
-		<PackageReference Include="NuGet.Packaging" Version="4.0.0" />
-		<PackageReference Include="NuGet.ProjectManagement" Version="4.0.0" />
-	</ItemGroup>
-	<ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Costura.Fody" Version="1.3.3" PrivateAssets="all" />
+    <PackageReference Include="Fody" Version="1.29.4" PrivateAssets="all" />
+    <PackageReference Include="GitInfo" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="netfx-System.StringResources" Version="*" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build" Version="14.3.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" PrivateAssets="all" />
+    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="6.0.8" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Client" Version="4.0.0" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Packaging" Version="4.0.0" PrivateAssets="all" />
+    <PackageReference Include="NuGet.ProjectManagement" Version="4.0.0" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="FodyWeavers.xml" />
     <Content Include="NuGet.Build.Packaging.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -46,6 +48,9 @@
     <Content Include="NuGet.Build.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="NuGet.Build.Packaging.Compatibility.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="NuGet.Build.Packaging.Version.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

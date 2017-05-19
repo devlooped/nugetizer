@@ -19,6 +19,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.GetApiIntersectTargetPaths" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
+	<!-- Adds compatibility targets with Pack SDK -->
+	<Import Project="NuGet.Build.Packaging.Compatibility.targets" />
 
 	<PropertyGroup>
 		<!-- The Kind of primary output (build, symbols and doc) set if IncludeOutputsInPackage = true -->
@@ -215,7 +217,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</InferPackageContentsDependsOn>
 		<GetPackageContentsDependsOn>InferPackageContents</GetPackageContentsDependsOn>
 	</PropertyGroup>
-	
+
 	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
 		<!-- We batch depending on the IsPackaging metadata, which is only specified for referenced content 
 			 if the current project is building a package, to force retargeting of the referenced content. -->
