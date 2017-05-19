@@ -4,7 +4,7 @@
     "Clide": "3.0.107-pre",
     "Clide.Installer": "3.0.107-pre",
     "GitInfo": "1.1.32",
-    "Merq": "1.1.17-rc",
+    "Merq": "1.0.0-rc",
     "Merq.Async": "1.1.17-rc",
     "Merq.VisualStudio": "1.1.17-rc",
     "Microsoft.Build": "15.1.548",
@@ -16,7 +16,7 @@
     "MSBuilder.DumpItems": "0.2.1",
     "MSBuilder.Introspect": "0.1.5",
     "MSBuilder.ThisAssembly.Project": "0.3.3",
-    "MSBuilder.VsixDependency": "0.2.8",
+    "MSBuilder.VsixDependency": "0.2.11",
     "MSBuilder.VsixInstaller": "0.2.13",
     "VSLangProj150": "1.0.0",
     "VSSDK.ComponentModelHost.11": "11.0.4"
