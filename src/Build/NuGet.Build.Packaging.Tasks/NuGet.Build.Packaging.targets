@@ -35,8 +35,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
 		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbolsInPackage>
 		<!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
+
 		<!-- Only default to true if the project isn't a nuget packaging project itself. -->
-		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true'">true</IncludeFrameworkReferencesInPackage>
+		<_DefaultIncludeFrameworkReferencesInPackage Condition="'$(PrimaryOutputPackageFileKind)' == 'build' Or '$(PrimaryOutputPackageFileKind)' == 'tool' Or '$(PrimaryOutputPackageFileKind)' == 'tools'">false</_DefaultIncludeFrameworkReferencesInPackage>
+		<_DefaultIncludeFrameworkReferencesInPackage Condition="'$(_DefaultIncludeFrameworkReferencesInPackage)' == ''">true</_DefaultIncludeFrameworkReferencesInPackage>
+		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true'">$(_DefaultIncludeFrameworkReferencesInPackage)</IncludeFrameworkReferencesInPackage>
 
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
