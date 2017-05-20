@@ -442,7 +442,7 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_file_has_none_kind_then_assigned_file_has_empty_package_folder()
+		public void when_file_has_none_kind_then_assigned_file_has_empty_package_folder_and_relative_package_path()
 		{
 			var task = new AssignPackagePath
 			{
@@ -450,11 +450,11 @@ namespace NuGet.Build.Packaging
 				Kinds = kinds,
 				Files = new ITaskItem[]
 				{
-					new TaskItem("readme.txt", new Metadata
-					{
+					new TaskItem(@"content\docs\readme.txt", new Metadata
+					{						
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "None" }
+						{ "Kind", "None" },
 					})
 				}
 			};
@@ -463,7 +463,7 @@ namespace NuGet.Build.Packaging
 			Assert.Contains(task.AssignedFiles, item => item.Matches(new
 			{
 				PackageFolder = "",
-				PackagePath = "readme.txt",
+				PackagePath = @"content\docs\readme.txt",
 			}));
 		}
 

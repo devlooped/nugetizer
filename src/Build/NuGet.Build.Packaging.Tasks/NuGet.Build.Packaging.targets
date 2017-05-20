@@ -19,6 +19,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.GetApiIntersectTargetPaths" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
+	<!-- Adds compatibility targets with Pack SDK -->
+	<Import Project="NuGet.Build.Packaging.Compatibility.targets" />
 
 	<PropertyGroup>
 		<!-- The Kind of primary output (build, symbols and doc) set if IncludeOutputsInPackage = true -->
@@ -33,8 +35,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
 		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbolsInPackage>
 		<!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
+
 		<!-- Only default to true if the project isn't a nuget packaging project itself. -->
-		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true'">true</IncludeFrameworkReferencesInPackage>
+		<_DefaultIncludeFrameworkReferencesInPackage Condition="'$(PrimaryOutputPackageFileKind)' == 'build' Or '$(PrimaryOutputPackageFileKind)' == 'tool' Or '$(PrimaryOutputPackageFileKind)' == 'tools'">false</_DefaultIncludeFrameworkReferencesInPackage>
+		<_DefaultIncludeFrameworkReferencesInPackage Condition="'$(_DefaultIncludeFrameworkReferencesInPackage)' == ''">true</_DefaultIncludeFrameworkReferencesInPackage>
+		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true'">$(_DefaultIncludeFrameworkReferencesInPackage)</IncludeFrameworkReferencesInPackage>
 
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
@@ -215,7 +220,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</InferPackageContentsDependsOn>
 		<GetPackageContentsDependsOn>InferPackageContents</GetPackageContentsDependsOn>
 	</PropertyGroup>
-	
+
 	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
 		<!-- We batch depending on the IsPackaging metadata, which is only specified for referenced content 
 			 if the current project is building a package, to force retargeting of the referenced content. -->
@@ -277,7 +282,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<Kind>None</Kind>
 			</PackageFile>
 
-			<PackageFile Include="@(PackageReference)">
+			<PackageFile Include="@(PackageReference)" Condition="'%(Identity)' != 'NuGet.Build.Packaging'">
 				<Kind>Dependency</Kind>
 			</PackageFile>
 

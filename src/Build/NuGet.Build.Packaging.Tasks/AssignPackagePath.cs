@@ -125,9 +125,15 @@ namespace NuGet.Build.Packaging.Tasks
 			// P2P references)
 			var targetPath = file.GetMetadata("TargetPath");
 			if (string.IsNullOrEmpty(targetPath))
-				targetPath = file.GetMetadata("FileName") + file.GetMetadata("Extension");
+			{
+				targetPath = kind == PackageItemKind.None ? 
+					// For None, preserve the relative dir. 
+					file.GetMetadata("RelativeDir") + file.GetMetadata("FileName") + file.GetMetadata("Extension") :
+					file.GetMetadata("FileName") + file.GetMetadata("Extension");
+			}
 
-			// None files or those for which we know no mapping, go straight to the root folder of the package.
+			// None files or those for which we know no mapping, go straight to the root folder of the package, 
+			// respecting their RelativeDir.
 			// This allows custom packaging paths such as "workbooks", "docs" or whatever, which aren't prohibited by 
 			// the format.
 			var packagePath = string.IsNullOrEmpty(packageFolder) ?

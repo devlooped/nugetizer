@@ -21,7 +21,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_getting_package_contents_then_retrieves_main_assembly_transitively()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, verbosity: LoggerVerbosity.Diagnostic);
+			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output);
 
 			result.AssertSuccess(output);
 
