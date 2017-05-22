@@ -60,7 +60,41 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_none_item_has_no_include_in_package_then_it_is_not_included()
+		public void when_include_none_in_package_is_false_then_inferred_none_is_not_included()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+				IncludeNoneInPackage = "false",
+			});
+
+			result.AssertSuccess(output);
+
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				TargetPath = "none.txt",
+			}));
+		}
+
+		[Fact]
+		public void when_include_none_in_package_is_false_then_explicitly_included_none_is_included()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+				IncludeNoneInPackage = "false",
+			});
+
+			result.AssertSuccess(output);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				TargetPath = "none-with-include-true.txt",
+			}));
+		}
+
+		[Fact]
+		public void when_none_item_has_no_include_in_package_then_it_is_included_by_default()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
@@ -69,7 +103,7 @@ namespace NuGet.Build.Packaging
 
 			result.AssertSuccess(output);
 
-			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				TargetPath = "none.txt",
 			}));
@@ -129,6 +163,23 @@ namespace NuGet.Build.Packaging
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
 				PackageId = "ContentPackage",
+			});
+
+			result.AssertSuccess(output);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				TargetPath = "content-with-include-true.txt",
+			}));
+		}
+
+		[Fact]
+		public void when_include_content_in_package_is_false_then_explicitly_included_content_is_included()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+				IncludeContentInPackage = "false",
 			});
 
 			result.AssertSuccess(output);
