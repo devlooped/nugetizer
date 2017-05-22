@@ -52,6 +52,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)</PackageOutputPath>
 
+		<!-- This file signals that the Build should actually do a Pack. Supports the IDE solution-wide Build command for authoring projects. -->
 		<PackOnBuildFile>$(MSBuildProjectDirectory)\.packonbuild</PackOnBuildFile>
 	</PropertyGroup>
 
