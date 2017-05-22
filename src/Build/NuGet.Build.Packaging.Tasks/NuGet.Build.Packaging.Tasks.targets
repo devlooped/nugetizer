@@ -23,7 +23,7 @@
 		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
 	</PropertyGroup>
 
-	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
+  <Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
 			Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
 	
 	<Target Name="AddBuiltOutput" BeforeTargets="GetPackageContents" DependsOnTargets="AllProjectOutputGroups" Returns="@(PackageFile)">
@@ -89,11 +89,9 @@
 
 	<Target Name="GeneratePackageItemKind" Inputs="$(MSBuildThisFileFullPath);NuGet.Build.Packaging.props" Outputs="$(PackageItemKindFile)">
 		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
-		<XmlPeek Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;"
-					 Query="/msb:Project/msb:ItemGroup/msb:PackageItemKind/@Include"
-					 XmlInputPath="$(MSBuildThisProjectDirectory)NuGet.Build.Packaging.props">
-			<Output TaskParameter="Result" ItemName="_PackageItemKind" />
-		</XmlPeek>
+    <MSBuild Projects="NuGet.Build.Packaging.props" Targets="_GetPackageItemKinds">
+      <Output ItemName="_PackageItemKind" TaskParameter="TargetOutputs" />
+		</MSBuild>
 
 		<WriteLinesToFile Lines='
 namespace $(RootNamespace)

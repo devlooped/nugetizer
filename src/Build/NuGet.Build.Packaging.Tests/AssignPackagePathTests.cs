@@ -23,7 +23,7 @@ namespace NuGet.Build.Packaging
 		{
 			kinds = new Project(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "NuGet.Build.Packaging.props"), null, null, new ProjectCollection())
 				.GetItems("PackageItemKind")
-				.Select(item => new TaskItem(item.UnevaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
+				.Select(item => new TaskItem(item.EvaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
 				.ToArray();
 		}
 
@@ -55,7 +55,7 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_file_has_no_kind_but_has_package_path_then_assigns_target_framework()
+		public void when_file_has_no_kind_and_no_framework_specific_then_it_is_not_assigned_target_framework()
 		{
 			var task = new AssignPackagePath
 			{
@@ -74,6 +74,33 @@ namespace NuGet.Build.Packaging
 			Assert.True(task.Execute());
 			Assert.Contains(task.AssignedFiles, item => item.Matches(new
 			{
+				PackagePath = "workbooks\\library.dll",
+				TargetFramework = ""
+			}));
+		}
+
+		[Fact]
+		public void when_file_has_no_kind_and_package_path_and_framework_specific_then_it_is_assigned_target_framework_only()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("library.dll", new Metadata
+					{
+						{ "PackagePath", "workbooks\\library.dll" },
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "FrameworkSpecific", "true" }
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackagePath = "workbooks\\library.dll",
 				TargetFramework = "net45"
 			}));
 		}
@@ -292,11 +319,11 @@ namespace NuGet.Build.Packaging
 			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) &&
 				// Skip contentFiles from this test since they get a special map that includes the codelang
 				kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles")
-			.Select(kind => new object[] { kind.ItemSpec, kind.GetMetadata("PackageFolder") });
+			.Select(kind => new object[] { kind.ItemSpec, kind.GetMetadata(MetadataName.PackageFolder), kind.GetMetadata(MetadataName.FrameworkSpecific) });
 
 		[MemberData("GetMappedKnownKinds")]
 		[Theory]
-		public void when_file_has_known_kind_then_assigned_file_contains_mapped_package_folder(string packageFileKind, string mappedPackageFolder)
+		public void when_file_has_known_kind_then_assigned_file_contains_mapped_package_folder(string packageFileKind, string mappedPackageFolder, string frameworkSpecific)
 		{
 			var task = new AssignPackagePath
 			{
@@ -313,11 +340,14 @@ namespace NuGet.Build.Packaging
 				}
 			};
 
+			var isFrameworkSpecific = true;
+			bool.TryParse(frameworkSpecific, out isFrameworkSpecific);
+
 			Assert.True(task.Execute());
 			Assert.Contains(task.AssignedFiles, item => item.Matches(new
 			{
 				PackageFolder = mappedPackageFolder,
-				PackagePath = $"{mappedPackageFolder}\\net45\\library.dll",
+				PackagePath = $"{mappedPackageFolder}{(isFrameworkSpecific ? "\\net45" : "")}\\library.dll",
 			}));
 		}
 
@@ -541,7 +571,7 @@ namespace NuGet.Build.Packaging
 			Assert.Contains(task.AssignedFiles, item => item.Matches(new
 			{
 				PackageFolder = inferredPackageFolder,
-				PackagePath = $"{inferredPackageFolder}\\net45\\library.dll",
+				PackagePath = $"{inferredPackageFolder}\\library.dll",
 			}));
 		}
 
@@ -571,7 +601,7 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_file_has_relative_target_path_with_tfm_then_package_path_has_relative_path_with_target_framework()
+		public void when_tool_has_relative_target_path_with_framework_specific_true_then_package_path_has_relative_path_with_target_framework()
 		{
 			var task = new AssignPackagePath
 			{
@@ -584,6 +614,7 @@ namespace NuGet.Build.Packaging
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "Kind", "Tool" },
+						{ "FrameworkSpecific", "true" },
 						{ "TargetPath", "sdk\\bin\\tool.exe"}
 					})
 				}
@@ -593,6 +624,58 @@ namespace NuGet.Build.Packaging
 			Assert.Contains(task.AssignedFiles, item => item.Matches(new
 			{
 				PackagePath = @"tools\net45\sdk\bin\tool.exe",
+			}));
+		}
+
+		[Fact]
+		public void when_lib_has_framework_specific_false_then_package_path_does_not_have_target_framework()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("console.exe", new Metadata
+					{
+						{ "PackageId", "A" },
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", "Lib" },
+						{ "FrameworkSpecific", "false" },
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackagePath = @"lib\console.exe",
+			}));
+		}
+
+		[Fact]
+		public void when_file_is_not_framework_specific_then_it_is_not_assigned_target_framework()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("tools\\foo.exe", new Metadata
+					{
+						{ "PackageId", "A" },
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "Kind", "Tools" },
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				PackagePath = @"tools\foo.exe",
+				TargetFramework = "",
 			}));
 		}
 	}

@@ -35,6 +35,11 @@
 		/// </summary>
 		public const string IsPackable = nameof(IsPackable);
 
+		/// <summary>
+		/// Whether a PackageFile is framework-specific or not.
+		/// </summary>
+		public const string FrameworkSpecific = nameof(FrameworkSpecific);
+
 		public const string TargetFramework = nameof(TargetFramework);
 
 		public const string TargetFrameworkMoniker = nameof(TargetFrameworkMoniker);

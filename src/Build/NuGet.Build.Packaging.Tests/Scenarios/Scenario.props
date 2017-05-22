@@ -47,5 +47,5 @@
 		<NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')">$(MSBuildThisFileDirectory)..\..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)</NuGetTargetsPath>
 	</PropertyGroup>
 
-	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.props" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')" />
+	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.props')" />
 </Project>

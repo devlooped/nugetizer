@@ -8,7 +8,7 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
 			Condition="'$(IsPortable)' == 'true'" />
 
-  <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
+  <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="'$(NuGetBuildPackagingTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
 
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)_._" />

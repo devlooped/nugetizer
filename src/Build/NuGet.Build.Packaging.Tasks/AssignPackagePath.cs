@@ -34,7 +34,6 @@ namespace NuGet.Build.Packaging.Tasks
 		{
 			var kindMap = Kinds.ToDictionary(
 				kind => kind.ItemSpec,
-				kind => kind.GetMetadata("PackageFolder"),
 				StringComparer.OrdinalIgnoreCase);
 
 			AssignedFiles = Files.Select(file => EnsurePackagePath(file, kindMap)).ToArray();
@@ -42,14 +41,20 @@ namespace NuGet.Build.Packaging.Tasks
 			return !Log.HasLoggedErrors;
 		}
 
-		ITaskItem EnsurePackagePath(ITaskItem file, IDictionary<string, string> kindMap)
+		ITaskItem EnsurePackagePath(ITaskItem file, IDictionary<string, ITaskItem> kindMap)
 		{
 			var output = new TaskItem(file);
 
 			// Map the Kind to a target top-level directory.
 			var kind = file.GetMetadata("Kind");
 			var packageFolder = "";
-			if (!kindMap.TryGetValue(kind, out packageFolder) && !string.IsNullOrEmpty(kind))
+			var frameworkSpecific = false;
+			if (!string.IsNullOrEmpty(kind) && kindMap.TryGetValue(kind, out var kindItem))
+			{
+				packageFolder = kindItem.GetMetadata(MetadataName.PackageFolder);
+				bool.TryParse(kindItem.GetMetadata(MetadataName.FrameworkSpecific), out frameworkSpecific);
+			}
+			else if (!string.IsNullOrEmpty(kind))
 			{
 				// By convention, we just turn the first letter of Kind to lowercase and assume that 
 				// to be a valid folder kind.
@@ -57,12 +62,16 @@ namespace NuGet.Build.Packaging.Tasks
 					char.ToLower(kind[0]).ToString() + kind.Substring(1);
 			}
 
+			// Specific PackageFile can always override Kind-inferred FrameworkSpecific value.
+			if (bool.TryParse(file.GetMetadata(MetadataName.FrameworkSpecific), out var frameworkSpecificOverride))
+				frameworkSpecific = frameworkSpecificOverride;
+
 			output.SetMetadata(MetadataName.PackageFolder, packageFolder);
 
 			// NOTE: a declared TargetFramework metadata trumps TargetFrameworkMoniker, 
 			// which is defaulted to that of the project being built.
 			var targetFramework = output.GetMetadata(MetadataName.TargetFramework);
-			if (string.IsNullOrEmpty(targetFramework))
+			if (string.IsNullOrEmpty(targetFramework) && frameworkSpecific)
 			{
 				var frameworkMoniker = file.GetTargetFrameworkMoniker();
 				targetFramework = frameworkMoniker.GetShortFrameworkName() ?? "";
@@ -139,8 +148,11 @@ namespace NuGet.Build.Packaging.Tasks
 			var packagePath = string.IsNullOrEmpty(packageFolder) ?
 				// File goes to the determined target path (or the root of the package), such as a readme.txt
 				targetPath :
-				// Otherwise, it goes to a framework-specific folder.
-				Path.Combine(new[] { packageFolder, targetFramework }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
+				frameworkSpecific ? 
+					// Otherwise, it goes to a framework-specific folder.
+					Path.Combine(new[] { packageFolder, targetFramework }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray()) :
+					// Except if frameworkSpecific is false, such as for build, tools, runtimes
+					Path.Combine(new[] { packageFolder }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
 
 			output.SetMetadata(MetadataName.PackagePath, packagePath);
 
