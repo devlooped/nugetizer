@@ -17,7 +17,7 @@
     "MSBuilder.Introspect": "0.1.5",
     "MSBuilder.ThisAssembly.Project": "0.3.3",
     "MSBuilder.VsixDependency": "0.2.11",
-    "MSBuilder.VsixInstaller": "0.2.13",
+    "MSBuilder.VsixInstaller": "0.2.15",
     "VSLangProj150": "1.0.0",
     "VSSDK.ComponentModelHost.11": "11.0.4"
   },

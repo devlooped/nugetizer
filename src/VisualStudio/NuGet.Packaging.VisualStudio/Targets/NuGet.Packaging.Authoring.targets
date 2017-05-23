@@ -70,6 +70,9 @@ Copyright (c) .NET Foundation. All rights reserved.
   <ItemGroup>
     <ProjectCapability Include="PackagingProject" />
 
+    <!-- Allows configurations inferred from Condition="CONFIG|PLATFORM" usage -->
+    <ProjectCapability Include="ProjectConfigurationsInferredFromUsage" />
+
     <!-- DependenciesTree capability lights up a Dependencies tree node and it's sub node providers-->
     <ProjectCapability Include="DependenciesTree" />
 
