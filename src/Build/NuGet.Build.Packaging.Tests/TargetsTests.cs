@@ -17,40 +17,51 @@ namespace NuGet.Build.Packaging
 		public TargetsTests(ITestOutputHelper output) => this.output = output;
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_defaults_to_false_for_build_primary_output()
+		public void IncludeFrameworkReferencesInPackage_is_not_true_for_build_primary_output()
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputPackageFileKind", "build" }
 			}, "14.0");
 
-			Assert.Equal("false", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_defaults_to_false_for_tool_primary_output()
+		public void IncludeFrameworkReferencesInPackage_is_not_true_for_tool_primary_output()
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputPackageFileKind", "tool" }
 			}, "14.0");
 
-			Assert.Equal("false", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_defaults_to_false_for_tools_primary_output()
+		public void IncludeFrameworkReferencesInPackage_is_not_true_for_tools_primary_output()
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputPackageFileKind", "tools" }
 			}, "14.0");
 
-			Assert.Equal("false", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_defaults_to_true_for_default_primary_output()
+		public void IncludeFrameworkReferencesInPackage_is_true_for_primary_output_lib()
+		{
+			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
+			{
+				{ "PrimaryOutputPackageFileKind", "lib" }
+			}, "14.0");
+
+			Assert.Equal("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+		}
+
+		[Fact]
+		public void IncludeFrameworkReferencesInPackage_is_true_for_default_primary_output_kind()
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
@@ -60,14 +71,14 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_defaults_to_false_for_compat_istool()
+		public void IncludeFrameworkReferencesInPackage_is_not_true_for_compat_istool()
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "IsTool", "true" }
 			}, "14.0");
 
-			Assert.Equal("false", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
 
 		[Fact]
