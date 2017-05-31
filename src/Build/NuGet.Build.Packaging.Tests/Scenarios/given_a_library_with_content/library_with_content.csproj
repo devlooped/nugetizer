@@ -13,7 +13,11 @@
 			<IncludeInPackage>true</IncludeInPackage>
 		</None>
 		<None Include="none.txt" />
-		<None Include="none-with-include-true.txt">
+    <None Include="none-with-kind.txt">
+      <Kind>build</Kind>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="none-with-include-true.txt">
 			<IncludeInPackage>true</IncludeInPackage>
 		</None>
 		<None Include="none-with-include-false.txt">
@@ -22,7 +26,11 @@
 		<Content Include="content-with-include-false.txt">
 			<IncludeInPackage>false</IncludeInPackage>
 		</Content>
-		<Content Include="content-with-include-true.txt">
+    <Content Include="content-with-kind.txt">
+      <Kind>build</Kind>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content-with-include-true.txt">
 			<IncludeInPackage>true</IncludeInPackage>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>

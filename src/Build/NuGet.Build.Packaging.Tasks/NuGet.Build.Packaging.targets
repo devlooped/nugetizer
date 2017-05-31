@@ -290,13 +290,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath -> '%(FullPath)') -->
 			<PackageFile Include="@(ContentWithTargetPath->'%(FullPath)')"
 							   Condition="'%(ContentWithTargetPath.IncludeInPackage)' == 'true' or ('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.IncludeInPackage)' != 'false')">
-				<Kind>Content</Kind>
+				<Kind Condition="'%(ContentWithTargetPath.Kind)' == ''">Content</Kind>
 			</PackageFile>
 
 			<!-- NOTE: None is also opt-out (must have IncludeInPackage=false to exclude if IncludeNoneInPackage=true) -->
 			<PackageFile Include="@(_NoneWithTargetPath->'%(FullPath)')"
 							   Condition="'%(_NoneWithTargetPath.IncludeInPackage)' == 'true' or ('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.IncludeInPackage)' != 'false')">
-				<Kind>None</Kind>
+				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == ''">None</Kind>
 			</PackageFile>
 
 			<PackageFile Include="@(PackageReference)" Condition="'%(Identity)' != 'NuGet.Build.Packaging'">

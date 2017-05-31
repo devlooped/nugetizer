@@ -126,7 +126,7 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void when_none_item_has_include_in_package_false_then_it_is_not_included()
+		public void when_none_item_has_kind_then_kind_is_preserved()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
@@ -135,9 +135,27 @@ namespace NuGet.Build.Packaging
 
 			result.AssertSuccess(output);
 
-			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				TargetPath = "none-with-include-false.txt",
+				TargetPath = "none-with-kind.txt",
+				PackagePath = @"build\none-with-kind.txt"
+			}));
+		}
+
+		[Fact]
+		public void when_content_item_has_kind_then_kind_is_preserved()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+			});
+
+			result.AssertSuccess(output);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				TargetPath = "content-with-kind.txt",
+				PackagePath = @"build\content-with-kind.txt"
 			}));
 		}
 
