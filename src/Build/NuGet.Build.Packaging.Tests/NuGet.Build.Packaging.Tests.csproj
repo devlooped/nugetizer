@@ -15,7 +15,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="1.1.60" />
+    <PackageReference Include="GitInfo" Version="1.1.61" />
     <PackageReference Include="Microsoft.Build" Version="14.3.0" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
