@@ -25,4 +25,32 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<PrimaryOutputFrameworkSpecific>false</PrimaryOutputFrameworkSpecific>
 	</PropertyGroup>
+
+	<!--
+      Properties relevant to Visual Studio:
+      $(BuildingInsideVisualStudio)       This will indicate whether this project is building inside the IDE. When
+                                          building via MSBuild, this property will not be set.
+      $(DesignTimeBuild)                  Visual Studio uses this property to indicate whether it's performing a
+                                          design time build or a full build. A design time build is designed to do
+                                          minimal amount of work; the intent of those builds is to expose information
+                                          around resolved dependencies and properties back to Visual Studio without
+                                          actually producing assets on disk.
+	-->
+	<PropertyGroup>
+		<!-- We don't want to build in case we're performing a design time build as we are expected to not
+         produce any assets.
+         We also don't want to build the references in cases where we build inside the IDE. The reason
+         is that Visual Studio already built our dependencies. Doing it again can regress performance.
+         However, the real issue is that it impacts correctness as this can result in building the same
+         project simultaneously from different projects.
+         Most particularly on the correctness side, this shows up when VS is doing a "rebuild". NuProj
+         will end up causing multiple build breaks being reported because it will re-delete outputs that
+         VS just produced and that other project references that are building in parallel now expect to
+         be there. -->
+		<BuildProjectReferences Condition="'$(BuildProjectReferences)' == '' and ('$(BuildingInsideVisualStudio)' == 'true' or '$(DesignTimeBuild)' == 'true')">false</BuildProjectReferences>
+		<!-- By default we will build (and if applicable, clean) all project references. But this can be used
+         to disable that. -->
+		<BuildProjectReferences Condition="'$(BuildProjectReferences)' == ''">true</BuildProjectReferences>
+	</PropertyGroup>
+
 </Project>

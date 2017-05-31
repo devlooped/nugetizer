@@ -9,39 +9,18 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
 Copyright (c) .NET Foundation. All rights reserved. 
 ***********************************************************************************************
 -->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project InitialTargets="_SetPropertiesFromCapabilities" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.AssignPackagePath" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.CreatePackage" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
-	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ReadLegacyJsonDependencies" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
-	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ReadLegacyConfigDependencies" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
-	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ApiIntersect" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
-	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.GenerateAssemblyInfo" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
-	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.GetApiIntersectTargetPaths" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 	<!-- Adds compatibility targets with Pack SDK -->
 	<Import Project="NuGet.Build.Packaging.Compatibility.targets" />
+	<Import Project="NuGet.Build.Packaging.Legacy.targets" />
 
 	<PropertyGroup>
-		<!-- The Kind of primary output (build, symbols and doc) set if IncludeOutputsInPackage = true -->
-		<PrimaryOutputPackageFileKind Condition="'$(PrimaryOutputPackageFileKind)' == ''">Lib</PrimaryOutputPackageFileKind>
-		<!-- Optionally can tweak whether the primary output is TF-specific or not. -->
-		<PrimaryOutputFrameworkSpecific Condition="'$(PrimaryOutputPackageFileKind)' == ''">true</PrimaryOutputFrameworkSpecific>
-
-		<!-- Infer PackageRererence elements from packages.config/project.json files in the project -->
-		<InferLegacyPackageReferences Condition="'$(InferLegacyPackageReferences)' == ''">true</InferLegacyPackageReferences>
-		<!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
-		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
-		<!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
-		<IncludeNoneInPackage Condition="'$(IncludeNoneInPackage)' == ''">true</IncludeNoneInPackage>
-		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
-		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
-		<!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
-		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true' and '$(Configuration)' == 'Debug'">true</IncludeSymbolsInPackage>
-		<!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
-
-		<!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
-		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true' and '$(PrimaryOutputPackageFileKind)' == 'Lib'">true</IncludeFrameworkReferencesInPackage>
+		<!-- Whether include referenced projects' contents the package -->
+		<IncludeProjectReferencesInPackage Condition="'$(IncludeProjectReferencesInPackage)' == ''">true</IncludeProjectReferencesInPackage>
 
 		<PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
@@ -58,12 +37,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PackOnBuildFile>$(MSBuildProjectDirectory)\.packonbuild</PackOnBuildFile>
 	</PropertyGroup>
 
+	<Import Project="NuGet.Build.Packaging.Inference.targets" Condition="'$(InferPackageContents)' != 'false'" />
+
 	<ItemGroup>
 		<!-- This is the capability that CPS in .NETStandard/.NETCore uses to enable the Pack context menu. Unify with that -->
 		<ProjectCapability Include="Pack" Condition="'$(IsPackable)' == 'true'" />
-
-		<!-- Converts potentially multiple $(ReferenceAssemblyFrameworks) into @(ReferenceAssemblyFramework) -->
-		<ReferenceAssemblyFramework Include="$(ReferenceAssemblyFrameworks)" Condition="'$(ReferenceAssemblyFrameworks)' != ''" />
 	</ItemGroup>
 
 	<!-- Extends the built-in GetTargetPathWithTargetPlatformMoniker output to signal that the project has been nugetized -->
@@ -204,27 +182,38 @@ Copyright (c) .NET Foundation. All rights reserved.
     =================================================================================================
 	-->
 	<PropertyGroup>
-		<!-- Only depend on ResolveReferences if we need to include framework references -->
-		<InferPackageContentsDependsOn Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true'">
-			ResolveReferences
-		</InferPackageContentsDependsOn>
-		<InferPackageContentsDependsOn>
-			$(InferPackageContentsDependsOn);
-			GetPackageTargetPath;
-			ReadLegacyDependencies
-		</InferPackageContentsDependsOn>
-		<InferPackageContentsDependsOn Condition="'$(IncludeOutputsInPackage)' == 'true'">
-			$(InferPackageContentsDependsOn);
-			AssignProjectConfiguration;
-			_SplitProjectReferencesByFileExistence;
-			_SplitProjectReferencesByIsNuGetized;
-			AllProjectOutputGroups;
-			_GetReferenceAssemblyTargetPaths
-		</InferPackageContentsDependsOn>
-		<GetPackageContentsDependsOn>InferPackageContents</GetPackageContentsDependsOn>
+		<GetPackageContentsDependsOn>
+			$(GetPackageContentsDependsOn);
+			GetPackageTargetPath
+		</GetPackageContentsDependsOn>
+		<GetPackageContentsDependsOn Condition="'$(IncludeProjectReferencesInPackage)' == 'true'">
+			$(GetPackageContentsDependsOn);
+			_GetReferencedPackageContents
+		</GetPackageContentsDependsOn>
 	</PropertyGroup>
 
 	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
+		<!-- If packaging the project, provide the metadata as a non-file item -->
+		<ItemGroup>
+			<PackageFile Include="@(PackageTargetPath->'%(Id)')" Condition="'$(IsPackable)' == 'true'">
+				<Kind>Metadata</Kind>
+				<PackageId>$(PackageId)</PackageId>
+				<Platform>$(Platform)</Platform>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</PackageFile>
+
+			<!-- 
+				PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
+				NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
+				current project.
+			-->
+			<PackageFile>
+				<PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
+				<Platform Condition="'%(PackageFile.Platform)' == ''">$(Platform)</Platform>
+				<TargetFrameworkMoniker Condition="'%(PackageFile.TargetFrameworkMoniker)' == '' and '$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</PackageFile>
+		</ItemGroup>
+
 		<!-- We batch depending on the IsPackaging metadata, which is only specified for referenced content 
 			 if the current project is building a package, to force retargeting of the referenced content. -->
 		<AssignPackagePath Files="@(PackageFile)" Kinds="@(PackageItemKind)" IsPackaging="%(PackageFile.IsPackaging)">
@@ -232,7 +221,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</AssignPackagePath>
 	</Target>
 
-	<Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
+	<Target Name="_GetReferencedPackageContents"
+			Condition="'$(_SupportsProjectReferences)' == 'true'"
+			DependsOnTargets="$(_GetReferencedPackageContentsDependsOn)" 
+			Returns="@(PackageFile)">
 		<Error Condition="'@(_NonNuGetizedProjectReference)' != ''"
 				   Code="NG0011"
 				   Text="Some project references cannot be properly packaged. Please install the NuGet.Build.Packaging package on the following projects: @(_NonNuGetizedProjectReference)." />
@@ -242,98 +234,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 			NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
 			current project.
 		-->
-
-		<!-- Determine whether primary is framework specific  -->
-		<ItemGroup  Condition="'$(PrimaryOutputFrameworkSpecific)' == ''">
-			<_PrimaryOutputPackageFileKind Include="@(PackageItemKind->'%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(PrimaryOutputPackageFileKind)'" />
-		</ItemGroup>
-		<PropertyGroup Condition="'$(PrimaryOutputFrameworkSpecific)' == ''">
-			<PrimaryOutputFrameworkSpecific>@(_PrimaryOutputPackageFileKind)</PrimaryOutputFrameworkSpecific>
-		</PropertyGroup>
-
-		<ItemGroup>
-			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
-				<!-- Packaging projects don't contribute primary output -->
-				<Kind>$(PrimaryOutputPackageFileKind)</Kind>
-				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
-			</PackageFile>
-
-			<!-- Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
-			<_DocumentationProjectOutputGroupOutput Include="@(DocumentationProjectOutputGroupOutput)"
-														  Condition="'$(IncludeOutputsInPackage)' == 'true'">
-				<FinalOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">$(MSBuildProjectDirectory)\%(FinalOutputPath)</FinalOutputPath>
-			</_DocumentationProjectOutputGroupOutput>
-			<PackageFile Include="@(_DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
-				<!-- Packaging projects don't contribute primary docs -->
-				<Kind>$(PrimaryOutputPackageFileKind)</Kind>
-				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
-			</PackageFile>
-
-			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
-				<!-- Packaging projects don't contribute primary symbols -->
-				<Kind>$(PrimaryOutputPackageFileKind)</Kind>
-				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
-			</PackageFile>
-
-			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
-			<PackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
-				<!-- Packaging projects don't contribute satellite dlls -->
-				<Kind>$(PrimaryOutputPackageFileKind)</Kind>
-				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
-			</PackageFile>
-
-			<!-- NOTE: Content is opt-out (must have IncludeInPackage=false to exclude if IncludeContentInPackage=true) -->
-			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath -> '%(FullPath)') -->
-			<PackageFile Include="@(ContentWithTargetPath->'%(FullPath)')"
-							   Condition="
-									'%(ContentWithTargetPath.IncludeInPackage)' == 'true' or 
-									'%(ContentWithTargetPath.Kind)' != '' or 
-									('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.IncludeInPackage)' != 'false')">
-				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputPackageFileKind)</Kind>
-				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' == ''">Content</Kind>
-			</PackageFile>
-
-			<!-- NOTE: None is also opt-out (must have IncludeInPackage=false to exclude if IncludeNoneInPackage=true, but only for those with CopyToOutput) -->
-			<PackageFile Include="@(_NoneWithTargetPath->'%(FullPath)')"
-							   Condition="
-									'%(_NoneWithTargetPath.IncludeInPackage)' == 'true' or 
-									'%(_NoneWithTargetPath.Kind)' != '' or 
-									('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != '' and '%(_NoneWithTargetPath.IncludeInPackage)' != 'false')">
-				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == '' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputPackageFileKind)</Kind>
-			</PackageFile>
-
-
-			<PackageFile Include="@(PackageReference)" Condition="'%(Identity)' != 'NuGet.Build.Packaging'">
-				<Kind>Dependency</Kind>
-			</PackageFile>
-
-			<!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
-			     it also includes mscorlib which we don't need
-			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
-			<PackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
-							   Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
-				<Kind>FrameworkReference</Kind>
-			</PackageFile>
-		</ItemGroup>
-
-		<!-- If packaging the project, provide the metadata as a non-file item -->
-		<ItemGroup Condition="'$(IsPackable)' == 'true'">
-			<PackageFile Include="@(PackageTargetPath->'%(Id)')">
-				<Kind>Metadata</Kind>
-			</PackageFile>
-		</ItemGroup>
-
-		<ItemGroup>
-			<PackageFile>
-				<PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
-				<Platform>$(Platform)</Platform>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
 
 		<MSBuild Projects="@(_NuGetizedProjectReference)"
 					 Targets="GetPackageContents"
@@ -435,49 +335,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	</Target>
 
-	<Target Name="ReadLegacyDependencies" Condition="'$(InferLegacyPackageReferences)' == 'true'">
-		<PropertyGroup>
-			<_ProjectJson>$(MSBuildProjectDirectory)\project.json</_ProjectJson>
-			<_PackagesConfig>$(MSBuildProjectDirectory)\packages.config</_PackagesConfig>
-		</PropertyGroup>
-
-		<ReadLegacyJsonDependencies ProjectJsonPath="$(_ProjectJson)" Condition="Exists('$(_ProjectJson)')">
-			<Output TaskParameter="PackageReferences" ItemName="PackageReference" />
-		</ReadLegacyJsonDependencies>
-
-		<ReadLegacyConfigDependencies PackagesConfigPath="$(_PackagesConfig)" Condition="Exists('$(_PackagesConfig)')">
-			<Output TaskParameter="PackageReferences" ItemName="PackageReference" />
-		</ReadLegacyConfigDependencies>
-	</Target>
-
-	<!--
-      Properties relevant to Visual Studio:
-      $(BuildingInsideVisualStudio)       This will indicate whether this project is building inside the IDE. When
-                                          building via MSBuild, this property will not be set.
-      $(DesignTimeBuild)                  Visual Studio uses this property to indicate whether it's performing a
-                                          design time build or a full build. A design time build is designed to do
-                                          minimal amount of work; the intent of those builds is to expose information
-                                          around resolved dependencies and properties back to Visual Studio without
-                                          actually producing assets on disk.
-	-->
-
-	<PropertyGroup>
-		<!-- We don't want to build in case we're performing a design time build as we are expected to not
-         produce any assets.
-         We also don't want to build the references in cases where we build inside the IDE. The reason
-         is that Visual Studio already built our dependencies. Doing it again can regress performance.
-         However, the real issue is that it impacts correctness as this can result in building the same
-         project simultaneously from different projects.
-         Most particularly on the correctness side, this shows up when VS is doing a "rebuild". NuProj
-         will end up causing multiple build breaks being reported because it will re-delete outputs that
-         VS just produced and that other project references that are building in parallel now expect to
-         be there. -->
-		<BuildProjectReferences Condition="'$(BuildProjectReferences)' == '' and ('$(BuildingInsideVisualStudio)' == 'true' or '$(DesignTimeBuild)' == 'true')">false</BuildProjectReferences>
-		<!-- By default we will build (and if applicable, clean) all project references. But this can be used
-         to disable that. -->
-		<BuildProjectReferences Condition="'$(BuildProjectReferences)' == ''">true</BuildProjectReferences>
-	</PropertyGroup>
-
 	<PropertyGroup>
 		<!-- If we're packing on build, just add Pack as a dependency for Build -->
 		<_ShouldPackOnBuild Condition="('$(PackOnBuild)' == 'true' Or Exists('$(PackOnBuildFile)')) And '$(IsPackable)' == 'true'">true</_ShouldPackOnBuild>
@@ -492,8 +349,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PackDependsOn>
 			$(PackDependsOn)
 			GetPackageTargetPath;
-			GetPackageContents;
-			_GenerateReferenceAssemblies;
+			GetPackageContents
 		</PackDependsOn>
 	</PropertyGroup>
 
@@ -518,96 +374,16 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />
 	</Target>
 
-
-	<PropertyGroup>
-		<CleanDependsOn>$(CleanDependsOn);_CleanReferenceAssemblyIntermediateOutputs</CleanDependsOn>
-	</PropertyGroup>
-
-	<Target Name="_GetReferenceAssemblyTargetPaths" Condition=" '@(ReferenceAssemblyFramework)' != '' ">
-		<ItemGroup>
-			<_ReferenceAssemblyProjects Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false'" />
-		</ItemGroup>
-
-		<MSBuild
-				Projects="@(_ReferenceAssemblyProjects)"
-				Targets="GetTargetPathWithTargetPlatformMoniker">
-			<Output TaskParameter="TargetOutputs" ItemName="IntersectionAssembly" />
-		</MSBuild>
-
-		<GetApiIntersectTargetPaths
-				Frameworks="%(ReferenceAssemblyFramework.Identity)"
-				RootOutputDirectory="$(IntermediateOutputPath)"
-				Assemblies="@(IntersectionAssembly)">
-			<Output TaskParameter="TargetPaths" ItemName="_ReferenceAssemblyTargetPath" />
-		</GetApiIntersectTargetPaths>
-
-		<ItemGroup>
-			<PackageFile Include="@(_ReferenceAssemblyTargetPath)">
-				<Kind>Lib</Kind>
-				<TargetFrameworkMoniker>%(_ReferenceAssemblyTargetPath.TargetFrameworkMoniker)</TargetFrameworkMoniker>
-			</PackageFile>
-		</ItemGroup>
-	</Target>
-
-	<Target Name="_GenerateReferenceAssemblies"
-		  DependsOnTargets="_GetReferenceAssemblyTargetPaths"
-		  Condition=" '@(ReferenceAssemblyFramework)' != '' "
-		  Inputs="@(IntersectionAssembly)"
-		  Outputs="@(_ReferenceAssemblyTargetPath)">
-
+	<Target Name="_SetPropertiesFromCapabilities">
 		<PropertyGroup>
-			<EnableDefaultIntersectionAssemblyReferencePath Condition="'$(EnableDefaultIntersectionAssemblyReferencePath)' == ''">true</EnableDefaultIntersectionAssemblyReferencePath>
+			<_AllProjectCapabilities>@(ProjectCapability)</_AllProjectCapabilities>
+			<!-- NOTE: this avoids taking dependencies on targets that are only available when the project supports the concept of project references -->
+			<_SupportsProjectReferences>$(_AllProjectCapabilities.Contains('ProjectReferences'))</_SupportsProjectReferences>
+			<_GetReferencedPackageContentsDependsOn Condition="'$(_SupportsProjectReferences)' == 'true'">AssignProjectConfiguration;_SplitProjectReferencesByFileExistence;_SplitProjectReferencesByIsNuGetized</_GetReferencedPackageContentsDependsOn>
 		</PropertyGroup>
-
-		<ItemGroup>
-			<_IntersectionReferencePath Include="@(IntersectionAssembly->'%(RootDir)%(Directory)')" Condition="'$(EnableDefaultIntersectionAssemblyReferencePath)' == 'true'" />
-			<_IntersectionReferencePath Include="$(IntersectionAssemblyReferencePath)" />
-		</ItemGroup>
-
-		<ApiIntersect
-				Framework="%(ReferenceAssemblyFramework.Identity)"
-				RootOutputDirectory="$(IntermediateOutputPath)"
-				IntersectionAssembly="@(IntersectionAssembly)"
-				ReferencePath="@(_IntersectionReferencePath)"
-				ExcludeType="$(IntersectionExcludeType)"
-				RemoveAbstractTypeMembers="$(IntersectionRemoveAbstractTypeMembers)"
-				ExcludeAssembly="@(IntersectionExcludeAssembly)"
-				KeepInternalConstructors="$(IntersectionKeepInternalConstructors)"
-				KeepMarshalling="$(IntersectionKeepMarshalling)"
-				ToolPath="$(ApiIntersectToolPath)"
-				ToolExe="$(ApiIntersectToolExe)">
-			<Output TaskParameter="OutputDirectory" ItemName="_ReferenceAssemblyBuildInfo" />
-		</ApiIntersect>
-
-		<GenerateAssemblyInfo
-				Assemblies="@(IntersectionAssembly)"
-				OutputDirectories="@(_ReferenceAssemblyBuildInfo->'%(Identity)Contract')">
-			<Output TaskParameter="AssemblyName" PropertyName="_ReferenceAssemblyName" />
-		</GenerateAssemblyInfo>
-
-		<MSBuild
-				Projects="$(MSBuildThisFileDirectory)GenerateReferenceAssembly.csproj"
-				Properties="
-				AssemblyName=$(_ReferenceAssemblyName);
-				SrcDir=%(_ReferenceAssemblyBuildInfo.FullPath);
-				OutputPath=%(_ReferenceAssemblyBuildInfo.FullPath)bin\;
-				IntermediateOutputPath=%(_ReferenceAssemblyBuildInfo.FullPath)obj\;
-				TargetFrameworkVersion=%(_ReferenceAssemblyBuildInfo.TargetFrameworkVersion);
-				TargetFrameworkProfile=%(_ReferenceAssemblyBuildInfo.TargetFrameworkProfile)" />
 	</Target>
 
-	<Target Name="_CleanReferenceAssemblyIntermediateOutputs" Condition=" '@(ReferenceAssemblyFramework)' != '' and Exists('$(IntermediateOutputPath)') ">
-		<PropertyGroup>
-			<_ReferenceAssemblyIntermediateOutputDirectories>$([System.IO.Directory]::GetDirectories('$(IntermediateOutputPath)'))</_ReferenceAssemblyIntermediateOutputDirectories>
-		</PropertyGroup>
-
-		<ItemGroup>
-			<_ReferenceAssemblyIntermediateOutputDirectory Include="$(_ReferenceAssemblyIntermediateOutputDirectories)" />
-		</ItemGroup>
-
-		<RemoveDir Directories="@(_ReferenceAssemblyIntermediateOutputDirectory)" />
-	</Target>
-
+	<Import Project="NuGet.Build.Packaging.ReferenceAssembly.targets" />
 	<Import Project="NuGet.Build.Packaging.Authoring.targets" Condition="'$(IsPackagingProject)' == 'true'" />
 	<Import Project="NuGet.Build.Packaging.CrossTargeting.targets" Condition="'$(IsCrossTargetingBuild)' == 'true' And '$(FromPackagingProject)' == 'true'" />
 </Project>

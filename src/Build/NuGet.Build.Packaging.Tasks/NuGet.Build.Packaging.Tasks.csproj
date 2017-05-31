@@ -32,7 +32,6 @@
     <Content Include="FodyWeavers.xml" />
     <Content Include="NuGet.Build.Packaging.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="NuGet.Build.Packaging.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -48,23 +47,29 @@
     </Content>
     <Content Include="NuGet.Build.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="NuGet.Build.Packaging.Compatibility.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="NuGet.Build.Packaging.Version.props">
+    <Content Include="NuGet.Build.Packaging.ReferenceAssembly.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NuGet.Build.Packaging.Tasks.targets">
-      <SubType>Designer</SubType>
-    </None>
+    </Content>
+    <Content Include="NuGet.Build.Packaging.Legacy.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NuGet.Build.Packaging.Inference.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="NuGet.Build.Packaging.Authoring.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="GenerateReferenceAssembly.csproj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="NuGet.Build.Packaging.Version.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="NuGet.Build.Packaging.Tasks.targets" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj">

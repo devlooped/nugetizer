@@ -1,11 +1,6 @@
 ﻿using System.Linq;
-using System.Reflection;
-using System.Threading;
-using Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace NuGet.Build.Packaging
 {
@@ -55,6 +50,27 @@ namespace NuGet.Build.Packaging
 			{
 				Filename = "b", 
 				Extension = ".dll", 
+				Kind = "Lib",
+			}));
+		}
+
+		[Fact]
+		public void when_include_outputs_in_package_false_then_can_include_referenced_project_outputs()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference),
+				properties: new
+				{
+					IncludeOutputsInPackage = "false",
+					IncludeProjectReferencesInPackage = "true"
+				},
+				output: output);
+
+			result.AssertSuccess(output);
+
+			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			{
+				Filename = "b",
+				Extension = ".dll",
 				Kind = "Lib",
 			}));
 		}

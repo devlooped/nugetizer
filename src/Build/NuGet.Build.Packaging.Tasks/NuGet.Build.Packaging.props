@@ -120,6 +120,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</ItemGroup>
 
 	<Target Name="_GetPackageItemKinds" Returns="@(PackageItemKind)" />
+	<!-- Redefined in Common targets. See PackageOutputGroup target -->
+	<Target Name="AllProjectOutputGroups" />
 
 	<PropertyGroup>
 		<!-- Flag this project as having been "nugetized" -->

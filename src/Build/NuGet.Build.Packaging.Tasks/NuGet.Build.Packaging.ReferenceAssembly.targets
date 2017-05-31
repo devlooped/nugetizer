@@ -1,0 +1,115 @@
+<!--
+***********************************************************************************************
+Microsoft.NuGet.Build.Packaging.ReferenceAssembly.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ApiIntersect" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.GenerateAssemblyInfo" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.GetApiIntersectTargetPaths" AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
+
+	<ItemGroup>
+		<!-- Converts potentially multiple $(ReferenceAssemblyFrameworks) into @(ReferenceAssemblyFramework) -->
+		<ReferenceAssemblyFramework Include="$(ReferenceAssemblyFrameworks)" Condition="'$(ReferenceAssemblyFrameworks)' != ''" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<CleanDependsOn>$(CleanDependsOn);_CleanReferenceAssemblyIntermediateOutputs</CleanDependsOn>
+	</PropertyGroup>
+
+	<Target Name="_GetReferenceAssemblyTargetPaths" 
+			BeforeTargets="GetPackageContents"
+			DependsOnTargets="AssignProjectConfiguration;_SplitProjectReferencesByFileExistence" 
+			Condition="'@(ReferenceAssemblyFramework)' != ''">
+		<ItemGroup>
+			<_ReferenceAssemblyProjects Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false'" />
+		</ItemGroup>
+
+		<MSBuild
+				Projects="@(_ReferenceAssemblyProjects)"
+				Targets="GetTargetPathWithTargetPlatformMoniker">
+			<Output TaskParameter="TargetOutputs" ItemName="IntersectionAssembly" />
+		</MSBuild>
+
+		<GetApiIntersectTargetPaths
+				Frameworks="%(ReferenceAssemblyFramework.Identity)"
+				RootOutputDirectory="$(IntermediateOutputPath)"
+				Assemblies="@(IntersectionAssembly)">
+			<Output TaskParameter="TargetPaths" ItemName="_ReferenceAssemblyTargetPath" />
+		</GetApiIntersectTargetPaths>
+
+		<ItemGroup>
+			<PackageFile Include="@(_ReferenceAssemblyTargetPath)">
+				<Kind>Lib</Kind>
+				<TargetFrameworkMoniker>%(_ReferenceAssemblyTargetPath.TargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</PackageFile>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_GenerateReferenceAssemblies" 
+			BeforeTargets="Pack"
+			DependsOnTargets="_GetReferenceAssemblyTargetPaths"
+			Condition="'@(ReferenceAssemblyFramework)' != ''"
+			Inputs="@(IntersectionAssembly)"
+			Outputs="@(_ReferenceAssemblyTargetPath)">
+
+		<PropertyGroup>
+			<EnableDefaultIntersectionAssemblyReferencePath Condition="'$(EnableDefaultIntersectionAssemblyReferencePath)' == ''">true</EnableDefaultIntersectionAssemblyReferencePath>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_IntersectionReferencePath Include="@(IntersectionAssembly->'%(RootDir)%(Directory)')" Condition="'$(EnableDefaultIntersectionAssemblyReferencePath)' == 'true'" />
+			<_IntersectionReferencePath Include="$(IntersectionAssemblyReferencePath)" />
+		</ItemGroup>
+
+		<ApiIntersect
+				Framework="%(ReferenceAssemblyFramework.Identity)"
+				RootOutputDirectory="$(IntermediateOutputPath)"
+				IntersectionAssembly="@(IntersectionAssembly)"
+				ReferencePath="@(_IntersectionReferencePath)"
+				ExcludeType="$(IntersectionExcludeType)"
+				RemoveAbstractTypeMembers="$(IntersectionRemoveAbstractTypeMembers)"
+				ExcludeAssembly="@(IntersectionExcludeAssembly)"
+				KeepInternalConstructors="$(IntersectionKeepInternalConstructors)"
+				KeepMarshalling="$(IntersectionKeepMarshalling)"
+				ToolPath="$(ApiIntersectToolPath)"
+				ToolExe="$(ApiIntersectToolExe)">
+			<Output TaskParameter="OutputDirectory" ItemName="_ReferenceAssemblyBuildInfo" />
+		</ApiIntersect>
+
+		<GenerateAssemblyInfo
+				Assemblies="@(IntersectionAssembly)"
+				OutputDirectories="@(_ReferenceAssemblyBuildInfo->'%(Identity)Contract')">
+			<Output TaskParameter="AssemblyName" PropertyName="_ReferenceAssemblyName" />
+		</GenerateAssemblyInfo>
+
+		<MSBuild
+				Projects="$(MSBuildThisFileDirectory)GenerateReferenceAssembly.csproj"
+				Properties="
+				AssemblyName=$(_ReferenceAssemblyName);
+				SrcDir=%(_ReferenceAssemblyBuildInfo.FullPath);
+				OutputPath=%(_ReferenceAssemblyBuildInfo.FullPath)bin\;
+				IntermediateOutputPath=%(_ReferenceAssemblyBuildInfo.FullPath)obj\;
+				TargetFrameworkVersion=%(_ReferenceAssemblyBuildInfo.TargetFrameworkVersion);
+				TargetFrameworkProfile=%(_ReferenceAssemblyBuildInfo.TargetFrameworkProfile)" />
+	</Target>
+
+	<Target Name="_CleanReferenceAssemblyIntermediateOutputs" Condition="'@(ReferenceAssemblyFramework)' != '' and Exists('$(IntermediateOutputPath)')">
+		<PropertyGroup>
+			<_ReferenceAssemblyIntermediateOutputDirectories>$([System.IO.Directory]::GetDirectories('$(IntermediateOutputPath)'))</_ReferenceAssemblyIntermediateOutputDirectories>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_ReferenceAssemblyIntermediateOutputDirectory Include="$(_ReferenceAssemblyIntermediateOutputDirectories)" />
+		</ItemGroup>
+
+		<RemoveDir Directories="@(_ReferenceAssemblyIntermediateOutputDirectory)" />
+	</Target>
+
+</Project>

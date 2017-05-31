@@ -1,12 +1,5 @@
-﻿using System.Linq;
-using System.Reflection;
-using System.Threading;
-using Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
-using NuGet.Build.Packaging.Tasks;
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace NuGet.Build.Packaging
 {

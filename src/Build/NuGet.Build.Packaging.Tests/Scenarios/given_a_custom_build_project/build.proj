@@ -13,8 +13,6 @@
 		<PackageVersion>1.0.0</PackageVersion>
 		<Authors>NuGet</Authors>
 		<Description>Package for '$(MSBuildProjectName)' project.</Description>
-		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
-		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageFile Include="Readme.txt" />

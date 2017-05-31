@@ -17,7 +17,7 @@ namespace NuGet.Build.Packaging
 		[Fact]
 		public void when_packing_then_can_include_content()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_custom_build_project));
+			var result = Builder.BuildScenario(nameof(given_a_custom_build_project), output: output);
 
 			result.AssertSuccess(output);
 

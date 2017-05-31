@@ -21,7 +21,7 @@ namespace NuGet.Build.Packaging
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
-				{ "PrimaryOutputPackageFileKind", "build" }
+				{ "PrimaryOutputKind", "build" }
 			}, "14.0");
 
 			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
@@ -32,7 +32,7 @@ namespace NuGet.Build.Packaging
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
-				{ "PrimaryOutputPackageFileKind", "tool" }
+				{ "PrimaryOutputKind", "tool" }
 			}, "14.0");
 
 			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
@@ -43,7 +43,7 @@ namespace NuGet.Build.Packaging
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
-				{ "PrimaryOutputPackageFileKind", "tools" }
+				{ "PrimaryOutputKind", "tools" }
 			}, "14.0");
 
 			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
@@ -54,7 +54,7 @@ namespace NuGet.Build.Packaging
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
-				{ "PrimaryOutputPackageFileKind", "lib" }
+				{ "PrimaryOutputKind", "lib" }
 			}, "14.0");
 
 			Assert.Equal("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
