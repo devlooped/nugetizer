@@ -31,8 +31,21 @@
   <ItemGroup>
     <None Include="NuGet.Build.Packaging.Tests.targets" />
     <Content Include="Scenarios\given_a_custom_build_project\Readme.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\content-copy.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\content-copy-with-include-false.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\content-copy-with-include-true.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\content-copy-with-kind.txt" />
     <Content Include="Scenarios\given_a_library_with_content\content-with-kind.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\content.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\none-copy.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\none-copy-with-include-false.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\none-copy-with-include-true.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\none-copy-with-kind.txt" />
     <Content Include="Scenarios\given_a_library_with_content\none-with-kind.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\relative\content-copy-with-kind.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\relative\content-copy.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\relative\none-copy-with-kind.txt" />
+    <Content Include="Scenarios\given_a_library_with_content\relative\none-copy.txt" />
     <Content Include="Scenarios\given_duplicate_package_files\a.csproj" />
     <Content Include="Scenarios\given_duplicate_package_files\b.csproj" />
     <Content Include="Scenarios\given_duplicate_package_files\content\content.txt" />

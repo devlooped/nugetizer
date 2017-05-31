@@ -6,16 +6,13 @@
 		<TargetFrameworkMoniker>MonoAndroid,Version=v5.1</TargetFrameworkMoniker>
   </PropertyGroup>
 	<ItemGroup>
-		<Content Include="Resources\**\*.*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
+		<Content Include="Resources\**\*.*" />
 		<None Include="contentFiles\cs\monoandroid\sample.cs">
 			<IncludeInPackage>true</IncludeInPackage>
 		</None>
 		<None Include="none.txt" />
     <None Include="none-with-kind.txt">
       <Kind>build</Kind>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="none-with-include-true.txt">
 			<IncludeInPackage>true</IncludeInPackage>
@@ -23,18 +20,61 @@
 		<None Include="none-with-include-false.txt">
 			<IncludeInPackage>false</IncludeInPackage>
 		</None>
-		<Content Include="content-with-include-false.txt">
-			<IncludeInPackage>false</IncludeInPackage>
-		</Content>
-    <Content Include="content-with-kind.txt">
+    <None Include="none-copy.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="none-copy-with-kind.txt">
+      <Kind>build</Kind>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="none-copy-with-include-true.txt">
+      <IncludeInPackage>true</IncludeInPackage>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="none-copy-with-include-false.txt">
+      <IncludeInPackage>false</IncludeInPackage>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="relative\none-copy-with-kind.txt">
       <Kind>build</Kind>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="relative\none-copy.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content.txt" />
+    <Content Include="content-with-kind.txt">
+      <Kind>build</Kind>
+    </Content>
     <Content Include="content-with-include-true.txt">
-			<IncludeInPackage>true</IncludeInPackage>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
+      <IncludeInPackage>true</IncludeInPackage>
+    </Content>
+    <Content Include="content-with-include-false.txt">
+      <IncludeInPackage>false</IncludeInPackage>
+    </Content>
+    <Content Include="content-copy.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content-copy-with-kind.txt">
+      <Kind>build</Kind>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content-copy-with-include-true.txt">
+      <IncludeInPackage>true</IncludeInPackage>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content-copy-with-include-false.txt">
+      <IncludeInPackage>false</IncludeInPackage>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="relative\content-copy-with-kind.txt">
+      <Kind>build</Kind>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="relative\content-copy.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), fakeframework.targets))\fakeframework.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 	<Target Name="RemoveContent" Condition="'$(RemoveContent)' == 'true'" BeforeTargets="GetPackageContents">

@@ -30,9 +30,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- Infer PackageRererence elements from packages.config/project.json files in the project -->
 		<InferLegacyPackageReferences Condition="'$(InferLegacyPackageReferences)' == ''">true</InferLegacyPackageReferences>
-		<!-- Whether to include @(Content) items with CopyToOutputDirectory != 'None' in the package -->
+		<!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
 		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
-		<!-- Whether to include @(None) items with CopyToOutputDirectory != 'None' in the package -->
+		<!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
 		<IncludeNoneInPackage Condition="'$(IncludeNoneInPackage)' == ''">true</IncludeNoneInPackage>
 		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
 		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
@@ -289,15 +289,23 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<!-- NOTE: Content is opt-out (must have IncludeInPackage=false to exclude if IncludeContentInPackage=true) -->
 			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath -> '%(FullPath)') -->
 			<PackageFile Include="@(ContentWithTargetPath->'%(FullPath)')"
-							   Condition="'%(ContentWithTargetPath.IncludeInPackage)' == 'true' or ('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.IncludeInPackage)' != 'false')">
-				<Kind Condition="'%(ContentWithTargetPath.Kind)' == ''">Content</Kind>
+							   Condition="
+									'%(ContentWithTargetPath.IncludeInPackage)' == 'true' or 
+									'%(ContentWithTargetPath.Kind)' != '' or 
+									('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.IncludeInPackage)' != 'false')">
+				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputPackageFileKind)</Kind>
+				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' == ''">Content</Kind>
 			</PackageFile>
 
-			<!-- NOTE: None is also opt-out (must have IncludeInPackage=false to exclude if IncludeNoneInPackage=true) -->
+			<!-- NOTE: None is also opt-out (must have IncludeInPackage=false to exclude if IncludeNoneInPackage=true, but only for those with CopyToOutput) -->
 			<PackageFile Include="@(_NoneWithTargetPath->'%(FullPath)')"
-							   Condition="'%(_NoneWithTargetPath.IncludeInPackage)' == 'true' or ('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.IncludeInPackage)' != 'false')">
-				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == ''">None</Kind>
+							   Condition="
+									'%(_NoneWithTargetPath.IncludeInPackage)' == 'true' or 
+									'%(_NoneWithTargetPath.Kind)' != '' or 
+									('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != '' and '%(_NoneWithTargetPath.IncludeInPackage)' != 'false')">
+				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == '' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputPackageFileKind)</Kind>
 			</PackageFile>
+
 
 			<PackageFile Include="@(PackageReference)" Condition="'%(Identity)' != 'NuGet.Build.Packaging'">
 				<Kind>Dependency</Kind>
