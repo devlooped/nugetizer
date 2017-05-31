@@ -18,6 +18,20 @@
 		<XmlNs>&lt;Namespace Prefix='vs' Uri='http://schemas.microsoft.com/developer/vstemplate/2005'/&gt;</XmlNs>
 	</PropertyGroup>
 
+	<PropertyGroup>
+	  <MarkupCompilePass2ForMainAssemblyDependsOn>
+		ResolveReferences;
+		$(MarkupCompilePass2ForMainAssemblyDependsOn)
+	  </MarkupCompilePass2ForMainAssemblyDependsOn>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<ProjectReference>
+		  <!-- When referencing project has XAML files, the double compilation passes down AssemblyName and breaks transitive refs. -->
+		  <GlobalPropertiesToRemove>AssemblyName</GlobalPropertiesToRemove>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 	<!-- Embeds the NuGetizer package into the VSIX -->
 	<ItemGroup>
 		<Content Include="$(Out)\*.nupkg">

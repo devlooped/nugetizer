@@ -14,25 +14,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)_._" />
   </ItemGroup>
 
-  <Target Name="Dump" DependsOnTargets="GetPackageContents">
-    <Message Importance="high" Text="%(_PackageContent.Filename)%(_PackageContent.Extension)
-	FullPath=%(_PackageContent.FullPath)
+  <Target Name="Report" DependsOnTargets="GetPackageContents">
+    <Message Importance="high" Text="%(_PackageContent.RelativeDir)%(_PackageContent.Filename)%(_PackageContent.Extension)
 	Kind=%(_PackageContent.Kind)
-	PackageId=%(_PackageContent.PackageId)
 	PackagePath=%(_PackageContent.PackagePath)
-	TargetPath=%(_PackageContent.TargetPath)
-	OriginalTargetFramework=%(_PackageContent.OriginalTargetFramework)
-	OriginalTargetFrameworkMoniker=%(_PackageContent.OriginalTargetFrameworkMoniker)
-	TargetFramework=%(_PackageContent.TargetFramework)
-	TargetFrameworkMoniker=%(_PackageContent.TargetFrameworkMoniker)"/>
+	TargetPath=%(_PackageContent.TargetPath)"/>
+  </Target>
 
+  <Target Name="Dump" DependsOnTargets="GetPackageContents">
     <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
-
-    <!--
-	OriginalTargetFramework=%(_PackageContent.OriginalTargetFramework)
-	OriginalTargetFrameworkMoniker=%(_PackageContent.OriginalTargetFrameworkMoniker)
-	-->
-    <!--<DumpItems Items="@(_ReferencedProjectDocumentationDependency)" ItemName="_ReferencedProjectDocumentationDependency" Condition="'%(Extension)' == '.xml'" />-->
   </Target>
 
   <PropertyGroup>

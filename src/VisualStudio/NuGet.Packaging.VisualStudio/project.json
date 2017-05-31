@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
     "Clide": "3.0.107-pre",
-    "GitInfo": "1.1.32",
+    "GitInfo": "1.1.61",
     "Merq": "1.0.0-rc",
     "Microsoft.VisualStudio.Shell.14.0": "14.3.25407",
     "Microsoft.VisualStudio.Shell.Interop.11.0": "11.0.61030",

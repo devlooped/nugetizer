@@ -22,5 +22,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- Packaging project doesn't need resolved nuget package dependencies -->
 		<ResolveNuGetPackages>false</ResolveNuGetPackages>
+
+		<PrimaryOutputFrameworkSpecific>false</PrimaryOutputFrameworkSpecific>
 	</PropertyGroup>
 </Project>
