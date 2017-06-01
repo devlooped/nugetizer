@@ -28,7 +28,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			DependsOnTargets="AssignProjectConfiguration;_SplitProjectReferencesByFileExistence" 
 			Condition="'@(ReferenceAssemblyFramework)' != ''">
 		<ItemGroup>
-			<_ReferenceAssemblyProjects Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false'" />
+			<_ReferenceAssemblyProjects Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.Pack)' != 'false'" />
 		</ItemGroup>
 
 		<MSBuild

@@ -12,11 +12,28 @@ Copyright (c) .NET Foundation. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<!-- This targets is used to adjust renamed properties, items and metadata -->
 
-	<PropertyGroup>
-		<PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">$(PrimaryOutputPackageFileKind)</PrimaryOutputKind>
+	<Target Name="_RenameIncludeInPackageToPack" 
+			BeforeTargets="InferPackageContents"
+			DependsOnTargets="$(InferPackageContentsDependsOn)">
+		<ItemGroup>
+			<!-- From InferPackageContents -->
+			<ContentWithTargetPath Condition="'%(ContentWithTargetPath.IncludeInPackage)' != ''">
+				<Pack>%(ContentWithTargetPath.IncludeInPackage)</Pack>
+			</ContentWithTargetPath>
+			<_NoneWithTargetPath Condition="'%(_NoneWithTargetPath.IncludeInPackage)' != ''">
+				<Pack>%(_NoneWithTargetPath.IncludeInPackage)</Pack>
+			</_NoneWithTargetPath>
+		</ItemGroup>
+	</Target>
 
-		<!-- Previously, $(IncludeOutputsInPackage) == false disabled inclusion of project references -->
-		<IncludeProjectReferencesInPackage Condition="'$(IncludeProjectReferencesInPackage)' == ''">$(IncludeOutputsInPackage)</IncludeProjectReferencesInPackage>
-	</PropertyGroup>
+	<Target Name="_RenameIncludeInPackageToPackReferences"
+			BeforeTargets="AssignProjectConfiguration">
+		<ItemGroup>
+			<!-- From _GetReferencedPackageContents and _GetReferenceAssemblyTargetPaths -->
+			<ProjectReference Condition="'%(ProjectReference.IncludeInPackage)' != ''">
+				<Pack>%(ProjectReference.IncludeInPackage)</Pack>
+			</ProjectReference>
+		</ItemGroup>
+	</Target>
 
 </Project>

@@ -87,23 +87,23 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
 			</_InferredPackageFile>
 
-			<!-- NOTE: Content is opt-out (must have IncludeInPackage=false to exclude if IncludeContentInPackage=true) -->
+			<!-- NOTE: Content is opt-out (must have Pack=false to exclude if IncludeContentInPackage=true) -->
 			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath -> '%(FullPath)') -->
 			<_InferredPackageFile Include="@(ContentWithTargetPath->'%(FullPath)')"
 							   Condition="
-									'%(ContentWithTargetPath.IncludeInPackage)' == 'true' or 
+									'%(ContentWithTargetPath.Pack)' == 'true' or 
 									'%(ContentWithTargetPath.Kind)' != '' or 
-									('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.IncludeInPackage)' != 'false')">
+									('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.Pack)' != 'false')">
 				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputKind)</Kind>
 				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' == ''">Content</Kind>
 			</_InferredPackageFile>
 
-			<!-- NOTE: None is also opt-out (must have IncludeInPackage=false to exclude if IncludeNoneInPackage=true, but only for those with CopyToOutput) -->
+			<!-- NOTE: None is also opt-out (must have Pack=false to exclude if IncludeNoneInPackage=true, but only for those with CopyToOutput) -->
 			<_InferredPackageFile Include="@(_NoneWithTargetPath->'%(FullPath)')"
 							   Condition="
-									'%(_NoneWithTargetPath.IncludeInPackage)' == 'true' or 
+									'%(_NoneWithTargetPath.Pack)' == 'true' or 
 									'%(_NoneWithTargetPath.Kind)' != '' or 
-									('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != '' and '%(_NoneWithTargetPath.IncludeInPackage)' != 'false')">
+									('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != '' and '%(_NoneWithTargetPath.Pack)' != 'false')">
 				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == '' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputKind)</Kind>
 			</_InferredPackageFile>
 

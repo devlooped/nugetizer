@@ -15,8 +15,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 	<Import Project="NuGet.Build.Packaging.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
 	<!-- Adds compatibility targets with Pack SDK -->
-	<Import Project="NuGet.Build.Packaging.Compatibility.targets" />
-	<Import Project="NuGet.Build.Packaging.Legacy.targets" />
+	<Import Project="NuGet.Build.Packaging.Compatibility.props" />
+	<Import Project="NuGet.Build.Packaging.Legacy.props" />
 
 	<PropertyGroup>
 		<!-- Whether include referenced projects' contents the package -->
@@ -313,10 +313,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 			  Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
 
 		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
-					 Targets="GetTargetPathWithTargetPlatformMoniker"
-					 BuildInParallel="$(BuildInParallel)"
-					 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
-					 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+				 Targets="GetTargetPathWithTargetPlatformMoniker"
+				 BuildInParallel="$(BuildInParallel)"
+				 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
+				 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectTargetPath" />
 		</MSBuild>
 
@@ -326,11 +326,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<ItemGroup>
 			<!-- We will fail for this first group: project references that aren't excluded from packaging, yet haven't been nugetized -->
-			<_NonNuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)"
-												 Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false' and '$(_IsNuGetized)' != 'true'" />
+			<_NonNuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.Pack)' != 'false' and '$(_IsNuGetized)' != 'true'" />
 			<!-- We will only process for packaging the project references that haven't been excluded from packaging and are nugetized -->
-			<_NuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)"
-											  Condition="'%(_MSBuildProjectReferenceExistent.IncludeInPackage)' != 'false' and '$(_IsNuGetized)' == 'true'" />
+			<_NuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" Condition="'%(_MSBuildProjectReferenceExistent.Pack)' != 'false' and '$(_IsNuGetized)' == 'true'" />
 		</ItemGroup>
 
 	</Target>
@@ -379,11 +377,17 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<_AllProjectCapabilities>@(ProjectCapability)</_AllProjectCapabilities>
 			<!-- NOTE: this avoids taking dependencies on targets that are only available when the project supports the concept of project references -->
 			<_SupportsProjectReferences>$(_AllProjectCapabilities.Contains('ProjectReferences'))</_SupportsProjectReferences>
-			<_GetReferencedPackageContentsDependsOn Condition="'$(_SupportsProjectReferences)' == 'true'">AssignProjectConfiguration;_SplitProjectReferencesByFileExistence;_SplitProjectReferencesByIsNuGetized</_GetReferencedPackageContentsDependsOn>
+			<_GetReferencedPackageContentsDependsOn Condition="'$(_SupportsProjectReferences)' == 'true'">
+				$(_GetReferencedPackageContentsDependsOn);
+				AssignProjectConfiguration;
+				_SplitProjectReferencesByFileExistence;
+				_SplitProjectReferencesByIsNuGetized
+			</_GetReferencedPackageContentsDependsOn>
 		</PropertyGroup>
 	</Target>
 
 	<Import Project="NuGet.Build.Packaging.ReferenceAssembly.targets" />
 	<Import Project="NuGet.Build.Packaging.Authoring.targets" Condition="'$(IsPackagingProject)' == 'true'" />
 	<Import Project="NuGet.Build.Packaging.CrossTargeting.targets" Condition="'$(IsCrossTargetingBuild)' == 'true' And '$(FromPackagingProject)' == 'true'" />
+	<Import Project="NuGet.Build.Packaging.Legacy.targets" />
 </Project>
