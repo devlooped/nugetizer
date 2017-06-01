@@ -14,6 +14,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<PackOnBuild Condition="'$(GeneratePackageOnBuild)' == 'true'">true</PackOnBuild>
 		<PrimaryOutputKind Condition="'$(IsTool)' == 'true'">tool</PrimaryOutputKind>
+		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeSymbols)' != ''">$(IncludeSymbols)</IncludeSymbolsInPackage>
 	</PropertyGroup>
 
 </Project>
