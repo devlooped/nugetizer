@@ -53,7 +53,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</PropertyGroup>
 
 		<ItemGroup>
-			<_InferredPackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+			<_InferredPackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)');@(BuiltProjectOutputGroupKeyOutput -> '%(FinalOutputPath)')"
 							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute primary output -->
 				<Kind>$(PrimaryOutputKind)</Kind>
@@ -154,7 +154,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
 				current project.
 			-->
-			<PackageFile Include="@(_InferredPackageFile)">
+			<PackageFile Include="@(_InferredPackageFile -> Distinct())">
 				<Source>Implicit</Source>
 				<PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
 				<Platform>$(Platform)</Platform>
