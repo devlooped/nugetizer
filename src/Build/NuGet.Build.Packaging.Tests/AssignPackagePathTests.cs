@@ -280,6 +280,63 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_content_file_has_link_then_package_path_is_relative_to_link()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem(@"..\..\readme.txt", new Metadata
+					{
+						{ "Link", @"docs\readme.txt" },
+						{ "PackageId", "A" },
+						{ "Kind", "Content" },
+						{ "TargetFramework", "any" },
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				TargetPath = @"docs\readme.txt",
+				PackagePath = @"contentFiles\any\any\docs\readme.txt",
+			}));
+		}
+
+		[Fact]
+		public void when_none_file_has_link_then_package_path_is_relative_to_link()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem(@"..\..\readme.txt", new Metadata
+					{
+						{ "Link", @"docs\readme.txt" },
+						{ "PackageId", "A" },
+						{ "Kind", "None" },
+						{ "TargetFramework", "any" },
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				TargetPath = @"docs\readme.txt",
+				PackagePath = @"docs\readme.txt",
+			}));
+		}
+
+
+		[Fact]
 		public void when_content_is_not_framework_specific_then_has_any_lang_and_tfm()
 		{
 			var task = new AssignPackagePath

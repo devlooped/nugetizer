@@ -74,6 +74,22 @@ namespace NuGet.Build.Packaging
 			Assert.DoesNotContain(result.Items, item => item.GetMetadata("PackagePath").StartsWith("contentFiles"));
 		}
 
+		[Fact]
+		public void linked_package_file_has_relative_package_path()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage"
+			});
+
+			result.AssertSuccess(output);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"docs\Readme.txt",
+			}));
+		}
+
 		#region Content scenarios
 
 		[Fact]

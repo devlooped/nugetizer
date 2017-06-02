@@ -6,6 +6,9 @@
 		<TargetFrameworkMoniker>MonoAndroid,Version=v5.1</TargetFrameworkMoniker>
   </PropertyGroup>
 	<ItemGroup>
+    <PackageFile Include="..\given_a_custom_build_project\Readme.txt">
+      <Link>docs\Readme.txt</Link>
+    </PackageFile>
     <Content Include="quickstart\cs-any.txt">
       <CodeLanguage>cs</CodeLanguage>
       <TargetFramework>any</TargetFramework>

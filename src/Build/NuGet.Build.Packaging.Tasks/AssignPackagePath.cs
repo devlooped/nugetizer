@@ -147,6 +147,10 @@ namespace NuGet.Build.Packaging.Tasks
 			}
 
 			var targetPath = file.GetMetadata("TargetPath");
+			// Linked files already have the desired target path specified by the user
+			if (string.IsNullOrEmpty(targetPath))
+				targetPath = file.GetMetadata("Link");
+
 			// NOTE: TargetPath allows a framework-specific file to still specify its relative 
 			// location without hardcoding the target framework (useful for multi-targetting and 
 			// P2P references).
@@ -165,6 +169,9 @@ namespace NuGet.Build.Packaging.Tasks
 				// Avoid duplicating already determined package folder in package path later on.
 				targetPath = targetPath.Substring(packageFolder.Length + 1);
 			}
+
+			// At this point we have the correct calculated target path, so persist it for inspection if necessary.
+			output.SetMetadata("TargetPath", targetPath);
 
 			// If we have no known package folder, files go to their RelativeDir location.
 			// This allows custom packaging paths such as "workbooks", "docs" or whatever, which aren't prohibited by 
