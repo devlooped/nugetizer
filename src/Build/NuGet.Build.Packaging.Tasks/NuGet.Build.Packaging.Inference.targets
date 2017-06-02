@@ -19,8 +19,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- The Kind of primary output (build, symbols and doc) set if IncludeOutputsInPackage = true -->
 		<PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Lib</PrimaryOutputKind>
-		<!-- Optionally can tweak whether the primary output is TF-specific or not. -->
-		<PrimaryOutputFrameworkSpecific Condition="'$(PrimaryOutputKind)' == ''">true</PrimaryOutputFrameworkSpecific>
 
 		<!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
 		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
