@@ -8,8 +8,6 @@
     <OutputType>Exe</OutputType>
     <TargetExt>.dll</TargetExt>
     <StartupObject>NuGet.Build.Packaging.Program</StartupObject>
-    <PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
-    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\..\out</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -30,48 +28,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
-    <Content Include="NuGet.Build.Packaging.props">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.CrossTargeting.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="MSBuild\Imports\Microsoft.Common.Props\ImportBefore\Microsoft.NuGet.Packaging.ImportBefore.props">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="MSBuild\Microsoft.Common.Targets\ImportAfter\Microsoft.NuGet.Packaging.ImportAfter.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.Authoring.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.Compatibility.props">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.ReferenceAssembly.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.Legacy.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.Inference.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.Authoring.props">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GenerateReferenceAssembly.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NuGet.Build.Packaging.Legacy.props">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="NuGet.Build.Packaging.Version.props">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content Include="NuGet.Build.Packaging.props" />
+    <Content Include="NuGet.Build.Packaging.targets" />
+    <Content Include="NuGet.Build.Packaging.CrossTargeting.targets" />
+    <Content Include="MSBuild\Imports\Microsoft.Common.Props\ImportBefore\Microsoft.NuGet.Packaging.ImportBefore.props" />
+    <Content Include="MSBuild\Microsoft.Common.Targets\ImportAfter\Microsoft.NuGet.Packaging.ImportAfter.targets" />
+    <Content Include="NuGet.Build.Packaging.Authoring.targets" />
+    <Content Include="NuGet.Build.Packaging.Compatibility.props" />
+    <Content Include="NuGet.Build.Packaging.ReferenceAssembly.targets" />
+    <Content Include="NuGet.Build.Packaging.Legacy.targets" />
+    <Content Include="NuGet.Build.Packaging.Inference.targets" />
+    <Content Include="NuGet.Build.Packaging.Authoring.props" />
+    <Content Include="GenerateReferenceAssembly.csproj" />
+    <Content Include="NuGet.Build.Packaging.Legacy.props" />
+    <Content Include="NuGet.Build.Packaging.Version.props" />
     <None Include="NuGet.Build.Packaging.Tasks.targets" />
   </ItemGroup>
   <ItemGroup>

@@ -184,6 +184,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<GetPackageContentsDependsOn>
 			$(GetPackageContentsDependsOn);
+			CopyFilesToOutputDirectory;
 			GetPackageTargetPath
 		</GetPackageContentsDependsOn>
 		<GetPackageContentsDependsOn Condition="'$(IncludeProjectReferencesInPackage)' == 'true'">

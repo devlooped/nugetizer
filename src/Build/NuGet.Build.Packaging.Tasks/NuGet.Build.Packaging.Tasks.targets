@@ -3,39 +3,29 @@
 	<ItemGroup>
 		<ThisAssemblyProjectProperty Include="PackageId" />
 	</ItemGroup>
-	
+
+	<ItemDefinitionGroup>
+		<Content>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Pack>true</Pack>
+		</Content>
+	</ItemDefinitionGroup>
+
 	<PropertyGroup>
 		<PackageId>NuGet.Build.Packaging</PackageId>
-		<Authors>Microsoft</Authors>
-		<Owners>Microsoft</Owners>
-		<Copyright>&#169; .NET Foundation. All rights reserved.</Copyright>
 		<Title>NuGetizer-3000</Title>
 		<Description>NuGet Packaging Targets</Description>
-		<NeutralLanguage>en</NeutralLanguage>
 		<IsDevelopmentDependency>true</IsDevelopmentDependency>
-		<PackageLicenseUrl>https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt</PackageLicenseUrl>
-		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
+		<PrimaryOutputKind>build</PrimaryOutputKind>
 
-		<InferLegacyPackageReferences>false</InferLegacyPackageReferences>
-		<IncludeContentInPackage>false</IncludeContentInPackage>
-		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
-		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
-		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
+		<PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
+		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\..\out</PackageOutputPath>
 	</PropertyGroup>
 
-  <Import Project="$(OutputPath)NuGet.Build.Packaging.targets" 
-			Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
-	
+	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets"
+			  Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
+
 	<Target Name="AddBuiltOutput" BeforeTargets="GetPackageContents" DependsOnTargets="AllProjectOutputGroups" Returns="@(PackageFile)">
-		<!-- Update packaging version targets -->
-		<PropertyGroup>
-			<XmlNs>&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;</XmlNs>
-		</PropertyGroup>
-		<XmlPoke Namespaces="$(XmlNs)"
-				 XmlInputPath="$(OutputPath)NuGet.Build.Packaging.Version.props"
-				 Query="/msb:Project/msb:PropertyGroup/msb:PackagingTargetsVersion"
-				 Value="$(PackageVersion)"/>
-		
 		<ItemGroup>
 			<PackageFile Include="$(OutputPath)ApiIntersect.exe">
 				<PackagePath>build\ApiIntersect.exe</PackagePath>
@@ -58,19 +48,18 @@
 			<PackageFile Include="$(OutputPath)Mono.Options.dll">
 				<PackagePath>build\Mono.Options.dll</PackagePath>
 			</PackageFile>
-			<PackageFile Include="$(OutputPath)NuGet.Build.Packaging.Version.props">
-				<PackagePath>build\NuGet.Build.Packaging.Version.props</PackagePath>
-			</PackageFile>
-			<PackageFile Include="@(ContentWithTargetPath)">
-				<PackagePath>build\%(ContentWithTargetPath.TargetPath)</PackagePath>
-			</PackageFile>
-			<PackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)')">
-				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
-			</PackageFile>
-			<PackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')">
-				<PackagePath>build\%(Filename)%(Extension)</PackagePath>
-			</PackageFile>
 		</ItemGroup>
+	</Target>
+
+	<Target Name="UpdatePackagingVersion" BeforeTargets="Pack">
+		<!-- Update packaging version targets -->
+		<PropertyGroup>
+			<XmlNs>&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;</XmlNs>
+		</PropertyGroup>
+		<XmlPoke Namespaces="$(XmlNs)"
+				 XmlInputPath="$(OutputPath)NuGet.Build.Packaging.Version.props"
+				 Query="/msb:Project/msb:PropertyGroup/msb:PackagingTargetsVersion"
+				 Value="$(PackageVersion)"/>
 	</Target>
 
 	<PropertyGroup>
@@ -89,8 +78,8 @@
 
 	<Target Name="GeneratePackageItemKind" Inputs="$(MSBuildThisFileFullPath);NuGet.Build.Packaging.props" Outputs="$(PackageItemKindFile)">
 		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
-    <MSBuild Projects="NuGet.Build.Packaging.props" Targets="_GetPackageItemKinds">
-      <Output ItemName="_PackageItemKind" TaskParameter="TargetOutputs" />
+		<MSBuild Projects="NuGet.Build.Packaging.props" Targets="_GetPackageItemKinds">
+			<Output ItemName="_PackageItemKind" TaskParameter="TargetOutputs" />
 		</MSBuild>
 
 		<WriteLinesToFile Lines='
@@ -115,5 +104,5 @@ namespace $(RootNamespace)
 			<FileWrites Include="$(PackageItemKindFile)" />
 		</ItemGroup>
 	</Target>
-	
+
 </Project>
