@@ -1,7 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties">
 
-    <ItemType Name="None"
+	<ItemType Name="PackageFile"
+              DisplayName="Package File" />
+
+	<ContentType Name="PackageFile"
+                 DisplayName="Package File"
+                 ItemType="PackageFile">
+	</ContentType>
+
+	<ItemType Name="None"
               DisplayName="None" />
 
     <ItemType Name="Content"

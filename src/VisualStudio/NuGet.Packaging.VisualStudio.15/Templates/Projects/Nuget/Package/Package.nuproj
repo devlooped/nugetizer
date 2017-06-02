@@ -29,10 +29,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
 
 	<ItemGroup>
-		<None Include="Readme.txt">
-			<IncludeInPackage>true</IncludeInPackage>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+		<PackageFile Include="Readme.txt" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

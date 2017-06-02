@@ -35,6 +35,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
     <PropertyPageSchema Include="
+							$(ProjectSystemRulesDir)PackageFile.xaml;
 							$(ProjectSystemRulesDir)folder.xaml;
 							$(ProjectSystemRulesDir)none.xaml;
 							$(ProjectSystemRulesDir)content.xaml">
