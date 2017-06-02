@@ -117,38 +117,62 @@ namespace NuGet.Build.Packaging.Tasks
 			// Special case for contentFiles, since they can also provide a codeLanguage metadata
 			if (packageFolder == PackagingConstants.Folders.ContentFiles)
 			{
-				/// See https://docs.nuget.org/create/nuspec-reference#contentfiles-with-visual-studio-2015-update-1-and-later
+				if (file.GetMetadata("TargetPath").StartsWith(packageFolder, StringComparison.OrdinalIgnoreCase))
+				{
+					Log.LogErrorCode(nameof(ErrorCode.NG0013), ErrorCode.NG0013(file.GetMetadata("TargetPath")));
+					// We return the file anyway, since the task result will still be false.
+					return file;
+				}
+
+				// See https://docs.nuget.org/create/nuspec-reference#contentfiles-with-visual-studio-2015-update-1-and-later
 				var codeLanguage = file.GetMetadata(MetadataName.ContentFile.CodeLanguage);
 				if (string.IsNullOrEmpty(codeLanguage))
+				{
 					codeLanguage = PackagingConstants.AnyFramework;
+					output.SetMetadata(MetadataName.ContentFile.CodeLanguage, codeLanguage);
+				}
 
 				packageFolder = Path.Combine(packageFolder, codeLanguage);
 
 				// And they also cannot have an empty framework, at most, it will be "any"
 				if (string.IsNullOrEmpty(targetFramework))
 					targetFramework = PackagingConstants.AnyFramework;
+
+				// Once TF is defaulted, a content file is actually always framework-specific, 
+				// although the framework may be 'any'.
+				frameworkSpecific = true;
+
+				// At this point we have the correct target framework for a content file, so persist it.
+				output.SetMetadata(MetadataName.TargetFramework, targetFramework);
 			}
 
+			var targetPath = file.GetMetadata("TargetPath");
 			// NOTE: TargetPath allows a framework-specific file to still specify its relative 
 			// location without hardcoding the target framework (useful for multi-targetting and 
-			// P2P references)
-			var targetPath = file.GetMetadata("TargetPath");
+			// P2P references).
 			if (string.IsNullOrEmpty(targetPath))
 			{
-				targetPath = kind == PackageItemKind.None ? 
-					// For None, preserve the relative dir. 
-					file.GetMetadata("RelativeDir") + file.GetMetadata("FileName") + file.GetMetadata("Extension") :
+				targetPath = string.IsNullOrEmpty(packageFolder) ?
+					Path.Combine(file.GetMetadata("RelativeDir"), file.GetMetadata("FileName") + file.GetMetadata("Extension")) :
+					// Well-known folders only get root-level files by default. Can be overriden with PackagePath or TargetPath 
+					// explicitly, of course
 					file.GetMetadata("FileName") + file.GetMetadata("Extension");
 			}
 
-			// None files or those for which we know no mapping, go straight to the root folder of the package, 
-			// respecting their RelativeDir.
+			if (!string.IsNullOrEmpty(packageFolder) && 
+				targetPath.StartsWith(packageFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+			{
+				// Avoid duplicating already determined package folder in package path later on.
+				targetPath = targetPath.Substring(packageFolder.Length + 1);
+			}
+
+			// If we have no known package folder, files go to their RelativeDir location.
 			// This allows custom packaging paths such as "workbooks", "docs" or whatever, which aren't prohibited by 
 			// the format.
 			var packagePath = string.IsNullOrEmpty(packageFolder) ?
 				// File goes to the determined target path (or the root of the package), such as a readme.txt
 				targetPath :
-				frameworkSpecific ? 
+				frameworkSpecific ?
 					// Otherwise, it goes to a framework-specific folder.
 					Path.Combine(new[] { packageFolder, targetFramework }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray()) :
 					// Except if frameworkSpecific is false, such as for build, tools, runtimes

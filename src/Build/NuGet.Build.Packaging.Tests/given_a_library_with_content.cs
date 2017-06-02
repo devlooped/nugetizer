@@ -1,4 +1,7 @@
-﻿using Xunit;
+﻿using System.Linq;
+using Microsoft.Build.Execution;
+using NuGet.Build.Packaging.Properties;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
@@ -74,6 +77,34 @@ namespace NuGet.Build.Packaging
 		#region Content scenarios
 
 		[Fact]
+		public void content_no_copy_with_relativedir_can_specify_lang_tfm_metadata()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage"
+			});
+
+			result.AssertSuccess(output);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"contentFiles\any\any\quickstart\any-any.txt",
+			}));
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"contentFiles\cs\any\quickstart\cs-any.txt",
+			}));
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"contentFiles\fs\monoandroid51\quickstart\fs-tfm.txt",
+			}));
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"contentFiles\any\any\quickstart\any-non-tfm.txt",
+			}));
+		}
+
+		[Fact]
 		public void content_no_copy_is_content_files_anylang_tfm_specific()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
@@ -87,6 +118,20 @@ namespace NuGet.Build.Packaging
 			{
 				PackagePath = @"contentFiles\any\monoandroid51\Resources\drawable-hdpi\Icon.png",
 			}));
+		}
+
+		[Fact]
+		public void content_no_copy_with_contentFiles_dir_fails()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage",
+				// Includes "contentFiles\cs\monoandroid\content.cs" which fails
+				IncludeContentWithReservedRelativeDir = "true"
+			});
+
+			Assert.Equal(TargetResultCode.Failure, result.ResultCode);
+			Assert.True(result.Logger.Errors.Any(e => e.Code == nameof(Strings.ErrorCode.NG0013)));
 		}
 
 		[Fact]
@@ -273,6 +318,22 @@ namespace NuGet.Build.Packaging
 		#region None scenarios
 
 		[Fact]
+		public void none_no_copy_is_specified_relative_path()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage"
+			});
+
+			result.AssertSuccess(output);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				PackagePath = @"contentFiles\cs\monoandroid\none.cs",
+			}));
+		}
+
+		[Fact]
 		public void none_no_copy_is_not_included()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
@@ -341,7 +402,8 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
-				PackageId = "ContentPackage"
+				PackageId = "ContentPackage",
+				IncludeNoneInPackage = "true",
 			});
 
 			result.AssertSuccess(output);
@@ -380,7 +442,7 @@ namespace NuGet.Build.Packaging
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"contentFiles\any\monoandroid51\content-with-include-true.txt",
+				PackagePath = @"none-with-include-true.txt",
 			}));
 		}
 
@@ -418,7 +480,7 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
-		public void none_no_kind_neither_include_in_package_is_not_included_by_default()
+		public void none_no_kind_is_included__as_none()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
@@ -428,7 +490,7 @@ namespace NuGet.Build.Packaging
 
 			result.AssertSuccess(output);
 
-			Assert.DoesNotContain(result.Items, item => item.Matches(new
+			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				TargetPath = @"none.txt",
 			}));

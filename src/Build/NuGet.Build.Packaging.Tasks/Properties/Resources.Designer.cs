@@ -86,5 +86,14 @@ namespace NuGet.Build.Packaging.Properties {
                 return ResourceManager.GetString("ErrorCode_NG0012", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content files cannot specify the reserved &apos;contentFiles&apos; relative directory. Please use the &apos;CodeLanguage&apos; and &apos;TargetFramework&apos; item metadata for &apos;{0}&apos; to control its relative path within &apos;contentFiles&apos;..
+        /// </summary>
+        public static string ErrorCode_NG0013 {
+            get {
+                return ResourceManager.GetString("ErrorCode_NG0013", resourceCulture);
+            }
+        }
     }
 }

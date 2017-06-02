@@ -47,6 +47,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ItemGroup>
 			<PackageFile Include="@(_ReferenceAssemblyTargetPath)">
 				<Kind>Lib</Kind>
+				<Source>Implicit</Source>
 				<TargetFrameworkMoniker>%(_ReferenceAssemblyTargetPath.TargetFrameworkMoniker)</TargetFrameworkMoniker>
 			</PackageFile>
 		</ItemGroup>

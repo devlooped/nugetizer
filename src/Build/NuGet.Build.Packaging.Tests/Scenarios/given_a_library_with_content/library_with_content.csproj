@@ -6,11 +6,27 @@
 		<TargetFrameworkMoniker>MonoAndroid,Version=v5.1</TargetFrameworkMoniker>
   </PropertyGroup>
 	<ItemGroup>
-		<Content Include="Resources\**\*.*" />
-		<None Include="contentFiles\cs\monoandroid\sample.cs">
-			<IncludeInPackage>true</IncludeInPackage>
+    <Content Include="quickstart\cs-any.txt">
+      <CodeLanguage>cs</CodeLanguage>
+      <TargetFramework>any</TargetFramework>
+    </Content>
+    <Content Include="quickstart\fs-tfm.txt">
+      <CodeLanguage>fs</CodeLanguage>
+    </Content>
+    <Content Include="quickstart\any-any.txt">
+      <TargetFramework>any</TargetFramework>
+      <TargetFramework>any</TargetFramework>
+    </Content>
+    <Content Include="quickstart\any-non-tfm.txt">
+      <FrameworkSpecific>false</FrameworkSpecific>
+    </Content>
+    <Content Include="Resources\**\*.*" />
+		<None Include="contentFiles\cs\monoandroid\none.cs">
+			<Pack>true</Pack>
 		</None>
-		<None Include="none.txt" />
+    <Content Include="contentFiles\cs\monoandroid\content.cs" Condition="'$(IncludeContentWithReservedRelativeDir)' == 'true'" />
+    <Content Include="cs\any\any-content.cs" />
+    <None Include="none.txt" />
     <None Include="none-with-kind.txt">
       <Kind>build</Kind>
     </None>

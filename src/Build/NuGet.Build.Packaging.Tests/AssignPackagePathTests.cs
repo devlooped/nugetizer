@@ -10,6 +10,7 @@ using NuGet.Build.Packaging.Tasks;
 using static NuGet.Build.Packaging.Properties.Strings;
 using Metadata = System.Collections.Generic.Dictionary<string, string>;
 using System;
+using NuGet.Build.Packaging.Properties;
 
 namespace NuGet.Build.Packaging
 {
@@ -278,6 +279,34 @@ namespace NuGet.Build.Packaging
 			}));
 		}
 
+		[Fact]
+		public void when_content_is_not_framework_specific_then_has_any_lang_and_tfm()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem("readme.txt", new Metadata
+					{
+						{ "PackageId", "A" },
+						{ "Kind", "Content" },
+						{ "FrameworkSpecific", "false" },
+						{ "TargetFrameworkMoniker", "MonoAndroid,Version=v2.5" },
+					})
+				}
+			};
+
+			Assert.True(task.Execute());
+
+			Assert.Contains(task.AssignedFiles, item => item.Matches(new
+			{
+				CodeLanguage = "any",
+				TargetFramework = "any",
+				PackagePath = @"contentFiles\any\any\readme.txt"
+			}));
+		}
 
 		// TODO: these all end up in all lowercase, but MonoAndroid, Xamarin.iOS are usually properly 
 		// cased in nupkgs out in the wild (i.e. Rx)
@@ -440,6 +469,28 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_assigning_content_file_with_reserved_dir_then_fails()
+		{
+			var task = new AssignPackagePath
+			{
+				BuildEngine = engine,
+				Kinds = kinds,
+				Files = new ITaskItem[]
+				{
+					new TaskItem(@"contentFiles\cs\monodroid\content.cs", new Metadata
+					{
+						{ "PackageId", "A" },
+						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+						{ "TargetPath", @"contentFiles\cs\monodroid\content.cs" },
+						{ "Kind", "Content" },
+					})
+				}
+			};
+
+			Assert.False(task.Execute());
+			Assert.True(engine.LoggedErrorEvents.Any(e => e.Code == nameof(Strings.ErrorCode.NG0013)));
+		}
+
 		public void when_assigning_content_file_with_additional_metadata_then_preserves_metadata()
 		{
 			var task = new AssignPackagePath

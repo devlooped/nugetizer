@@ -25,7 +25,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
 		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
 		<!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
-		<IncludeNoneInPackage Condition="'$(IncludeNoneInPackage)' == ''">true</IncludeNoneInPackage>
+		<IncludeNoneInPackage Condition="'$(IncludeNoneInPackage)' == ''">false</IncludeNoneInPackage>
 		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
 		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
 		<!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
@@ -88,7 +88,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_InferredPackageFile>
 
 			<!-- NOTE: Content is opt-out (must have Pack=false to exclude if IncludeContentInPackage=true) -->
-			<!-- @ContentFilesProjectOutputGroupOutput = @(ContentWithTargetPath -> '%(FullPath)') -->
 			<_InferredPackageFile Include="@(ContentWithTargetPath->'%(FullPath)')"
 							   Condition="
 									'%(ContentWithTargetPath.Pack)' == 'true' or 
@@ -98,13 +97,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' == ''">Content</Kind>
 			</_InferredPackageFile>
 
-			<!-- NOTE: None is also opt-out (must have Pack=false to exclude if IncludeNoneInPackage=true, but only for those with CopyToOutput) -->
+			<!-- NOTE: None is also opt-out (must have Pack=false to exclude if IncludeNoneInPackage=true, but this property defaults to false) -->
 			<_InferredPackageFile Include="@(_NoneWithTargetPath->'%(FullPath)')"
 							   Condition="
 									'%(_NoneWithTargetPath.Pack)' == 'true' or 
 									'%(_NoneWithTargetPath.Kind)' != '' or 
-									('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != '' and '%(_NoneWithTargetPath.Pack)' != 'false')">
+									('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.Pack)' != 'false')">
 				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == '' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputKind)</Kind>
+				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == '' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' == ''">None</Kind>
 			</_InferredPackageFile>
 
 			<_InferredPackageFile Include="@(PackageReference)" Condition="'%(Identity)' != 'NuGet.Build.Packaging'">

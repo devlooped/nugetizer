@@ -26,6 +26,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<ApiIntersectToolExe Condition=" '$(ApiIntersectToolExe)' == '' ">ApiIntersect.exe</ApiIntersectToolExe>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<AvailableItemName Include="PackageFile" />
+	</ItemGroup>
+
 	<ItemDefinitionGroup>
 		<PackageFile>
 			<!-- See @(PackageItemKind) below -->

@@ -48,9 +48,9 @@
     <Content Include="NuGet.Build.Packaging.Authoring.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="NuGet.Build.Packaging.Compatibility.props">
+    <Content Include="NuGet.Build.Packaging.Compatibility.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <Content Include="NuGet.Build.Packaging.ReferenceAssembly.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
