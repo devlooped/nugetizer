@@ -88,24 +88,52 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_InferredPackageFile>
 
 			<!-- NOTE: Content is opt-out (must have Pack=false to exclude if IncludeContentInPackage=true) -->
+			<!-- Stuff that is copied to output should be included from that output location -->
+			<_InferredPackageFile Include="@(ContentWithTargetPath->'$(OutputPath)%(TargetPath)')"
+							   Condition="
+									'%(ContentWithTargetPath.CopyToOutputDirectory)' != '' and
+									(
+										'%(ContentWithTargetPath.Pack)' == 'true' or 
+										'%(ContentWithTargetPath.Kind)' != '' or 
+										('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.Pack)' != 'false')
+									)">
+				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputKind)</Kind>
+			</_InferredPackageFile>
+			<!-- Otherwise, include from source location -->
 			<_InferredPackageFile Include="@(ContentWithTargetPath->'%(FullPath)')"
 							   Condition="
-									'%(ContentWithTargetPath.Pack)' == 'true' or 
-									'%(ContentWithTargetPath.Kind)' != '' or 
-									('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.Pack)' != 'false')">
-				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputKind)</Kind>
-				<Kind Condition="'%(ContentWithTargetPath.Kind)' == '' and '%(ContentWithTargetPath.CopyToOutputDirectory)' == ''">Content</Kind>
+									'%(ContentWithTargetPath.CopyToOutputDirectory)' == '' and
+									(
+										'%(ContentWithTargetPath.Pack)' == 'true' or 
+										'%(ContentWithTargetPath.Kind)' != '' or 
+										('$(IncludeContentInPackage)' == 'true' and '%(ContentWithTargetPath.Pack)' != 'false')
+									)">
+				<Kind Condition="'%(ContentWithTargetPath.Kind)' == ''">Content</Kind>
 			</_InferredPackageFile>
 
 			<!-- NOTE: None is also opt-out (must have Pack=false to exclude if IncludeNoneInPackage=true, but this property defaults to false) -->
+			<!-- Likewise, include from target path if it's copied, from source path otherwise -->
+			<_InferredPackageFile Include="@(_NoneWithTargetPath->'$(OutputPath)%(TargetPath)')"
+							   Condition="
+									'%(_NoneWithTargetPath.CopyToOutputDirectory)' != '' and
+									(
+										'%(_NoneWithTargetPath.Pack)' == 'true' or 
+										'%(_NoneWithTargetPath.Kind)' != '' or 
+										('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.Pack)' != 'false')
+									)">
+				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == '' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputKind)</Kind>
+			</_InferredPackageFile>
 			<_InferredPackageFile Include="@(_NoneWithTargetPath->'%(FullPath)')"
 							   Condition="
-									'%(_NoneWithTargetPath.Pack)' == 'true' or 
-									'%(_NoneWithTargetPath.Kind)' != '' or 
-									('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.Pack)' != 'false')">
-				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == '' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' != ''">$(PrimaryOutputKind)</Kind>
-				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == '' and '%(_NoneWithTargetPath.CopyToOutputDirectory)' == ''">None</Kind>
+									'%(_NoneWithTargetPath.CopyToOutputDirectory)' == '' and
+									(
+										'%(_NoneWithTargetPath.Pack)' == 'true' or 
+										'%(_NoneWithTargetPath.Kind)' != '' or 
+										('$(IncludeNoneInPackage)' == 'true' and '%(_NoneWithTargetPath.Pack)' != 'false')
+									)">
+				<Kind Condition="'%(_NoneWithTargetPath.Kind)' == ''">None</Kind>
 			</_InferredPackageFile>
+
 
 			<_InferredPackageFile Include="@(PackageReference)" Condition="'%(Identity)' != 'NuGet.Build.Packaging'">
 				<Kind>Dependency</Kind>
