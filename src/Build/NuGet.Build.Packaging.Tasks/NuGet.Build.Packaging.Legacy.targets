@@ -16,13 +16,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 			BeforeTargets="InferPackageContents"
 			DependsOnTargets="$(InferPackageContentsDependsOn)">
 		<ItemGroup>
-			<!-- From InferPackageContents -->
-			<ContentWithTargetPath Condition="'%(ContentWithTargetPath.IncludeInPackage)' != ''">
-				<Pack>%(ContentWithTargetPath.IncludeInPackage)</Pack>
-			</ContentWithTargetPath>
-			<_NoneWithTargetPath Condition="'%(_NoneWithTargetPath.IncludeInPackage)' != ''">
-				<Pack>%(_NoneWithTargetPath.IncludeInPackage)</Pack>
-			</_NoneWithTargetPath>
+			<!-- For InferPackageContents -->
+			<Content Condition="'%(Content.IncludeInPackage)' != ''">
+				<Pack>%(Content.IncludeInPackage)</Pack>
+			</Content>
+			<None Condition="'%(None.IncludeInPackage)' != ''">
+				<Pack>%(None.IncludeInPackage)</Pack>
+			</None>
 		</ItemGroup>
 	</Target>
 
