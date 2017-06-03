@@ -189,20 +189,17 @@ namespace NuGet.Build.Packaging
 				}),
 			};
 
+			task.NuspecFile = Path.GetTempFileName();
+			createPackage = Debugger.IsAttached;
+
 			var manifest = ExecuteTask();
+
+			Process.Start("notepad.exe", task.NuspecFile);
 
 			Assert.NotNull(manifest);
 			Assert.Equal(4, manifest.Metadata.DependencyGroups.Count());
 			Assert.All(manifest.Metadata.DependencyGroups, d => Assert.Empty(d.Packages));
-
-			//Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
-			//Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
-			//Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
-
-			//// We get a version range actually for the specified dependency, like [1.0.0,)
-			//Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
 		}
-
 
 		[Fact]
 		public void when_creating_package_with_development_dependency_then_does_not_generate_dependency_group()

@@ -24,6 +24,8 @@ namespace NuGet.Build.Packaging.Tasks
 		[Required]
 		public string TargetPath { get; set; }
 
+		public string NuspecFile { get; set; }
+
 		[Output]
 		public ITaskItem OutputPackage { get; set; }
 
@@ -112,7 +114,7 @@ namespace NuGet.Build.Packaging.Tasks
 								   Version = VersionRange.Parse(item.GetMetadata(MetadataName.Version)),
 								   TargetFramework = item.GetNuGetTargetFramework()
 							   };
-
+			
 			manifest.Metadata.DependencyGroups = (from dependency in dependencies
 												  group dependency by dependency.TargetFramework into dependenciesByFramework
 												  select new PackageDependencyGroup
@@ -190,6 +192,15 @@ namespace NuGet.Build.Packaging.Tasks
 				new PhysicalPackageFile { SourcePath = file.Source, TargetPath = file.Target }));
 			
 			builder.Save(output);
+
+			if (!string.IsNullOrEmpty(NuspecFile))
+			{
+				Directory.CreateDirectory(Path.GetDirectoryName(NuspecFile));
+				using (var stream = File.Create(NuspecFile))
+				{
+					manifest.Save(stream, true);
+				}
+			}
 		}
 
 		static VersionRange AggregateVersions(VersionRange aggregate, VersionRange next)

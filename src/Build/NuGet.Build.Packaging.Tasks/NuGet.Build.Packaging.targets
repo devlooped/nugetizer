@@ -35,6 +35,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- This file signals that the Build should actually do a Pack. Supports the IDE solution-wide Build command for authoring projects. -->
 		<PackOnBuildFile>$(MSBuildProjectDirectory)\.packonbuild</PackOnBuildFile>
+
+		<!-- Whether to emit the nuspec that's used to create the final package -->
+		<EmitNuSpec Condition="'$(EmitNuSpec)' == ''">false</EmitNuSpec>
+		<NuspecFile Condition="'$(NuspecFile)' == ''">$(OutputPath)\$(PackageId).nuspec</NuspecFile>
 	</PropertyGroup>
 
 	<Import Project="NuGet.Build.Packaging.Inference.targets" Condition="'$(InferPackageContents)' != 'false'" />
@@ -364,7 +368,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 	-->
 	<Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
 		<MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
-		<CreatePackage Manifest="@(PackageTargetPath)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
+		<PropertyGroup>
+			<NuspecFile Condition="'$(EmitNuspec)' == 'true' And '$(NuspecFile)' ==''">$(OutputPath)\$(PackageId).nuspec</NuspecFile>
+		</PropertyGroup>
+		<CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(NuspecFile)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
 			<Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
 			<Output TaskParameter="OutputPackage" ItemName="FileWrites" />
 		</CreatePackage>
