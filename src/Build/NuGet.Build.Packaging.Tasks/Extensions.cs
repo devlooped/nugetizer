@@ -58,6 +58,18 @@ namespace NuGet.Build.Packaging
 			}
 		}
 
+		public static NuGetFramework GetNuGetTargetFramework(this ITaskItem taskItem)
+		{
+			var metadataValue = taskItem.GetMetadata(MetadataName.TargetFramework);
+			if (string.IsNullOrEmpty(metadataValue))
+				metadataValue = taskItem.GetMetadata(MetadataName.TargetFrameworkMoniker);
+
+			if (!string.IsNullOrEmpty(metadataValue))
+				return NuGetFramework.Parse(metadataValue);
+			else
+				return NuGetFramework.AnyFramework;
+		}
+
 		public static FrameworkName GetTargetFramework(this ITaskItem taskItem)
 		{
 			var metadataValue = taskItem.GetMetadata(MetadataName.TargetFramework);

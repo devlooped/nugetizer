@@ -149,6 +149,62 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_creating_package_with_empty_dependency_groups_then_succeeds()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem(Path.GetTempFileName(), new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.None },
+					{ MetadataName.PackagePath, "readme.txt" }
+				}),
+				new TaskItem("_._", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "*" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+				new TaskItem("_._", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "*" },
+					{ MetadataName.TargetFramework, "win" }
+				}),
+				new TaskItem("_._", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "*" },
+					{ MetadataName.TargetFramework, "wpa" }
+				}),
+				new TaskItem("_._", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "*" },
+					{ MetadataName.TargetFramework, "MonoAndroid10" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.NotNull(manifest);
+			Assert.Equal(4, manifest.Metadata.DependencyGroups.Count());
+			Assert.All(manifest.Metadata.DependencyGroups, d => Assert.Empty(d.Packages));
+
+			//Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
+			//Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			//Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+
+			//// We get a version range actually for the specified dependency, like [1.0.0,)
+			//Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
+		}
+
+
+		[Fact]
 		public void when_creating_package_with_development_dependency_then_does_not_generate_dependency_group()
 		{
 			var content = Path.GetTempFileName();

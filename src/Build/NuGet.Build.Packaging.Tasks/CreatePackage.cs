@@ -110,14 +110,14 @@ namespace NuGet.Build.Packaging.Tasks
 							   {
 								   Id = item.ItemSpec,
 								   Version = VersionRange.Parse(item.GetMetadata(MetadataName.Version)),
-								   TargetFramework = item.GetTargetFramework()
+								   TargetFramework = item.GetNuGetTargetFramework()
 							   };
 
 			manifest.Metadata.DependencyGroups = (from dependency in dependencies
 												  group dependency by dependency.TargetFramework into dependenciesByFramework
 												  select new PackageDependencyGroup
 												  (
-													  NuGetFramework.Parse(dependenciesByFramework.Key.GetShortFrameworkName() ?? PackagingConstants.AnyFramework),
+													  dependenciesByFramework.Key,
 													  (from dependency in dependenciesByFramework
 													   where dependency.Id != "_._"
 													   group dependency by dependency.Id into dependenciesById
@@ -253,7 +253,7 @@ namespace NuGet.Build.Packaging.Tasks
 		{
 			public string Id { get; set; }
 
-			public FrameworkName TargetFramework { get; set; }
+			public NuGetFramework TargetFramework { get; set; }
 
 			public VersionRange Version { get; set; }
 		}
