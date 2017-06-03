@@ -25,8 +25,6 @@
     <Solution Include="src\Build\NuGet.Build.Packaging.sln" />
     <Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
     <TestProject Include="src\Build\**\*Tests.csproj" />
-    <PackProject Include="src\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj" />
-    <PackProject Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
   </ItemGroup>
 
   <Target Name="All" DependsOnTargets="Build;Test;Package" />
@@ -47,9 +45,10 @@
     <MSBuild Projects="@(Solution)" BuildInParallel="false" Properties="$(CommonBuildProperties);CreateVsixContainer=false;DeployExtension=false" />
   </Target>
 
-  <Target Name="Package" DependsOnTargets="Build">
+  <Target Name="Package">
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-    <MSBuild Projects="@(PackProject)" Properties="$(CommonBuildProperties);PackOnBuild=true" />
+    <MSBuild Projects="src\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj" Targets="Pack" Properties="$(CommonBuildProperties);PackOnBuild=true" />
+    <MSBuild Projects="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" Properties="$(CommonBuildProperties);PackOnBuild=true" />
     <ItemGroup>
       <OutputFile Include="$(Out)\*.nupkg" />
       <OutputFile Include="$(Out)\*.vsix" />
