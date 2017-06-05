@@ -31,6 +31,7 @@ namespace NuGet.Build.Packaging
 			task = new CreatePackage
 			{
 				BuildEngine = engine,
+				NuspecFile = Path.GetTempFileName(),
 				Manifest = new TaskItem("package", new Metadata
 				{
 					{ "Id", "package" },
@@ -149,6 +150,85 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_creating_package_with_non_framework_secific_dependency_then_contains_generic_dependency_group()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					{ MetadataName.TargetFramework, "net45" },
+					{ MetadataName.FrameworkSpecific, "false" },
+				}),
+				new TaskItem("Microsoft.Build", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "15.0.0" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			//Process.Start("notepad.exe", task.NuspecFile);
+
+			Assert.NotNull(manifest);
+			Assert.Equal(2, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(NuGetFramework.UnsupportedFramework, manifest.Metadata.DependencyGroups.First().TargetFramework);
+			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
+
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
+
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Last().Packages.Count());
+			Assert.Equal("Microsoft.Build", manifest.Metadata.DependencyGroups.Last().Packages.First().Id);
+			Assert.Equal("15.0.0", manifest.Metadata.DependencyGroups.Last().Packages.First().VersionRange.MinVersion.ToString());
+		}
+
+		[Fact]
+		public void when_creating_package_with_any_framework_secific_dependency_then_contains_generic_dependency_group()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					{ MetadataName.TargetFramework, "any" },
+				}),
+				new TaskItem("Microsoft.Build", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "15.0.0" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			//Process.Start("notepad.exe", task.NuspecFile);
+
+			Assert.NotNull(manifest);
+			Assert.Equal(2, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(NuGetFramework.UnsupportedFramework, manifest.Metadata.DependencyGroups.First().TargetFramework);
+			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
+
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
+
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Last().Packages.Count());
+			Assert.Equal("Microsoft.Build", manifest.Metadata.DependencyGroups.Last().Packages.First().Id);
+			Assert.Equal("15.0.0", manifest.Metadata.DependencyGroups.Last().Packages.First().VersionRange.MinVersion.ToString());
+		}
+
+		[Fact]
 		public void when_creating_package_with_empty_dependency_groups_then_succeeds()
 		{
 			task.Contents = new[]
@@ -194,7 +274,8 @@ namespace NuGet.Build.Packaging
 
 			var manifest = ExecuteTask();
 
-			Process.Start("notepad.exe", task.NuspecFile);
+			//if (Debugger.IsAttached)
+			//	Process.Start("notepad.exe", task.NuspecFile);
 
 			Assert.NotNull(manifest);
 			Assert.Equal(4, manifest.Metadata.DependencyGroups.Count());

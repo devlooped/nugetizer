@@ -60,6 +60,10 @@ namespace NuGet.Build.Packaging
 
 		public static NuGetFramework GetNuGetTargetFramework(this ITaskItem taskItem)
 		{
+			if (bool.TryParse(taskItem.GetMetadata(MetadataName.FrameworkSpecific), out var frameworkSpecific) &&
+				!frameworkSpecific)
+				return NuGetFramework.AnyFramework;
+
 			var metadataValue = taskItem.GetMetadata(MetadataName.TargetFramework);
 			if (string.IsNullOrEmpty(metadataValue))
 				metadataValue = taskItem.GetMetadata(MetadataName.TargetFrameworkMoniker);
