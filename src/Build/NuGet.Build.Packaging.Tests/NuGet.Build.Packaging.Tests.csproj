@@ -1,169 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" DefaultTargets="Build">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.props))\NuGet.Build.Packaging.Shared.props" />
   <PropertyGroup>
     <ProjectGuid>{212952C3-22F5-4263-BF9B-B17316B3B3CA}</ProjectGuid>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFramework>net46</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <PublicSign>false</PublicSign>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="NuGet.Build.Packaging.Tasks">
       <HintPath>..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)\NuGet.Build.Packaging.Tasks.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="1.1.61" />
-    <PackageReference Include="Microsoft.Build" Version="14.3.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build" Version="14.3.0" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" />
     <PackageReference Include="MSBuilder.Dump" Version="*" />
     <PackageReference Include="MSBuilder.DumpItems" Version="*" />
     <PackageReference Include="MSBuilder.Introspect" Version="*" />
-    <PackageReference Include="System.IO.Compression">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.IO.Compression.ZipFile">
-      <Version>4.3.0</Version>
-    </PackageReference>
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="NuGet.Build.Packaging.Tests.targets" />
-    <Content Include="Scenarios\given_a_custom_build_project\Readme.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\content-copy.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\content-copy-with-include-false.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\content-copy-with-include-true.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\content-copy-with-kind.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\content-with-kind.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\content.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\none-copy.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\none-copy-with-include-false.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\none-copy-with-include-true.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\none-copy-with-kind.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\none-with-kind.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\quickstart\any-non-tfm.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\quickstart\fs-tfm.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\quickstart\any-any.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\relative\content-copy-with-kind.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\relative\content-copy.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\relative\none-copy-with-kind.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\relative\none-copy.txt" />
-    <None Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.fs" />
-    <None Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.vb" />
-    <Content Include="Scenarios\given_duplicate_package_files\a.csproj" />
-    <Content Include="Scenarios\given_duplicate_package_files\b.csproj" />
-    <Content Include="Scenarios\given_duplicate_package_files\content\content.txt" />
-    <Content Include="Scenarios\given_duplicate_package_files\content\inferred.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\content-with-include-true.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\content-with-include-false.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\none-with-include-false.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\none-with-include-true.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\none.txt" />
-    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-hdpi\Icon.png" />
-    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-mdpi\Icon.png" />
-    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xhdpi\Icon.png" />
-    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xxhdpi\Icon.png" />
-    <Content Include="Scenarios\given_a_library_with_content\Resources\drawable-xxxhdpi\Icon.png" />
-    <None Include="Scenarios\given_a_custom_build_project\build.proj" />
-    <None Include="Scenarios\given_a_packaging_project\a.nuproj" />
-    <Content Include="Scenarios\given_a_packaging_project\b.sln" />
-    <Content Include="Scenarios\given_a_packaging_project\b\b.csproj" />
-    <Content Include="Scenarios\given_a_packaging_project\c.csproj" />
-    <Content Include="Scenarios\given_a_packaging_project\d.csproj" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\common\project.json" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\docs\gettingstarted.html" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\docs\overview\index.html" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\forms.proj" />
-    <Content Include="Scenarios\given_a_library_with_content\library_with_content.csproj" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\b.csproj" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\c.csproj" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\d.csproj" />
-    <Content Include="Scenarios\given_a_localized_library\library.csproj" />
-    <Content Include="Scenarios\given_a_complex_pack\a.csproj" />
-    <Content Include="Scenarios\given_a_complex_pack\b.csproj" />
-    <Content Include="Scenarios\given_a_complex_pack\c.csproj" />
-    <Content Include="Scenarios\given_a_complex_pack\d.csproj" />
-    <Content Include="Scenarios\given_a_complex_pack\e.csproj" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\a.csproj" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\android\forms.android.csproj" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\common\common.csproj" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\forms.sln" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\ios\forms.ios.csproj" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\net\forms.net46.csproj" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\pcl\forms.pcl.csproj" />
-    <Content Include="Scenarios\given_a_packaging_project\e.csproj" />
-    <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\b.sln" />
-    <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\b\b.csproj" />
-    <Content Include="Scenarios\given_duplicate_package_files\content\web\js\nuget.js" />
-    <Content Include="Scenarios\given_a_library_with_config_dependencies\a.csproj" />
-    <Content Include="Scenarios\given_a_library_with_config_dependencies\a.sln" />
-    <Content Include="Scenarios\given_a_library_with_json_dependencies\project.json" />
-    <None Include="Scenarios\fakeframework.targets" />
-    <None Include="Scenarios\given_a_packaging_project\b\project.json" />
-    <None Include="Scenarios\given_a_library_with_non_nugetized_reference\b\project.json" />
-    <Content Include="Scenarios\given_a_multi_platform_solution\pcl\project.json" />
-    <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\a.nuproj" />
-    <None Include="Scenarios\given_a_library_with_config_dependencies\packages.config" />
-    <None Include="Scenarios\Scenario.props" />
-    <None Include="Scenarios\Scenario.targets" />
-    <None Include="Scenarios\_._" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scenarios\given_a_library_with_json_dependencies\a.csproj" />
-    <Content Include="Scenarios\given_an_empty_library_project\empty_library_project.csproj" />
-    <Content Include="Scenarios\given_a_library_with_project_reference\a.csproj" />
-    <Content Include="Scenarios\given_a_library_with_project_reference\b.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CreatePackageTests.cs" />
-    <Compile Include="AssignPackagePathTests.cs" />
-    <Compile Include="Builder.cs" />
-    <Compile Include="Builder.NuGetizer.cs">
-      <DependentUpon>Builder.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GetApiIntersectTargetPathsTests.cs" />
-    <Compile Include="given_a_custom_build_project.cs" />
-    <Compile Include="given_duplicate_package_files.cs" />
-    <Compile Include="given_a_packaging_project.cs" />
-    <Compile Include="given_a_multi_platform_solution.cs" />
-    <Compile Include="given_a_library_with_content.cs" />
-    <Compile Include="given_a_localized_library.cs" />
-    <Compile Include="given_a_complex_pack.cs" />
-    <Compile Include="given_a_library_with_non_nugetized_reference.cs" />
-    <Compile Include="given_a_packaging_project_with_reference_assembly.cs" />
-    <Compile Include="given_a_library_with_config_dependencies.cs" />
-    <Compile Include="given_a_library_with_json_dependencies.cs" />
-    <Compile Include="given_an_empty_library_project.cs" />
-    <Compile Include="given_a_library_with_project_reference.cs" />
-    <Compile Include="ReadLegacyJsonDependenciesTests.cs" />
-    <Compile Include="ReadLegacyConfigDependenciesTests.cs" />
-    <Content Include="Scenarios\given_a_packaging_project_with_reference_assembly\b\MyClass.cs" />
-    <Content Include="Scenarios\given_a_library_with_content\contentFiles\cs\monoandroid\content.cs" />
-    <Content Include="Scenarios\given_a_library_with_content\contentFiles\cs\monoandroid\none.cs" />
-    <None Include="Scenarios\given_a_multi_platform_solution\android\quickstart\sample.cs" />
-    <Content Include="Scenarios\given_a_library_with_content\quickstart\cs-any.txt" />
-    <Compile Include="TargetsTests.cs" />
-    <Compile Include="UtilitiesTests.cs" />
-    <Compile Include="Utilities\FrameworkAssemblyReferenceComparer.cs" />
-    <Compile Include="Utilities\ManifestContentFilesComparer.cs" />
-    <Compile Include="Utilities\MockBuildEngine.cs" />
-    <Compile Include="Utilities\ManifestFileComparer.cs" />
-    <Compile Include="Utilities\PackageDependencyComparer.cs" />
-    <Compile Include="Utilities\PackageDependencyGroupComparer.cs" />
-    <Compile Include="Utilities\TargetFrameworks.cs" />
-    <Compile Include="Utilities\TaskItemExtensions.cs" />
-    <Compile Include="Utilities\TestOutputLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj">
@@ -172,25 +30,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+	<None Remove="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" />
+    <None Remove="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <Content Include="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scenarios\given_a_localized_library\Resources.es-AR.resx" />
-    <Content Include="Scenarios\given_a_localized_library\Resources.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\Resources.es-AR.resx" />
-    <Content Include="Scenarios\given_a_library_with_non_nugetized_reference\b\Resources.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scenarios\given_a_packaging_project\b\Resources.es-AR.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scenarios\given_a_packaging_project\b\Resources.resx" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.targets))\NuGet.Build.Packaging.Shared.targets" />
 </Project>

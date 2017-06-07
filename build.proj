@@ -16,7 +16,7 @@
     <RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
     <IntermediateOutputPath>.nuget\</IntermediateOutputPath>
     <PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
-    <CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackageOutputPath=$(Out)</CommonBuildProperties>
+    <CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackageOutputPath=$(Out);NuGetBuildTasksPackTargets=NO-SDK-PACK</CommonBuildProperties>
     <DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
     <PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
   </PropertyGroup>
@@ -75,12 +75,12 @@
 
   <Target Name="Restore">
     <ItemGroup>
-      <NuGetRestore Include="external\ApiIntersect\ApiIntersect.sln" />
       <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
       <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln" />
       <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_json_dependencies\project.json" />
       <MSBuildRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_packaging_project_with_netstandard\a.nuproj" />
 
+      <MSBuildRestore Include="external\ApiIntersect\ApiIntersect.sln" />
       <MSBuildRestore Include="src\Build\NuGet.Build.Packaging.sln" />
       <MSBuildRestore Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
     </ItemGroup>

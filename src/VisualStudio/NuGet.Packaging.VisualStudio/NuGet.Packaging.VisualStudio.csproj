@@ -28,6 +28,20 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Clide" Version="3.0.107-pre" />
+    <PackageReference Include="GitInfo" Version="1.1.61" />
+    <PackageReference Include="Merq" Version="1.0.0-rc" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.14.0" Version="14.3.25407" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.11.0" Version="11.0.61030" />
+    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" />
+    <PackageReference Include="NuGet.VisualStudio" Version="4.0.0" />
+    <PackageReference Include="PropertyChanged.Fody" Version="1.53.0" />
+    <PackageReference Include="VSSDK.ComponentModelHost.11" Version="11.0.4" />
+    <PackageReference Include="VSSDK.DTE.8" Version="8.0.4" />
+    <PackageReference Include="VSSDK.TemplateWizardInterface" Version="12.0.4" />
+    <PackageReference Include="VSSDK.VSLangProj" Version="7.0.4" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>

@@ -11,5 +11,10 @@
 		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
 	</PropertyGroup>
 
+	<PropertyGroup>
+	    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>	
+		<NuGetPackagingTargetsImported>true</NuGetPackagingTargetsImported>
+	</PropertyGroup>
+
 	<Import Project="PackageVersion.targets" Condition="$(PackageVersionImported) != 'true'" />
 </Project>

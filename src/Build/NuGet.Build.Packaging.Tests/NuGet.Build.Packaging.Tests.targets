@@ -8,7 +8,7 @@
 		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 	</PropertyGroup>
 
-	<Target Name="AfterBuild">
+	<Target Name="CopyScenarioFiles" AfterTargets="Build">
 		<ItemGroup>
 			<ScenarioFile Include="Scenarios\**\*.*" Exclude="Scenarios\**\bin\**\*.*;Scenarios\**\obj\**\*.*" />
 			<NuGetizer Include="..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)\**\*.*" />

@@ -3,6 +3,9 @@
 	<Import Project="..\build.props" />
 	
 	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
@@ -19,6 +22,7 @@
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<ThisAssemblyNamespace>$(RootNamespace)</ThisAssemblyNamespace>
 		<GenerateExports>false</GenerateExports>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 
 	<!-- Default to unsigned assemblies unless explicitly told to sign -->
@@ -46,6 +50,7 @@
 	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
 
 	<PropertyGroup>
+	    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>	
 		<NuGetPackagingPropsImported>true</NuGetPackagingPropsImported>
 	</PropertyGroup>
 

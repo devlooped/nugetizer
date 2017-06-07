@@ -2,38 +2,15 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="NuGet.Build.Packaging.props" Condition=" '$(NuGetPackagingPropsImported)' != 'true' " />
 
-	<PropertyGroup Condition=" '$(Language)' == 'C#' ">
-		<ThisAssemblyExtensionFile>$(IntermediateOutputPath)ThisAssembly.Extension.g$(DefaultLanguageSourceExtension)</ThisAssemblyExtensionFile>
-		<CoreCompileDependsOn>
-			ThisAssemblyExtension;
-			$(CoreCompileDependsOn)
-		</CoreCompileDependsOn>
-	</PropertyGroup>
-
-	<Target Name="ThisAssemblyExtension" BeforeTargets="BuildOnlySettings" Condition=" '$(ThisAssemblyExtensionFile)' != '' " DependsOnTargets="GenerateThisAssemblyExtension">
-		<ItemGroup>
-			<Compile Include="$(ThisAssemblyExtensionFile)" />
-		</ItemGroup>
-	</Target>
-
-	<Target Name="GenerateThisAssemblyExtension" Inputs="@(_GitInput)" Outputs="$(ThisAssemblyExtensionFile)"
-			DependsOnTargets="GetPackageVersion">
-		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
-		<WriteLinesToFile Lines='
-namespace $(ThisAssemblyNamespace)
-{
-	partial class ThisAssembly
-	{
-		/// &lt;summary&gt;PackageVersion: $(AssemblyName)&lt;/summary&gt;
-		public const string PackageVersion = "$(PackageVersion)"%3B
-	}
-}
-' Overwrite='true' File='$(ThisAssemblyExtensionFile)' />
-	</Target>
+	<ItemGroup>
+		<PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
+		<ThisAssemblyProjectProperty Include="PackageVersion" />
+	</ItemGroup>
 
 	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
 
 	<PropertyGroup>
+	    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>	
 		<NuGetPackagingTargetsImported>true</NuGetPackagingTargetsImported>
 	</PropertyGroup>
 

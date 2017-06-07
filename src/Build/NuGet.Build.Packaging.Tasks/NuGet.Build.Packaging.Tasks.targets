@@ -12,9 +12,11 @@
 	</ItemDefinitionGroup>
 
 	<PropertyGroup>
+	    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+	
 		<PackageId>NuGet.Build.Packaging</PackageId>
 		<Title>NuGetizer-3000</Title>
-		<Description>NuGet Packaging Targets</Description>
+		<Description>NuGetizer-3000</Description>
 		<IsDevelopmentDependency>true</IsDevelopmentDependency>
 		<PrimaryOutputKind>build</PrimaryOutputKind>
 
@@ -27,12 +29,6 @@
 
 	<Target Name="AddBuiltOutput" BeforeTargets="GetPackageContents" DependsOnTargets="AllProjectOutputGroups" Returns="@(PackageFile)">
 		<ItemGroup>
-			<PackageFile Include="$(OutputPath)ApiIntersect.exe">
-				<PackagePath>build\ApiIntersect.exe</PackagePath>
-			</PackageFile>
-			<PackageFile Include="$(OutputPath)ApiIntersect.exe.config">
-				<PackagePath>build\ApiIntersect.exe.config</PackagePath>
-			</PackageFile>
 			<PackageFile Include="$(OutputPath)ICSharpCode.Decompiler.dll">
 				<PackagePath>build\ICSharpCode.Decompiler.dll</PackagePath>
 			</PackageFile>

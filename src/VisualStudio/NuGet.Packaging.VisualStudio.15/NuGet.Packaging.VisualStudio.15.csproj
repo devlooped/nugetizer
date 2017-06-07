@@ -44,6 +44,29 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Clarius.VisualStudio" Version="2.0.13" />
+    <PackageReference Include="Clide" Version="3.0.107-pre" />
+    <PackageReference Include="Clide.Installer" Version="3.0.107-pre" />
+    <PackageReference Include="GitInfo" Version="1.1.61" />
+    <PackageReference Include="Merq" Version="1.0.0-rc" />
+    <PackageReference Include="Merq.Async" Version="1.1.17-rc" />
+    <PackageReference Include="Merq.VisualStudio" Version="1.1.17-rc" />
+
+    <PackageReference Include="Microsoft.Build" Version="15.1.548" />
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.SDK" Version="15.0.751" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.14.0" Version="14.3.25407" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" Version="15.0.26201" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.11.0" Version="11.0.61030" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.0.26201" />
+    <PackageReference Include="MSBuilder.DumpItems" Version="0.2.1" />
+    <PackageReference Include="MSBuilder.Introspect" Version="0.1.5" />
+    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" />
+    <PackageReference Include="MSBuilder.VsixDependency" Version="0.2.11" />
+    <PackageReference Include="MSBuilder.VsixInstaller" Version="0.2.16" />
+    <PackageReference Include="VSLangProj150" Version="1.0.0" />
+    <PackageReference Include="VSSDK.ComponentModelHost.11" Version="11.0.4" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="AnalyzerReferencesService.cs" />
     <Compile Include="Contracts.cs" />
     <Compile Include="NuGetVSProject.cs" />

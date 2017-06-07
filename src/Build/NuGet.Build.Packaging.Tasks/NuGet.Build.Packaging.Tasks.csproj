@@ -1,19 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" DefaultTargets="Build">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.props))\NuGet.Build.Packaging.Shared.props" />
   <PropertyGroup>
     <ProjectGuid>{A3D231D7-31E4-4A70-8CD1-7246C7D069F6}</ProjectGuid>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFramework>net46</TargetFramework>
+    <NuGetBuildTasksPackTargets>NO-SDK-PACK</NuGetBuildTasksPackTargets>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="1.1.61" PrivateAssets="all" />
     <PackageReference Include="ILRepack" Version="2.0.13" PrivateAssets="all" />
-    <PackageReference Include="netfx-System.StringResources" Version="3.0.14" PrivateAssets="all" />
+    <PackageReference Include="netfx-System.StringResources" Version="3.1.5" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build" Version="14.3.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" PrivateAssets="all" />
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
@@ -23,55 +18,29 @@
     <PackageReference Include="NuGet.ProjectManagement" Version="4.0.0" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NuGet.Build.Packaging.props" />
-    <Content Include="NuGet.Build.Packaging.targets" />
-    <Content Include="NuGet.Build.Packaging.CrossTargeting.targets" />
-    <Content Include="MSBuild\Imports\Microsoft.Common.Props\ImportBefore\Microsoft.NuGet.Packaging.ImportBefore.props" />
-    <Content Include="MSBuild\Microsoft.Common.Targets\ImportAfter\Microsoft.NuGet.Packaging.ImportAfter.targets" />
-    <Content Include="NuGet.Build.Packaging.Authoring.targets" />
-    <Content Include="NuGet.Build.Packaging.Compatibility.props" />
-    <Content Include="NuGet.Build.Packaging.ReferenceAssembly.targets" />
-    <Content Include="NuGet.Build.Packaging.Legacy.targets" />
-    <Content Include="NuGet.Build.Packaging.Inference.targets" />
-    <Content Include="NuGet.Build.Packaging.Authoring.props" />
-    <Content Include="GenerateReferenceAssembly.csproj" />
-    <Content Include="NuGet.Build.Packaging.Legacy.props" />
-    <Content Include="NuGet.Build.Packaging.Version.props" />
+    <None Remove="**\*.props;**\*.targets" />
     <None Include="NuGet.Build.Packaging.Tasks.targets" />
+    <Content Include="**\*.props;**\*.targets" Exclude="obj\**\*.*;bin\**\*.*;NuGet.Build.Packaging.Tasks.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj">
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <AdditionalProperties>PrimaryOutputKind=build</AdditionalProperties>
       <Project>{cd767d93-6c99-4d6a-a303-3c139a73400e}</Project>
       <Name>ApiIntersect</Name>
-      <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ApiIntersect.cs" />
-    <Compile Include="AssignPackagePath.cs" />
-    <Compile Include="CreatePackage.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="GenerateAssemblyInfo.cs" />
-    <Compile Include="GetApiIntersectTargetPaths.cs" />
-    <Compile Include="MetadataName.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ReadLegacyConfigDependencies.cs" />
-    <Compile Include="ReadLegacyJsonDependencies.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Tasks.Shared.targets))\NuGet.Build.Packaging.Tasks.Shared.targets" />
 </Project>
