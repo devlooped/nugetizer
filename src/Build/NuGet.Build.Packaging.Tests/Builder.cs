@@ -29,7 +29,7 @@ public static partial class Builder
 		//Environment.SetEnvironmentVariable("MSBUILDNOINPROCNODE", "1", EnvironmentVariableTarget.Process);
 		using (var manager = new BuildManager(Guid.NewGuid().ToString()))
 		{
-			var request = new BuildRequestData(project, targets.Split(','), null);
+			var request = new BuildRequestData(project, targets.Split(','));
 			var parameters = new BuildParameters
 			{ 
 				GlobalProperties = properties,

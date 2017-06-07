@@ -4,16 +4,22 @@
 	<PropertyGroup>
 		<!-- Prevents Fody.VerifyTask from running -->
 		<NCrunch>1</NCrunch>
+		<!-- Don't reference the Tasks project, we are referring to its binary output instead -->
+		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 	</PropertyGroup>
-	
+
 	<Target Name="AfterBuild">
 		<ItemGroup>
 			<ScenarioFile Include="Scenarios\**\*.*" Exclude="Scenarios\**\bin\**\*.*;Scenarios\**\obj\**\*.*" />
+			<NuGetizer Include="..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)\**\*.*" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(ScenarioFile)"
-				  DestinationFiles="@(ScenarioFile -> '$(OutputPath)Scenarios\%(RecursiveDir)%(Filename)%(Extension)')"
-				  SkipUnchangedFiles="true" />
+				DestinationFiles="@(ScenarioFile -> '$(OutputPath)Scenarios\%(RecursiveDir)%(Filename)%(Extension)')"
+				SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(NuGetizer)"
+				DestinationFiles="@(NuGetizer -> '$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"
+				SkipUnchangedFiles="true" />
 	</Target>
-  
+
 </Project>

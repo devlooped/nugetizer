@@ -1,11 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26510.0
+VisualStudioVersion = 15.0.26602.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Build.Packaging.Tasks", "NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj", "{A3D231D7-31E4-4A70-8CD1-7246C7D069F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BD16CBB5-BD47-4CC3-A9FD-7F1B9077455D}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\.editorconfig = ..\..\.editorconfig
 		..\..\appveyor.yml = ..\..\appveyor.yml
 		Before.NuGet.Build.Packaging.sln.targets = Before.NuGet.Build.Packaging.sln.targets
 		..\..\build.cmd = ..\..\build.cmd
@@ -21,6 +22,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet.Build.Packaging.Tests", "NuGet.Build.Packaging.Tests\NuGet.Build.Packaging.Tests.csproj", "{212952C3-22F5-4263-BF9B-B17316B3B3CA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3D231D7-31E4-4A70-8CD1-7246C7D069F6} = {A3D231D7-31E4-4A70-8CD1-7246C7D069F6}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiIntersect", "..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj", "{CD767D93-6C99-4D6A-A303-3C139A73400E}"
 EndProject
