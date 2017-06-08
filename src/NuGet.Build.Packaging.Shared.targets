@@ -3,7 +3,7 @@
 	<Import Project="NuGet.Build.Packaging.props" Condition=" '$(NuGetPackagingPropsImported)' != 'true' " />
 
 	<ItemGroup>
-		<PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
+		<PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.4" PrivateAssets="all" />
 		<ThisAssemblyProjectProperty Include="PackageVersion" />
 	</ItemGroup>
 

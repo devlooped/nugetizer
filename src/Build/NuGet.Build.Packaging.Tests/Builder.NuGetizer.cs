@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
+using NuGet.Build.Packaging;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -53,12 +55,16 @@ static partial class Builder
 			logger = new TestOutputLogger(null);
 		}
 
-		if (properties != null)
-			return new TargetResult(Build(projectOrSolution, target,
-				properties: properties.GetType().GetProperties().ToDictionary(prop => prop.Name, prop => prop.GetValue(properties).ToString()),
-				logger: logger), target, logger);
-		else
-			return new TargetResult(Build(projectOrSolution, target, logger: logger), target, logger);
+		var buildProps = properties?.GetType().GetProperties()
+			.ToDictionary(prop => prop.Name, prop => prop.GetValue(properties).ToString()) 
+			?? new Dictionary<string, string>();
+
+		buildProps[nameof(ThisAssembly.Project.Properties.NuGetRestoreTargets)] = ThisAssembly.Project.Properties.NuGetRestoreTargets;
+		buildProps[nameof(ThisAssembly.Project.Properties.NuGetTargets)] = ThisAssembly.Project.Properties.NuGetTargets;
+
+		return new TargetResult(Build(projectOrSolution, target,
+			properties: buildProps,
+			logger: logger), target, logger);
 	}
 
 	public class TargetResult : ITargetResult

@@ -37,11 +37,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<GetPackageContentsDependsOn>
 			$(GetPackageContentsDependsOn);
+			_PrimaryOutputFrameworkSpecific;
 			InferPackageContents
 		</GetPackageContentsDependsOn>
 	</PropertyGroup>
 
-	<Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
+	<Target Name="_PrimaryOutputFrameworkSpecific" Returns="$(PrimaryOutputFrameworkSpecific)">
 		<!-- Determine whether primary output is framework specific  -->
 		<ItemGroup Condition="'$(PrimaryOutputFrameworkSpecific)' == ''">
 			<_PrimaryOutputKind Include="@(PackageItemKind->'%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(PrimaryOutputKind)'" />
@@ -49,7 +50,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PropertyGroup Condition="'$(PrimaryOutputFrameworkSpecific)' == ''">
 			<PrimaryOutputFrameworkSpecific>@(_PrimaryOutputKind)</PrimaryOutputFrameworkSpecific>
 		</PropertyGroup>
+	</Target>
 
+	<Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
 		<!-- Ensure TargetPath -->
 		<AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)"
 						  Condition="'%(Content.Pack)' == 'true' or 
@@ -125,7 +128,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_InferredPackageFile>
 
 
-			<_InferredPackageFile Include="@(PackageReference)" Condition="'%(Identity)' != 'NuGet.Build.Packaging'">
+			<_InferredPackageFile Include="@(PackageReference)" Condition="'%(PackageReference.Identity)' != 'NuGet.Build.Packaging' and '%(PackageReference.PrivateAssets)' != 'all'">
 				<Kind>Dependency</Kind>
 			</_InferredPackageFile>
 
@@ -153,6 +156,48 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</ItemGroup>
 	</Target>
 
+	<Target Name="_CollectPrimaryOutputRelatedFiles" DependsOnTargets="BuildOnlySettings;ResolveReferences" Returns="@(_PrimaryOutputRelatedFile)">
+		<ItemGroup>
+			<_PrimaryOutputRelatedFile Include="@(ReferencePath);@(_ReferenceRelatedPaths)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="InferPrimaryOutputDependencies"
+			Inputs="@(_PrimaryOutputRelatedFile)"
+			Outputs="%(_PrimaryOutputRelatedFile.NuGetPackageId)"
+			Returns="@(_InferredPackageFile)"
+			DependsOnTargets="_CollectPrimaryOutputRelatedFiles">
+		<ItemGroup>
+			<_NuGetPackageId Include="@(_PrimaryOutputRelatedFile -> '%(NuGetPackageId)')" />
+		</ItemGroup>
+		<PropertyGroup>
+			<_NuGetPackageId>@(_NuGetPackageId -> Distinct())</_NuGetPackageId>
+		</PropertyGroup>
+		<ItemGroup>
+			<_PrimaryPackageReference Include="@(PackageReference)" Condition="'$(_NuGetPackageId)' != '' and '%(Identity)' == '$(_NuGetPackageId)'" />
+		</ItemGroup>
+		<PropertyGroup>
+			<_PrivateAssets>@(_PrimaryPackageReference -> '%(PrivateAssets)')</_PrivateAssets>
+		</PropertyGroup>
+
+		<ItemGroup Condition="'$(_PrivateAssets)' == 'all'">
+			<_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="'%(_PrimaryOutputRelatedFile.FrameworkFile)' != 'true'">
+				<Kind>$(PrimaryOutputKind)</Kind>
+				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
+			</_InferredPackageFile>
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(_PrivateAssets)' != 'all' and '$(_PrivateAssets)' != 'none' and '$(_PrivateAssets)' != ''">
+			<!-- In this case, we only add files that have a matching path to the private assets value. 
+				 i.e. for Mono.Options, PrivateAssets=lib, we'll include the file if its full path contains 
+				 'Mono.Options\*\lib\*', meaning the file is a lib. -->
+			<_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputRelatedFile.FullPath)', '$(_NuGetPackageId)\\.+\\$(_PrivateAssets)\\.*')) == 'true'">
+				<Kind>$(PrimaryOutputKind)</Kind>
+				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
+			</_InferredPackageFile>
+		</ItemGroup>
+	</Target>
+
 	<Target Name="_SetInferPackageContentsDependsOn" AfterTargets="_SetPropertiesFromCapabilities">
 		<PropertyGroup>
 			<!-- NOTE: this avoids taking dependencies on targets that are only available when the project supports the concept of references -->
@@ -160,12 +205,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 						$(_AllProjectCapabilities.Contains('AssemblyReferences')) or 
 						$(_AllProjectCapabilities.Contains('COMReferences')) or
 						$(_AllProjectCapabilities.Contains('ProjectReferences')) or 
+						$(_AllProjectCapabilities.Contains('PackageReferences')) or 
 						$(_AllProjectCapabilities.Contains('WinRTReferences')) or
 						$(_AllProjectCapabilities.Contains('SDKReferences'))">true</_SupportsReferences>
 
-			<!-- Only depend on ResolveReferences if we need to include framework references -->
-			<InferPackageContentsDependsOn Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true' and '$(_SupportsReferences)' == 'true'">
-				ResolveReferences
+			<InferPackageContentsDependsOn Condition="'$(_SupportsReferences)' == 'true'">
+				ResolveReferences;
+				InferPrimaryOutputDependencies
 			</InferPackageContentsDependsOn>
 			<InferPackageContentsDependsOn>
 				$(InferPackageContentsDependsOn);

@@ -369,7 +369,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
 		<MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
 		<PropertyGroup>
-			<NuspecFile Condition="'$(EmitNuspec)' == 'true' And '$(NuspecFile)' ==''">$(OutputPath)\$(PackageId).nuspec</NuspecFile>
+			<NuspecFile Condition="'$(EmitNuspec)' == 'true' And '$(NuspecFile)' == ''">$(OutputPath)\$(PackageId).nuspec</NuspecFile>
 		</PropertyGroup>
 		<CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(NuspecFile)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
 			<Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />

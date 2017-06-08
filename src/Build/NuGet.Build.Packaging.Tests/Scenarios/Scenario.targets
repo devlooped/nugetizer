@@ -7,6 +7,9 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(IsPortable)' != 'true'" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
 			Condition="'$(IsPortable)' == 'true'" />
+  <!-- Ensure we get proper NuGet behavior always -->
+  <Import Project="$(NuGetRestoreTargets)" Condition="'$(IsRestoreTargetsFileLoaded)' != 'true' and '$(NuGetRestoreTargets)' != ''" />
+  <Import Project="$(NuGetTargets)" Condition="'$(ResolveNuGetPackageAssetsDependsOn)' == '' and '$(NuGetTargets)' != ''" />
 
   <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="'$(NuGetBuildPackagingTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
 

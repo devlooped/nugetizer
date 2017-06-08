@@ -8,6 +8,11 @@
 		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<ThisAssemblyProjectProperty Include="NuGetRestoreTargets" />
+		<ThisAssemblyProjectProperty Include="NuGetTargets" />
+	</ItemGroup>
+
 	<Target Name="CopyScenarioFiles" AfterTargets="Build">
 		<ItemGroup>
 			<ScenarioFile Include="Scenarios\**\*.*" Exclude="Scenarios\**\bin\**\*.*;Scenarios\**\obj\**\*.*" />

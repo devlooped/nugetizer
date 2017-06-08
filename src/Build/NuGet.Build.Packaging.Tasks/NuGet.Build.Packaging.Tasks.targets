@@ -27,23 +27,12 @@
 	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets"
 			  Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
 
-	<Target Name="AddBuiltOutput" BeforeTargets="GetPackageContents" DependsOnTargets="AllProjectOutputGroups" Returns="@(PackageFile)">
+	<Target Name="CleanContents" BeforeTargets="GetPackageContents" DependsOnTargets="InferPackageContents" Returns="@(PackageFile)">
 		<ItemGroup>
-			<PackageFile Include="$(OutputPath)ICSharpCode.Decompiler.dll">
-				<PackagePath>build\ICSharpCode.Decompiler.dll</PackagePath>
-			</PackageFile>
-			<PackageFile Include="$(OutputPath)ICSharpCode.NRefactory.CSharp.dll">
-				<PackagePath>build\ICSharpCode.NRefactory.CSharp.dll</PackagePath>
-			</PackageFile>
-			<PackageFile Include="$(OutputPath)ICSharpCode.NRefactory.dll">
-				<PackagePath>build\ICSharpCode.NRefactory.dll</PackagePath>
-			</PackageFile>
-			<PackageFile Include="$(OutputPath)Mono.Cecil.dll">
-				<PackagePath>build\Mono.Cecil.dll</PackagePath>
-			</PackageFile>
-			<PackageFile Include="$(OutputPath)Mono.Options.dll">
-				<PackagePath>build\Mono.Options.dll</PackagePath>
-			</PackageFile>
+			<PackageFile Remove="@(PackageFile)" Condition="
+				$([System.String]::new('%(PackageFile.NuGetPackageId)').StartsWith('Microsoft')) or 
+				$([System.String]::new('%(PackageFile.NuGetPackageId)').StartsWith('Newtonsoft')) or 
+				$([System.String]::new('%(PackageFile.NuGetPackageId)').StartsWith('NuGet'))" />
 		</ItemGroup>
 	</Target>
 

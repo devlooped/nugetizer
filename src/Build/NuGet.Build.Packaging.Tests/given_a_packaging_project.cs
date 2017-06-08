@@ -126,7 +126,5 @@ namespace NuGet.Build.Packaging
 				PackagePath = @"lib\net45\c.xml",
 			}));
 		}
-
-
 	}
 }

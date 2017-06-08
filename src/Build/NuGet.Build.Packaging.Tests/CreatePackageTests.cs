@@ -177,7 +177,10 @@ namespace NuGet.Build.Packaging
 
 			Assert.NotNull(manifest);
 			Assert.Equal(2, manifest.Metadata.DependencyGroups.Count());
-			Assert.Equal(NuGetFramework.UnsupportedFramework, manifest.Metadata.DependencyGroups.First().TargetFramework);
+			Assert.True(
+				manifest.Metadata.DependencyGroups.First().TargetFramework == NuGetFramework.AnyFramework ||
+				manifest.Metadata.DependencyGroups.First().TargetFramework == NuGetFramework.UnsupportedFramework);
+
 			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
 
 			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
@@ -212,11 +215,12 @@ namespace NuGet.Build.Packaging
 
 			var manifest = ExecuteTask();
 
-			//Process.Start("notepad.exe", task.NuspecFile);
-
 			Assert.NotNull(manifest);
 			Assert.Equal(2, manifest.Metadata.DependencyGroups.Count());
-			Assert.Equal(NuGetFramework.UnsupportedFramework, manifest.Metadata.DependencyGroups.First().TargetFramework);
+			Assert.True(
+				manifest.Metadata.DependencyGroups.First().TargetFramework == NuGetFramework.AnyFramework ||
+				manifest.Metadata.DependencyGroups.First().TargetFramework == NuGetFramework.UnsupportedFramework);
+
 			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
 
 			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
@@ -273,9 +277,6 @@ namespace NuGet.Build.Packaging
 			createPackage = Debugger.IsAttached;
 
 			var manifest = ExecuteTask();
-
-			//if (Debugger.IsAttached)
-			//	Process.Start("notepad.exe", task.NuspecFile);
 
 			Assert.NotNull(manifest);
 			Assert.Equal(4, manifest.Metadata.DependencyGroups.Count());

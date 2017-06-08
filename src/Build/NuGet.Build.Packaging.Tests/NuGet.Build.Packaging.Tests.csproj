@@ -5,6 +5,7 @@
     <TargetFramework>net46</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <PublicSign>false</PublicSign>
+    <NuGetBuildTasksPackTargets>NO-SDK-PACK</NuGetBuildTasksPackTargets>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NuGet.Build.Packaging.Tasks">

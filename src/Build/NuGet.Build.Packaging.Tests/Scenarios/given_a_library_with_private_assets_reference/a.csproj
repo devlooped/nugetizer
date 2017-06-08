@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
+	<PropertyGroup>
+		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Mono.Options">
+			<Version>*</Version>
+      <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json">
+			<Version>*</Version>
+      <PrivateAssets>lib</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="xunit">
+			<Version>*</Version>
+		</PackageReference>
+	</ItemGroup>
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
+</Project>
