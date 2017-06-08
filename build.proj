@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <NuGetUrl Condition=" '$(NuGetUrl)' == '' ">https://dist.nuget.org/win-x86-commandline/v3.4.4/NuGet.exe</NuGetUrl>
+    <NuGetUrl Condition=" '$(NuGetUrl)' == '' ">https://dist.nuget.org/win-x86-commandline/latest/nuget.exe</NuGetUrl>
     <RestorePackages>false</RestorePackages>
     <RunCodeAnalysis Condition=" '$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
     <IntermediateOutputPath>.nuget\</IntermediateOutputPath>
@@ -22,6 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+		<Solution Include="external\ApiIntersect\ApiIntersect.sln" />
     <Solution Include="src\Build\NuGet.Build.Packaging.sln" />
     <Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
     <TestProject Include="src\Build\**\*Tests.csproj" />
@@ -75,22 +76,15 @@
 
   <Target Name="Restore">
     <ItemGroup>
-      <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
-      <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln" />
-      <NuGetRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_json_dependencies\project.json" />
-      <MSBuildRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_packaging_project_with_netstandard\a.nuproj" />
-      <MSBuildRestore Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_private_assets_reference\a.csproj" />
+      <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
+      <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln" />
+      <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_json_dependencies\a.csproj" />
+      <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_packaging_project_with_netstandard\a.nuproj" />
+      <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_private_assets_reference\a.csproj" />
 
-      <MSBuildRestore Include="external\ApiIntersect\ApiIntersect.sln" />
-      <MSBuildRestore Include="src\Build\NuGet.Build.Packaging.sln" />
-      <MSBuildRestore Include="src\VisualStudio\NuGet.Packaging.VisualStudio.sln" />
     </ItemGroup>
 
-    <Exec Command='"$(NuGet)" Restore "%(NuGetRestore.Identity)" -Verbosity quiet'
-          WorkingDirectory='%(RestoreSolution.RootDir)%(RestoreSolution.Directory)'/>
-    
-    <Exec Command='"$(MSBuildBinPath)\MSBuild.exe" /t:Restore "%(MSBuildRestore.Identity)" /v:Minimal'
-          WorkingDirectory='%(RestoreSolution.RootDir)%(RestoreSolution.Directory)'/>
+    <MSBuild Projects="@(Solution);@(TestProject);@(RestoreProject)" Targets="Restore" Properties="$(CommonBuildProperties)" />
   </Target>
 
   <Target Name="Coverage" DependsOnTargets="Build">

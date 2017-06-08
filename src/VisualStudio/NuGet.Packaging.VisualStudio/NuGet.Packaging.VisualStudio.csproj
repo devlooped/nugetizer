@@ -104,7 +104,6 @@
     <None Include="NuGet.Packaging.VisualStudio.targets">
       <SubType>Designer</SubType>
     </None>
-    <None Include="project.json" />
     <Content Include="Targets\NuGet.Packaging.Authoring.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
