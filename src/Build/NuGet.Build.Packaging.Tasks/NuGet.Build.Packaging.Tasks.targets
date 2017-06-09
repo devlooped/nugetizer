@@ -19,6 +19,7 @@
 		<Description>NuGetizer-3000</Description>
 		<IsDevelopmentDependency>true</IsDevelopmentDependency>
 		<PrimaryOutputKind>build</PrimaryOutputKind>
+		<IncludeSymbolsInPackage>true</IncludeSymbolsInPackage>
 
 		<PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\..\out</PackageOutputPath>
