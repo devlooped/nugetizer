@@ -94,8 +94,10 @@ namespace $(RootNamespace)
 	<Target Name="ILRepack"
 			AfterTargets="CoreCompile"
 			DependsOnTargets="CoreCompile"
+			Inputs="@(IntermediateAssembly->'%(FullPath)')"
+			Outputs="$(IntermediateOutputPath)ilrepack.txt"
 			Returns="@(MergedAssemblies)"
-			Condition="'$(ILRepack)' != 'false'">
+			Condition="Exists(@(IntermediateAssembly->'%(FullPath)')) and '$(ILRepack)' != 'false'">
 		<GetReferenceAssemblyPaths BypassFrameworkInstallChecks="False" TargetFrameworkMoniker="$(TargetFrameworkMoniker)">
 			<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FullFrameworkReferenceAssemblyPaths" />
 		</GetReferenceAssemblyPaths>
@@ -109,6 +111,7 @@ namespace $(RootNamespace)
 		<PropertyGroup>
 			<ILRepackArgs Condition="'$(AssemblyOriginatorKeyFile)' != ''">/keyfile:&quot;$(AssemblyOriginatorKeyFile)&quot;</ILRepackArgs>
 		</PropertyGroup>
+		<Touch AlwaysCreate="true" Files="$(IntermediateOutputPath)ilrepack.txt" />
 		<Exec Command="&quot;$(ILRepack)&quot; @(LibDir->'/lib:&quot;%(Identity).&quot;', ' ') $(ILRepackArgs) /targetplatform:&quot;v4,$(FullFrameworkReferenceAssemblyPaths.TrimEnd(\\))&quot; /out:&quot;@(IntermediateAssembly->'%(FullPath)')&quot; &quot;@(IntermediateAssembly->'%(FullPath)')&quot; @(MergedAssemblies->'&quot;%(FullPath)&quot;', ' ')"
 			  WorkingDirectory="$(MSBuildProjectDirectory)\$(OutputPath)"
 			  StandardErrorImportance="high"
@@ -119,6 +122,7 @@ namespace $(RootNamespace)
 			<Output TaskParameter="ExitCode" PropertyName="ExitCode"/>
 		</Exec>
 		<Message Importance="high" Text="$(ILRepackOutput)" Condition="'$(ExitCode)' != '0'" />
+		<Delete Files="$(IntermediateOutputPath)ilrepack.txt" Condition="'$(ExitCode)' != '0'" />
 		<Error Text="$(ILRepackOutput)" Condition="'$(ExitCode)' != '0' And '$(ContinueOnError)' != 'true'" />
 		<Delete Files="@(MergedAssemblies -> '$(MSBuildProjectDirectory)\$(OutputPath)%(Filename)%(Extension)')" Condition="Exists('$(MSBuildProjectDirectory)\$(OutputPath)%(Filename)%(Extension)')" />
 	</Target>

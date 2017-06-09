@@ -11,7 +11,6 @@
     <PackageReference Include="netfx-System.StringResources" Version="3.1.5" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build" Version="14.3.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" PrivateAssets="all" />
-    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
     <PackageReference Include="Newtonsoft.Json" Version="6.0.8" PrivateAssets="all" />
     <PackageReference Include="NuGet.Client" Version="4.0.0" PrivateAssets="all" />
     <PackageReference Include="NuGet.Packaging" Version="4.0.0" PrivateAssets="all" />
