@@ -188,7 +188,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<PropertyGroup>
 		<GetPackageContentsDependsOn>
 			$(GetPackageContentsDependsOn);
-			GetPackageTargetPath
+			GetPackageTargetPath;
+			_AddPackageManifest
 		</GetPackageContentsDependsOn>
 		<GetPackageContentsDependsOn Condition="'$(IncludeProjectReferencesInPackage)' == 'true'">
 			$(GetPackageContentsDependsOn);
@@ -197,15 +198,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	</PropertyGroup>
 
 	<Target Name="GetPackageContents" DependsOnTargets="$(GetPackageContentsDependsOn)" Returns="@(_PackageContent)">
-		<!-- If packaging the project, provide the metadata as a non-file item -->
 		<ItemGroup>
-			<PackageFile Include="@(PackageTargetPath->'%(Id)')" Condition="'$(IsPackable)' == 'true'">
-				<Kind>Metadata</Kind>
-				<PackageId>$(PackageId)</PackageId>
-				<Platform>$(Platform)</Platform>
-				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
-			</PackageFile>
-
 			<!-- 
 				PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
 				NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
@@ -223,6 +216,18 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<AssignPackagePath Files="@(PackageFile)" Kinds="@(PackageItemKind)" IsPackaging="%(PackageFile.IsPackaging)">
 			<Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
 		</AssignPackagePath>
+	</Target>
+
+	<Target Name="_AddPackageManifest" Condition="'$(IsPackable)' == 'true'">
+		<!-- If packaging the project, provide the metadata as a non-file item -->
+		<ItemGroup>
+			<PackageFile Include="@(PackageTargetPath->'%(Id)')" Condition="'$(IsPackable)' == 'true'">
+				<Kind>Metadata</Kind>
+				<PackageId>$(PackageId)</PackageId>
+				<Platform>$(Platform)</Platform>
+				<TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+			</PackageFile>
+		</ItemGroup>
 	</Target>
 
 	<Target Name="_GetReferencedPackageContents"

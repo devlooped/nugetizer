@@ -22,5 +22,12 @@
 			<Name>e</Name>
 		</ProjectReference>
 	</ItemGroup>
+	<Target Name="_AugmentMetadata" BeforeTargets="GetPackageContents">
+		<ItemGroup>
+			<PackageFile Condition="'%(PackageFile.Kind)' == 'Metadata'">
+				<Foo>Bar</Foo>
+			</PackageFile>
+		</ItemGroup>
+	</Target>
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />	
 </Project>

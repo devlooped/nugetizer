@@ -41,6 +41,20 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_getting_contents_then_can_augment_package_metadata()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+
+			result.AssertSuccess(output);
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				Kind = "Metadata",
+				Foo = "Bar",
+			}));
+		}
+
+		[Fact]
 		public void when_getting_contents_then_includes_referenced_project_satellite_assembly()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
