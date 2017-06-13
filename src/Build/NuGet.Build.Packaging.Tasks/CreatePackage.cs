@@ -114,22 +114,33 @@ namespace NuGet.Build.Packaging.Tasks
 								   Version = VersionRange.Parse(item.GetMetadata(MetadataName.Version)),
 								   TargetFramework = item.GetNuGetTargetFramework()
 							   };
-			
-			manifest.Metadata.DependencyGroups = (from dependency in dependencies
-												  group dependency by dependency.TargetFramework into dependenciesByFramework
-												  select new PackageDependencyGroup
-												  (
-													  dependenciesByFramework.Key,
-													  (from dependency in dependenciesByFramework
-													   where dependency.Id != "_._"
-													   group dependency by dependency.Id into dependenciesById
-													   select new PackageDependency
-													   (
-														  dependenciesById.Key,
-														  dependenciesById.Select(x => x.Version)
-														  .Aggregate(AggregateVersions)
-													   )).ToList()
-												 )).ToList();
+
+			var definedDependencyGroups = (from dependency in dependencies
+										   group dependency by dependency.TargetFramework into dependenciesByFramework
+										   select new PackageDependencyGroup
+										   (
+											   dependenciesByFramework.Key,
+											   (from dependency in dependenciesByFramework
+												where dependency.Id != "_._"
+												group dependency by dependency.Id into dependenciesById
+												select new PackageDependency
+												 (
+													 dependenciesById.Key,
+													 dependenciesById.Select(x => x.Version)
+													 .Aggregate(AggregateVersions)
+												 )).ToList()
+										   )).ToDictionary(p => p.TargetFramework.GetFrameworkString());
+
+			// include frameworks referenced by libraries, but without dependencies..
+			foreach (var targetFramework in (from item in Contents
+											 where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Lib &&
+												   !"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase)
+											 select item.GetNuGetTargetFramework()))
+				if (!definedDependencyGroups.ContainsKey(targetFramework.GetFrameworkString()))
+					definedDependencyGroups.Add(targetFramework.GetFrameworkString(),
+												new PackageDependencyGroup(targetFramework, Array.Empty<PackageDependency>()));
+
+			manifest.Metadata.DependencyGroups = definedDependencyGroups.Values;
 		}
 
 		void AddFiles(Manifest manifest)

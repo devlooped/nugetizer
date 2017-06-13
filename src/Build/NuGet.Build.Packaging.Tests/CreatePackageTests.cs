@@ -284,6 +284,47 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_creating_package_with_multiple_target_frameworks_generates_empty_dependency_groups()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem(Path.GetTempFileName(), new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.PackagePath, "lib\\net35\\library.dll" },
+					{ MetadataName.Kind, PackageItemKind.Lib },
+					{ MetadataName.TargetFramework, "net35" }
+				}),
+				new TaskItem(Path.GetTempFileName(), new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.PackagePath, "lib\\net40\\library.dll" },
+					{ MetadataName.Kind, PackageItemKind.Lib },
+					{ MetadataName.TargetFramework, "net40" }
+				}),
+				new TaskItem(Path.GetTempFileName(), new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.PackagePath, "lib\\net45\\library.dll" },
+					{ MetadataName.Kind, PackageItemKind.Lib },
+					{ MetadataName.TargetFramework, "net45" }
+				})
+			};
+
+			var manifest = ExecuteTask();
+
+			HashSet<string> requiredFrameworks = new HashSet<string>()
+			{
+				"net35",
+				"net40",
+				"net45"
+			};
+
+			Assert.NotNull(manifest);
+			Assert.Equal(3, manifest.Metadata.DependencyGroups.Count());
+		}
+
+		[Fact]
 		public void when_creating_package_with_development_dependency_then_does_not_generate_dependency_group()
 		{
 			var content = Path.GetTempFileName();
