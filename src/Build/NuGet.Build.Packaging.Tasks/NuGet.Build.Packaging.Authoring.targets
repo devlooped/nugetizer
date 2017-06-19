@@ -33,9 +33,37 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</ProjectReference>
 	</ItemDefinitionGroup>
 
+	<!-- ProjectCapabilities in dev15 should be supported via NuGet packages -->
+	<ItemGroup>
+		<ProjectCapability Include="PackagingProject" />
+
+		<!-- Allows configurations inferred from Condition="CONFIG|PLATFORM" usage -->
+		<ProjectCapability Include="ProjectConfigurationsInferredFromUsage" />
+
+		<!-- DependenciesTree capability lights up a Dependencies tree node and it's sub node providers-->
+		<ProjectCapability Include="DependenciesTree" />
+
+		<ProjectCapability Include="
+                          AssemblyReferences;
+                          ProjectReferences;
+                          PackageReferences;
+                          OutputGroups;
+                          AllTargetOutputGroups;
+                          VisualStudioWellKnownOutputGroups;
+                          SingleFileGenerators;
+                          DeclaredSourceItems;
+                          UserSourceItems" />
+
+		<!-- Reference Manager capabilities -->
+		<ProjectCapability Include="ReferenceManagerAssemblies" />
+		<ProjectCapability Include="ReferenceManagerBrowse" />
+		<ProjectCapability Include="ReferenceManagerProjects" />
+
+	</ItemGroup>
+
 	<!-- Just to make it easy for consumers to request the TargetPath as usual but get the 
 		 actual package file, which contains the PackageVersion and will be dynamic therefore. -->
-	<Target Name="UpdateTargetPath" 
+	<Target Name="UpdateTargetPath"
 			BeforeTargets="GetTargetPath"
 			DependsOnTargets="GetPackageTargetPath">
 		<PropertyGroup>
@@ -46,11 +74,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<Target Name="CoreCompile" DependsOnTargets="Pack" />
 	<Target Name="CreateManifestResourceNames" />
 	<Target Name="GetReferenceAssemblyPaths" />
-	
+
 	<Target Name="_CleanReferences" AfterTargets="ResolveAssemblyReferences">
 		<ItemGroup>
 			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
 		</ItemGroup>
 	</Target>
-	
+
 </Project>

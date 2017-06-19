@@ -4,10 +4,11 @@
     <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(IsPortable)' != 'true'" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(IsPortable)' != 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
-			Condition="'$(IsPortable)' == 'true'" />
-  <!-- Ensure we get proper NuGet behavior always -->
+			Condition="'$(IsPortable)' == 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />  
+			
+	<!-- Ensure we get proper NuGet behavior always -->
   <Import Project="$(NuGetRestoreTargets)" Condition="'$(IsRestoreTargetsFileLoaded)' != 'true' and '$(NuGetRestoreTargets)' != ''" />
   <Import Project="$(NuGetTargets)" Condition="'$(ResolveNuGetPackageAssetsDependsOn)' == '' and '$(NuGetTargets)' != ''" />
 
@@ -95,5 +96,7 @@
       </Code>
     </Task>
   </UsingTask>
-
+  
+	<Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  
 </Project>
