@@ -19,6 +19,7 @@
     <CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackageOutputPath=$(Out)</CommonBuildProperties>
     <DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
     <PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
+		<GitInfoReportImportance>high</GitInfoReportImportance>
   </PropertyGroup>
 
   <ItemGroup>
@@ -140,8 +141,8 @@
       <GitSemVerPatch>0</GitSemVerPatch>
     </PropertyGroup>
   </Target>
-  <Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
   <Import Project="src\PackageVersion.targets" />
+  <Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
 
   <Target Name="Configure" DependsOnTargets="DownloadNuGet;GetPackageVersion">
     <Message Importance="high" Text="*********************************************************************************************************************" />
@@ -152,11 +153,10 @@
 			  StandardOutputImportance="low"
 			  Condition=" '$(PendingRestore)' == 'true' " />
 
-    <!-- Invoke GitVersion just like the project-level targets do -->
-    <MSBuild Projects="$(GitInfoTargets)" Targets="GitVersion;GitInfoReport" Properties="GitInfoReportImportance=high">
-      <Output TaskParameter="TargetOutputs" ItemName="GitInfo" />
-    </MSBuild>
+		<Error Text="Build script NuGet packages were missing and were just restored. Please run the build again." Condition=" '$(PendingRestore)' == 'true' "/>
 
+    <!-- Invoke GitVersion just like the project-level targets do -->
+		<CallTarget Targets="GitInfoReport" />
     <!-- For now this is an informative version #, used to update CI -->
     <Message Text="Building version $(PackageVersion)" Importance="high" />
 
