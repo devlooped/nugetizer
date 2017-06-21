@@ -60,8 +60,8 @@
     <PackageReference Include="MSBuilder.DumpItems" Version="0.2.1" />
     <PackageReference Include="MSBuilder.Introspect" Version="0.1.5" />
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" />
-    <PackageReference Include="MSBuilder.VsixDependency" Version="0.2.11" />
-    <PackageReference Include="MSBuilder.VsixInstaller" Version="0.2.16" />
+    <PackageReference Include="MSBuilder.VsixDependency" Version="0.2.13" />
+    <PackageReference Include="MSBuilder.VsixInstaller" Version="0.2.18" />
     <PackageReference Include="VSLangProj150" Version="1.0.0" />
     <PackageReference Include="VSSDK.ComponentModelHost.11" Version="11.0.4" />
   </ItemGroup>
