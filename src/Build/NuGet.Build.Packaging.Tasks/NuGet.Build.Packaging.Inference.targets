@@ -107,23 +107,23 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<!-- NOTE: Content is opt-out (must have Pack=false to exclude if IncludeContentInPackage=true) -->
 			<!-- Stuff that is copied to output should be included from that output location -->
 			<_InferredPackageFile Include="@(_ContentToInfer->'$(OutputPath)%(TargetPath)')"
-							   Condition="'%(_ContentToInfer.CopyToOutputDirectory)' != ''">
+							   Condition="'%(_ContentToInfer.CopyToOutputDirectory)' != '' and '%(_ContentToInfer.CopyToOutputDirectory)' != 'Never'">
 				<Kind Condition="'%(_ContentToInfer.Kind)' == ''">$(PrimaryOutputKind)</Kind>
 			</_InferredPackageFile>
 			<!-- Otherwise, include from source location and default to content -->
 			<_InferredPackageFile Include="@(_ContentToInfer->'%(FullPath)')"
-							   Condition="'%(_ContentToInfer.CopyToOutputDirectory)' == ''">
+							   Condition="'%(_ContentToInfer.CopyToOutputDirectory)' == '' or '%(_ContentToInfer.CopyToOutputDirectory)' == 'Never'">
 				<Kind Condition="'%(_ContentToInfer.Kind)' == ''">Content</Kind>
 			</_InferredPackageFile>
 
 			<!-- NOTE: None is also opt-out (must have Pack=false to exclude if IncludeNoneInPackage=true, but this property defaults to false) -->
 			<!-- Likewise, include from target path if it's copied, from source path otherwise -->
 			<_InferredPackageFile Include="@(_NoneToInfer->'$(OutputPath)%(TargetPath)')"
-							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' != ''">
+							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' != '' and '%(_NoneToInfer.CopyToOutputDirectory)' != 'Never'">
 				<Kind Condition="'%(_NoneToInfer.Kind)' == ''">$(PrimaryOutputKind)</Kind>
 			</_InferredPackageFile>
 			<_InferredPackageFile Include="@(_NoneToInfer->'%(FullPath)')"
-							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' == ''">
+							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' == '' or '%(_NoneToInfer.CopyToOutputDirectory)' == 'Never'">
 				<Kind Condition="'%(_NoneToInfer.Kind)' == ''">None</Kind>
 			</_InferredPackageFile>
 

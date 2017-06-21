@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Microsoft.Build.Execution;
 using NuGet.Build.Packaging.Properties;
 using Xunit;
@@ -133,6 +134,24 @@ namespace NuGet.Build.Packaging
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				PackagePath = @"contentFiles\any\monoandroid51\Resources\drawable-hdpi\Icon.png",
+			}));
+		}
+
+		[Fact]
+		public void content_no_copy_is_included_from_source()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage"
+			});
+
+			result.AssertSuccess(output);
+
+			var sourcePath = Path.Combine(Path.GetDirectoryName(result.ProjectOrSolutionFile), "content-with-kind.txt");
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				FullPath = sourcePath,
 			}));
 		}
 
@@ -492,6 +511,24 @@ namespace NuGet.Build.Packaging
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				PackagePath = @"build\none-with-kind.txt",
+			}));
+		}
+
+		[Fact]
+		public void none_with_kind_is_included_from_source()
+		{
+			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+			{
+				PackageId = "ContentPackage"
+			});
+
+			result.AssertSuccess(output);
+
+			var sourcePath = Path.Combine(Path.GetDirectoryName(result.ProjectOrSolutionFile), "none-with-kind.txt");
+
+			Assert.Contains(result.Items, item => item.Matches(new
+			{
+				FullPath = sourcePath,
 			}));
 		}
 

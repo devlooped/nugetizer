@@ -62,19 +62,22 @@ static partial class Builder
 		buildProps[nameof(ThisAssembly.Project.Properties.NuGetRestoreTargets)] = ThisAssembly.Project.Properties.NuGetRestoreTargets;
 		buildProps[nameof(ThisAssembly.Project.Properties.NuGetTargets)] = ThisAssembly.Project.Properties.NuGetTargets;
 
-		return new TargetResult(Build(projectOrSolution, target,
+		return new TargetResult(projectOrSolution, Build(projectOrSolution, target,
 			properties: buildProps,
 			logger: logger), target, logger);
 	}
 
 	public class TargetResult : ITargetResult
 	{
-		public TargetResult(BuildResult result, string target, TestOutputLogger logger)
+		public TargetResult(string projectOrSolutionFile, BuildResult result, string target, TestOutputLogger logger)
 		{
+			ProjectOrSolutionFile = projectOrSolutionFile;
 			BuildResult = result;
 			Target = target;
 			Logger = logger;
 		}
+
+		public string ProjectOrSolutionFile { get; private set; }
 
 		public BuildResult BuildResult { get; private set; }
 
