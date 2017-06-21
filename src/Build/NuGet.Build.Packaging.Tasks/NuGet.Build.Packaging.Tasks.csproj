@@ -18,6 +18,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="**\*.props;**\*.targets" />
+    <Content Include="GenerateReferenceAssembly.csproj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="NuGet.Build.Packaging.Tasks.targets" />
     <Content Include="**\*.props;**\*.targets" Exclude="obj\**\*.*;bin\**\*.*;NuGet.Build.Packaging.Tasks.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
