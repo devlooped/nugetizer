@@ -544,5 +544,49 @@ namespace NuGet.Build.Packaging
 
 			Assert.NotNull(manifest);
 		}
+
+		[Fact]
+		public void when_creating_package_with_duplicate_framework_references_then_contains_only_unique_references()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("System.Xml", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET45 }
+				}),
+				new TaskItem("System.Xml", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET45 }
+				}),
+				new TaskItem("System.Xml", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.PCL78 }
+				}),
+				new TaskItem("System.Xml", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.PCL78 }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.Equal(manifest.Metadata.FrameworkReferences,
+				new[]
+				{
+					new FrameworkAssemblyReference("System.Xml", new [] { NuGetFramework.Parse(TargetFrameworks.NET45) }),
+					new FrameworkAssemblyReference("System.Xml", new [] { NuGetFramework.Parse(TargetFrameworks.PCL78) }),
+				},
+				FrameworkAssemblyReferenceComparer.Default);
+
+			Assert.NotNull(manifest);
+		}
 	}
 }

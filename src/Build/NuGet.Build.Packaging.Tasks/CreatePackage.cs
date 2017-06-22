@@ -179,13 +179,13 @@ namespace NuGet.Build.Packaging.Tasks
 
 		void AddFrameworkAssemblies(Manifest manifest)
 		{
-			var frameworkReferences = from item in Contents
-									  where item.GetMetadata(MetadataName.Kind) == PackageItemKind.FrameworkReference
-									  select new FrameworkAssemblyReference
-									  (
-										  item.ItemSpec,
-										  new [] { NuGetFramework.Parse(item.GetTargetFrameworkMoniker().FullName) }
-									  );
+			var frameworkReferences = (from item in Contents
+			 						   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.FrameworkReference
+			 						   select new FrameworkAssemblyReference
+									   (
+										   item.ItemSpec,
+										   new[] { NuGetFramework.Parse(item.GetTargetFrameworkMoniker().FullName) }
+									   )).Distinct(FrameworkAssemblyReferenceComparer.Default);
 
 			manifest.Metadata.FrameworkReferences = frameworkReferences;
 		}
