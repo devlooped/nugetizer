@@ -33,7 +33,6 @@
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="2.0.0" />
     <PackageReference Include="xunit.runner.console" Version="2.3.0-beta4-build3742" />
-    <PackageReference Include="xunit.runner.msbuild" Version="2.2.0" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="2.4.5" />
   </ItemGroup>
