@@ -76,7 +76,7 @@ if "%VisualStudioVersion%" == "" (
 )
 
 @echo on
-msbuild /nologo /nodeReuse:%NodeReuse% /t:"%MSBuildTarget%" /p:Configuration="%BuildConfiguration%" %MSBuildAdditionalArguments%
+msbuild /nologo /nodeReuse:%NodeReuse% /t:"%MSBuildTarget%" /p:target="%MSBuildTarget%" /p:Configuration="%BuildConfiguration%" %MSBuildAdditionalArguments%
 @echo off
 if ERRORLEVEL 1 (
     echo.

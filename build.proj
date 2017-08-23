@@ -152,7 +152,7 @@
 			  StandardOutputImportance="low"
 			  Condition=" '$(PendingRestore)' == 'true' " />
 
-		<Error Text="Build script NuGet packages were missing and were just restored. Please run the build again." Condition=" '$(PendingRestore)' == 'true' "/>
+		<Error Text="Build script NuGet packages were missing and were just restored. Please run the build again." Condition=" '$(PendingRestore)' == 'true' and '$(target)' != 'Restore' "/>
 
     <!-- Invoke GitVersion just like the project-level targets do -->
 		<CallTarget Targets="GitInfoReport" />
