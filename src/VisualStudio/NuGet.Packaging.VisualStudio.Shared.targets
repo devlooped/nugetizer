@@ -43,12 +43,12 @@
 
 	<Target Name="EnsureNuGetizerPackage"
 			Condition="'$(CreateVsixContainer)' != 'false' And '$(DeployExtension)' != 'false'"
-			DependsOnTargets="GetVersion" 
+			DependsOnTargets="GetPackageVersion;GetVsixVersion" 
 			BeforeTargets="DeployVsixExtensionFiles;CreateVsixContainer">
 		<ItemGroup>
 			<_NuGetizerPackage Include="$(Out)\*.nupkg" />
 			<_CurrentNuGetizerPackage Include="@(_NuGetizerPackage)"
-									  Condition="$([System.String]::New('%(Filename)').Replace('NuGet.Build.Packaging.', '')) == '$(Version)'" />
+									  Condition="$([System.String]::New('%(Filename)').Replace('NuGet.Build.Packaging.', '')) == '$(PackageVersion)'" />
 		</ItemGroup>
 
 		<PropertyGroup>
@@ -66,9 +66,9 @@
   Packages found were: %0a@(_NuGetizerPackage -> '    %(Filename)%(Extension)', '%0a')" />
 	</Target>
 
-	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
+	<Target Name="GetVsixVersion" DependsOnTargets="GitVersion" Returns="$(VsixVersion)">
 		<PropertyGroup>
-			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
+			<VsixVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</VsixVersion>
 		</PropertyGroup>
 	</Target>
 
@@ -105,7 +105,7 @@
 				 Value="$(PackageVersion)"/>
 	</Target>
 
-	<Target Name="CopyVsixToOut" AfterTargets="CreateVsixContainer" DependsOnTargets="GetVersion"
+	<Target Name="CopyVsixToOut" AfterTargets="CreateVsixContainer" DependsOnTargets="GetVsixVersion"
 			Condition="'$(Out)' != '' And '$(CreateVsixContainer)' == 'true' And Exists('$(TargetVsixContainer)')">
 		<ItemGroup>
 			<TargetVsixContainer Include="$(TargetVsixContainer)" />
@@ -113,7 +113,7 @@
 		<!-- Copy the evergreen filename -->
 		<Copy SourceFiles="@(TargetVsixContainer)" DestinationFolder="$(Out)" />
 		<!-- And also a versioned filename -->
-		<Copy SourceFiles="@(TargetVsixContainer)" DestinationFiles="$(Out)\%(TargetVsixContainer.Filename).$(Version)%(TargetVsixContainer.Extension)" />
+		<Copy SourceFiles="@(TargetVsixContainer)" DestinationFiles="$(Out)\%(TargetVsixContainer.Filename).$(VsixVersion)%(TargetVsixContainer.Extension)" />
 	</Target>
 
 	<!-- Because envdte comes from a nuget package, we can't set the EmbedInteropTypes to true in the project, so we do it here -->

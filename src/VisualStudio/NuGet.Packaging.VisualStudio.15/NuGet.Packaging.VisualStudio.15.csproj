@@ -50,7 +50,6 @@
     <PackageReference Include="GitInfo" Version="1.1.61" />
     <PackageReference Include="Merq" Version="1.0.0-rc" />
     <PackageReference Include="Merq.Async" Version="1.1.17-rc" />
-    <PackageReference Include="Merq.VisualStudio" Version="1.1.17-rc" />
     <PackageReference Include="Microsoft.Build" Version="15.1.548" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.SDK" Version="15.0.751" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.14.0" Version="14.3.25407" />
