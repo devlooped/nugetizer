@@ -26,8 +26,7 @@ deploy:
     api_key:
       secure: 7MS5+XWaFchMXFqzgneQCqo9U0DlxiPXe/KWWUnbCBDEizVn06EjdQZkWu1gbNOJ
     on:
-      # we only deploy to public NuGet gallery when tagging the repo
-      appveyor_repo_tag: true
+      branch: /v\d+\.\d+\.\d+/
 
 nuget:
   project_feed: true

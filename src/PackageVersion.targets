@@ -2,7 +2,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-	    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>	
+	    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+		<!-- We use branch and file version sources only -->
+		<GitIgnoreTagVersion>true</GitIgnoreTagVersion>
 		<BuildDependsOn>
 			GetPackageVersion;
 			$(BuildDependsOn)
@@ -11,9 +13,15 @@
 
 	<Target Name="GetPackageVersion" BeforeTargets="ThisProjectInfo" DependsOnTargets="GitVersion" Returns="$(PackageVersion)">
 		<PropertyGroup>
-			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
+			<!-- PR builds are *always* prerelease -->
+			<!-- TFS case: BUILD_REASON=PullRequest and BUILD_SOURCEBRANCH=refs/pull/[#]/merge -->
+			<GitSemVerDashLabel Condition="'$(TF_BUILD)' == 'true' and '$(BUILD_REASON)' == 'PullRequest'">-pr$(BUILD_SOURCEBRANCH.Substring(10).TrimEnd('/merge'))</GitSemVerDashLabel>
 			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
-			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+
+			<!-- Non-prerelease versions will use the package version determined by SemVer -->
+			<PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</PackageVersion>
+			<!-- Prerelease versions are fixed to the base version (this allows the stable versions to always be greater) and have the build number instead -->
+			<PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)-build$(GitCommits.PadLeft(4, '0'))</PackageVersion>
 		</PropertyGroup>
 	</Target>
 

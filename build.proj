@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="All" InitialTargets="Configure" TreatAsLocalProperty="RootSuffix" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="All" InitialTargets="Configure" TreatAsLocalProperty="RootSuffix" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="corebuild\corebuild.props" />
   <Import Project="build.props" />
 
   <PropertyGroup Condition="'$(IsCIBuild)' != 'true'">
@@ -19,6 +20,7 @@
     <CommonBuildProperties>WarningLevel=0;NoWarn=1591;Out=$(Out);Configuration=$(Configuration);RunCodeAnalysis=$(RunCodeAnalysis);PackageOutputPath=$(Out)</CommonBuildProperties>
     <DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
     <PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
+    <GitInfoReportImportance>high</GitInfoReportImportance>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +28,13 @@
     <Solution Include="src\Build\NuGet.Build.Packaging.sln" />
     <Solution Include="src\VisualStudio\NuGet.Packaging.VisualStudio.15\NuGet.Packaging.VisualStudio.15.csproj" />
     <TestProject Include="src\Build\**\*Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GitInfo" Version="2.0.0" />
+    <PackageReference Include="xunit.runner.console" Version="2.3.0-beta4-build3742" />
+    <PackageReference Include="OpenCover" Version="4.6.519" />
+    <PackageReference Include="ReportGenerator" Version="2.4.5" />
   </ItemGroup>
 
   <Target Name="All" DependsOnTargets="Build;Test;Package" />
@@ -39,7 +48,15 @@
 
   <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
-  <Target Name="Build">
+  <Target Name="Build" DependsOnTargets="GitInfoReport;GetPackageVersion">
+    <!-- For now this is an informative version #, used to update CI -->
+    <Message Text="Building version $(PackageVersion)" Importance="high" />
+    <!-- Update AppVeyor build # to match the actual one being used -->
+    <Exec Command="appveyor UpdateBuild -Version $(PackageVersion)"
+          Condition=" '$(APPVEYOR)' == 'true' "
+          ConsoleToMSBuild="true"
+          ContinueOnError="WarnAndContinue" />
+  
     <Exec Command="rmdir $(Out) /S /Q" Condition=" Exists('$(Out)') " ContinueOnError="true" StandardOutputImportance="low" />
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
     <Message Text="Build properties: $(CommonBuildProperties)." Importance="high" />
@@ -67,21 +84,20 @@
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 
     <PropertyGroup>
-      <XunitConsole>"$(PackagesPath)\xunit.runner.console\tools\xunit.console.exe"</XunitConsole>
+      <XunitConsole>"$(XunitConsolePath)"</XunitConsole>
       <XunitOptions>$(XunitOptions) -html $(Out)\test.html -xml $(Out)\test.xml -parallel all -noshadow</XunitOptions>
     </PropertyGroup>
 
     <Exec Command="$(XunitConsole) @(TestAssembly, ' ') $(XunitOptions)" ConsoleToMSBuild="true" />
   </Target>
 
-  <Target Name="Restore">
+  <Target Name="AfterRestore" AfterTargets="Restore">
     <ItemGroup>
       <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_non_nugetized_reference\b.sln" />
       <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_multi_platform_solution\forms.sln" />
       <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_json_dependencies\a.csproj" />
       <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_packaging_project_with_netstandard\a.nuproj" />
       <RestoreProject Include="src\Build\NuGet.Build.Packaging.Tests\Scenarios\given_a_library_with_private_assets_reference\a.csproj" />
-
     </ItemGroup>
 
     <MSBuild Projects="@(Solution);@(TestProject);@(RestoreProject)" Targets="Restore" Properties="$(CommonBuildProperties)" />
@@ -123,16 +139,6 @@
     <Exec Command="start $(Out)\coverage\index.htm" />
   </Target>
 
-  <!-- Configure and restore initial targets and packages -->
-  <Import Project="src\NuGet.Restore.targets" />
-  <PropertyGroup>
-    <GitInfoTargets>$(PackagesPath)\GitInfo\build\GitInfo.targets</GitInfoTargets>
-    <XunitConsole>$(PackagesPath)\xunit.runner.console\tools\xunit.console.x86.exe</XunitConsole>
-    <XunitBuildDir>$([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)', '.nuget', 'packages', 'xunit.runner.msbuild', 'build'))</XunitBuildDir>
-    <XunitProps>$([System.IO.Path]::Combine($(XunitBuildDir), 'xunit.runner.msbuild.props'))</XunitProps>
-    <PendingRestore Condition=" !Exists('$(GitInfoTargets)') Or !Exists('$(XunitConsole)') Or !Exists('$(XunitProps)') ">true</PendingRestore>
-  </PropertyGroup>
-  <Import Project="$(XunitProps)" Condition="Exists('$(XunitProps)')"/>
   <Target Name="GitVersion">
     <PropertyGroup>
       <GitSemVerMajor>1</GitSemVerMajor>
@@ -140,29 +146,13 @@
       <GitSemVerPatch>0</GitSemVerPatch>
     </PropertyGroup>
   </Target>
-  <Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
   <Import Project="src\PackageVersion.targets" />
 
-  <Target Name="Configure" DependsOnTargets="DownloadNuGet;GetPackageVersion">
+  <Target Name="Configure">
     <Message Importance="high" Text="*********************************************************************************************************************" />
     <Message Importance="high" Text="$([System.Environment]::CommandLine)" />
     <Message Importance="high" Text="*********************************************************************************************************************" />
-
-    <Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
-			  StandardOutputImportance="low"
-			  Condition=" '$(PendingRestore)' == 'true' " />
-
-    <!-- Invoke GitVersion just like the project-level targets do -->
-    <MSBuild Projects="$(GitInfoTargets)" Targets="GitVersion;GitInfoReport" Properties="GitInfoReportImportance=high">
-      <Output TaskParameter="TargetOutputs" ItemName="GitInfo" />
-    </MSBuild>
-
-    <!-- For now this is an informative version #, used to update CI -->
-    <Message Text="Building version $(PackageVersion)" Importance="high" />
-
-    <!-- Update AppVeyor build # to match the actual one being used -->
-    <Exec Command="appveyor UpdateBuild -Version $(PackageVersion)" Condition=" '$(APPVEYOR)' == 'true' "
-              ConsoleToMSBuild="true"
-              ContinueOnError="WarnAndContinue" />
   </Target>
+
+	<Import Project="corebuild\corebuild.targets" />
 </Project>

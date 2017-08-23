@@ -21,7 +21,7 @@ if /I "%1" == "/test" set MSBuildTarget=Test&&shift&& goto :ParseArguments
 if /I "%1" == "/restore" set MSBuildTarget=Restore&&shift&& goto :ParseArguments
 if /I "%1" == "/no-node-reuse" set NodeReuse=false&&shift&& goto :ParseArguments
 if /I "%1" == "/no-multi-proc" set MultiProcessor=&&shift&& goto :ParseArguments
-set MSBuildAdditionalArguments=%1 %MSBuildAdditionalArguments%&&shift&& goto :ParseArguments
+set MSBuildAdditionalArguments=%MSBuildAdditionalArguments% %1&&shift&& goto :ParseArguments
 :DoneParsing
 
 :: Detect if MSBuild is in the path
@@ -75,7 +75,9 @@ if "%VisualStudioVersion%" == "" (
   call "%DeveloperCommandPrompt%" || goto :BuildFailed
 )
 
-msbuild /nologo /nodeReuse:%NodeReuse% /t:"%MSBuildTarget%" /p:Configuration="%BuildConfiguration%" %MSBuildAdditionalArguments%
+@echo on
+msbuild /nologo /nodeReuse:%NodeReuse% /t:"%MSBuildTarget%" /p:target="%MSBuildTarget%" /p:Configuration="%BuildConfiguration%" %MSBuildAdditionalArguments%
+@echo off
 if ERRORLEVEL 1 (
     echo.
     call :PrintColor Red "Build failed, for full log see msbuild.log."
