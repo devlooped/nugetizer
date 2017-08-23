@@ -18,6 +18,7 @@ temp
 NuGet.exe
 packages
 project.lock.json
+.nuget
 *.nuget.props
 *.nuget.targets
 
