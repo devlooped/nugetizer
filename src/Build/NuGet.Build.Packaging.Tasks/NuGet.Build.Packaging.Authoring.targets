@@ -64,7 +64,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 	<!-- Just to make it easy for consumers to request the TargetPath as usual but get the 
 		 actual package file, which contains the PackageVersion and will be dynamic therefore. -->
 	<Target Name="UpdateTargetPath"
-			BeforeTargets="GetTargetPath"
+			BeforeTargets="GetTargetPath;GetTargetPathWithTargetPlatformMoniker"
 			DependsOnTargets="GetPackageTargetPath">
 		<PropertyGroup>
 			<TargetPath>@(PackageTargetPath->'%(FullPath)')</TargetPath>
