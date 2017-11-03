@@ -145,17 +145,11 @@ namespace NuGet.Build.Packaging.Tasks
 
 		void AddFiles(Manifest manifest)
 		{
-			var contents = Contents.Where(item => 
-				!string.IsNullOrEmpty(item.GetMetadata(MetadataName.PackagePath)));
-
-			var duplicates = contents.GroupBy(item => item.GetMetadata(MetadataName.PackagePath))
-				.Where(x => x.Count() > 1)
-				.Select(x => x.Key);
-
-			foreach (var duplicate in duplicates)
-			{
-				Log.LogErrorCode(nameof(ErrorCode.NG0012), ErrorCode.NG0012(duplicate));
-			}
+			// Remove duplicate files
+			var contents = Contents
+				.Where(item => !string.IsNullOrEmpty(item.GetMetadata(MetadataName.PackagePath)))
+				.GroupBy(item => item.GetMetadata(MetadataName.PackagePath))
+				.Select(x => x.First());
 
 			// All files need to be added so they are included in the nupkg
 			manifest.Files.AddRange(contents
