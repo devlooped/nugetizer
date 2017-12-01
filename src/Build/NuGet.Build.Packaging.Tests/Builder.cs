@@ -20,7 +20,7 @@ public static partial class Builder
 	const string ToolsVersion = "14.0";
 #endif
 
-	public static BuildResult Build(ProjectInstance project, string targets, Dictionary<string, string> properties = null, ILogger logger = null)
+	public static BuildResult Build(ProjectInstance project, string targets, Dictionary<string, string> properties = null, ILogger[] loggers = null)
 	{
 		properties = properties ?? new Dictionary<string, string>();
 
@@ -42,8 +42,8 @@ public static partial class Builder
 				LogTaskInputs = true,
 			};
 
-			if (logger != null)
-				parameters.Loggers = new[] { logger };
+			if (loggers != null)
+				parameters.Loggers = loggers;
 
 			var result = manager.Build(parameters, request);
 			//manager.ShutdownAllNodes();
@@ -51,7 +51,7 @@ public static partial class Builder
 		}
 	}
 
-	public static BuildResult Build(string projectOrSolution, string targets, Dictionary<string, string> properties = null, ILogger logger = null)
+	public static BuildResult Build(string projectOrSolution, string targets, Dictionary<string, string> properties = null, ILogger[] loggers = null)
 	{
 		if (!Path.IsPathRooted(projectOrSolution))
 			projectOrSolution = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, projectOrSolution);
@@ -67,7 +67,7 @@ public static partial class Builder
 
 		var projectInstance = new ProjectInstance(projectOrSolution, properties, ToolsVersion);
 
-		return Build(projectInstance, targets, properties, logger);
+		return Build(projectInstance, targets, properties, loggers);
 	}
 
 	static void AddSolutionConfiguration(string projectFile, Dictionary<string, string> properties)

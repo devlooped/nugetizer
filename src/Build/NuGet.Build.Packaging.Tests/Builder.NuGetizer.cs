@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Logging.StructuredLogger;
 using NuGet.Build.Packaging;
 using Xunit;
 using Xunit.Abstractions;
@@ -16,7 +18,13 @@ using Xunit.Sdk;
 /// </summary>
 static partial class Builder
 {
-	public static TargetResult BuildScenario(string scenarioName, object properties = null, string projectName = null, string target = "GetPackageContents", ITestOutputHelper output = null, LoggerVerbosity? verbosity = null)
+	public static TargetResult BuildScenario(
+		string scenarioName, 
+		object properties = null, 
+		string projectName = null, 
+		string target = "GetPackageContents", 
+		ITestOutputHelper output = null, 
+		LoggerVerbosity? verbosity = null)
 	{
 		var scenarioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scenarios", scenarioName);
 
@@ -55,6 +63,10 @@ static partial class Builder
 			logger = new TestOutputLogger(null);
 		}
 
+		var loggers = OpenBuildLogAttribute.IsActive ?
+			new ILogger[] { logger, new StructuredLogger { Verbosity = verbosity.GetValueOrDefault(), Parameters = scenarioName + ".binlog" } } :
+			new ILogger[] { logger };
+
 		var buildProps = properties?.GetType().GetProperties()
 			.ToDictionary(prop => prop.Name, prop => prop.GetValue(properties).ToString()) 
 			?? new Dictionary<string, string>();
@@ -62,9 +74,11 @@ static partial class Builder
 		buildProps[nameof(ThisAssembly.Project.Properties.NuGetRestoreTargets)] = ThisAssembly.Project.Properties.NuGetRestoreTargets;
 		buildProps[nameof(ThisAssembly.Project.Properties.NuGetTargets)] = ThisAssembly.Project.Properties.NuGetTargets;
 
-		return new TargetResult(projectOrSolution, Build(projectOrSolution, target,
-			properties: buildProps,
-			logger: logger), target, logger);
+		var result = Build(projectOrSolution, target, buildProps, loggers);
+		if (OpenBuildLogAttribute.IsActive)
+			Process.Start(scenarioName + ".binlog");
+
+		return new TargetResult(projectOrSolution, result, target, logger);
 	}
 
 	public class TargetResult : ITargetResult
@@ -112,6 +126,58 @@ static partial class Builder
                 .Concat(Logger.Errors.Select(e => e.Message)));
         }
     }
+}
+
+/// <summary>
+/// Declaratively specifies that the .binlog for the build 
+/// should be opened automatically after building a project.
+/// </summary>
+public class OpenBuildLogAttribute : BeforeAfterTestAttribute
+{
+	/// <summary>
+	/// Whether the attribute is active for the current test.
+	/// </summary>
+	public static bool IsActive
+	{
+		get
+		{
+#if DEBUG
+			var data = Thread.GetNamedDataSlot(nameof(OpenBuildLogAttribute));
+			if (data == null)
+				return false;
+
+			return Thread.GetData(data) != null;
+#else
+			return false;
+#endif
+		}
+	}
+
+	public override void Before(MethodInfo methodUnderTest)
+	{
+		// Don't ever set this flag on release builds just in case 
+		// we forget the attribute in a commit ;)
+#if DEBUG
+		var data = Thread.GetNamedDataSlot(nameof(OpenBuildLogAttribute));
+		if (data == null)
+			data = Thread.AllocateNamedDataSlot(nameof(OpenBuildLogAttribute));
+
+		Thread.SetData(data, new object());
+#endif
+
+		base.Before(methodUnderTest);
+	}
+
+	public override void After(MethodInfo methodUnderTest)
+	{
+#if DEBUG
+		var data = Thread.GetNamedDataSlot(nameof(OpenBuildLogAttribute));
+		if (data != null)
+			Thread.SetData(data, null);
+#endif
+
+		base.After(methodUnderTest);
+	}
 }
 
 /// <summary>

@@ -15,8 +15,9 @@
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="1.1.61" />
     <PackageReference Include="Microsoft.Build" Version="14.3.0" />
+    <PackageReference Include="Microsoft.Build.Logging.StructuredLogger" Version="1.1.168" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" />
-    <PackageReference Include="MSBuilder.Dump" Version="*" />
+    <PackageReference Include="MSBuilder.CodeTaskAssembly" Version="*" />
     <PackageReference Include="MSBuilder.DumpItems" Version="*" />
     <PackageReference Include="MSBuilder.Introspect" Version="*" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
@@ -33,6 +34,7 @@
   <ItemGroup>
 	<None Remove="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" />
     <None Remove="App.config" />
+    <None Include="Scenarios\**\*.*proj;Scenarios\**\*.sln" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">
