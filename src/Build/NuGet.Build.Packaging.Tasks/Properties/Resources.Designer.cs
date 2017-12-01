@@ -79,7 +79,8 @@ namespace NuGet.Build.Packaging.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate package source files detected for target package file path &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Duplicate package source files with distinct content detected. Duplicates are not allowed in the package. Please remove the conflict between these files:
+        ///{0}.
         /// </summary>
         public static string ErrorCode_NG0012 {
             get {

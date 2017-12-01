@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "targets": {
     ".NETFramework,Version=v4.6": {
       "Microsoft.CodeAnalysis/1.3.2": {
@@ -3662,10 +3662,18 @@
       "projectName": "b",
       "projectPath": "C:\\Code\\Xamarin\\NuGet.Build.Packaging\\src\\Build\\NuGet.Build.Packaging.Tests\\Scenarios\\given_a_library_with_non_nugetized_reference\\b\\b.csproj",
       "projectJsonPath": "C:\\Code\\Xamarin\\NuGet.Build.Packaging\\src\\Build\\NuGet.Build.Packaging.Tests\\Scenarios\\given_a_library_with_non_nugetized_reference\\b\\project.json",
+      "packagesPath": "C:\\Users\\kzu\\.nuget\\packages\\",
+      "outputPath": "C:\\Code\\Xamarin\\NuGet.Build.Packaging\\src\\Build\\NuGet.Build.Packaging.Tests\\Scenarios\\given_a_library_with_non_nugetized_reference\\b\\obj\\",
       "projectStyle": "ProjectJson",
       "validateRuntimeAssets": true,
-      "files": {
-        "lib/net46/b.dll": "C:\\Code\\Xamarin\\NuGet.Build.Packaging\\src\\Build\\NuGet.Build.Packaging.Tests\\Scenarios\\given_a_library_with_non_nugetized_reference\\b\\bin\\placeholder\\net46\\b.dll"
+      "configFilePaths": [
+        "C:\\Code\\Xamarin\\NuGet.Build.Packaging\\src\\NuGet.Config",
+        "C:\\Users\\kzu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {},
+        "https://dotnet.myget.org/F/nuget-volatile/api/v3/index.json": {}
       },
       "frameworks": {
         "net46": {
