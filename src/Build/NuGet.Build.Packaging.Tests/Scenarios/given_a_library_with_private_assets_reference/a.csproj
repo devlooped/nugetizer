@@ -6,15 +6,15 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Mono.Options">
-			<Version>*</Version>
+			<Version>5.3.0</Version>
       <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Newtonsoft.Json">
-			<Version>*</Version>
+			<Version>9.0.1</Version>
       <PrivateAssets>lib</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="xunit">
-			<Version>*</Version>
+			<Version>2.3.0</Version>
 		</PackageReference>
 	</ItemGroup>
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />

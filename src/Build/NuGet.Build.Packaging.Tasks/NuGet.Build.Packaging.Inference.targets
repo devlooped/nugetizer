@@ -178,6 +178,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</ItemGroup>
 		<PropertyGroup>
 			<_PrivateAssets>@(_PrimaryPackageReference -> '%(PrivateAssets)')</_PrivateAssets>
+			<_ShouldIncludeAssetsRegex>$(_NuGetPackageId)\\.+\\$(_PrivateAssets)\\.*</_ShouldIncludeAssetsRegex>
 		</PropertyGroup>
 
 		<ItemGroup Condition="'$(_PrivateAssets)' == 'all'">
@@ -191,7 +192,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			<!-- In this case, we only add files that have a matching path to the private assets value. 
 				 i.e. for Mono.Options, PrivateAssets=lib, we'll include the file if its full path contains 
 				 'Mono.Options\*\lib\*', meaning the file is a lib. -->
-			<_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputRelatedFile.FullPath)', '$(_NuGetPackageId)\\.+\\$(_PrivateAssets)\\.*')) == 'true'">
+			<_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputRelatedFile.FullPath)', '$(_ShouldIncludeAssetsRegex)', 'RegexOptions.IgnoreCase')) == 'true'">
 				<Kind>$(PrimaryOutputKind)</Kind>
 				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
 			</_InferredPackageFile>
