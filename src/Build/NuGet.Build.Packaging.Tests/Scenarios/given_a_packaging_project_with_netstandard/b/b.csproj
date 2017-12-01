@@ -19,5 +19,6 @@
 		</PackageReference>
   </ItemGroup>
 
-	<Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
+  <Import Project="$(NuGetTargetsPath)\buildMultiTargeting\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\buildMultiTargeting\NuGet.Build.Packaging.targets')" />
+  <Import Project="$(NuGetTargetsPath)\NuGet.Build.Packaging.targets" Condition="Exists('$(NuGetTargetsPath)\NuGet.Build.Packaging.targets')" />
 </Project>

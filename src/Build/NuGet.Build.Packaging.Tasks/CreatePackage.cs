@@ -10,6 +10,7 @@ using NuGet.Packaging.Core;
 using NuGet.Packaging;
 using System.Collections.Generic;
 using static NuGet.Build.Packaging.Properties.Strings;
+using System.Security.Cryptography;
 
 namespace NuGet.Build.Packaging.Tasks
 {
@@ -40,7 +41,7 @@ namespace NuGet.Build.Packaging.Tasks
 
 				OutputPackage = new TaskItem(TargetPath);
 				Manifest.CopyMetadataTo(OutputPackage);
-					 
+
 				return !Log.HasLoggedErrors;
 			}
 			catch (Exception ex)
@@ -106,7 +107,7 @@ namespace NuGet.Build.Packaging.Tasks
 		void AddDependencies(Manifest manifest)
 		{
 			var dependencies = from item in Contents
-							   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency && 
+							   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency &&
 									 !"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase)
 							   select new Dependency
 							   {
@@ -145,21 +146,74 @@ namespace NuGet.Build.Packaging.Tasks
 
 		void AddFiles(Manifest manifest)
 		{
-			// Remove duplicate files
-			var contents = Contents
+			var contents = new List<ITaskItem>();
+
+			var groupedByPackagePath = Contents
 				.Where(item => !string.IsNullOrEmpty(item.GetMetadata(MetadataName.PackagePath)))
-				.GroupBy(item => item.ItemSpec)
-				.Select(x => x.First()).ToArray();
+				.GroupBy(item => item.GetMetadata(MetadataName.PackagePath))
+				// Iterate only once for this grouping.
+				.ToDictionary(item => item.Key, item => item.ToArray());
 
-			//Find files with conflicting package path
-			var duplicates = contents.GroupBy(item => item.GetMetadata(MetadataName.PackagePath))
-				.Where(x => x.Count() > 1)
-				.Select(x => x.Key);
+			// Add the ones we already determined as unique by package path.
+			contents.AddRange(groupedByPackagePath
+				.Where(group => group.Value.Length == 1)
+				.Select(group => group.Value.First()));
 
-			foreach (var duplicate in duplicates)
+			var groupedByLastWriteAndLength = groupedByPackagePath
+				.Where(group => group.Value.Length > 1)
+				.SelectMany(group => group.Value)
+				// Tuple provides structural comparison and hashing already, so leverage that.
+				.GroupBy(item => Tuple.Create(
+					item.GetMetadata(MetadataName.PackagePath),
+					item.GetMetadata("Filename"),
+					item.GetMetadata("Extension"),
+					File.GetLastWriteTime(item.GetMetadata("FullPath")),
+					new FileInfo(item.GetMetadata("FullPath")).Length))
+				.ToDictionary(item => item.Key, item => item.ToArray());
+
+			// Add the ones we already determined to be duplicates that can safely be 
+			// unified by package path, file name, last write time and file length.
+			contents.AddRange(groupedByLastWriteAndLength
+				.Where(group => group.Value.Length > 1)
+				.Select(group => group.Value.First()));
+
+			var md5 = new Lazy<HashAlgorithm>(() => MD5.Create());
+			string hash(ITaskItem item)
 			{
-				Log.LogErrorCode(nameof(ErrorCode.NG0012), ErrorCode.NG0012(duplicate));
+				using (var file = File.OpenRead(item.GetMetadata("FullPath")))
+				{
+					return string.Concat(md5.Value.ComputeHash(file).Select(x => x.ToString("x2")));
+				}
 			}
+
+			// Last remaining attempt at de-duplication is costly, but by now, we should 
+			// have successfully removed all obvious cases. 
+			// This deals with case where the files are modified at different times 
+			// (maybe a generated file?) but their actual contents are the same.
+			var groupedByContentHash = groupedByLastWriteAndLength
+				.Where(group => group.Value.Length == 1)
+				.SelectMany(group => group.Value)
+				.GroupBy(item => Tuple.Create(
+					item.GetMetadata(MetadataName.PackagePath),
+					hash(item)))
+				.ToDictionary(item => item.Key, item => item.ToArray());
+
+			// Add the ones we determined to be duplicates that can safely be 
+			// unified by package path and MD5 hash
+			contents.AddRange(groupedByContentHash
+				.Where(group => group.Value.Length > 1)
+				.Select(group => group.Value.First()));
+
+			// At this point, we're 100% certain these are duplicate package path 
+			// files that have distinct sources and would result in one overwriting 
+			// the other or an invalid package.
+			var duplicates = string.Join(Environment.NewLine, groupedByContentHash
+				.Where(group => group.Value.Length == 1)
+				.SelectMany(group => group.Value)
+				.Select(item => $"'{item.GetMetadata("FullPath")}' > '{item.GetMetadata(MetadataName.PackagePath)}'"));
+
+			if (duplicates.Length > 0)
+				Log.LogErrorCode(nameof(ErrorCode.NG0012), ErrorCode.NG0012(duplicates));
 
 			// All files need to be added so they are included in the nupkg
 			manifest.Files.AddRange(contents
@@ -184,12 +238,12 @@ namespace NuGet.Build.Packaging.Tasks
 		void AddFrameworkAssemblies(Manifest manifest)
 		{
 			var frameworkReferences = (from item in Contents
-			 						   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.FrameworkReference
-			 						   select new FrameworkAssemblyReference
-									   (
-										   item.ItemSpec,
-										   new[] { NuGetFramework.Parse(item.GetTargetFrameworkMoniker().FullName) }
-									   )).Distinct(FrameworkAssemblyReferenceComparer.Default);
+									   where item.GetMetadata(MetadataName.Kind) == PackageItemKind.FrameworkReference
+									   select new FrameworkAssemblyReference
+									  (
+										  item.ItemSpec,
+										  new[] { NuGetFramework.Parse(item.GetTargetFrameworkMoniker().FullName) }
+									  )).Distinct(FrameworkAssemblyReferenceComparer.Default);
 
 			manifest.Metadata.FrameworkReferences = frameworkReferences;
 		}
@@ -203,9 +257,9 @@ namespace NuGet.Build.Packaging.Tasks
 			// We don't use PopulateFiles because that performs search expansion, base path 
 			// extraction and the like, which messes with our determined files to include.
 			// TBD: do we support wilcard-based include/exclude?
-			builder.Files.AddRange(manifest.Files.Select(file => 
+			builder.Files.AddRange(manifest.Files.Select(file =>
 				new PhysicalPackageFile { SourcePath = file.Source, TargetPath = file.Target }));
-			
+
 			builder.Save(output);
 
 			if (!string.IsNullOrEmpty(NuspecFile))

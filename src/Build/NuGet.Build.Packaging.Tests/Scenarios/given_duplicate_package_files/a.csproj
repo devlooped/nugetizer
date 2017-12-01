@@ -4,6 +4,7 @@
 	<PropertyGroup>
 		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 		<PackageId>A</PackageId>
+    <ReadmeA Condition="'$(ReadmeA)' == ''">This is a readme</ReadmeA>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="b.csproj">
@@ -18,6 +19,20 @@
 		<PackageFile Include="content\content.txt">
 			<PackagePath>content\content.txt</PackagePath>
 		</PackageFile>
-	</ItemGroup>
+    <PackageFile Include="content\content.txt">
+      <PackagePath>content\a\1\content.txt</PackagePath>
+    </PackageFile>
+    <PackageFile Include="content\content.txt">
+      <PackagePath>content\a\2\content.txt</PackagePath>
+    </PackageFile>
+  </ItemGroup>
+  <Target Name="GenerateReadme" BeforeTargets="GetPackageContents">
+    <WriteLinesToFile File="$(OutputPath)\Readme.txt" Lines="$(ReadmeA)" Overwrite="true" />
+    <ItemGroup>
+      <PackageFile Include="$(OutputPath)\Readme.txt">
+        <PackagePath>Readme.txt</PackagePath>
+      </PackageFile>
+    </ItemGroup>
+  </Target>
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>
