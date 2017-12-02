@@ -6,7 +6,6 @@
     <NuGetBuildTasksPackTargets>NO-SDK-PACK</NuGetBuildTasksPackTargets>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="1.1.61" PrivateAssets="all" />
     <PackageReference Include="ILRepack" Version="2.0.13" PrivateAssets="all" />
     <PackageReference Include="netfx-System.StringResources" Version="3.1.5" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build" Version="14.3.0" PrivateAssets="all" />

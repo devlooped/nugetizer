@@ -12,8 +12,8 @@
 	</ItemDefinitionGroup>
 
 	<PropertyGroup>
-	    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-	
+		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+
 		<PackageId>NuGet.Build.Packaging</PackageId>
 		<Title>NuGetizer-3000</Title>
 		<Description>NuGetizer-3000</Description>

@@ -13,7 +13,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="1.1.61" />
     <PackageReference Include="Microsoft.Build" Version="14.3.0" />
     <PackageReference Include="Microsoft.Build.Logging.StructuredLogger" Version="1.1.168" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="14.3.0" />
