@@ -17,7 +17,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
 				target: "GetPackageContents", 
-				properties: new { CrossTargeting = "false" },
+				properties: new { SimulateCrossTargeting = "false" },
 				//verbosity: Microsoft.Build.Framework.LoggerVerbosity.Diagnostic,
 				output: output);
 
@@ -34,7 +34,7 @@ namespace NuGet.Build.Packaging
 		{
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
 				target: "GetPackageContents",
-				properties: new { CrossTargeting = "true" },
+				properties: new { SimulateCrossTargeting = "true" },
 				//verbosity: Microsoft.Build.Framework.LoggerVerbosity.Diagnostic,
 				output: output);
 

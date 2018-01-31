@@ -131,7 +131,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_InferredPackageFile>
 
 
-			<_InferredPackageFile Include="@(PackageReference)" Condition="'%(PackageReference.Identity)' != 'NuGet.Build.Packaging' and '%(PackageReference.PrivateAssets)' != 'all'">
+			<_InferredPackageFile Include="@(PackageReference)" Condition="'%(PackageReference.Identity)' != 'NuGet.Build.Packaging' and '%(PackageReference.Identity)' != 'NETStandard.Library' and '%(PackageReference.PrivateAssets)' != 'all'">
 				<Kind>Dependency</Kind>
 			</_InferredPackageFile>
 
@@ -159,9 +159,28 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</ItemGroup>
 	</Target>
 
+	<ItemDefinitionGroup>
+		<ReferencePath>
+			<Facade>false</Facade>
+			<FrameworkFile>false</FrameworkFile>
+			<NuGetPackageId />
+			<Pack />
+		</ReferencePath>
+		<_ReferenceRelatedPaths>
+			<Facade>false</Facade>
+			<FrameworkFile>false</FrameworkFile>
+			<NuGetPackageId />
+			<Pack />
+		</_ReferenceRelatedPaths>
+	</ItemDefinitionGroup>
+
 	<Target Name="_CollectPrimaryOutputRelatedFiles" DependsOnTargets="BuildOnlySettings;ResolveReferences" Returns="@(_PrimaryOutputRelatedFile)">
 		<ItemGroup>
-			<_PrimaryOutputRelatedFile Include="@(ReferencePath);@(_ReferenceRelatedPaths)" />
+			<_PrimaryOutputRelatedFile Include="@(ReferencePath);@(_ReferenceRelatedPaths)"
+                                 Condition="'%(NuGetPackageId)' != 'NETStandard.Library' and 
+                                            '%(Facade)' != 'true' and 
+                                            '%(FrameworkFile)' != 'true' and 
+                                            '%(Pack)' != 'false'"/>
 		</ItemGroup>
 	</Target>
 
@@ -171,7 +190,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			Returns="@(_InferredPackageFile)"
 			DependsOnTargets="_CollectPrimaryOutputRelatedFiles">
 		<ItemGroup>
-			<_NuGetPackageId Include="@(_PrimaryOutputRelatedFile -> '%(NuGetPackageId)')" />
+			<_NuGetPackageId Include="@(_PrimaryOutputRelatedFile -> '%(NuGetPackageId)')" Condition="'%(NuGetPackageId)' != 'NETStandard.Library'" />
 		</ItemGroup>
 		<PropertyGroup>
 			<_NuGetPackageId>@(_NuGetPackageId -> Distinct())</_NuGetPackageId>

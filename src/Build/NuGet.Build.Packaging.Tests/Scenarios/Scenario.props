@@ -25,7 +25,9 @@
 
 		<!-- Used for Dump/Introspect -->
 		<UseCompiledTasks>true</UseCompiledTasks>
-		
+		<!-- Skip the GitInfo stuff we inherit -->
+		<GitThisAssembly>false</GitThisAssembly>
+
 		<!-- Avoids warnings from Xamarin global imports.-->
 		<!--<ImportByWildcardAfterMicrosoftCommonTargets>false</ImportByWildcardAfterMicrosoftCommonTargets>
 		<ImportByWildcardBeforeMicrosoftCommonTargets>false</ImportByWildcardBeforeMicrosoftCommonTargets>-->
