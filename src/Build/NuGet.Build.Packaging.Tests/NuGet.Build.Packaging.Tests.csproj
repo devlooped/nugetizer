@@ -32,7 +32,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-	<None Remove="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" />
+    <!-- Do not compile any scenario related generated files -->
+    <Compile Remove="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" />
+
+    <!-- Do not compile any scenario related cs files, but add them as none -->
+    <Compile Remove="Scenarios\**\*.cs" />
+    <None Include="Scenarios\**\*.cs" />
+
+    <None Remove="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" />
     <None Remove="App.config" />
     <None Include="Scenarios\**\*.*proj;Scenarios\**\*.sln" />
   </ItemGroup>
