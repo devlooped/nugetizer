@@ -21,13 +21,6 @@ install:
 # we run the tests ourselves in build.proj for coverage
 test: off
 
-deploy:
-  - provider: NuGet
-    api_key:
-      secure: 7MS5+XWaFchMXFqzgneQCqo9U0DlxiPXe/KWWUnbCBDEizVn06EjdQZkWu1gbNOJ
-    on:
-      branch: /v\d+\.\d+\.\d+/
-
 nuget:
   project_feed: true
   disable_publish_on_pr: false
