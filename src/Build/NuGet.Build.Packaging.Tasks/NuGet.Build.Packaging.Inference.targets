@@ -32,6 +32,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
 		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true' and '$(PrimaryOutputKind)' == 'Lib'">true</IncludeFrameworkReferencesInPackage>
+
+		<_OutputFullPath Condition="$([System.IO.Path]::IsPathRooted($(OutputPath)))">$(OutputPath)</_OutputFullPath>
+		<_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory)\$(OutputPath)</_OutputFullPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -106,7 +109,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 			<!-- NOTE: Content is opt-out (must have Pack=false to exclude if IncludeContentInPackage=true) -->
 			<!-- Stuff that is copied to output should be included from that output location -->
-			<_InferredPackageFile Include="@(_ContentToInfer->'$(OutputPath)%(TargetPath)')"
+			<_InferredPackageFile Include="@(_ContentToInfer->'$(_OutputFullPath)\%(TargetPath)')"
 							   Condition="'%(_ContentToInfer.CopyToOutputDirectory)' != '' and '%(_ContentToInfer.CopyToOutputDirectory)' != 'Never'">
 				<Kind Condition="'%(_ContentToInfer.Kind)' == ''">$(PrimaryOutputKind)</Kind>
 			</_InferredPackageFile>
@@ -118,7 +121,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 			<!-- NOTE: None is also opt-out (must have Pack=false to exclude if IncludeNoneInPackage=true, but this property defaults to false) -->
 			<!-- Likewise, include from target path if it's copied, from source path otherwise -->
-			<_InferredPackageFile Include="@(_NoneToInfer->'$(OutputPath)%(TargetPath)')"
+			<_InferredPackageFile Include="@(_NoneToInfer->'$(_OutputFullPath)\%(TargetPath)')"
 							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' != '' and '%(_NoneToInfer.CopyToOutputDirectory)' != 'Never'">
 				<Kind Condition="'%(_NoneToInfer.Kind)' == ''">$(PrimaryOutputKind)</Kind>
 			</_InferredPackageFile>

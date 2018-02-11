@@ -53,7 +53,6 @@ namespace NuGet.Build.Packaging
 			Assert.Equal(TargetResultCode.Success, result.ResultCode);
 		}
 
-
 		[Fact]
 		public void real_duplicates_fail()
 		{
