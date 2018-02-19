@@ -45,6 +45,25 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</GetPackageContentsDependsOn>
 	</PropertyGroup>
 
+	<!-- Extend some built-in items with metadata we use in our inference targets -->
+	<ItemDefinitionGroup>
+		<PackageReference>
+			<Pack />
+		</PackageReference>
+		<ReferencePath>
+			<Facade>false</Facade>
+			<FrameworkFile>false</FrameworkFile>
+			<NuGetPackageId />
+			<Pack />
+		</ReferencePath>
+		<_ReferenceRelatedPaths>
+			<Facade>false</Facade>
+			<FrameworkFile>false</FrameworkFile>
+			<NuGetPackageId />
+			<Pack />
+		</_ReferenceRelatedPaths>
+	</ItemDefinitionGroup>
+
 	<Target Name="_PrimaryOutputFrameworkSpecific" Returns="$(PrimaryOutputFrameworkSpecific)">
 		<!-- Determine whether primary output is framework specific  -->
 		<ItemGroup Condition="'$(PrimaryOutputFrameworkSpecific)' == ''">
@@ -131,7 +150,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_InferredPackageFile>
 
 
-			<_InferredPackageFile Include="@(PackageReference)" Condition="'%(PackageReference.Identity)' != 'NuGet.Build.Packaging' and '%(PackageReference.Identity)' != 'NETStandard.Library' and '%(PackageReference.PrivateAssets)' != 'all'">
+			<_InferredPackageFile Include="@(PackageReference)" Condition="'%(PackageReference.Identity)' != 'NuGet.Build.Packaging' and 
+																		   '%(PackageReference.Identity)' != 'NETStandard.Library' and 
+																		   '%(PackageReference.PrivateAssets)' != 'all' and
+																		   '%(PackageReference.Pack)' != 'false'">
 				<Kind>Dependency</Kind>
 			</_InferredPackageFile>
 
@@ -158,21 +180,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</PackageFile>
 		</ItemGroup>
 	</Target>
-
-	<ItemDefinitionGroup>
-		<ReferencePath>
-			<Facade>false</Facade>
-			<FrameworkFile>false</FrameworkFile>
-			<NuGetPackageId />
-			<Pack />
-		</ReferencePath>
-		<_ReferenceRelatedPaths>
-			<Facade>false</Facade>
-			<FrameworkFile>false</FrameworkFile>
-			<NuGetPackageId />
-			<Pack />
-		</_ReferenceRelatedPaths>
-	</ItemDefinitionGroup>
 
 	<Target Name="_CollectPrimaryOutputRelatedFiles" DependsOnTargets="BuildOnlySettings;ResolveReferences" Returns="@(_PrimaryOutputRelatedFile)">
 		<ItemGroup>
