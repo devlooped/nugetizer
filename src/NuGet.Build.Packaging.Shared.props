@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="..\build.props" />
-	
+
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
@@ -10,7 +10,7 @@
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>NuGet.Build.Packaging</RootNamespace>
-		
+
 		<OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Configuration)\</OutputPath>
 		<OutputType>Library</OutputType>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
@@ -46,11 +46,11 @@
 
 	<!-- Redefined by the GitInfo targets import -->
 	<Target Name="GitVersion" />
-	
+
 	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
 
 	<PropertyGroup>
-	    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>	
+		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 		<NuGetPackagingPropsImported>true</NuGetPackagingPropsImported>
 	</PropertyGroup>
 

@@ -47,7 +47,6 @@
     <PackageReference Include="Clarius.VisualStudio" Version="2.0.13" />
     <PackageReference Include="Clide" Version="3.0.107-pre" />
     <PackageReference Include="Clide.Installer" Version="3.0.107-pre" />
-    <PackageReference Include="GitInfo" Version="1.1.61" />
     <PackageReference Include="Merq" Version="1.0.0-rc" />
     <PackageReference Include="Merq.Async" Version="1.1.17-rc" />
     <PackageReference Include="Microsoft.Build" Version="15.1.548" />

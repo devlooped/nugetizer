@@ -43,7 +43,7 @@
 
 	<Target Name="EnsureNuGetizerPackage"
 			Condition="'$(CreateVsixContainer)' != 'false' And '$(DeployExtension)' != 'false'"
-			DependsOnTargets="GetPackageVersion;GetVsixVersion" 
+			DependsOnTargets="SetVersion;GetVsixVersion" 
 			BeforeTargets="DeployVsixExtensionFiles;CreateVsixContainer">
 		<ItemGroup>
 			<_NuGetizerPackage Include="$(Out)\*.nupkg" />
@@ -76,7 +76,7 @@
 		<UpdateTemplatesDependsOn>
 			PrepareForBuild;
 			CopyOutOfDateSmartTemplateContent;
-			GetPackageVersion;
+			SetVersion;
 			FindTemplates;
 			UpdateTemplatePackages
 		</UpdateTemplatesDependsOn>

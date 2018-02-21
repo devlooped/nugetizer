@@ -31,8 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="2.0.0" />
-    <PackageReference Include="xunit.runner.console" Version="2.3.0-beta4-build3742" />
+    <PackageReference Include="xunit.runner.console" Version="2.3.1" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="2.4.5" />
   </ItemGroup>
@@ -48,7 +47,7 @@
 
   <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
-  <Target Name="Build" DependsOnTargets="GitInfoReport;GetPackageVersion">
+  <Target Name="Build" DependsOnTargets="GitInfoReport;SetVersion">
     <!-- For now this is an informative version #, used to update CI -->
     <Message Text="Building version $(PackageVersion)" Importance="high" />
     <!-- Update AppVeyor build # to match the actual one being used -->
@@ -139,20 +138,12 @@
     <Exec Command="start $(Out)\coverage\index.htm" />
   </Target>
 
-  <Target Name="GitVersion">
-    <PropertyGroup>
-      <GitSemVerMajor>1</GitSemVerMajor>
-      <GitSemVerMinor>0</GitSemVerMinor>
-      <GitSemVerPatch>0</GitSemVerPatch>
-    </PropertyGroup>
-  </Target>
-  <Import Project="src\PackageVersion.targets" />
-
   <Target Name="Configure">
     <Message Importance="high" Text="*********************************************************************************************************************" />
     <Message Importance="high" Text="$([System.Environment]::CommandLine)" />
     <Message Importance="high" Text="*********************************************************************************************************************" />
   </Target>
 
+	<Import Project="src\Directory.Build.targets" />
 	<Import Project="corebuild\corebuild.targets" />
 </Project>

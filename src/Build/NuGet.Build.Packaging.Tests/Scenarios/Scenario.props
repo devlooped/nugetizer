@@ -28,14 +28,13 @@
 		<!-- Skip the GitInfo stuff we inherit -->
 		<GitThisAssembly>false</GitThisAssembly>
 
-		<!-- Avoids warnings from Xamarin global imports.-->
-		<!--<ImportByWildcardAfterMicrosoftCommonTargets>false</ImportByWildcardAfterMicrosoftCommonTargets>
-		<ImportByWildcardBeforeMicrosoftCommonTargets>false</ImportByWildcardBeforeMicrosoftCommonTargets>-->
 		<!-- Prevents Fody.VerifyTask from running -->
 		<NCrunch>1</NCrunch>
 		
 		<!-- Avoids architecture mismatch warnings -->
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+
+		<ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
 	</PropertyGroup>
 
 	<PropertyGroup>
