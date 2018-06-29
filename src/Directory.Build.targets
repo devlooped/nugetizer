@@ -71,4 +71,6 @@ AssemblyVersion=$(AssemblyVersion)" />
 		<Copy SourceFiles="$(PackageTargetPath)" DestinationFolder="$(TEMP)\packages" />
 	</Target>
 
+	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
+
 </Project>

@@ -7,8 +7,6 @@
 		<ThisAssemblyProjectProperty Include="PackageVersion" />
 	</ItemGroup>
 
-	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
-
 	<PropertyGroup>
 		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 		<NuGetPackagingTargetsImported>true</NuGetPackagingTargetsImported>
