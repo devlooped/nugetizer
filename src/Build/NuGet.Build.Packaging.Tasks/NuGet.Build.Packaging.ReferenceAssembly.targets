@@ -62,6 +62,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<PropertyGroup>
 			<EnableDefaultIntersectionAssemblyReferencePath Condition="'$(EnableDefaultIntersectionAssemblyReferencePath)' == ''">true</EnableDefaultIntersectionAssemblyReferencePath>
+			<IntersectionIgnoreUnresolvedAssemblies Condition="'$(IntersectionIgnoreUnresolvedAssemblies)' == ''">true</IntersectionIgnoreUnresolvedAssemblies>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -79,6 +80,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				ExcludeAssembly="@(IntersectionExcludeAssembly)"
 				KeepInternalConstructors="$(IntersectionKeepInternalConstructors)"
 				KeepMarshalling="$(IntersectionKeepMarshalling)"
+				IgnoreUnresolvedAssemblies="$(IntersectionIgnoreUnresolvedAssemblies)"
 				ToolPath="$(ApiIntersectToolPath)"
 				ToolExe="$(ApiIntersectToolExe)">
 			<Output TaskParameter="OutputDirectory" ItemName="_ReferenceAssemblyBuildInfo" />

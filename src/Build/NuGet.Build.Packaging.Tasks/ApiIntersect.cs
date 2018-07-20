@@ -27,6 +27,8 @@ namespace NuGet.Build.Packaging.Tasks
 
 		public string KeepMarshalling { get; set; }
 
+		public string IgnoreUnresolvedAssemblies { get; set; }
+
 		[Required]
 		public ITaskItem RootOutputDirectory { get; set; }
 
@@ -99,6 +101,8 @@ namespace NuGet.Build.Packaging.Tasks
 			AppendSwitchIfTrue(builder, "-k", KeepInternalConstructors);
 
 			AppendSwitchIfTrue(builder, "-m", KeepMarshalling);
+
+			AppendSwitchIfTrue(builder, "-iua", IgnoreUnresolvedAssemblies);
 
 			return builder.ToString();
 		}
