@@ -231,7 +231,7 @@ namespace NuGet.Build.Packaging.Tasks
 				.Where(item => item.GetMetadata(MetadataName.PackageFolder) == PackagingConstants.Folders.ContentFiles)
 				.Select(item => new ManifestContentFiles
 				{
-					Include = item.GetMetadata(MetadataName.PackagePath),
+					Include = item.GetContentFileInclude(),
 					BuildAction = item.GetNullableMetadata(MetadataName.ContentFile.BuildAction),
 					CopyToOutput = item.GetNullableMetadata(MetadataName.ContentFile.CopyToOutput),
 					Flatten = item.GetNullableMetadata(MetadataName.ContentFile.Flatten),

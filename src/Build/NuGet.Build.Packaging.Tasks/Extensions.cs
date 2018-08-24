@@ -34,6 +34,15 @@ namespace NuGet.Build.Packaging
 			return value;
 		}
 
+		public static string GetContentFileInclude(this ITaskItem taskItem)
+		{
+			const string contentFilesFolder = @"contentFiles\";
+			var include = taskItem.GetMetadata(MetadataName.PackagePath);
+			if (include.StartsWith(contentFilesFolder))
+				return include.Substring(contentFilesFolder.Length);
+			return include;
+		}
+
 		public static Manifest GetManifest(this IPackageCoreReader packageReader)
 		{
 			using (var stream = packageReader.GetNuspec())
