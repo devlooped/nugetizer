@@ -6,6 +6,11 @@ using System.Xml.Linq;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
+using Xunit;
+
+// Disable test parallelization for VS test explorer as it doesn't work well together with msbuild.
+// Note that the command line switch for the xunit console runner in build.proj is also needed.
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 /// <summary>
 /// General-purpose MSBuild builder with support for 
@@ -14,41 +19,25 @@ using Microsoft.Build.Framework;
 /// </summary>
 public static partial class Builder
 {
-#if DEV15
 	const string ToolsVersion = "15.0";
-#else
-	const string ToolsVersion = "14.0";
-#endif
 
 	public static BuildResult Build(ProjectInstance project, string targets, Dictionary<string, string> properties = null, ILogger[] loggers = null)
 	{
 		properties = properties ?? new Dictionary<string, string>();
 
-		// Without this, builds end up running in process and colliding with each other, 
-		// especially around the current directory used to resolve relative paths in projects.
-		//Environment.SetEnvironmentVariable("MSBUILDNOINPROCNODE", "1", EnvironmentVariableTarget.Process);
-		using (var manager = new BuildManager(Guid.NewGuid().ToString()))
-		{
-			var request = new BuildRequestData(project, targets.Split(','));
-			var parameters = new BuildParameters
-			{ 
-				GlobalProperties = properties,
-				DisableInProcNode = !Debugger.IsAttached,
-				EnableNodeReuse = false,
-				ShutdownInProcNodeOnBuildFinish = !Debugger.IsAttached,
-				// Without this, builds end up running in process and colliding with each other, 
-				// especially around the current directory used to resolve relative paths in projects.
-				LogInitialPropertiesAndItems = true,
-				LogTaskInputs = true,
-			};
+		var manager = BuildManager.DefaultBuildManager;
+		var request = new BuildRequestData(project, targets.Split(','));
+		var parameters = new BuildParameters
+		{ 
+			GlobalProperties = properties,
+			LogInitialPropertiesAndItems = true,
+			LogTaskInputs = true,
+		};
 
-			if (loggers != null)
-				parameters.Loggers = loggers;
+		if (loggers != null)
+			parameters.Loggers = loggers;
 
-			var result = manager.Build(parameters, request);
-			//manager.ShutdownAllNodes();
-			return result;
-		}
+		return manager.Build(parameters, request);
 	}
 
 	public static BuildResult Build(string projectOrSolution, string targets, Dictionary<string, string> properties = null, ILogger[] loggers = null)

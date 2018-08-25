@@ -12,9 +12,12 @@ namespace NuGet.Build.Packaging
 
 		public given_a_packaging_project_with_netstandard(ITestOutputHelper output) => this.output = output;
         
-		[Fact(Skip = "Cannot be run from MSBuild 14.x")]
+		[Fact]
 		public void can_get_content_from_referenced_single_targeting_netstandard()
 		{
+			Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
+				target: "Restore",
+				properties: new { SimulateCrossTargeting = "false" });
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
 				target: "GetPackageContents", 
 				properties: new { SimulateCrossTargeting = "false" },
@@ -29,9 +32,12 @@ namespace NuGet.Build.Packaging
 			}));
 		}
 
-		[Fact(Skip = "Cannot be run from MSBuild 14.x")]
+		[Fact]
 		public void can_get_content_from_referenced_cross_targeting_netstandard()
 		{
+			Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard), 
+				target: "Restore",
+				properties: new { SimulateCrossTargeting = "true" });
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
 				target: "GetPackageContents",
 				properties: new { SimulateCrossTargeting = "true" },

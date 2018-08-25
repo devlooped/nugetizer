@@ -84,7 +84,7 @@
 
     <PropertyGroup>
       <XunitConsole>"$(XunitConsolePath)"</XunitConsole>
-      <XunitOptions>$(XunitOptions) -html $(Out)\test.html -xml $(Out)\test.xml -parallel all -noshadow</XunitOptions>
+      <XunitOptions>$(XunitOptions) -html $(Out)\test.html -xml $(Out)\test.xml -parallel none -noshadow</XunitOptions>
     </PropertyGroup>
 
     <Exec Command="$(XunitConsole) @(TestAssembly, ' ') $(XunitOptions)" ConsoleToMSBuild="true" />
