@@ -113,7 +113,9 @@ namespace NuGet.Build.Packaging.Tasks
 							   {
 								   Id = item.ItemSpec,
 								   Version = VersionRange.Parse(item.GetMetadata(MetadataName.Version)),
-								   TargetFramework = item.GetNuGetTargetFramework()
+								   TargetFramework = item.GetNuGetTargetFramework(),
+								   Include = item.GetNullableMetadata(MetadataName.IncludeAssets),
+								   Exclude = item.GetNullableMetadata(MetadataName.ExcludeAssets)
 							   };
 
 			var definedDependencyGroups = (from dependency in dependencies
@@ -127,8 +129,9 @@ namespace NuGet.Build.Packaging.Tasks
 												select new PackageDependency
 												 (
 													 dependenciesById.Key,
-													 dependenciesById.Select(x => x.Version)
-													 .Aggregate(AggregateVersions)
+													 dependenciesById.Select(x => x.Version).Aggregate(AggregateVersions),
+													 dependenciesById.Select(x => x.Include).Aggregate(default(List<string>), AggregateAssetsFlow),
+													 dependenciesById.Select(x => x.Exclude).Aggregate(default(List<string>), AggregateAssetsFlow)
 												 )).ToList()
 										   )).ToDictionary(p => p.TargetFramework.GetFrameworkString());
 
@@ -286,6 +289,16 @@ namespace NuGet.Build.Packaging.Tasks
 			return versionSpec.ToVersionRange();
 		}
 
+		static List<string> AggregateAssetsFlow(List<string> aggregate, string next)
+		{
+			if (next == null)
+				return aggregate;
+			if (aggregate == null)
+				aggregate = new List<string>(1);
+			aggregate.AddRange(next.Split(';'));
+			return aggregate;
+		}
+
 		static void SetMinVersion(VersionSpec target, VersionRange source)
 		{
 			if (source == null || source.MinVersion == null)
@@ -336,6 +349,10 @@ namespace NuGet.Build.Packaging.Tasks
 			public NuGetFramework TargetFramework { get; set; }
 
 			public VersionRange Version { get; set; }
+
+			public string Include { get; set; }
+
+			public string Exclude { get; set; }
 		}
 
 		class VersionSpec

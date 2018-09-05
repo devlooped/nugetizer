@@ -150,6 +150,106 @@ namespace NuGet.Build.Packaging
 		}
 
 		[Fact]
+		public void when_creating_package_with_dependency_and_include_assets_then_contains_dependency_include_attribute()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net45" },
+					{ MetadataName.IncludeAssets, "all" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.NotNull(manifest);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Include.Count);
+			Assert.Equal("all", manifest.Metadata.DependencyGroups.First().Packages.First().Include[0]);
+		}
+
+		[Fact]
+		public void when_creating_package_with_dependency_and_exclude_assets_then_contains_dependency_exclude_attribute()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net45" },
+					{ MetadataName.ExcludeAssets, "all" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.NotNull(manifest);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Exclude.Count);
+			Assert.Equal("all", manifest.Metadata.DependencyGroups.First().Packages.First().Exclude[0]);
+		}
+
+		[Fact]
+		public void when_creating_package_with_dependency_and_without_include_assets_then_not_contains_dependency_include_attribute()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.NotNull(manifest);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+			Assert.Equal(0, manifest.Metadata.DependencyGroups.First().Packages.First().Include.Count);
+		}
+
+		[Fact]
+		public void when_creating_package_with_dependency_and_without_exclude_assets_then_not_contains_dependency_exclude_attribute()
+		{
+			task.Contents = new[]
+			{
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var manifest = ExecuteTask();
+
+			Assert.NotNull(manifest);
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+			Assert.Equal(0, manifest.Metadata.DependencyGroups.First().Packages.First().Exclude.Count);
+		}
+
+		[Fact]
 		public void when_creating_package_with_non_framework_secific_dependency_then_contains_generic_dependency_group()
 		{
 			task.Contents = new[]
