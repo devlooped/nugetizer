@@ -5,7 +5,7 @@
 	<PropertyGroup>
 		<Authors>Microsoft</Authors>
 		<Owners>Microsoft</Owners>
-		<Copyright>&#169; .NET Foundation. All rights reserved.</Copyright>
+		<Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
 		<NeutralLanguage>en</NeutralLanguage>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/NuGet/NuGet.Build.Packaging/dev/LICENSE.txt</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/NuGet/NuGet.Build.Packaging</PackageProjectUrl>
