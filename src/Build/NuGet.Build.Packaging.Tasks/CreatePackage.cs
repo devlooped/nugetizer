@@ -94,6 +94,7 @@ namespace NuGet.Build.Packaging.Tasks
 			metadata.ReleaseNotes = Manifest.GetMetadata("ReleaseNotes");
 			metadata.Tags = Manifest.GetMetadata("Tags");
 			metadata.MinClientVersionString = Manifest.GetMetadata("MinClientVersion");
+			metadata.PackageTypes = ParsePackageTypes(Manifest.GetMetadata("PackageTypes"));
 
 			var manifest = new Manifest(metadata);
 
@@ -341,6 +342,26 @@ namespace NuGet.Build.Packaging.Tasks
 				target.IsMaxInclusive = target.IsMaxInclusive && source.IsMaxInclusive;
 		}
 
+		static ICollection<PackageType> ParsePackageTypes(string packageTypes)
+		{
+			var listOfPackageTypes = new List<PackageType>();
+			if (!string.IsNullOrEmpty(packageTypes))
+			{
+				foreach (var packageType in packageTypes.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					string[] packageTypeSplitInPart = packageType.Split(new char[] { ',' });
+					string packageTypeName = packageTypeSplitInPart[0].Trim();
+					var version = PackageType.EmptyVersion;
+					if (packageTypeSplitInPart.Length > 1)
+					{
+						string versionString = packageTypeSplitInPart[1];
+						Version.TryParse(versionString, out version);
+					}
+					listOfPackageTypes.Add(new PackageType(packageTypeName, version));
+				}
+			}
+			return listOfPackageTypes;
+		}
 
 		class Dependency
 		{

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Build.Evaluation;
@@ -53,6 +54,7 @@ namespace NuGet.Build.Packaging
 					{ "IconUrl", "http://contoso.com/icon.png" },
 					{ "ReleaseNotes", "release notes" },
 					{ "MinClientVersion", "3.4.0" },
+					{ "PackageTypes", PackageType.Dependency.Name }
 				})
 			};
 
@@ -98,6 +100,12 @@ namespace NuGet.Build.Packaging
 			Assert.Equal(task.Manifest.GetMetadata("IconUrl"), metadata.IconUrl.ToString());
 			Assert.Equal(task.Manifest.GetMetadata("ReleaseNotes"), metadata.ReleaseNotes);
 			Assert.Equal(task.Manifest.GetMetadata("MinClientVersion"), metadata.MinClientVersion.ToString());
+			Assert.Collection(metadata.PackageTypes,
+				item =>
+				{
+					Assert.Equal(PackageType.Dependency.Name, item.Name);
+					Assert.Equal(PackageType.EmptyVersion, item.Version);
+				});
 		}
 
 		[Fact]
@@ -687,6 +695,145 @@ namespace NuGet.Build.Packaging
 				FrameworkAssemblyReferenceComparer.Default);
 
 			Assert.NotNull(manifest);
+		}
+
+		[Fact]
+		public void when_creating_package_without_package_type()
+		{
+			task.Manifest = new TaskItem("package",
+				new Metadata
+				{
+					{ "Id", "package" },
+					{ "Version", "1.0.0" },
+					{ "Title", "title" },
+					{ "Description", "description" },
+					{ "Authors", "author1, author2" },
+				});
+
+			task.Contents = new[]
+			{
+				// Need at least one dependency or content file for the generation to succeed.
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var metadata = ExecuteTask().Metadata;
+			Assert.Empty(metadata.PackageTypes);
+		}
+
+		[Fact]
+		public void when_creating_package_with_package_type_empty()
+		{
+			task.Manifest = new TaskItem("package",
+				new Metadata
+				{
+					{ "Id", "package" },
+					{ "Version", "1.0.0" },
+					{ "Title", "title" },
+					{ "Description", "description" },
+					{ "Authors", "author1, author2" },
+					{ "PackageTypes", string.Empty }
+				});
+
+			task.Contents = new[]
+			{
+				// Need at least one dependency or content file for the generation to succeed.
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var metadata = ExecuteTask().Metadata;
+			Assert.Empty(metadata.PackageTypes);
+		}
+
+		[Fact]
+		public void when_creating_package_with_package_type_version()
+		{
+			task.Manifest = new TaskItem("package",
+				new Metadata
+				{
+					{ "Id", "package" },
+					{ "Version", "1.0.0" },
+					{ "Title", "title" },
+					{ "Description", "description" },
+					{ "Authors", "author1, author2" },
+					{ "PackageTypes", "SomeType, 2.0.0" }
+				});
+
+			task.Contents = new[]
+			{
+				// Need at least one dependency or content file for the generation to succeed.
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var metadata = ExecuteTask().Metadata;
+			Assert.Collection(metadata.PackageTypes,
+				item =>
+				{
+					Assert.Equal("SomeType", item.Name);
+					Assert.Equal(new Version(2, 0, 0), item.Version);
+				});
+		}
+
+		[Fact]
+		public void when_creating_package_with_multiple_package_types()
+		{
+			task.Manifest = new TaskItem("package",
+				new Metadata
+				{
+					{ "Id", "package" },
+					{ "Version", "1.0.0" },
+					{ "Title", "title" },
+					{ "Description", "description" },
+					{ "Authors", "author1, author2" },
+					{ "PackageTypes", "SomeType, 2.0.0; AnotherType; ThirdTypeWithVersion, 1.2.3.4" }
+				});
+
+			task.Contents = new[]
+			{
+				// Need at least one dependency or content file for the generation to succeed.
+				new TaskItem("Newtonsoft.Json", new Metadata
+				{
+					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.Version, "8.0.0" },
+					{ MetadataName.TargetFramework, "net45" }
+				}),
+			};
+
+			var metadata = ExecuteTask().Metadata;
+			Assert.Collection(metadata.PackageTypes,
+				item =>
+				{
+					Assert.Equal("SomeType", item.Name);
+					Assert.Equal(new Version(2, 0, 0), item.Version);
+				},
+				item =>
+				{
+					Assert.Equal("AnotherType", item.Name);
+					Assert.Equal(PackageType.EmptyVersion, item.Version);
+				},
+				item =>
+				{
+					Assert.Equal("ThirdTypeWithVersion", item.Name);
+					Assert.Equal(new Version(1, 2, 3, 4), item.Version);
+				});
 		}
 	}
 }

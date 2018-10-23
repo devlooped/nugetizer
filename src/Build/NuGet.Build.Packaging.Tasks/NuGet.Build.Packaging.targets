@@ -136,7 +136,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
 				<RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
 				<RepositoryType>$(RepositoryType)</RepositoryType>
-				<PackageTypes>$(PackageTypes)</PackageTypes>
+				<PackageTypes>$(PackageType)</PackageTypes>
 			</PackageTargetPath>
 		</ItemGroup>
 	</Target>
