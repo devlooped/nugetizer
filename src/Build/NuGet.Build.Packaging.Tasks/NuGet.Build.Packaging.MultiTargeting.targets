@@ -50,7 +50,11 @@ Copyright (c) .NET Foundation. All rights reserved.
                     all builds.
   ============================================================
   -->
-	<Target Name="GetPackageContents" DependsOnTargets="_SetGetPackageContentsInnerTarget;DispatchToInnerBuilds" Returns="@(InnerOutput)" />
+	<Target Name="GetPackageContents" DependsOnTargets="_SetGetPackageContentsInnerTarget;DispatchToInnerBuilds" Returns="@(InnerOutput)">
+		<ItemGroup>
+			<_PackageContent Include="@(InnerOutput)" />
+		</ItemGroup>
+	</Target>
 
 	<Target Name="_SetGetPackageContentsInnerTarget">
 		<PropertyGroup>
