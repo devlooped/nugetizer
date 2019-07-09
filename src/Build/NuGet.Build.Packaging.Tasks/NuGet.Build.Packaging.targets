@@ -245,10 +245,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 			current project.
 		-->
 
+		<!--
+			Workaround for Xamarin.Android 9.4 requires DesignTimeBuild to be set for its FilterAssemblies target
+		-->
 		<MSBuild Projects="@(_NuGetizedProjectReference)"
 					 Targets="GetPackageContents"
 					 BuildInParallel="$(BuildInParallel)"
-					 Properties="%(_NuGetizedProjectReference.SetConfiguration); %(_NuGetizedProjectReference.SetPlatform); BuildingPackage=$(BuildingPackage)"
+					 Properties="%(_NuGetizedProjectReference.SetConfiguration); %(_NuGetizedProjectReference.SetPlatform); BuildingPackage=$(BuildingPackage); DesignTimeBuild=false"
 					 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_NuGetizedProjectReference)' != ''"
 					 RemoveProperties="%(_NuGetizedProjectReference.GlobalPropertiesToRemove)">
 			<Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
