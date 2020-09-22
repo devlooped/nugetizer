@@ -1,0 +1,19 @@
+name: build
+on: push
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100-rc.1.20452.10
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      - run: dotnet tool update -g dotnet-vs
+      - run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
+      - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
+      - run: msbuild -r
+      - run: msbuild -t:test
