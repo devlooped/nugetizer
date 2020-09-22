@@ -1,7 +1,7 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
 
 	<ItemGroup>
-		<ThisAssemblyProjectProperty Include="PackageId" />
+		<ProjectProperty Include="PackageId" />
 	</ItemGroup>
 
 	<ItemDefinitionGroup>
@@ -14,19 +14,18 @@
 	<PropertyGroup>
 		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 
-		<PackageId>NuGet.Build.Packaging</PackageId>
-		<Title>NuGetizer-3000</Title>
-		<Description>NuGetizer-3000</Description>
+		<PackageId>NuGetizer</PackageId>
+		<Title>NuGetizer</Title>
+		<Description>Simple and flexible NuGet packaging</Description>
 		<IsDevelopmentDependency>true</IsDevelopmentDependency>
 		<PrimaryOutputKind>build</PrimaryOutputKind>
-		<IncludeSymbolsInPackage>true</IncludeSymbolsInPackage>
 
 		<PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
-		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\..\out</PackageOutputPath>
+		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\bin</PackageOutputPath>
 	</PropertyGroup>
 
-	<Import Project="$(OutputPath)NuGet.Build.Packaging.targets"
-			  Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGet.Build.Packaging.targets')" />
+	<Import Project="$(OutputPath)NuGetizer.targets"
+			  Condition="'$(PackOnBuild)' == 'true' and Exists('$(OutputPath)NuGetizer.targets')" />
 
 	<Target Name="CleanContents" BeforeTargets="GetPackageContents" DependsOnTargets="InferPackageContents" Returns="@(PackageFile)">
 		<ItemGroup>
@@ -53,7 +52,6 @@
 			PackageItemKind;
 			$(CoreCompileDependsOn);
 		</CoreCompileDependsOn>
-		<PackageItemKindFile>$(IntermediateOutputPath)PackageItemKind.g$(DefaultLanguageSourceExtension)</PackageItemKindFile>
 	</PropertyGroup>
 
 	<Target Name="PackageItemKind" BeforeTargets="BuildOnlySettings" DependsOnTargets="GeneratePackageItemKind">

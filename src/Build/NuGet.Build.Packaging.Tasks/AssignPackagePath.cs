@@ -4,20 +4,19 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using static NuGet.Build.Packaging.Properties.Strings;
-using static NuGet.Client.ManagedCodeConventions;
+using static ThisAssembly.Strings;
 using NuGet.Packaging;
 
 namespace NuGet.Build.Packaging.Tasks
 {
-	/// <summary>
-	/// Ensures all files have the PackagePath metadata.
-	/// If the PackagePath was not explicitly specified, 
-	/// determine one from the project relative	path and 
-	/// the TargetFramework and Kind metadata, and set it 
-	/// on the projected item.
-	/// </summary>
-	public class AssignPackagePath : Task
+    /// <summary>
+    /// Ensures all files have the PackagePath metadata.
+    /// If the PackagePath was not explicitly specified, 
+    /// determine one from the project relative	path and 
+    /// the TargetFramework and Kind metadata, and set it 
+    /// on the projected item.
+    /// </summary>
+    public class AssignPackagePath : Task
 	{
 		public string IsPackaging { get; set; }
 

@@ -8,7 +8,7 @@
 		<ProjectReference Include="b.csproj">
 			<Project>$(GuidB)</Project>
 			<Name>b</Name>
-			<IncludeInPackage>$(IncludeInPackage)</IncludeInPackage>
+			<Pack>$(IncludeInPackage)</Pack>
 		</ProjectReference>
 	</ItemGroup>
 	<ItemGroup>

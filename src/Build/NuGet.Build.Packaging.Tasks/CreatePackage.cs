@@ -3,18 +3,17 @@ using System.Linq;
 using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using System.Runtime.Versioning;
 using NuGet.Versioning;
 using NuGet.Frameworks;
 using NuGet.Packaging.Core;
 using NuGet.Packaging;
 using System.Collections.Generic;
-using static NuGet.Build.Packaging.Properties.Strings;
+using static ThisAssembly.Strings;
 using System.Security.Cryptography;
 
 namespace NuGet.Build.Packaging.Tasks
 {
-	public class CreatePackage : Task
+    public class CreatePackage : Task
 	{
 		[Required]
 		public ITaskItem Manifest { get; set; }

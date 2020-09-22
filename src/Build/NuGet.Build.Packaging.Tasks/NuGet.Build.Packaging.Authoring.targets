@@ -33,7 +33,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 		</ProjectReference>
 	</ItemDefinitionGroup>
 
-	<!-- ProjectCapabilities in dev15 should be supported via NuGet packages -->
 	<ItemGroup>
 		<ProjectCapability Include="PackagingProject" />
 

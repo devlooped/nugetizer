@@ -5,7 +5,7 @@ using NuGet.Packaging.Core;
 
 namespace NuGet.Build.Packaging
 {
-	public class PackageDependencyGroupComparer : IEqualityComparer<PackageDependencyGroup>
+	class PackageDependencyGroupComparer : IEqualityComparer<PackageDependencyGroup>
     {
 		public static PackageDependencyGroupComparer Default { get; } = new PackageDependencyGroupComparer();
 

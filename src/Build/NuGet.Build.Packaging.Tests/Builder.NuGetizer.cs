@@ -8,7 +8,6 @@ using System.Threading;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging.StructuredLogger;
-using NuGet.Build.Packaging;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -71,8 +70,8 @@ static partial class Builder
 			.ToDictionary(prop => prop.Name, prop => prop.GetValue(properties).ToString()) 
 			?? new Dictionary<string, string>();
 
-		buildProps[nameof(ThisAssembly.Project.Properties.NuGetRestoreTargets)] = ThisAssembly.Project.Properties.NuGetRestoreTargets;
-		buildProps[nameof(ThisAssembly.Project.Properties.NuGetTargets)] = ThisAssembly.Project.Properties.NuGetTargets;
+		buildProps[nameof(ThisAssembly.Project.NuGetRestoreTargets)] = ThisAssembly.Project.NuGetRestoreTargets;
+		buildProps[nameof(ThisAssembly.Project.NuGetTargets)] = ThisAssembly.Project.NuGetTargets;
 
 		var result = Build(projectOrSolution, target, buildProps, loggers);
 		if (OpenBuildLogAttribute.IsActive)

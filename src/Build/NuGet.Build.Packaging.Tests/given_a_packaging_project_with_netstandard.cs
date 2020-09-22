@@ -1,12 +1,11 @@
-﻿using System.Diagnostics;
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
 {
-	// NOTE: not added to the main project because it's built using MSBuild 14 and it's not working 
-	// by adding binding redirects, appdomain isolation, etc. :(
-	public class given_a_packaging_project_with_netstandard
+    // NOTE: not added to the main project because it's built using MSBuild 14 and it's not working 
+    // by adding binding redirects, appdomain isolation, etc. :(
+    public class given_a_packaging_project_with_netstandard
 	{
 		ITestOutputHelper output;
 

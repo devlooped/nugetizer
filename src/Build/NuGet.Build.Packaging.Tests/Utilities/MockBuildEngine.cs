@@ -10,7 +10,7 @@ namespace Microsoft.Build.Framework
 	/// Fake build engine for unit testing Tasks without spinning up 
 	/// MSBuild.
 	/// </summary>
-	public class MockBuildEngine : IBuildEngine
+	class MockBuildEngine : IBuildEngine
 	{
 		bool trace = false;
 		ITestOutputHelper output;

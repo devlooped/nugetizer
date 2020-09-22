@@ -6,9 +6,7 @@
 		<TargetFrameworkMoniker>MonoAndroid,Version=v5.1</TargetFrameworkMoniker>
   </PropertyGroup>
 	<ItemGroup>
-    <PackageFile Include="..\given_a_custom_build_project\Readme.txt">
-      <Link>docs\Readme.txt</Link>
-    </PackageFile>
+    <PackageFile Include="..\given_a_custom_build_project\Readme.txt" Link="docs\Readme.txt" />
     <Content Include="quickstart\cs-any.txt">
       <CodeLanguage>cs</CodeLanguage>
       <TargetFramework>any</TargetFramework>
@@ -20,79 +18,31 @@
       <TargetFramework>any</TargetFramework>
       <TargetFramework>any</TargetFramework>
     </Content>
-    <Content Include="quickstart\any-non-tfm.txt">
-      <FrameworkSpecific>false</FrameworkSpecific>
-    </Content>
+    <Content Include="quickstart\any-non-tfm.txt" FrameworkSpecific="false" />
     <Content Include="Resources\**\*.*" />
-		<None Include="contentFiles\cs\monoandroid\none.cs">
-			<Pack>true</Pack>
-		</None>
+		<None Include="contentFiles\cs\monoandroid\none.cs" Pack="true" />
     <Content Include="contentFiles\cs\monoandroid\content.cs" Condition="'$(IncludeContentWithReservedRelativeDir)' == 'true'" />
     <Content Include="cs\any\any-content.cs" />
     <None Include="none.txt" />
-    <None Include="none-with-kind.txt">
-      <Kind>build</Kind>
-    </None>
-    <None Include="none-with-include-true.txt">
-			<IncludeInPackage>true</IncludeInPackage>
-		</None>
-		<None Include="none-with-include-false.txt">
-			<IncludeInPackage>false</IncludeInPackage>
-		</None>
-    <None Include="none-copy.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="none-copy-with-kind.txt">
-      <Kind>build</Kind>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="none-copy-with-include-true.txt">
-      <IncludeInPackage>true</IncludeInPackage>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="none-copy-with-include-false.txt">
-      <IncludeInPackage>false</IncludeInPackage>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Content Include="relative\none-copy-with-kind.txt">
-      <Kind>build</Kind>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="relative\none-copy.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="none-with-kind.txt" Kind="build" />
+    <None Include="none-with-include-true.txt" Pack="true" />
+		<None Include="none-with-include-false.txt" Pack="false" />
+    <None Include="none-copy.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="none-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="none-copy-with-include-true.txt" Pack="true" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="none-copy-with-include-false.txt" Pack="false" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="relative\none-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="relative\none-copy.txt" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="content.txt" />
-    <Content Include="content-with-kind.txt">
-      <Kind>build</Kind>
-    </Content>
-    <Content Include="content-with-include-true.txt">
-      <IncludeInPackage>true</IncludeInPackage>
-    </Content>
-    <Content Include="content-with-include-false.txt">
-      <IncludeInPackage>false</IncludeInPackage>
-    </Content>
-    <Content Include="content-copy.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="content-copy-with-kind.txt">
-      <Kind>build</Kind>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="content-copy-with-include-true.txt">
-      <IncludeInPackage>true</IncludeInPackage>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="content-copy-with-include-false.txt">
-      <IncludeInPackage>false</IncludeInPackage>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="relative\content-copy-with-kind.txt">
-      <Kind>build</Kind>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="relative\content-copy.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="content-with-kind.txt" Kind="build" />
+    <Content Include="content-with-include-true.txt" Pack="true" />
+    <Content Include="content-with-include-false.txt" Pack="false" />
+    <Content Include="content-copy.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="content-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="content-copy-with-include-true.txt" Pack="true" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="content-copy-with-include-false.txt" Pack="false" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="relative\content-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="relative\content-copy.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), fakeframework.targets))\fakeframework.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />

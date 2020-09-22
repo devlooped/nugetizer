@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Versioning;
 using Microsoft.Build.Utilities;
-using Newtonsoft.Json.Linq;
-using NuGet.Build.Packaging.Tasks;
-using NuGet.Frameworks;
-using NuGet.ProjectManagement;
 using Xunit;
 using Metadata = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NuGet.Build.Packaging
 {
-	public class UtilitiesTests
+    public class UtilitiesTests
 	{
 		[Fact]
 		public void when_getting_target_framework_then_fallback_to_tfm()

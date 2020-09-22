@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
 	<PropertyGroup>
 		<AssemblyName>Forms</AssemblyName>
@@ -9,13 +9,13 @@
 		<IsPackagingProject>true</IsPackagingProject>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="pcl\forms.pcl.csproj">
+		<ProjectReference Include="common\common.csproj">
 			<Project>$(GuidB)</Project>
-			<Name>forms.pcl</Name>
+			<Name>common</Name>
 		</ProjectReference>
-		<ProjectReference Include="net\forms.net46.csproj">
+		<ProjectReference Include="net\forms.net.csproj">
 			<Project>$(GuidC)</Project>
-			<Name>forms.net46</Name>
+			<Name>forms.net</Name>
 		</ProjectReference>
 		<ProjectReference Include="ios\forms.ios.csproj">
 			<Project>$(GuidD)</Project>

@@ -7,40 +7,37 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
 using NuGet.Build.Packaging.Tasks;
-using static NuGet.Build.Packaging.Properties.Strings;
 using Metadata = System.Collections.Generic.Dictionary<string, string>;
 using System;
-using NuGet.Build.Packaging.Properties;
 
 namespace NuGet.Build.Packaging
 {
 	public class AssignPackagePathTests
 	{
-		static readonly ITaskItem[] kinds;
+        static ITaskItem[] kinds;
+
+		static ITaskItem[] Kinds
+            => kinds ??= new Project(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "NuGet.Build.Packaging.props"), null, null, new ProjectCollection())
+                .GetItems("PackageItemKind")
+                .Select(item => new TaskItem(item.EvaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
+                .ToArray();
+
 		ITestOutputHelper output;
 		MockBuildEngine engine;
-
-		static AssignPackagePathTests()
-		{
-			kinds = new Project(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "NuGet.Build.Packaging.props"), null, null, new ProjectCollection())
-				.GetItems("PackageItemKind")
-				.Select(item => new TaskItem(item.EvaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
-				.ToArray();
-		}
 
 		public AssignPackagePathTests(ITestOutputHelper output)
 		{
 			this.output = output;
 			engine = new MockBuildEngine(output);
-		}
+        }
 
-		[Fact]
+        [Fact]
 		public void when_file_has_no_kind_then_logs_error_code()
 		{
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -52,7 +49,7 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.False(task.Execute());
-			Assert.Equal(nameof(ErrorCode.NG0010), engine.LoggedErrorEvents[0].Code);
+			Assert.Equal(nameof(ThisAssembly.Strings.ErrorCode.NG0010), engine.LoggedErrorEvents[0].Code);
 		}
 
 		[Fact]
@@ -61,7 +58,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -86,7 +83,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -112,7 +109,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("a.dll", new Metadata
@@ -141,7 +138,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -163,7 +160,7 @@ namespace NuGet.Build.Packaging
 			{
 				IsPackaging = "true",
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -184,7 +181,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -208,7 +205,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -232,7 +229,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -258,7 +255,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -285,7 +282,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem(@"..\..\readme.txt", new Metadata
@@ -313,7 +310,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem(@"..\..\readme.txt", new Metadata
@@ -342,7 +339,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("readme.txt", new Metadata
@@ -378,7 +375,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -400,21 +397,21 @@ namespace NuGet.Build.Packaging
 			}));
 		}
 
-		public static IEnumerable<object[]> GetMappedKnownKinds => kinds
+		public static IEnumerable<object[]> GetMappedKnownKinds => Kinds
 			// Skip unmapped kinds (i.e. None, Dependency, etc.)
 			.Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) &&
 				// Skip contentFiles from this test since they get a special map that includes the codelang
 				kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles")
 			.Select(kind => new object[] { kind.ItemSpec, kind.GetMetadata(MetadataName.PackageFolder), kind.GetMetadata(MetadataName.FrameworkSpecific) });
 
-		[MemberData("GetMappedKnownKinds")]
+		[MemberData(nameof(GetMappedKnownKinds))]
 		[Theory]
 		public void when_file_has_known_kind_then_assigned_file_contains_mapped_package_folder(string packageFileKind, string mappedPackageFolder, string frameworkSpecific)
 		{
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -437,20 +434,20 @@ namespace NuGet.Build.Packaging
 			}));
 		}
 
-		public static IEnumerable<object[]> GetUnmappedKnownKinds => kinds
+		public static IEnumerable<object[]> GetUnmappedKnownKinds => Kinds
 			.Where(kind => string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && 
 				kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles" && 
 				kind.ItemSpec != PackageItemKind.None)
 			.Select(kind => new object[] { kind.ItemSpec });
 
-		[MemberData("GetUnmappedKnownKinds")]
+		[MemberData(nameof(GetUnmappedKnownKinds))]
 		[Theory]
 		public void when_file_has_known_kind_with_no_package_folder_then_package_path_is_empty(string packageFileKind)
 		{
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("Foo", new Metadata
@@ -475,7 +472,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("readme.txt", new Metadata
@@ -506,7 +503,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("Sample.cs", new Metadata
@@ -531,7 +528,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem(@"contentFiles\cs\monodroid\content.cs", new Metadata
@@ -545,15 +542,16 @@ namespace NuGet.Build.Packaging
 			};
 
 			Assert.False(task.Execute());
-			Assert.True(engine.LoggedErrorEvents.Any(e => e.Code == nameof(Strings.ErrorCode.NG0013)));
+			Assert.Contains(engine.LoggedErrorEvents, e => e.Code == nameof(ThisAssembly.Strings.ErrorCode.NG0013));
 		}
 
+        [Fact]
 		public void when_assigning_content_file_with_additional_metadata_then_preserves_metadata()
 		{
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("Sample.cs", new Metadata
@@ -585,7 +583,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem(@"content\docs\readme.txt", new Metadata
@@ -611,7 +609,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -638,7 +636,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -663,7 +661,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -689,7 +687,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("sdk\\bin\\tool.exe", new Metadata
@@ -714,7 +712,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("sdk\\bin\\tool.exe", new Metadata
@@ -741,7 +739,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("console.exe", new Metadata
@@ -767,7 +765,7 @@ namespace NuGet.Build.Packaging
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = kinds,
+				Kinds = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("tools\\foo.exe", new Metadata

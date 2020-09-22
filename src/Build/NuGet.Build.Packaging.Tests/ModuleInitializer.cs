@@ -1,0 +1,52 @@
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
+namespace System.Runtime.CompilerServices
+{
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    public sealed class ModuleInitializerAttribute : Attribute { }
+}
+
+namespace NuGetizer.Tests
+{
+    internal static class ModuleInitializer
+    {
+        [ModuleInitializer]
+        internal static void Run()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
+
+            File.AppendAllText(@"C:\Delete\initializer.txt", $"Initializing MSBuild to {ThisAssembly.Project.MSBuildBinPath}\r\n");
+
+            //if (!AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == "Microsoft.Build"))
+            //{
+            //    var binPath = ThisAssembly.Project.MSBuildBinPath;
+
+            //    Microsoft.Build.Locator.MSBuildLocator.RegisterMSBuildPath(binPath);
+
+            //    // Set environment variables so SDKs can be resolved. 
+            //    Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", Path.Combine(binPath, "MSBuild.exe"), EnvironmentVariableTarget.Process);
+            //}
+        }
+
+        static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var name = new AssemblyName(args.Name).Name;
+            var file = Path.Combine(ThisAssembly.Project.MSBuildBinPath, name + ".dll");
+
+            File.AppendAllText(@"C:\Delete\initializer.txt", $"Resolving {name}\r\n");
+
+            if (name.StartsWith("Microsoft.Build") && File.Exists(file))
+            {
+                File.AppendAllText(@"C:\Delete\initializer.txt", $"Found {file}\r\n");
+                return Assembly.LoadFrom(file);
+            }
+
+            return null;
+        }
+    }
+}

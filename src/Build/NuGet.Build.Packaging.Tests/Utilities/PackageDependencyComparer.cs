@@ -4,7 +4,7 @@ using NuGet.Packaging.Core;
 
 namespace NuGet.Build.Packaging
 {
-	public class PackageDependencyComparer : IEqualityComparer<PackageDependency>
+	class PackageDependencyComparer : IEqualityComparer<PackageDependency>
     {
 		public static PackageDependencyComparer Default { get; } = new PackageDependencyComparer();
 

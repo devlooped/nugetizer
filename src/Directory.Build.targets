@@ -1,76 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
 
-	<PropertyGroup>
-		<GitSkipCache>true</GitSkipCache>
-		<GitIgnoreTagVersion>true</GitIgnoreTagVersion>
+  <PropertyGroup>
+    <PackageItemKindFile>$(IntermediateOutputPath)PackageItemKind.g$(DefaultLanguageSourceExtension)</PackageItemKindFile>
+  </PropertyGroup>
 
-		<Company>Microsoft</Company>
-		<Product>Microsoft NuGet Packaging</Product>
-		<Copyright>Copyright © 2016</Copyright>
-	</PropertyGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Include="@(None);@(Content)" />
+  </ItemGroup>
+  
+  <PropertyGroup Label="Pack">
+    <!-- The Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets unconditionally sets 
+        PackageId=AssemblyName if no PackageId is provided, and then defaults IsPackable=true if 
+        a PackageId is set (?!), meaning that by default everything is packable in Sdk-style 
+        projects. 
 
-	<ItemGroup>
-		<PackageReference Include="MSBuilder.CI" Version="0.1.2" PrivateAssets="all" />
-		<PackageReference Include="GitInfo" Version="2.0.7" PrivateAssets="all" />
-	</ItemGroup>
+        The Directory.Build.targets are imported after the user's project properties have been 
+        read, and therefore gives us a chance to inspect if an explicit PackageId was provided, 
+        before the NuGet SDK target is imported and defaults it. At this point, we can give 
+        IsPackable a more sensible default, making it false if no PackageId was provided at this 
+        point. -->
+    <IsPackable Condition="'$(IsPackable)' == '' And '$(PackageId)' == ''">false</IsPackable>
+    <IsPackable Condition="'$(IsPackable)' == '' And '$(PackageId)' != ''">true</IsPackable>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="NuGet Pack">
+    <HttpNuGetCache>$(LocalAppData)\NuGet\v3-cache</HttpNuGetCache>
+    <!-- By default, we clear the HTTP cache if our project is packable. This does *not* clear the cached installed packages -->
+    <ClearHttpNuGetCacheOnPack Condition="'$(ClearHttpNuGetCacheOnPack)' == ''">$(IsPackable)</ClearHttpNuGetCacheOnPack>
+    <!-- The actual NuGet cache is only cleared for the *current* PackageId, so no need to turn off its clearing on build/pack -->
+    <NuGetCache>$(UserProfile)\.nuget\packages</NuGetCache>
+  </PropertyGroup>
 
-	<Target Name="Version" DependsOnTargets="SetVersion">
-		<Message Importance="high" Text="PackageVersion=$(PackageVersion)
-AssemblyVersion=$(AssemblyVersion)" />
-	</Target>
+  <Target Name="Prepare" BeforeTargets="PrepareForBuild">
+    <MakeDir Directories="$(PackageOutputPath)" Condition="'$(PackageOutputPath)' != '' And !Exists('$(PackageOutputPath)')" />
+  </Target>
 
-	<Target Name="_SetLocalCommits" BeforeTargets="_GitPopulateVersionInfo" Condition="'$(CI)' != 'true'">
-		<PropertyGroup>
-			<!-- Local builds should always be commit count +1, since we'll be always working on the next version to be published. -->
-			<GitCommits>$([MSBuild]::Add('$(GitCommits)', '1'))</GitCommits>
-		</PropertyGroup>
-	</Target>
+  <Target Name="UpdatePackageMetadata" BeforeTargets="PrepareForBuild;GetAssemblyVersion;GenerateNuspec;Pack" Condition="$(IsPackable) And '$(RepositoryUrl)' != '' And '$(SourceRevisionId)' != ''">
+    <PropertyGroup>
+      <Description>
+        $(Description)
 
-	<!-- '$(ExcludeRestorePackageImports)' == 'true' when invoking /t:Restore -->
-	<Target Name="SetVersion" BeforeTargets="GetAssemblyVersion;GetPackageVersion" DependsOnTargets="GitVersion" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
-		<PropertyGroup>
-			<!-- PR builds are *always* prerelease -->
-			<!-- TFS case: BUILD_REASON=PullRequest and BUILD_SOURCEBRANCH=refs/pull/#/merge -->
-			<GitSemVerDashLabel Condition="'$(TF_BUILD)' == 'true' and '$(BUILD_REASON)' == 'PullRequest'">$(GitSemVerDashLabel)-pr$(BUILD_SOURCEBRANCH.Substring(10).TrimEnd('/merge'))</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">$(GitSemVerDashLabel)-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+        Built from $(RepositoryUrl)/tree/$(SourceRevisionId.Substring(0, 9))
+      </Description>
+      <!-- Update nuspec properties too -->
+      <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+      <PackageDescription> $(Description)</PackageDescription>
+    </PropertyGroup>
+  </Target>
 
-			<!-- NOTE: build metadata does not affect version matching, so even if you work from a different branch+commit that gets 
-           rebased+merged later on, the version # might still be the same (provided there weren't additional commits in master 
-           before the rebase+merge.
-      -->
-			<_IndexOfBranchSlash>$(GitBranch.LastIndexOf('/'))</_IndexOfBranchSlash>
-			<_IndexOfBranchSubstring>$([MSBuild]::Add('$(_IndexOfBranchSlash)', '1'))</_IndexOfBranchSubstring>
-			<_GitBranch Condition="'$(_IndexOfBranchSlash)' != '0'">$(GitBranch.Substring($(_IndexOfBranchSubstring)))</_GitBranch>
-			<_GitBranch Condition="'$(_IndexOfBranchSlash)' == '0'">$(GitBranch)</_GitBranch>
+  <Target Name="ClearPackageOutput"
+        Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
+        BeforeTargets="Build">
+    <ItemGroup>
+      <_ExistingPackage Include="$(PackageOutputPath)\$(PackageId)*.nupkg" />
+      <_PackageToDelete Include="@(_ExistingPackage)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d\.\d\.\d.*'))" />
+    </ItemGroup>
+    <Delete Files="@(_PackageToDelete)" ContinueOnError="true">
+      <Output TaskParameter="DeletedFiles" ItemName="_DeletedPackages" />
+    </Delete>
+    <Message Text="Nuked existing packages: @(_DeletedPackages -> '%(Filename)%(Extension)')" Condition="'@(_DeletedPackages)' != ''" Importance="high" />
+  </Target>
 
-			<!-- We'll use GitFlow and ship publicly from a versioned branch, meaning we don't need branch metadata in those cases -->
-			<GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' == '' and $(_GitBranch.StartsWith('v')) == 'false'">-$(_GitBranch)</GitSemVerDashLabel>
-			<SemVerMetadata Condition="'$(GitSemVerDashLabel)' != '-$(_GitBranch)' and $(_GitBranch.StartsWith('v')) == 'false' and '$(_GitBranch)' != 'undefined'">$(_GitBranch).</SemVerMetadata>
-			<SemVerMetadata>$(SemVerMetadata)sha.$(GitCommit)</SemVerMetadata>
+  <!-- Clears nuget cache for the current project package id -->
+  <Target Name="ClearCachedPackageId"
+          Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
+          AfterTargets="Build;Pack" DependsOnTargets="Pack">
+    <PropertyGroup>
+      <PackageFolder>$(NuGetCache)\$(PackageId.ToLowerInvariant())</PackageFolder>
+    </PropertyGroup>
 
-			<!-- If there is a pre-release label, fix the major.minor.build and increment the release label digit instead. -->
-			<PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel).$(GitCommits)+$(SemVerMetadata)</PackageVersion>
-			<!-- If shipping stable, semver the package version -->
-			<PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)+$(SemVerMetadata)</PackageVersion>
-			<AssemblyVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</AssemblyVersion>
-			<FileVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</FileVersion>
-			<InformationalVersion>$(PackageVersion)</InformationalVersion>
-		</PropertyGroup>
-	</Target>
+    <Message Text="Nuking $(PackageFolder)" Condition="Exists($(PackageFolder))" Importance="high" />
+    <Exec Command='rd "$(PackageFolder)" /q /s' Condition="Exists($(PackageFolder)) And '$(OS)' == 'Windows_NT'" />
+    <Exec Command='rm -rf "$(PackageFolder)"' Condition="Exists($(PackageFolder)) And '$(OS)' != 'Windows_NT'" />
+  </Target>
 
-	<Target Name="LocalPublish" Condition="'$(CI)' != 'true'" AfterTargets="Pack">
-		<Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s' Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())')" />
-
-		<ItemGroup>
-			<ToDelete Include="$(TEMP)\packages\$(PackageId)*.nupkg" />
-		</ItemGroup>
-		<Delete Files="@(ToDelete)" />
-
-		<MakeDir Directories="$(TEMP)\packages" Condition="!Exists('$(TEMP)\packages')" />
-		<Copy SourceFiles="$(PackageTargetPath)" DestinationFolder="$(TEMP)\packages" />
-	</Target>
-
-	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets" Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
+  <Target Name="ClearHttpNuGetCache"
+          Condition="!$(CI) And $(ClearHttpNuGetCacheOnPack) And Exists('$(HttpNuGetCache)') And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
+          AfterTargets="Build;Pack" DependsOnTargets="Pack">
+    <Message Text="Nuking $(HttpNuGetCache)" Importance="high" />
+    <Exec Command='rd "$(HttpNuGetCache)" /q /s' Condition="'$(OS)' == 'Windows_NT'" />
+    <Exec Command='rm -rf "$(HttpNuGetCache)"' Condition="'$(OS)' != 'Windows_NT'" />
+  </Target>
 
 </Project>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Xml.Linq;
 using Microsoft.Build.Evaluation;
@@ -17,9 +16,9 @@ using Xunit;
 /// automatic solution-configuration generation for 
 /// P2P references.
 /// </summary>
-public static partial class Builder
+static partial class Builder
 {
-	const string ToolsVersion = "15.0";
+	const string ToolsVersion = "Current";
 
 	public static BuildResult Build(ProjectInstance project, string targets, Dictionary<string, string> properties = null, ILogger[] loggers = null)
 	{

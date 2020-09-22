@@ -3,8 +3,10 @@
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
 	<PropertyGroup>
 		<AssemblyName>Forms</AssemblyName>
-    <TargetFrameworkMoniker>Xamarin.iOS,Version=v1.0</TargetFrameworkMoniker>
-    <ProjectGuid>$(GuidD)</ProjectGuid>
+		<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+		<ProjectGuid>$(GuidC)</ProjectGuid>
+		<OutputPath>bin</OutputPath>
+		<IntermediateOutputPath>obj\</IntermediateOutputPath>
 		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
 		<DocumentationFile />
 	</PropertyGroup>
@@ -14,6 +16,5 @@
 			<Name>common</Name>
 		</ProjectReference>
 	</ItemGroup>
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), fakeframework.targets))\fakeframework.targets" />
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>

@@ -1,16 +1,9 @@
-﻿using System.Linq;
-using System.Reflection;
-using System.Threading;
-using Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
-using NuGet.Build.Packaging.Tasks;
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace NuGet.Build.Packaging
 {
-	public class given_a_packaging_project
+    public class given_a_packaging_project
 	{
 		ITestOutputHelper output;
 

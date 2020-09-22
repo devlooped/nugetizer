@@ -2,13 +2,14 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+    <TargetFrameworkVersion Condition="'$(TargetFramework)' != ''"></TargetFrameworkVersion>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(IsPortable)' != 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(TargetFramework)' == '' and '$(IsPortable)' != 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
-			Condition="'$(IsPortable)' == 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />  
-			
-	<!-- Ensure we get proper NuGet behavior always -->
+			Condition="'$(TargetFramework)' == '' and '$(IsPortable)' == 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />
+
+  <!-- Ensure we get proper NuGet behavior always -->
   <Import Project="$(NuGetRestoreTargets)" Condition="'$(IsRestoreTargetsFileLoaded)' != 'true' and '$(NuGetRestoreTargets)' != ''" />
   <Import Project="$(NuGetTargets)" Condition="'$(ResolveNuGetPackageAssetsDependsOn)' == '' and '$(NuGetTargets)' != ''" />
 
@@ -29,15 +30,6 @@
     <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
   </Target>
 
-  <PropertyGroup>
-    <CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll</CodeTaskAssembly>
-    <CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '' And Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll')">$(MSBuildBinPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
-    <!-- In VS2013, the assembly contains the VS version. -->
-    <CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' == '12.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll</CodeTaskAssembly>
-    <!-- In VS2015+, the assembly was renamed, hopefully this will be the last condition! -->
-    <CodeTaskAssembly Condition="'$(CodeTaskAssembly)' == '' And '$(MSBuildAssemblyVersion)' != '' And '$(MSBuildAssemblyVersion)' &gt;= '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskAssembly>
-  </PropertyGroup>
-
   <!--
     ============================================================
               DumpItems Task
@@ -56,7 +48,7 @@
 
 	============================================================
   -->
-  <UsingTask TaskName="DumpItems" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
+  <UsingTask TaskName="DumpItems" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>
       <Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
       <ItemName />
@@ -96,7 +88,7 @@
       </Code>
     </Task>
   </UsingTask>
-  
-	<Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
-  
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="'$(MSBuildProjectExtension)' != '.csproj'" />
+
 </Project>

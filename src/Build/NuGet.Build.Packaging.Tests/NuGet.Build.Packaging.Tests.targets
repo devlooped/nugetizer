@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<PropertyGroup>
-		<!-- Prevents Fody.VerifyTask from running -->
-		<NCrunch>1</NCrunch>
-		<!-- Don't reference the Tasks project, we are referring to its binary output instead -->
-		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
-	</PropertyGroup>
+  <PropertyGroup>
+    <!-- Prevents Fody.VerifyTask from running -->
+    <NCrunch>1</NCrunch>
+    <!-- Don't reference the Tasks project, we are referring to its binary output instead -->
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<ThisAssemblyProjectProperty Include="NuGetRestoreTargets" />
-		<ThisAssemblyProjectProperty Include="NuGetTargets" />
-	</ItemGroup>
+  <Target Name="CopyScenarioFiles" AfterTargets="Build">
+    <ItemGroup>
+      <ScenarioFile Include="Scenarios\**\*.*" Exclude="Scenarios\**\bin\**\*.*;Scenarios\**\obj\**\*.*" />
+      <NuGetizer Include="..\NuGetizer\bin\$(Configuration)\**\*.*" />
+    </ItemGroup>
 
-	<Target Name="CopyScenarioFiles" AfterTargets="Build">
-		<ItemGroup>
-			<ScenarioFile Include="Scenarios\**\*.*" Exclude="Scenarios\**\bin\**\*.*;Scenarios\**\obj\**\*.*" />
-			<NuGetizer Include="..\NuGet.Build.Packaging.Tasks\bin\$(Configuration)\**\*.*" />
-		</ItemGroup>
-
-		<Copy SourceFiles="@(ScenarioFile)"
+    <Copy SourceFiles="@(ScenarioFile)"
 				DestinationFiles="@(ScenarioFile -> '$(OutputPath)Scenarios\%(RecursiveDir)%(Filename)%(Extension)')"
 				SkipUnchangedFiles="true" />
-		<Copy SourceFiles="@(NuGetizer)"
+    <Copy SourceFiles="@(NuGetizer)"
 				DestinationFiles="@(NuGetizer -> '$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"
 				SkipUnchangedFiles="true" />
-	</Target>
+  </Target>
 
 </Project>

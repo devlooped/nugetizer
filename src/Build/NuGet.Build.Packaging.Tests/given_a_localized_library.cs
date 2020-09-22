@@ -1,11 +1,10 @@
 ﻿using System.Linq;
-using Microsoft.Build.Execution;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
 {
-	public class given_a_localized_library
+    public class given_a_localized_library
 	{
 		ITestOutputHelper output;
 
@@ -21,7 +20,7 @@ namespace NuGet.Build.Packaging
 
 			result.AssertSuccess(output);
 
-			Assert.True(result.Items.Any(i => i.GetMetadata("PackagePath") == "lib\\net45\\es-AR\\library.resources.dll"));
+			Assert.Contains(result.Items, i => i.GetMetadata("PackagePath") == "lib\\net45\\es-AR\\library.resources.dll");
 		}
 	}
 }

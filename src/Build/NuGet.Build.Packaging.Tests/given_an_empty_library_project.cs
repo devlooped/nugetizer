@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using Microsoft.Build.Execution;
+﻿using Microsoft.Build.Execution;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
 {
-	public class given_an_empty_library_project
+    public class given_an_empty_library_project
 	{
 		ITestOutputHelper output;
 

@@ -4,13 +4,12 @@ using System.Reflection;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
 {
-	public class TargetsTests
+    public class TargetsTests
 	{
 		ITestOutputHelper output;
 
@@ -22,7 +21,7 @@ namespace NuGet.Build.Packaging
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputKind", "build" }
-			}, "14.0");
+			}, null);
 
 			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
@@ -33,7 +32,7 @@ namespace NuGet.Build.Packaging
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputKind", "tool" }
-			}, "14.0");
+			}, null);
 
 			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
@@ -44,7 +43,7 @@ namespace NuGet.Build.Packaging
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputKind", "tools" }
-			}, "14.0");
+			}, null);
 
 			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
@@ -55,7 +54,7 @@ namespace NuGet.Build.Packaging
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputKind", "lib" }
-			}, "14.0");
+			}, null);
 
 			Assert.Equal("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
@@ -65,7 +64,7 @@ namespace NuGet.Build.Packaging
 		{
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
-			}, "14.0");
+			}, null);
 
 			Assert.Equal("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
@@ -76,7 +75,7 @@ namespace NuGet.Build.Packaging
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "IsTool", "true" }
-			}, "14.0");
+			}, null);
 
 			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
 		}
@@ -87,7 +86,7 @@ namespace NuGet.Build.Packaging
 			var project = new Project("NuGet.Build.Packaging.targets", new Dictionary<string, string>
 			{
 				{ "GeneratePackageOnBuild", "true" }
-			}, "14.0");
+			}, null);
 
 			Assert.Equal("true", project.GetPropertyValue("PackOnBuild"));
 		}

@@ -1,58 +1,35 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" DefaultTargets="Build">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Shared.props))\NuGet.Build.Packaging.Shared.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <ProjectGuid>{A3D231D7-31E4-4A70-8CD1-7246C7D069F6}</ProjectGuid>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>NuGetizer</PackageId>
     <NuGetBuildTasksPackTargets>NO-SDK-PACK</NuGetBuildTasksPackTargets>
-  </PropertyGroup>
+    <ILRepack>false</ILRepack>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RootNamespace>NuGet.Build.Packaging</RootNamespace>
+  </PropertyGroup>  
+
   <ItemGroup>
-    <PackageReference Include="ILRepack" Version="2.0.13" PrivateAssets="all" />
-    <PackageReference Include="netfx-System.StringResources" Version="3.1.5" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Build" Version="15.8.166" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.8.166" PrivateAssets="all" />
-    <PackageReference Include="Newtonsoft.Json" Version="6.0.8" PrivateAssets="all" />
-    <PackageReference Include="NuGet.Client" Version="4.0.0" PrivateAssets="all" />
-    <PackageReference Include="NuGet.Packaging" Version="4.0.0" PrivateAssets="all" />
-    <PackageReference Include="NuGet.ProjectManagement" Version="4.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="ILRepack" Version="2.0.18" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.9.20" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Packaging" Version="5.7.0" PrivateAssets="all" />
+    <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly" Version="42.42.42" PrivateAssets="all" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Remove="**\*.props;**\*.targets" />
-    <Content Include="GenerateReferenceAssembly.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="NuGet.Build.Packaging.Tasks.targets" />
-    <Content Include="**\*.props;**\*.targets" Exclude="obj\**\*.*;bin\**\*.*;NuGet.Build.Packaging.Tasks.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="@(None)" Exclude="NuGetizer.Tasks.targets" CopyToOutputDirectory="PreserveNewest" />
     <Content Update="NuGet.Build.Packaging.MultiTargeting.targets">
-      <PackagePath>buildMultiTargeting\NuGet.Build.Packaging%(Extension)</PackagePath>
+      <PackagePath>buildMultiTargeting\NuGetizer%(Extension)</PackagePath>
     </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Update="Resources.resx" Generator="" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\external\ApiIntersect\ApiIntersect\ApiIntersect.csproj">
-      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <AdditionalProperties>PrimaryOutputKind=build</AdditionalProperties>
-      <Project>{cd767d93-6c99-4d6a-a303-3c139a73400e}</Project>
-      <Name>ApiIntersect</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
-      <Link>GlobalAssemblyInfo.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Build.Packaging.Tasks.Shared.targets))\NuGet.Build.Packaging.Tasks.Shared.targets" />
+  
+  <Import Project="NuGet.Build.Packaging.Tasks.targets" />
+
 </Project>

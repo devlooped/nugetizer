@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 using NuGet.Packaging;
-using Xunit;
 
 namespace NuGet.Build.Packaging
 {
-	public static class TaskItemExtensions
+    static class TaskItemExtensions
 	{
 		/// <summary>
 		/// Checks if the given item has metadata key/values matching the 

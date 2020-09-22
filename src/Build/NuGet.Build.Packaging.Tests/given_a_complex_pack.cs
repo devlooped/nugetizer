@@ -1,24 +1,23 @@
 ﻿using System.Linq;
 using Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
-using NuGet.Build.Packaging.Tasks;
 using NuGet.Frameworks;
-using NuGet.Packaging;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
 {
-	public class given_a_complex_pack
+    public class given_a_complex_pack
 	{
 		ITestOutputHelper output;
 
 		public given_a_complex_pack(ITestOutputHelper output)
 		{
 			this.output = output;
-		}
+            Builder.BuildScenario(nameof(given_a_complex_pack), target: "Restore", output: output)
+                .AssertSuccess(output);
+        }
 
-		[Fact]
+        [Fact]
 		public void when_getting_package_target_path_then_gets_package_metadata()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "a", target: "GetPackageTargetPath", output: output);
@@ -42,19 +41,19 @@ namespace NuGet.Build.Packaging
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"lib\net45\a.dll",
+				PackagePath = @"lib\net472\a.dll",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"lib\net45\a.xml",
+				PackagePath = @"lib\net472\a.xml",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"lib\net45\e.dll",
+				PackagePath = @"lib\net472\e.dll",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"lib\net45\e.xml",
+				PackagePath = @"lib\net472\e.xml",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -78,19 +77,19 @@ namespace NuGet.Build.Packaging
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"lib\net45\b.dll",
+				PackagePath = @"lib\net472\b.dll",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"lib\net45\b.xml",
+				PackagePath = @"lib\net472\b.xml",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"lib\net45\d.dll",
+				PackagePath = @"lib\net472\d.dll",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				PackagePath = @"lib\net45\d.xml",
+				PackagePath = @"lib\net472\d.xml",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
@@ -165,13 +164,13 @@ namespace NuGet.Build.Packaging
 
 			var manifest = result.Items[0].GetManifest();
 
-			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\a.dll");
-			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\a.xml");
-			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\e.dll");
-			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\e.xml");
+			Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\a.dll");
+			Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\a.xml");
+			Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\e.dll");
+			Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\e.xml");
 
 			Assert.Contains(manifest.Metadata.DependencyGroups, group =>
-				group.TargetFramework.Equals(NuGetFramework.Parse("net45")) &&
+				group.TargetFramework.Equals(NuGetFramework.Parse("net472")) &&
 				group.Packages.Any(dep => dep.Id == "B" && dep.VersionRange.OriginalString == "2.0.0"));
 		}
 		
@@ -184,13 +183,13 @@ namespace NuGet.Build.Packaging
 
 			var manifest = result.Items[0].GetManifest();
 
-			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\b.dll");
-			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\b.xml");
-			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\d.dll");
-			Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\d.xml");
+			Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\b.dll");
+			Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\b.xml");
+			Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\d.dll");
+			Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\d.xml");
 
 			Assert.Contains(manifest.Metadata.DependencyGroups, group =>
-				group.TargetFramework.Equals(NuGetFramework.Parse("net45")) &&
+				group.TargetFramework.Equals(NuGetFramework.Parse("net472")) &&
 				group.Packages.Any(dep => dep.Id == "C" && dep.VersionRange.OriginalString == "3.0.0"));
 		}
 

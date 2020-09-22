@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using NuGet.Packaging;
-using NuGet.Packaging.Core;
 
 namespace NuGet.Build.Packaging
 {
-	public class ManifestFileComparer : IEqualityComparer<ManifestFile>
+    class ManifestFileComparer : IEqualityComparer<ManifestFile>
     {
 		public static ManifestFileComparer Default { get; } = new ManifestFileComparer();
 

@@ -10,13 +10,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ReadLegacyJsonDependencies"    AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
-	<UsingTask TaskName="NuGet.Build.Packaging.Tasks.ReadLegacyConfigDependencies"  AssemblyFile="NuGet.Build.Packaging.Tasks.dll" />
 
 	<PropertyGroup>
-		<!-- Infer PackageReference elements from packages.config/project.json files in the project -->
-		<InferLegacyPackageReferences Condition="'$(InferLegacyPackageReferences)' == ''">true</InferLegacyPackageReferences>
-
 		<!-- The Kind of primary output (build, symbols and doc) set if IncludeOutputsInPackage = true -->
 		<PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Lib</PrimaryOutputKind>
 
@@ -252,21 +247,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 				AllProjectOutputGroups
 			</InferPackageContentsDependsOn>
 		</PropertyGroup>
-	</Target>
-
-	<Target Name="ReadLegacyDependencies" BeforeTargets="InferPackageContents" Condition="'$(InferLegacyPackageReferences)' == 'true'">
-		<PropertyGroup>
-			<_ProjectJson>$(MSBuildProjectDirectory)\project.json</_ProjectJson>
-			<_PackagesConfig>$(MSBuildProjectDirectory)\packages.config</_PackagesConfig>
-		</PropertyGroup>
-
-		<ReadLegacyJsonDependencies ProjectJsonPath="$(_ProjectJson)" Condition="Exists('$(_ProjectJson)')">
-			<Output TaskParameter="PackageReferences" ItemName="PackageReference" />
-		</ReadLegacyJsonDependencies>
-
-		<ReadLegacyConfigDependencies PackagesConfigPath="$(_PackagesConfig)" Condition="Exists('$(_PackagesConfig)')">
-			<Output TaskParameter="PackageReferences" ItemName="PackageReference" />
-		</ReadLegacyConfigDependencies>
 	</Target>
 
 </Project>

@@ -1,24 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
-using static NuGet.Build.Packaging.Properties.Strings;
 using System.Diagnostics;
 using NuGet.Frameworks;
 using NuGet.Packaging.Core;
-using NuGet.Versioning;
 using Metadata = System.Collections.Generic.Dictionary<string, string>;
 using NuGet.Build.Packaging.Tasks;
 using NuGet.Packaging;
 
 namespace NuGet.Build.Packaging
 {
-	public class CreatePackageTests
+    public class CreatePackageTests
 	{
 		ITestOutputHelper output;
 		MockBuildEngine engine;
@@ -148,9 +145,9 @@ namespace NuGet.Build.Packaging
 			var manifest = ExecuteTask();
 
 			Assert.NotNull(manifest);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups);
 			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
 			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 
 			// We get a version range actually for the specified dependency, like [1.0.0,)
@@ -176,8 +173,8 @@ namespace NuGet.Build.Packaging
 			var manifest = ExecuteTask();
 
 			Assert.NotNull(manifest);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups);
+			Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
 			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Include.Count);
 			Assert.Equal("all", manifest.Metadata.DependencyGroups.First().Packages.First().Include[0]);
@@ -202,8 +199,8 @@ namespace NuGet.Build.Packaging
 			var manifest = ExecuteTask();
 
 			Assert.NotNull(manifest);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups);
+			Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
 			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Exclude.Count);
 			Assert.Equal("all", manifest.Metadata.DependencyGroups.First().Packages.First().Exclude[0]);
@@ -227,8 +224,8 @@ namespace NuGet.Build.Packaging
 			var manifest = ExecuteTask();
 
 			Assert.NotNull(manifest);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups);
+			Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
 			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 			Assert.Equal(0, manifest.Metadata.DependencyGroups.First().Packages.First().Include.Count);
 		}
@@ -251,8 +248,8 @@ namespace NuGet.Build.Packaging
 			var manifest = ExecuteTask();
 
 			Assert.NotNull(manifest);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups);
+			Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
 			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 			Assert.Equal(0, manifest.Metadata.DependencyGroups.First().Packages.First().Exclude.Count);
 		}
@@ -291,11 +288,11 @@ namespace NuGet.Build.Packaging
 
 			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
 
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
 			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
 
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Last().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups.Last().Packages);
 			Assert.Equal("Microsoft.Build", manifest.Metadata.DependencyGroups.Last().Packages.First().Id);
 			Assert.Equal("15.0.0", manifest.Metadata.DependencyGroups.Last().Packages.First().VersionRange.MinVersion.ToString());
 		}
@@ -331,11 +328,11 @@ namespace NuGet.Build.Packaging
 
 			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
 
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
 			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 			Assert.Equal("8.0.0", manifest.Metadata.DependencyGroups.First().Packages.First().VersionRange.MinVersion.ToString());
 
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Last().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups.Last().Packages);
 			Assert.Equal("Microsoft.Build", manifest.Metadata.DependencyGroups.Last().Packages.First().Id);
 			Assert.Equal("15.0.0", manifest.Metadata.DependencyGroups.Last().Packages.First().VersionRange.MinVersion.ToString());
 		}
@@ -457,7 +454,7 @@ namespace NuGet.Build.Packaging
 
 			var manifest = ExecuteTask();
 
-			Assert.Equal(0, manifest.Metadata.DependencyGroups.Count());
+			Assert.Empty(manifest.Metadata.DependencyGroups);
 		}
 
 		[Fact]
@@ -478,9 +475,9 @@ namespace NuGet.Build.Packaging
 			var manifest = ExecuteTask();
 
 			Assert.NotNull(manifest);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups);
 			Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
-			Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.Count());
+			Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
 			Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 
 			// We get a version range actually for the specified dependency, like [1.0.0,)

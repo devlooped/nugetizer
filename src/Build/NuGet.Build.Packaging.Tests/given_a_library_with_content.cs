@@ -1,13 +1,11 @@
 ﻿using System.IO;
-using System.Linq;
 using Microsoft.Build.Execution;
-using NuGet.Build.Packaging.Properties;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
 {
-	public class given_a_library_with_content
+    public class given_a_library_with_content
 	{
 		ITestOutputHelper output;
 
@@ -166,7 +164,7 @@ namespace NuGet.Build.Packaging
 			});
 
 			Assert.Equal(TargetResultCode.Failure, result.ResultCode);
-			Assert.True(result.Logger.Errors.Any(e => e.Code == nameof(Strings.ErrorCode.NG0013)));
+			Assert.Contains(result.Logger.Errors, e => e.Code == nameof(ThisAssembly.Strings.ErrorCode.NG0013));
 		}
 
 		[Fact]

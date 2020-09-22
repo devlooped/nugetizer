@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build;Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build;Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
 	<PropertyGroup>
 		<AssemblyName>Forms</AssemblyName>
-		<TargetFrameworkMoniker>Android,Version=v7.0</TargetFrameworkMoniker>
+    <TargetFrameworkMoniker>MonoAndroid,Version=v9.0</TargetFrameworkMoniker>
 		<ProjectGuid>$(GuidE)</ProjectGuid>
-		<OutputPath>bin</OutputPath>
-		<IntermediateOutputPath>obj\</IntermediateOutputPath>
 		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
 		<DocumentationFile />
 	</PropertyGroup>

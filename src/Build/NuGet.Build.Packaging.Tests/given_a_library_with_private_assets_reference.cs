@@ -1,12 +1,9 @@
-﻿using System.Linq;
-using Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGet.Build.Packaging
 {
-	public class given_a_library_with_private_assets_reference
+    public class given_a_library_with_private_assets_reference
 	{
 		ITestOutputHelper output;
 

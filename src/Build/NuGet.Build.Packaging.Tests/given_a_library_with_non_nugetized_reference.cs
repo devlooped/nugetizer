@@ -1,17 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
-using NuGet.Build.Packaging.Tasks;
+﻿using Microsoft.Build.Execution;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace NuGet.Build.Packaging
 {
-	public class given_a_library_with_non_nugetized_reference
+    public class given_a_library_with_non_nugetized_reference
 	{
 		ITestOutputHelper output;
 

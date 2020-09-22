@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NuGet.Build.Packaging
+﻿namespace NuGet.Build.Packaging
 {
-	public static class TargetFrameworks
+    static class TargetFrameworks
 	{
 		public const string NET45 = ".NETFramework,Version=v4.5";
 		public const string NET46 = ".NETFramework,Version=v4.6";
