@@ -45,7 +45,8 @@
   </ItemGroup>
 
   <Target Name="Test" DependsOnTargets="GetTargetPath">
-    <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" />
+    <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" Condition="'$(UseConsole)' == 'true'" WorkingDirectory="$(MSBuildProjectDirectory)$(OutptuPath)" />
+    <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />
   </Target>
   
   <Import Project="NuGet.Build.Packaging.Tests.targets" />
