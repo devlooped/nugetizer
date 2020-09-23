@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>NuGetizer</PackageId>
+    <NuGetBuildTasksPackTargets>NO-SDK-PACK</NuGetBuildTasksPackTargets>
+    <ILRepack>false</ILRepack>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RootNamespace>NuGetizer</RootNamespace>
+  </PropertyGroup>  
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="ILRepack" Version="2.0.18" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.9.20" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Packaging" Version="5.7.0" PrivateAssets="all" />
+    <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly" Version="0.10.6" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="@(None)" Exclude="NuGetizer.Tasks.targets" CopyToOutputDirectory="PreserveNewest" />
+    <Content Update="NuGetizer.MultiTargeting.targets">
+      <PackagePath>buildMultiTargeting\NuGetizer%(Extension)</PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx" Generator="" />
+  </ItemGroup>
+  
+  <Import Project="NuGetizer.Tasks.targets" />
+
+</Project>

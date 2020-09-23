@@ -17,12 +17,12 @@
 		</PropertyGroup>
 		
 		<!-- Retrieve existing package version for comparison -->
-		<JsonPeek JsonInputPath="$(MSBuildThisFileDirectory)project.json" JPath="dependencies['NuGet.Build.Packaging']">
+		<JsonPeek JsonInputPath="$(MSBuildThisFileDirectory)project.json" JPath="dependencies['NuGetizer']">
 			<Output TaskParameter="Result" PropertyName="ExistingPackageVersion" />
 		</JsonPeek>
 		
 		<!-- Update if there's a mismatch -->
-		<JsonPoke JsonInputPath="$(MSBuildThisFileDirectory)project.json" JPath="dependencies['NuGet.Build.Packaging']" JValue="$(CurrentPackageVersion)"
+		<JsonPoke JsonInputPath="$(MSBuildThisFileDirectory)project.json" JPath="dependencies['NuGetizer']" JValue="$(CurrentPackageVersion)"
 				  Condition="'$(ExistingPackageVersion)' != '$(CurrentPackageVersion)'"/>
 
 		<!-- Fail the build if we updated the file, to force a new restore -->

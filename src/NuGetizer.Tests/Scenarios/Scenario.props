@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+          Condition="'$(TargetFramework)' == '' and Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputPath>bin\$(MSBuildProjectName)</OutputPath>
+    <IntermediateOutputPath>obj\$(MSBuildProjectName)\</IntermediateOutputPath>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Scenario</RootNamespace>
+    <!-- These properties are more likely to change per-project -->
+    <TargetFrameworkVersion Condition="'$(TargetFramework)' == ''">v4.5</TargetFrameworkVersion>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+
+    <!-- A bunch of known GUIDs for P2P references -->
+    <GuidA>{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}</GuidA>
+    <GuidB>{BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB}</GuidB>
+    <GuidC>{CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC}</GuidC>
+    <GuidD>{DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD}</GuidD>
+    <GuidE>{EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE}</GuidE>
+    <GuidF>{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}</GuidF>
+
+    <ProjectGuid>$(GuidA)</ProjectGuid>
+
+    <!-- Used for Dump/Introspect -->
+    <UseCompiledTasks>true</UseCompiledTasks>
+
+    <!-- Prevents Fody.VerifyTask from running -->
+    <NCrunch>1</NCrunch>
+
+    <!-- Avoids architecture mismatch warnings -->
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <!-- Avoids build error from metadata attribute missing in NS1.6 -->
+    <GenerateRepositoryUrlAttribute>true</GenerateRepositoryUrlAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Required package metadata -->
+    <Authors>NuGet</Authors>
+    <Description>Package for '$(MSBuildProjectName)' project.</Description>
+
+    <!-- This will be the right path when we run from xunit in the bin/$(Configuration) folder -->
+    <NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGetizer.props))</NuGetTargetsPath>
+    <!-- This will be the right path when we run from MSBuild from the source location inside the tests project -->
+    <NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGetizer.props')">$(MSBuildThisFileDirectory)..\..\NuGetizer.Tasks\bin\$(Configuration)</NuGetTargetsPath>
+  </PropertyGroup>
+
+  <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetBuildPackagingPropsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.props')" />
+</Project>

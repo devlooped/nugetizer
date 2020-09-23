@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+    <TargetFrameworkVersion Condition="'$(TargetFramework)' != ''"></TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(TargetFramework)' == '' and '$(IsPortable)' != 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
+			Condition="'$(TargetFramework)' == '' and '$(IsPortable)' == 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />
+
+  <!-- Ensure we get proper NuGet behavior always -->
+  <Import Project="$(NuGetRestoreTargets)" Condition="'$(IsRestoreTargetsFileLoaded)' != 'true' and '$(NuGetRestoreTargets)' != ''" />
+  <Import Project="$(NuGetTargets)" Condition="'$(ResolveNuGetPackageAssetsDependsOn)' == '' and '$(NuGetTargets)' != ''" />
+
+  <Import Project="$(NuGetTargetsPath)\NuGetizer.targets" Condition="'$(NuGetBuildPackagingTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.targets')" />
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)_._" />
+  </ItemGroup>
+
+  <Target Name="Report" DependsOnTargets="GetPackageContents">
+    <Message Importance="high" Text="%(_PackageContent.RelativeDir)%(_PackageContent.Filename)%(_PackageContent.Extension)
+	Kind=%(_PackageContent.Kind)
+	PackagePath=%(_PackageContent.PackagePath)
+	TargetPath=%(_PackageContent.TargetPath)"/>
+  </Target>
+
+  <Target Name="Dump" DependsOnTargets="GetPackageContents">
+    <DumpItems Items="@(_PackageContent)" ItemName="_PackageContent" />
+  </Target>
+
+  <!--
+    ============================================================
+              DumpItems Task
+	
+    /// Dumps items to the output log.
+    ///
+
+    Properties:
+    - Items: Microsoft.Build.Framework.ITaskItem[] (Input, Required)
+        /// Items to dump with full metadata.
+        ///
+
+    - ItemName: string (Input)
+        /// Optional item name of the dumped items.
+        ///
+
+	============================================================
+  -->
+  <UsingTask TaskName="DumpItems" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <ItemName />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="Microsoft.Build" />
+      <Reference Include="Microsoft.CSharp" />
+      <Reference Include="System" />
+      <Reference Include="System.Core" />
+      <Using Namespace="Microsoft.Build.Framework" />
+      <Using Namespace="Microsoft.Build.Utilities" />
+      <Using Namespace="System" />
+      <Using Namespace="System.Linq" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+			var itemName = ItemName ?? "Item";
+			if (Items.Length == 0)
+				Log.LogMessage(MessageImportance.High, "No {0} items received to dump.", ItemName ?? "");
+			else
+				Log.LogMessage(MessageImportance.High, "Dumping {0} {1} items.", Items.Length, ItemName ?? "");
+
+			foreach (var item in Items.OrderBy(i => i.ItemSpec))
+			{
+				Log.LogMessage(MessageImportance.High, "{0}: {1}", itemName, item.ItemSpec);
+				foreach (var name in item.MetadataNames.OfType<string>().OrderBy(_ => _))
+				{
+					try
+					{
+						Log.LogMessage(MessageImportance.High, "\t{0}={1}", name, item.GetMetadata(name));
+					}
+					catch
+					{
+					}
+				}
+			}
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="'$(MSBuildProjectExtension)' != '.csproj'" />
+
+</Project>

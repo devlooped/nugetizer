@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\NuGet.Config = src\NuGet.Config
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGet.Build.Packaging.Tasks", "src\Build\NuGet.Build.Packaging.Tasks\NuGet.Build.Packaging.Tasks.csproj", "{57F59BF6-9272-4B66-98A1-334B3FDA5721}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetizer.Tasks", "src\NuGetizer.Tasks\NuGetizer.Tasks.csproj", "{57F59BF6-9272-4B66-98A1-334B3FDA5721}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGet.Build.Packaging.Tests", "src\Build\NuGet.Build.Packaging.Tests\NuGet.Build.Packaging.Tests.csproj", "{50032C88-1B52-4DB1-BFC5-6BADE2CC58CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetizer.Tests", "src\NuGetizer.Tests\NuGetizer.Tests.csproj", "{50032C88-1B52-4DB1-BFC5-6BADE2CC58CC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{57F59BF6-9272-4B66-98A1-334B3FDA5721} = {57F59BF6-9272-4B66-98A1-334B3FDA5721}
 	EndProjectSection
