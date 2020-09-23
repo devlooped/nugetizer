@@ -15,12 +15,14 @@ namespace NuGetizer.Tests
 {
     internal static class ModuleInitializer
     {
+        static readonly string logFile = Environment.ExpandEnvironmentVariables(@"%TEMP%\NuGetizer.txt");
+
         [ModuleInitializer]
         internal static void Run()
         {
             AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
 
-            File.AppendAllText(@"C:\Delete\initializer.txt", $"Initializing MSBuild to {ThisAssembly.Project.MSBuildBinPath}\r\n");
+            File.AppendAllText(logFile, $"Initializing MSBuild to {ThisAssembly.Project.MSBuildBinPath}\r\n");
 
             //if (!AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == "Microsoft.Build"))
             //{
@@ -38,11 +40,11 @@ namespace NuGetizer.Tests
             var name = new AssemblyName(args.Name).Name;
             var file = Path.Combine(ThisAssembly.Project.MSBuildBinPath, name + ".dll");
 
-            File.AppendAllText(@"C:\Delete\initializer.txt", $"Resolving {name}\r\n");
+            File.AppendAllText(logFile, $"Resolving {name}\r\n");
 
             if (name.StartsWith("Microsoft.Build") && File.Exists(file))
             {
-                File.AppendAllText(@"C:\Delete\initializer.txt", $"Found {file}\r\n");
+                File.AppendAllText(logFile, $"Found {file}\r\n");
                 return Assembly.LoadFrom(file);
             }
 
