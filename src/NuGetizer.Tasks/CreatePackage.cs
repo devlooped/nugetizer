@@ -89,7 +89,7 @@ namespace NuGetizer.Tasks
 				metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
 			if (!string.IsNullOrEmpty(Manifest.GetMetadata("IconUrl")))
 				metadata.SetIconUrl(Manifest.GetMetadata("IconUrl"));
-
+            
 			metadata.ReleaseNotes = Manifest.GetMetadata("ReleaseNotes");
 			metadata.Tags = Manifest.GetMetadata("Tags");
 			metadata.MinClientVersionString = Manifest.GetMetadata("MinClientVersion");

@@ -19,7 +19,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <PropertyGroup>
     <!-- Whether include referenced projects' contents the package -->
-    <IncludeProjectReferencesInPackage Condition="'$(IncludeProjectReferencesInPackage)' == ''">true</IncludeProjectReferencesInPackage>
+    <PackProjectReference Condition="'$(PackProjectReference)' == ''">true</PackProjectReference>
 
     <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
 
@@ -191,7 +191,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       GetPackageTargetPath;
       _AddPackageManifest
     </GetPackageContentsDependsOn>
-    <GetPackageContentsDependsOn Condition="'$(IncludeProjectReferencesInPackage)' == 'true'">
+    <GetPackageContentsDependsOn Condition="'$(PackProjectReference)' == 'true'">
       $(GetPackageContentsDependsOn);
       _GetReferencedPackageContents
     </GetPackageContentsDependsOn>

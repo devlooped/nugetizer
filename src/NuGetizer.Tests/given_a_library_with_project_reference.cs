@@ -61,7 +61,7 @@ namespace NuGetizer
 				properties: new
 				{
 					IncludeOutputsInPackage = "false",
-					IncludeProjectReferencesInPackage = "true"
+					PackProjectReference = "true"
 				},
 				output: output);
 
