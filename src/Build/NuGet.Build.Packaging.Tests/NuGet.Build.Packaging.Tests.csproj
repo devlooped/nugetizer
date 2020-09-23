@@ -15,6 +15,8 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Microsoft.Build" Version="16.6.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.6.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.2.6" />
     <PackageReference Include="MSBuild.StructuredLogger" Version="2.1.176" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
@@ -47,6 +49,16 @@
   <Target Name="Test" DependsOnTargets="GetTargetPath">
     <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" Condition="'$(UseConsole)' == 'true'" WorkingDirectory="$(MSBuildProjectDirectory)$(OutptuPath)" />
     <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />
+  </Target>
+  
+  <Target Name="ClearMSBuild" AfterTargets="Build">
+    <ItemGroup>
+      <MSBuildAssembly Include="$(OutputPath)\Microsoft.Build*.dll" Exclude="$(OutputPath)\Microsoft.Build.Locator.dll" />
+    </ItemGroup>
+    <Delete Files="@(MSBuildAssembly)">
+      <Output TaskParameter="DeletedFiles" ItemName="DeletedFiles" />
+    </Delete>
+    <Message Text="Deleted: @(DeletedFiles)" Importance="high" />
   </Target>
   
   <Import Project="NuGet.Build.Packaging.Tests.targets" />

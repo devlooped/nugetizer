@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -24,15 +22,10 @@ namespace NuGetizer.Tests
 
             File.AppendAllText(logFile, $"Initializing MSBuild to {ThisAssembly.Project.MSBuildBinPath}\r\n");
 
-            //if (!AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == "Microsoft.Build"))
-            //{
-            //    var binPath = ThisAssembly.Project.MSBuildBinPath;
-
-            //    Microsoft.Build.Locator.MSBuildLocator.RegisterMSBuildPath(binPath);
-
-            //    // Set environment variables so SDKs can be resolved. 
-            //    Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", Path.Combine(binPath, "MSBuild.exe"), EnvironmentVariableTarget.Process);
-            //}
+            var binPath = ThisAssembly.Project.MSBuildBinPath;
+            Microsoft.Build.Locator.MSBuildLocator.RegisterMSBuildPath(binPath);
+            // Set environment variables so SDKs can be resolved. 
+            Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", Path.Combine(binPath, "MSBuild.exe"), EnvironmentVariableTarget.Process);
         }
 
         static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)

@@ -63,8 +63,8 @@ static partial class Builder
 		}
 
 		var loggers = OpenBuildLogAttribute.IsActive ?
-			new ILogger[] { logger, new StructuredLogger { Verbosity = verbosity.GetValueOrDefault(), Parameters = scenarioName + ".binlog" } } :
-			new ILogger[] { logger };
+            new ILogger[] { logger, new StructuredLogger { Verbosity = verbosity.GetValueOrDefault(), Parameters = scenarioName + ".binlog" } } :
+            new ILogger[] { logger };
 
 		var buildProps = properties?.GetType().GetProperties()
 			.ToDictionary(prop => prop.Name, prop => prop.GetValue(properties).ToString()) 
@@ -131,7 +131,7 @@ static partial class Builder
 /// Declaratively specifies that the .binlog for the build 
 /// should be opened automatically after building a project.
 /// </summary>
-public class OpenBuildLogAttribute : BeforeAfterTestAttribute
+internal class OpenBuildLogAttribute : BeforeAfterTestAttribute
 {
 	/// <summary>
 	/// Whether the attribute is active for the current test.
@@ -184,7 +184,7 @@ public class OpenBuildLogAttribute : BeforeAfterTestAttribute
 /// order to output anything at all, the BuildScenario must be called 
 /// passing an <see cref="ITestOutputHelper"/> to write to.
 /// </summary>
-public class VerbosityAttribute : BeforeAfterTestAttribute
+internal class VerbosityAttribute : BeforeAfterTestAttribute
 {
 	public VerbosityAttribute(LoggerVerbosity verbosity)
 	{
