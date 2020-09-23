@@ -13,7 +13,7 @@
   <Import Project="$(NuGetRestoreTargets)" Condition="'$(IsRestoreTargetsFileLoaded)' != 'true' and '$(NuGetRestoreTargets)' != ''" />
   <Import Project="$(NuGetTargets)" Condition="'$(ResolveNuGetPackageAssetsDependsOn)' == '' and '$(NuGetTargets)' != ''" />
 
-  <Import Project="$(NuGetTargetsPath)\NuGetizer.targets" Condition="'$(NuGetBuildPackagingTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.targets')" />
+  <Import Project="$(NuGetTargetsPath)\NuGetizer.targets" Condition="'$(NuGetizerTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.targets')" />
 
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)_._" />

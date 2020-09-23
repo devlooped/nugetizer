@@ -13,7 +13,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <UsingTask TaskName="NuGetizer.Tasks.AssignPackagePath" AssemblyFile="NuGetizer.Tasks.dll" />
   <UsingTask TaskName="NuGetizer.Tasks.CreatePackage" AssemblyFile="NuGetizer.Tasks.dll" />
 
-  <Import Project="NuGetizer.props" Condition="'$(NuGetBuildPackagingPropsImported)' == ''" />
+  <Import Project="NuGetizer.props" Condition="'$(NuGetizerPropsImported)' == ''" />
   <!-- Adds compatibility targets with Pack SDK -->
   <Import Project="NuGetizer.Compatibility.props" />
 
@@ -366,9 +366,9 @@ Copyright (c) .NET Foundation. All rights reserved.
   </PropertyGroup>
 
   <!--
-    =================================================================================================
-	Pack
-    =================================================================================================
+  =================================================================================================
+    Pack
+  =================================================================================================
 
     Creates the output .nupkg if the project is packable.
 	

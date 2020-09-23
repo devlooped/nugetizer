@@ -47,5 +47,5 @@
     <NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGetizer.props')">$(MSBuildThisFileDirectory)..\..\NuGetizer.Tasks\bin\$(Configuration)</NuGetTargetsPath>
   </PropertyGroup>
 
-  <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetBuildPackagingPropsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.props')" />
+  <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetizerPropsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.props')" />
 </Project>
