@@ -31,7 +31,7 @@ namespace NuGetizer
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
 			{
-				IncludeOutputsInPackage = false,
+				PackBuildOutput = false,
 			});
 
 			result.AssertSuccess(output);
@@ -59,7 +59,7 @@ namespace NuGetizer
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
 			{
-				IncludeOutputsInPackage = false,
+				PackBuildOutput = false,
 				PackSymbols = true,
 			});
 
@@ -103,7 +103,7 @@ namespace NuGetizer
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
 			{
-				IncludeOutputsInPackage = false,
+				PackBuildOutput = false,
 			});
 
 			result.AssertSuccess(output);

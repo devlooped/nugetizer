@@ -60,7 +60,7 @@ namespace NuGetizer
 			var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference),
 				properties: new
 				{
-					IncludeOutputsInPackage = "false",
+					PackBuildOutput = "false",
 					PackProjectReference = "true"
 				},
 				output: output);

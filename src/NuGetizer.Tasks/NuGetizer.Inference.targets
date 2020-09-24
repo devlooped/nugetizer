@@ -12,7 +12,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<!-- The Kind of primary output (build, symbols and doc) set if IncludeOutputsInPackage = true -->
+		<!-- The Kind of primary output (build, symbols and doc) set if PackBuildOutput = true -->
 		<PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Lib</PrimaryOutputKind>
 
 		<!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
@@ -20,9 +20,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
 		<PackNone Condition="'$(PackNone)' == ''">false</PackNone>
 		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
-		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
+		<PackBuildOutput Condition="'$(PackBuildOutput)' == ''">true</PackBuildOutput>
 		<!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
-		<PackSymbols Condition="'$(PackSymbols)' == '' and '$(IncludeOutputsInPackage)' == 'true'">true</PackSymbols>
+		<PackSymbols Condition="'$(PackSymbols)' == '' and '$(PackBuildOutput)' == 'true'">true</PackSymbols>
 		<!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
 
 		<!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
@@ -87,7 +87,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 		<ItemGroup>
 			<_InferredPackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)');@(BuiltProjectOutputGroupKeyOutput -> '%(FinalOutputPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
+							   Condition="'$(PackBuildOutput)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute primary output -->
 				<Kind>$(PrimaryOutputKind)</Kind>
 				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
@@ -95,18 +95,18 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 			<!-- Remove when https://github.com/Microsoft/msbuild/pull/1076 ships -->
 			<_DocumentationProjectOutputGroupOutput Include="@(DocumentationProjectOutputGroupOutput)"
-														  Condition="'$(IncludeOutputsInPackage)' == 'true'">
+														  Condition="'$(PackBuildOutput)' == 'true'">
 				<FinalOutputPath Condition="$([System.IO.Path]::IsPathRooted('%(FinalOutputPath)')) == 'false'">$(MSBuildProjectDirectory)\%(FinalOutputPath)</FinalOutputPath>
 			</_DocumentationProjectOutputGroupOutput>
 			<_InferredPackageFile Include="@(_DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
+							   Condition="'$(PackBuildOutput)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute primary docs -->
 				<Kind>$(PrimaryOutputKind)</Kind>
 				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
 			</_InferredPackageFile>
 
 			<_InferredPackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(PackSymbols)' == 'true' and '$(IsPackagingProject)' != 'true'">
+							   Condition="'$(PackBuildOutput)' == 'true' and '$(PackSymbols)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute primary symbols -->
 				<Kind>$(PrimaryOutputKind)</Kind>
 				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
@@ -114,7 +114,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
 			<!-- Change to %(FinalOutputPath) when https://github.com/Microsoft/msbuild/pull/1115 ships -->
 			<_InferredPackageFile Include="@(SatelliteDllsProjectOutputGroupOutput -> '%(FullPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
+							   Condition="'$(PackBuildOutput)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute satellite dlls -->
 				<Kind>$(PrimaryOutputKind)</Kind>
 				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>
