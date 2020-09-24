@@ -16,7 +16,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Lib</PrimaryOutputKind>
 
 		<!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
-		<IncludeContentInPackage Condition="'$(IncludeContentInPackage)' == ''">true</IncludeContentInPackage>
+		<PackContent Condition="'$(PackContent)' == ''">true</PackContent>
 		<!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
 		<IncludeNoneInPackage Condition="'$(IncludeNoneInPackage)' == ''">false</IncludeNoneInPackage>
 		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
@@ -74,7 +74,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)"
 						  Condition="'%(Content.Pack)' == 'true' or 
 									 '%(Content.Kind)' != '' or 
-									 ('$(IncludeContentInPackage)' == 'true' and '%(Content.Pack)' != 'false')">
+									 ('$(PackContent)' == 'true' and '%(Content.Pack)' != 'false')">
 			<Output TaskParameter="AssignedFiles" ItemName="_ContentToInfer" />
 		</AssignTargetPath>
 
@@ -121,7 +121,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_InferredPackageFile>
 
 
-			<!-- NOTE: Content is opt-out (must have Pack=false to exclude if IncludeContentInPackage=true) -->
+			<!-- NOTE: Content is opt-out (must have Pack=false to exclude if PackContent=true) -->
 			<!-- Stuff that is copied to output should be included from that output location -->
 			<_InferredPackageFile Include="@(_ContentToInfer->'$(_OutputFullPath)\%(TargetPath)')"
 							   Condition="'%(_ContentToInfer.CopyToOutputDirectory)' != '' and '%(_ContentToInfer.CopyToOutputDirectory)' != 'Never'">

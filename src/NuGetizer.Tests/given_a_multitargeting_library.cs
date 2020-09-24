@@ -45,7 +45,6 @@ namespace NuGetizer
             }));
         }
 
-        [OpenBuildLog]
         [Fact]
         public void when_packing_then_succeeds()
         {

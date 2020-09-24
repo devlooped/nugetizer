@@ -32,7 +32,7 @@ namespace NuGetizer
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
-				IncludeContentInPackage = "false"
+				PackContent = "false"
 			});
 
 			result.AssertSuccess(output);
@@ -270,7 +270,7 @@ namespace NuGetizer
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
 				PackageId = "ContentPackage",
-				IncludeContentInPackage = "false"
+				PackContent = "false"
 			});
 
 			result.AssertSuccess(output);
