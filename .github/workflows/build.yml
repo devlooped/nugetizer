@@ -16,3 +16,4 @@ jobs:
       - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
       - run: msbuild -r
       - run: msbuild -t:test
+      - run: msbuild -t:pack
