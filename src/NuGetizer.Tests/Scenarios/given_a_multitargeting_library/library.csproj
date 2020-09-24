@@ -8,7 +8,7 @@
 
   <ItemDefinitionGroup Condition="'$(CustomizeItemDefinition)' == 'true'">
     <PackageMetadata>
-      <LicenseExpression>MIT</LicenseExpression>
+      <NewMetadata>Foo</NewMetadata>
     </PackageMetadata>
   </ItemDefinitionGroup>
 

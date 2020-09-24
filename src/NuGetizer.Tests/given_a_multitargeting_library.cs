@@ -64,7 +64,7 @@ namespace NuGetizer
             Assert.Single(result.Items, item => item.Matches(new
             {
                 Kind = "Metadata",
-                LicenseExpression = "MIT",
+                NewMetadata = "Foo",
             }));
         }
 
