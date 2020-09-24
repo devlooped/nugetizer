@@ -3,6 +3,7 @@
   <PropertyGroup Label="Pack">
     <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
     <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
+    <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(PackOnBuild)' != 'true'">false</ImportNuGetBuildTasksPackTargetsFromSdk>
   </PropertyGroup>
 
   <Import Project="NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="$(IsPackable) and '$(PackOnBuild)' == 'true'" />

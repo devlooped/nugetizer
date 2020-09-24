@@ -35,5 +35,5 @@ steps:
 - publish: $(System.DefaultWorkingDirectory)/logs
   artifact: logs
   condition: always()
-- script: msbuild -t:pack
+- script: msbuild -t:Pack -p:PackOnBuild=true
   displayName: msbuild -t:pack

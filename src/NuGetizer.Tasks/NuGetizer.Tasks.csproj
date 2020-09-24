@@ -17,11 +17,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="@(None)" Exclude="NuGetizer.Tasks.targets" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectCapability Include="Pack" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="@(None)" CopyToOutputDirectory="PreserveNewest" Pack="true" />
     <Content Update="NuGetizer.MultiTargeting.targets" PackagePath="buildMultiTargeting\NuGetizer.targets" />
     <None Include="NuGetizer.props;NuGetizer.Common.targets;NuGetizer.PackageMetadata.targets" 
-          PackagePath="buildMultiTargeting\%(Filename)%(Extension)" />
-    <Content Include="..\..\img\nugetizer-256.png" Link="icon-236.png" CopyToOutputDirectory="PreserveNewest" PackagePath="icon.png" />
+          PackagePath="buildMultiTargeting\%(Filename)%(Extension)"
+          Pack="true" />
+    <None Include="..\..\img\nugetizer-256.png" Link="icon.png" CopyToOutputDirectory="PreserveNewest" PackagePath="icon.png" />
   </ItemGroup>
 
   <ItemGroup>
