@@ -1,5 +1,10 @@
 pool:
   vmImage: 'windows-2019'
+
+variables:
+  - name: DOTNET_NOLOGO
+    value: 'true'
+
 steps:
 - checkout: self
 
