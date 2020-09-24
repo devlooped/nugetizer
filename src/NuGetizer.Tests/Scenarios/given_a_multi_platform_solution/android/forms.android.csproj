@@ -5,7 +5,7 @@
 		<AssemblyName>Forms</AssemblyName>
     <TargetFrameworkMoniker>MonoAndroid,Version=v9.0</TargetFrameworkMoniker>
 		<ProjectGuid>$(GuidE)</ProjectGuid>
-		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
+		<PackSymbols>false</PackSymbols>
 		<DocumentationFile />
 	</PropertyGroup>
 	<ItemGroup>

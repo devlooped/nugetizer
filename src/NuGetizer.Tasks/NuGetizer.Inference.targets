@@ -22,7 +22,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
 		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
 		<!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
-		<IncludeSymbolsInPackage Condition="'$(IncludeSymbolsInPackage)' == '' and '$(IncludeOutputsInPackage)' == 'true'">true</IncludeSymbolsInPackage>
+		<PackSymbols Condition="'$(PackSymbols)' == '' and '$(IncludeOutputsInPackage)' == 'true'">true</PackSymbols>
 		<!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
 
 		<!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
@@ -106,7 +106,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			</_InferredPackageFile>
 
 			<_InferredPackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(IncludeSymbolsInPackage)' == 'true' and '$(IsPackagingProject)' != 'true'">
+							   Condition="'$(IncludeOutputsInPackage)' == 'true' and '$(PackSymbols)' == 'true' and '$(IsPackagingProject)' != 'true'">
 				<!-- Packaging projects don't contribute primary symbols -->
 				<Kind>$(PrimaryOutputKind)</Kind>
 				<FrameworkSpecific>$(PrimaryOutputFrameworkSpecific)</FrameworkSpecific>

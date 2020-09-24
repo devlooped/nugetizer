@@ -5,7 +5,7 @@
 		<AssemblyName>Forms</AssemblyName>
     <TargetFrameworkMoniker>Xamarin.iOS,Version=v1.0</TargetFrameworkMoniker>
     <ProjectGuid>$(GuidD)</ProjectGuid>
-		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
+		<PackSymbols>false</PackSymbols>
 		<DocumentationFile />
 	</PropertyGroup>
 	<ItemGroup>

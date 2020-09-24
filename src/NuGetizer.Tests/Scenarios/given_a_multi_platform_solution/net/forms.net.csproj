@@ -7,7 +7,7 @@
 		<ProjectGuid>$(GuidC)</ProjectGuid>
 		<OutputPath>bin</OutputPath>
 		<IntermediateOutputPath>obj\</IntermediateOutputPath>
-		<IncludeSymbolsInPackage>false</IncludeSymbolsInPackage>
+		<PackSymbols>false</PackSymbols>
 		<DocumentationFile />
 	</PropertyGroup>
 	<ItemGroup>

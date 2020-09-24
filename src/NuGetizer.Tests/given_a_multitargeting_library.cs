@@ -45,12 +45,10 @@ namespace NuGetizer
             }));
         }
 
+        [OpenBuildLog]
         [Fact]
         public void when_packing_then_succeeds()
         {
-            Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Build", output: output)
-                .AssertSuccess(output);
-
             Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Pack", output: output)
                 .AssertSuccess(output);
         }

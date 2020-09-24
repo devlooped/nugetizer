@@ -26,19 +26,16 @@ Copyright (c) .NET Foundation. All rights reserved.
   ============================================================
     -->
   <Target Name="GetTargetPathWithTargetPlatformMoniker"
-          DependsOnTargets="_SetGetTargetPathWithTargetPlatformMonikerInnerTarget;DispatchToInnerBuilds"
-          Returns="@(InnerOutput)">
-    <ItemGroup>
-      <InnerOutput>
-        <IsNuGetized>true</IsNuGetized>
-      </InnerOutput>
-    </ItemGroup>
-  </Target>
+          DependsOnTargets="_ComputeTargetFrameworkItems"
+          Returns="@(TargetPathWithTargetPlatformMoniker)">
 
-  <Target Name="_SetGetTargetPathWithTargetPlatformMonikerInnerTarget">
-    <PropertyGroup>
-      <InnerTargets>GetTargetPathWithTargetPlatformMoniker</InnerTargets>
-    </PropertyGroup>
+    <MSBuild Projects="@(_InnerBuildProjects)"
+             Condition="'@(_InnerBuildProjects)' != '' "
+             Targets="GetTargetPathWithTargetPlatformMoniker"
+             BuildInParallel="$(BuildInParallel)">
+      <Output ItemName="TargetPathWithTargetPlatformMoniker" TaskParameter="TargetOutputs" />
+    </MSBuild>
+
   </Target>
 
   <!--
@@ -52,27 +49,26 @@ Copyright (c) .NET Foundation. All rights reserved.
                    all builds.
   ============================================================
   -->
-  <Target Name="GetPackageContents" DependsOnTargets="_SetGetPackageContentsInnerTarget;DispatchToInnerBuilds" Returns="@(_PackageContent)">
-    <ItemGroup>
-      <_PackageContent Include="@(InnerOutput)" />
-    </ItemGroup>
+  <Target Name="GetPackageContents" DependsOnTargets="_ComputeTargetFrameworkItems" Returns="@(_PackageContent)">
+
+    <MSBuild Projects="@(_InnerBuildProjects)"
+             Condition="'@(_InnerBuildProjects)' != '' "
+             Targets="GetPackageContents"
+             BuildInParallel="$(BuildInParallel)">
+      <Output ItemName="_PackageContent" TaskParameter="TargetOutputs" />
+    </MSBuild>
   
     <!-- _AddPackageManifest adds per-TFM, so deduplicate and remove the TFM -->
     <ItemGroup Condition="'$(IsPackable)' == 'true'">
       <_PackageMetadataContent Include="@(_PackageContent -> WithMetadataValue('Kind', 'Metadata'))" />
       <_PackageContent Remove="@(_PackageMetadataContent)" />
       <_PackageContent Include="@(_PackageMetadataContent -> Distinct())">
+        <AdditionalProperties />
         <Platform>$(Platform)</Platform>
         <TargetFrameworkMoniker />
       </_PackageContent>
     </ItemGroup>
+    
   </Target>
-
-  <Target Name="_SetGetPackageContentsInnerTarget">
-    <PropertyGroup>
-      <InnerTargets>GetPackageContents</InnerTargets>
-    </PropertyGroup>
-  </Target>
-
 
 </Project>
