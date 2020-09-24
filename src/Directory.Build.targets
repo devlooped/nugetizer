@@ -57,7 +57,7 @@
   <!-- Clears nuget cache for the current project package id -->
   <Target Name="ClearCachedPackageId"
           Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack" DependsOnTargets="Pack">
+          AfterTargets="Build;Pack">
     <PropertyGroup>
       <PackageFolder>$(NuGetCache)\$(PackageId.ToLowerInvariant())</PackageFolder>
     </PropertyGroup>
@@ -69,7 +69,7 @@
 
   <Target Name="ClearHttpNuGetCache"
           Condition="!$(CI) And $(ClearHttpNuGetCacheOnPack) And Exists('$(HttpNuGetCache)') And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack" DependsOnTargets="Pack">
+          AfterTargets="Build;Pack">
     <Message Text="Nuking $(HttpNuGetCache)" Importance="high" />
     <Exec Command='rd "$(HttpNuGetCache)" /q /s' Condition="'$(OS)' == 'Windows_NT'" />
     <Exec Command='rm -rf "$(HttpNuGetCache)"' Condition="'$(OS)' != 'Windows_NT'" />
