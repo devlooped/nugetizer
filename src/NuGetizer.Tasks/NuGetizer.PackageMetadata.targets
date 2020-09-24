@@ -29,6 +29,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <LicenseExpression>$(PackageLicenseExpression)</LicenseExpression>
       
       <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
+      <Icon>$(PackageIcon)</Icon>
       <IconUrl>$(PackageIconUrl)</IconUrl>
       <Tags>$(PackageTags)</Tags>
 

@@ -104,6 +104,9 @@ namespace NuGetizer.Tasks
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("IconUrl")))
                 metadata.SetIconUrl(Manifest.GetMetadata("IconUrl"));
 
+            if (Manifest.TryGetMetadata("Icon", out var icon))
+                metadata.Icon = icon;
+
             metadata.ReleaseNotes = Manifest.GetMetadata("ReleaseNotes");
             metadata.Tags = Manifest.GetMetadata("Tags");
             metadata.MinClientVersionString = Manifest.GetMetadata("MinClientVersion");
