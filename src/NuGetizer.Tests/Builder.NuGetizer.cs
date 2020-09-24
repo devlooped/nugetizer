@@ -62,11 +62,22 @@ static partial class Builder
 			logger = new TestOutputLogger(null);
 		}
 
-        var loggers = OpenBuildLogAttribute.IsActive ?
+        var logFile = scenarioName + ".binlog";
+
+        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SYSTEM_DEFAULTWORKINGDIRECTORY")))
+        {
+            var logDir = Path.Combine(Environment.GetEnvironmentVariable("SYSTEM_DEFAULTWORKINGDIRECTORY"), "logs");
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+
+            logFile = Path.Combine(logDir, logFile);
+        }
+
+        var loggers = OpenBuildLogAttribute.IsActive || Environment.GetEnvironmentVariable("SYSTEM_DEBUG") == "true" ?
             new ILogger[] { logger, new StructuredLogger 
             { 
                 Verbosity = LoggerVerbosity.Diagnostic,
-                Parameters = scenarioName + ".binlog"
+                Parameters = logFile
             } } :
             new ILogger[] { logger };
 

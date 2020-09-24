@@ -17,9 +17,12 @@ steps:
   condition: eq(variables['MSB'], '')
 - pwsh: echo "##vso[task.prependpath]$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
   displayName: prepend MSBuild to %PATH%
-- script: msbuild -r
+- script: msbuild -r -bl:$(System.DefaultWorkingDirectory)/logs/build.binlog
   displayName: msbuild -r
 - script: msbuild -t:test
   displayName: msbuild -t:test
+- publish: $(System.DefaultWorkingDirectory)/logs
+  artifact: logs
+  condition: always()
 - script: msbuild -t:pack
   displayName: msbuild -t:pack
