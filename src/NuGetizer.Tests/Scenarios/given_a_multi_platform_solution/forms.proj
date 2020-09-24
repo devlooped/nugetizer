@@ -5,6 +5,7 @@
     <PackageId>Forms</PackageId>
     <PackageVersion>1.0.0</PackageVersion>
     <IsPackagingProject>true</IsPackagingProject>
+    <TargetFramework>netstandard1.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="common\common.csproj" />

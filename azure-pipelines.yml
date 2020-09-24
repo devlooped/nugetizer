@@ -6,6 +6,12 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: sdk
+    version: 5.0.100-rc.1.20452.10
+    performMultiLevelLookup: true
+
+- task: UseDotNet@2
+  inputs:
+    packageType: sdk
     version: 3.1.x
     performMultiLevelLookup: true
 
