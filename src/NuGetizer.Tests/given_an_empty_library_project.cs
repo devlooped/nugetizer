@@ -141,7 +141,7 @@ namespace NuGetizer
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
 			{
-				IncludeFrameworkReferencesInPackage = false,
+				PackFrameworkReferences = false,
 				PackageId = "Foo",
 			}, output: output);
 

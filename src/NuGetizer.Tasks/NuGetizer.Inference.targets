@@ -26,7 +26,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
 
 		<!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
-		<IncludeFrameworkReferencesInPackage Condition="'$(IncludeFrameworkReferencesInPackage)' == '' and '$(IsPackagingProject)' != 'true' and '$(PrimaryOutputKind)' == 'Lib'">true</IncludeFrameworkReferencesInPackage>
+		<PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IsPackagingProject)' != 'true' and '$(PrimaryOutputKind)' == 'Lib'">true</PackFrameworkReferences>
 
 		<_OutputFullPath Condition="$([System.IO.Path]::IsPathRooted($(OutputPath)))">$(OutputPath)</_OutputFullPath>
 		<_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory)\$(OutputPath)</_OutputFullPath>
@@ -156,7 +156,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			     it also includes mscorlib which we don't need
 			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
 			<_InferredPackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
-							   Condition="'$(IncludeFrameworkReferencesInPackage)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
+							   Condition="'$(PackFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
 				<Kind>FrameworkReference</Kind>
 			</_InferredPackageFile>
 		</ItemGroup>

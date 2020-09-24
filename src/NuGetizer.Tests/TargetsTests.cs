@@ -16,68 +16,68 @@ namespace NuGetizer
 		public TargetsTests(ITestOutputHelper output) => this.output = output;
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_is_not_true_for_build_primary_output()
+		public void PackFrameworkReferences_is_not_true_for_build_primary_output()
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputKind", "build" }
 			}, null);
 
-			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.NotEqual("true", project.GetPropertyValue("PackFrameworkReferences"));
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_is_not_true_for_tool_primary_output()
+		public void PackFrameworkReferences_is_not_true_for_tool_primary_output()
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputKind", "tool" }
 			}, null);
 
-			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.NotEqual("true", project.GetPropertyValue("PackFrameworkReferences"));
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_is_not_true_for_tools_primary_output()
+		public void PackFrameworkReferences_is_not_true_for_tools_primary_output()
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputKind", "tools" }
 			}, null);
 
-			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.NotEqual("true", project.GetPropertyValue("PackFrameworkReferences"));
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_is_true_for_primary_output_lib()
+		public void PackFrameworkReferences_is_true_for_primary_output_lib()
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
 				{ "PrimaryOutputKind", "lib" }
 			}, null);
 
-			Assert.Equal("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.Equal("true", project.GetPropertyValue("PackFrameworkReferences"));
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_is_true_for_default_primary_output_kind()
+		public void PackFrameworkReferences_is_true_for_default_primary_output_kind()
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
 			}, null);
 
-			Assert.Equal("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.Equal("true", project.GetPropertyValue("PackFrameworkReferences"));
 		}
 
 		[Fact]
-		public void IncludeFrameworkReferencesInPackage_is_not_true_for_compat_istool()
+		public void PackFrameworkReferences_is_not_true_for_compat_istool()
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
 				{ "IsTool", "true" }
 			}, null);
 
-			Assert.NotEqual("true", project.GetPropertyValue("IncludeFrameworkReferencesInPackage"));
+			Assert.NotEqual("true", project.GetPropertyValue("PackFrameworkReferences"));
 		}
 
 		[Fact]
