@@ -93,20 +93,22 @@ Copyright (c) .NET Foundation. All rights reserved.
            do it "the old way" for this particular output group -->
 			<_SatelliteDllsProjectOutputGroupOutput Include="@(SatelliteDllsProjectOutputGroupOutput)" FinalOutputPath="'%(FullPath)')" />
       
-      <_InferredPackageFile Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)');
+      <_InferredProjectOutput Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)');
                                      @(BuiltProjectOutputGroupKeyOutput -> '%(FinalOutputPath)');
                                      @(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)');
                                      @(_SatelliteDllsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                             Condition="'$(PackBuildOutput)' == 'true'">
         <Kind>$(BuildOutputKind)</Kind>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
-      </_InferredPackageFile>
+      </_InferredProjectOutput>
 
-      <_InferredPackageFile Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
+      <_InferredProjectOutput Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                             Condition="'$(PackBuildOutput)' == 'true' and '$(PackSymbols)' == 'true'">
         <Kind>$(BuildOutputKind)</Kind>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
-      </_InferredPackageFile>
+      </_InferredProjectOutput>
+
+      <_InferredPackageFile Include="@(_InferredProjectOutput -> Distinct())" />
 
       <!-- NOTE: Content is opt-out (must have Pack=false to exclude if PackContent=true) -->
       <!-- Stuff that is copied to output should be included from that output location -->
