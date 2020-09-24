@@ -23,19 +23,22 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Summary>$(Summary)</Summary>
       <Language>$(NeutralLanguage)</Language>
       <Copyright>$(Copyright)</Copyright>
+      <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
 
       <RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
       <LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
       <LicenseExpression>$(PackageLicenseExpression)</LicenseExpression>
-      
-      <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
+
       <Icon>$(PackageIcon)</Icon>
       <IconUrl>$(PackageIconUrl)</IconUrl>
       <Tags>$(PackageTags)</Tags>
 
-      <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
-      <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+      <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
       <RepositoryType>$(RepositoryType)</RepositoryType>
+      <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+      <RepositoryBranch>$(RepositoryBranch)</RepositoryBranch>
+      <RepositoryCommit>$(RepositoryCommit)</RepositoryCommit>
+      
       <PackageTypes>$(PackageType)</PackageTypes>
     </PackageMetadata>
   </ItemDefinitionGroup>
