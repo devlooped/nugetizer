@@ -62,8 +62,12 @@ static partial class Builder
 			logger = new TestOutputLogger(null);
 		}
 
-		var loggers = OpenBuildLogAttribute.IsActive ?
-            new ILogger[] { logger, new StructuredLogger { Verbosity = verbosity.GetValueOrDefault(), Parameters = scenarioName + ".binlog" } } :
+        var loggers = OpenBuildLogAttribute.IsActive ?
+            new ILogger[] { logger, new StructuredLogger 
+            { 
+                Verbosity = LoggerVerbosity.Diagnostic,
+                Parameters = scenarioName + ".binlog"
+            } } :
             new ILogger[] { logger };
 
 		var buildProps = properties?.GetType().GetProperties()

@@ -1,18 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-          Condition="'$(TargetFramework)' == '' and Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project>
 
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputPath>bin\$(MSBuildProjectName)</OutputPath>
-    <IntermediateOutputPath>obj\$(MSBuildProjectName)\</IntermediateOutputPath>
-    <OutputType>Library</OutputType>
     <RootNamespace>Scenario</RootNamespace>
-    <!-- These properties are more likely to change per-project -->
-    <TargetFrameworkVersion Condition="'$(TargetFramework)' == ''">v4.5</TargetFrameworkVersion>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
 
     <!-- A bunch of known GUIDs for P2P references -->
     <GuidA>{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}</GuidA>
@@ -23,11 +12,6 @@
     <GuidF>{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}</GuidF>
 
     <ProjectGuid>$(GuidA)</ProjectGuid>
-
-    <!-- Avoids architecture mismatch warnings -->
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <!-- Avoids build error from metadata attribute missing in NS1.6 -->
-    <GenerateRepositoryUrlAttribute>true</GenerateRepositoryUrlAttribute>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -41,5 +25,5 @@
     <NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGetizer.props')">$(MSBuildThisFileDirectory)..\..\NuGetizer.Tasks\bin\$(Configuration)</NuGetTargetsPath>
   </PropertyGroup>
 
-  <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetizerPropsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.props')" />
+  <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetizerPropsImported)' != 'true'" />
 </Project>

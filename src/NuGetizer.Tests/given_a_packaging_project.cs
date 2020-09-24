@@ -10,12 +10,14 @@ namespace NuGetizer
 		public given_a_packaging_project(ITestOutputHelper output)
 		{
 			this.output = output;
-		}
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+        }
         
 		[Fact]
 		public void when_getting_contents_then_includes_referenced_project_outputs()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
 			result.AssertSuccess(output);
 
@@ -36,7 +38,7 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_contents_then_can_augment_package_metadata()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
 			result.AssertSuccess(output);
 
@@ -50,7 +52,7 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_contents_then_includes_referenced_project_satellite_assembly()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
 			result.AssertSuccess(output);
 
@@ -63,7 +65,7 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_contents_then_includes_referenced_project_dependencies()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
 			result.AssertSuccess(output);
 
@@ -80,7 +82,7 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_contents_then_includes_referenced_project_dependency_satellite_assembly()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
 			result.AssertSuccess(output);
 
@@ -93,7 +95,7 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_contents_then_includes_referenced_packagable_project_as_dependency()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
 			result.AssertSuccess(output);
 
@@ -107,7 +109,7 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_contents_then_does_not_include_referenced_project_nuget_assembly_reference()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
 			result.AssertSuccess(output);
 
@@ -120,7 +122,7 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_contents_from_packaging_project_then_referenced_outputs_have_original_tfm_path()
 		{
-			var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "GetPackageContents", output: output);
+			var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
 			result.AssertSuccess(output);
 

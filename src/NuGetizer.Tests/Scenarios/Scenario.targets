@@ -1,17 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
-    <TargetFrameworkVersion Condition="'$(TargetFramework)' != ''"></TargetFrameworkVersion>
-  </PropertyGroup>
-
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="'$(TargetFramework)' == '' and '$(IsPortable)' != 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
-			Condition="'$(TargetFramework)' == '' and '$(IsPortable)' == 'true' and '$(MSBuildProjectExtension)' == '.csproj'" />
-
-  <!-- Ensure we get proper NuGet behavior always -->
-  <Import Project="$(NuGetRestoreTargets)" Condition="'$(IsRestoreTargetsFileLoaded)' != 'true' and '$(NuGetRestoreTargets)' != ''" />
-  <Import Project="$(NuGetTargets)" Condition="'$(ResolveNuGetPackageAssetsDependsOn)' == '' and '$(NuGetTargets)' != ''" />
 
   <Import Project="$(NuGetTargetsPath)\NuGetizer.targets" Condition="'$(IsCrossTargetingBuild)' != 'true' and '$(NuGetizerTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.targets')" />
   <Import Project="$(NuGetTargetsPath)\NuGetizer.Multitargeting.targets" Condition="'$(IsCrossTargetingBuild)' == 'true' and '$(NuGetizerTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.Multitargeting.targets')" />
@@ -21,7 +9,8 @@
   </ItemGroup>
 
   <Target Name="Report" DependsOnTargets="GetPackageContents">
-    <Message Importance="high" Text="%(_PackageContent.RelativeDir)%(_PackageContent.Filename)%(_PackageContent.Extension)
+    <Message Importance="high" 
+             Text="%(_PackageContent.RelativeDir)%(_PackageContent.Filename)%(_PackageContent.Extension)
 	Kind=%(_PackageContent.Kind)
 	PackagePath=%(_PackageContent.PackagePath)
 	TargetPath=%(_PackageContent.TargetPath)"/>
@@ -90,6 +79,6 @@
     </Task>
   </UsingTask>
 
-  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="'$(MSBuildProjectExtension)' != '.csproj'" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="'$(MSBuildProjectExtension)' != '.csproj' and '$(CommonTargetsPath)' == ''" />
 
 </Project>

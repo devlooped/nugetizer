@@ -1,21 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
-	<PropertyGroup>
-		<TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+		<TargetFramework>net46</TargetFramework>
 		<PackageId>a.package</PackageId>
 		<PackageVersion>1.0.0</PackageVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="b\b.csproj">
-			<Project>$(GuidB)</Project>
-			<Name>b</Name>
-			<Pack>$(IncludeInPackage)</Pack>
-		</ProjectReference>
-		<ProjectReference Include="c.csproj">
-			<Project>$(GuidC)</Project>
-			<Name>c</Name>
-		</ProjectReference>
+    <ProjectReference Include="b\b.csproj" Pack="$(IncludeInPackage)" />
+		<ProjectReference Include="c.csproj" />
 	</ItemGroup>
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />	
 </Project>

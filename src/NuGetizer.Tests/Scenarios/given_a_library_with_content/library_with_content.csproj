@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
-	<PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
 		<AssemblyName>library</AssemblyName>
-		<TargetFrameworkMoniker>MonoAndroid,Version=v5.1</TargetFrameworkMoniker>
+		<TargetFramework>MonoAndroid51</TargetFramework>
+    <DisableStandardFrameworkResolution>true</DisableStandardFrameworkResolution>
   </PropertyGroup>
 	<ItemGroup>
     <PackageFile Include="..\given_a_custom_build_project\Readme.txt" Link="docs\Readme.txt" />
@@ -46,8 +46,6 @@
     <None Include="none-with-packagepath.txt" PackagePath="build\%(Filename)%(Extension)" />
     <Content Include="content-with-packagepath.txt" PackagePath="build\%(Filename)%(Extension)" />
   </ItemGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), fakeframework.targets))\fakeframework.targets" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 	<Target Name="RemoveContent" Condition="'$(RemoveContent)' == 'true'" BeforeTargets="GetPackageContents">
 		<ItemGroup>
 			<PackageFile Remove="@(PackageFile)" Condition="'%(Kind)' == 'Content' Or '%(Kind)' == 'None'" />

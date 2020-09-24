@@ -1,38 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
-	<PropertyGroup>
-		<AssemblyName>Forms</AssemblyName>
-		<ProjectGuid>$(GuidA)</ProjectGuid>
-		<PackageId>Forms</PackageId>
-		<PackageVersion>1.0.0</PackageVersion>
-		<IsPackagingProject>true</IsPackagingProject>
-	</PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="common\common.csproj">
-			<Project>$(GuidB)</Project>
-			<Name>common</Name>
-		</ProjectReference>
-		<ProjectReference Include="net\forms.net.csproj">
-			<Project>$(GuidC)</Project>
-			<Name>forms.net</Name>
-		</ProjectReference>
-		<ProjectReference Include="ios\forms.ios.csproj">
-			<Project>$(GuidD)</Project>
-			<Name>forms.ios</Name>
-		</ProjectReference>
-		<ProjectReference Include="android\forms.android.csproj">
-			<Project>$(GuidE)</Project>
-			<Name>forms.android</Name>
-		</ProjectReference>
-	</ItemGroup>
-	<Target Name="AddDocs" BeforeTargets="GetPackageContents">
-		<ItemGroup>
-			<_Docs Include="docs\**\*.*" />
-			<PackageFile Include="@(_Docs)">
-				<PackagePath>docs\%(_Docs.RecursiveDir)%(_Docs.Filename)%(_Docs.Extension)</PackagePath>
-			</PackageFile>
-		</ItemGroup>
-	</Target>
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+    <AssemblyName>Forms</AssemblyName>
+    <PackageId>Forms</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <IsPackagingProject>true</IsPackagingProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="common\common.csproj" />
+    <ProjectReference Include="net\forms.net.csproj" />
+    <ProjectReference Include="ios\forms.ios.csproj" />
+    <ProjectReference Include="android\forms.android.csproj" />
+  </ItemGroup>
+  <Target Name="AddDocs" BeforeTargets="GetPackageContents">
+    <ItemGroup>
+      <_Docs Include="docs\**\*.*" />
+      <PackageFile Include="@(_Docs)">
+        <PackagePath>docs\%(_Docs.RecursiveDir)%(_Docs.Filename)%(_Docs.Extension)</PackagePath>
+      </PackageFile>
+    </ItemGroup>
+  </Target>
 </Project>

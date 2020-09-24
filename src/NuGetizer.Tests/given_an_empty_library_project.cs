@@ -11,9 +11,11 @@ namespace NuGetizer
 		public given_an_empty_library_project(ITestOutputHelper output)
 		{
 			this.output = output;
-		}
+            Builder.BuildScenario(nameof(given_an_empty_library_project), target: "Restore")
+                .AssertSuccess(output);
+        }
 
-		[Fact]
+        [Fact]
 		public void when_getting_package_contents_then_includes_output_assembly()
 		{
 			var result = Builder.BuildScenario(nameof(given_an_empty_library_project));
@@ -126,7 +128,16 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_package_contents_then_includes_framework_reference()
 		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new { PackageId = "Foo" }, output: output);
+            Builder.BuildScenario(nameof(given_an_empty_library_project), new
+            {
+                TargetFramework = "net472"
+            },target: "Restore").AssertSuccess(output);
+
+            var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new 
+            { 
+                PackageId = "Foo",
+                TargetFramework = "net472"
+            }, output: output);
 
 			result.AssertSuccess(output);
 			Assert.Contains(result.Items, item => item.Matches(new
@@ -151,20 +162,6 @@ namespace NuGetizer
 				Identity = "System.Core",
 				Kind = PackageItemKind.FrameworkReference,
 			}));
-		}
-
-		[Fact]
-		public void when_packing_with_empty_version_then_build_fails()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library_project), new
-			{
-				PackageId = "Library",
-				PackageVersion = "",
-				Version = "",
-			}, target: "Pack");
-
-			Assert.Equal(TargetResultCode.Failure, result.ResultCode);
-			Assert.Equal("NG1002", result.Logger.Errors[0].Code);
 		}
 	}
 }

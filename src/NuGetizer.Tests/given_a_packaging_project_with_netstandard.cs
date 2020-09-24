@@ -20,7 +20,6 @@ namespace NuGetizer
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
 				target: "GetPackageContents", 
 				properties: new { SimulateCrossTargeting = "false" },
-				//verbosity: Microsoft.Build.Framework.LoggerVerbosity.Diagnostic,
 				output: output);
 
 			result.AssertSuccess(output);
@@ -40,7 +39,6 @@ namespace NuGetizer
 			var result = Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
 				target: "GetPackageContents",
 				properties: new { SimulateCrossTargeting = "true" },
-				//verbosity: Microsoft.Build.Framework.LoggerVerbosity.Diagnostic,
 				output: output);
 
 			result.AssertSuccess(output);

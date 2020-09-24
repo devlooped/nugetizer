@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
@@ -15,7 +14,8 @@ namespace NuGetizer
                 .AssertSuccess(output);
         }
 
-		[Fact]
+		
+        [Fact]
 		public void when_gettingcontents_then_includes_content_from_all_frameworks()
 		{
             var result = Builder.BuildScenario(nameof(given_a_multitargeting_library), output: output);

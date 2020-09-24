@@ -1,4 +1,5 @@
-﻿using Microsoft.Build.Framework;
+﻿using System;
+using Microsoft.Build.Framework;
 using NuGet.Packaging;
 
 namespace NuGetizer
@@ -16,7 +17,7 @@ namespace NuGetizer
 				var actual = item.GetMetadata(prop.Name);
 				var expected = prop.GetValue(metadata).ToString();
 
-				if (actual != expected)
+				if (!actual.Equals(expected, StringComparison.OrdinalIgnoreCase))
 					return false;
 			}
 

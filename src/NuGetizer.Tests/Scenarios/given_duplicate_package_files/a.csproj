@@ -1,38 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
-	<PropertyGroup>
-		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+		<TargetFramework>net45</TargetFramework>
 		<PackageId>A</PackageId>
     <ReadmeA Condition="'$(ReadmeA)' == ''">This is a readme</ReadmeA>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="b.csproj">
-			<Project>$(GuidB)</Project>
-			<Name>b</Name>
-		</ProjectReference>
+		<ProjectReference Include="b.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="content\web\**\*.*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<PackageFile Include="content\content.txt">
-			<PackagePath>content\content.txt</PackagePath>
-		</PackageFile>
-    <PackageFile Include="content\content.txt">
-      <PackagePath>content\a\1\content.txt</PackagePath>
-    </PackageFile>
-    <PackageFile Include="content\content.txt">
-      <PackagePath>content\a\2\content.txt</PackagePath>
-    </PackageFile>
+		<Content Include="content\web\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+		<PackageFile Include="content\content.txt" PackagePath="content\content.txt" />
+    <PackageFile Include="content\content.txt" PackagePath="content\a\1\content.txt" />
+    <PackageFile Include="content\content.txt" PackagePath="content\a\2\content.txt" />
   </ItemGroup>
   <Target Name="GenerateReadme" BeforeTargets="GetPackageContents">
     <WriteLinesToFile File="$(OutputPath)\Readme.txt" Lines="$(ReadmeA)" Overwrite="true" />
     <ItemGroup>
-      <PackageFile Include="$(OutputPath)\Readme.txt">
-        <PackagePath>Readme.txt</PackagePath>
-      </PackageFile>
+      <PackageFile Include="$(OutputPath)\Readme.txt" PackagePath="Readme.txt" />
     </ItemGroup>
   </Target>
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>

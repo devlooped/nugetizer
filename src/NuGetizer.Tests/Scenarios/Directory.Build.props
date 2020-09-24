@@ -2,24 +2,15 @@
 
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateRepositoryUrlAttribute>false</GenerateRepositoryUrlAttribute>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <EnableDefaultItems>false</EnableDefaultItems>
+
+    <OutputPath>bin\$(MSBuildProjectName)</OutputPath>
     <BaseIntermediateOutputPath>obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+
+    <!-- Avoids architecture mismatch warnings -->
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
-
-  <Target Name="GetTargetPath" DependsOnTargets="$(GetTargetPathDependsOn)" Returns="@(TargetPathWithTargetPlatformMoniker)" />
-
-  <Target Name="GetTargetPathWithTargetPlatformMoniker" BeforeTargets="GetTargetPath" DependsOnTargets="$(GetTargetPathWithTargetPlatformMonikerDependsOn)" Returns="@(TargetPathWithTargetPlatformMoniker)">
-    <ItemGroup>
-      <TargetPathWithTargetPlatformMoniker Include="$(TargetPath)">
-        <TargetPlatformMoniker>$(TargetPlatformMoniker)</TargetPlatformMoniker>
-        <TargetPlatformIdentifier>$(TargetPlatformIdentifier)</TargetPlatformIdentifier>
-        <TargetFrameworkIdentifier>$(TargetFrameworkIdentifier)</TargetFrameworkIdentifier>
-        <TargetFrameworkVersion>$(TargetFrameworkVersion.TrimStart('vV'))</TargetFrameworkVersion>
-        <ReferenceAssembly Condition="'$(ProduceReferenceAssembly)' == 'true'">$(TargetRefPath)</ReferenceAssembly>
-        <CopyUpToDateMarker>@(CopyUpToDateMarker)</CopyUpToDateMarker>
-      </TargetPathWithTargetPlatformMoniker>
-    </ItemGroup>
-  </Target>
   
 </Project>

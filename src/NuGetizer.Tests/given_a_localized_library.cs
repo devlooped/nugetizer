@@ -11,9 +11,11 @@ namespace NuGetizer
 		public given_a_localized_library(ITestOutputHelper output)
 		{
 			this.output = output;
-		}
+            Builder.BuildScenario(nameof(given_a_localized_library), output: output, target: "Restore")
+                .AssertSuccess(output);
+        }
 
-		[Fact]
+        [Fact]
 		public void when_getting_package_contents_then_contains_localized_resources()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_localized_library));

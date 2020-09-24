@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build;Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
-	<PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
 		<AssemblyName>Forms</AssemblyName>
-    <TargetFrameworkMoniker>MonoAndroid,Version=v9.0</TargetFrameworkMoniker>
-		<ProjectGuid>$(GuidE)</ProjectGuid>
-		<PackSymbols>false</PackSymbols>
+    <TargetFramework>MonoAndroid90</TargetFramework>
+    <DisableStandardFrameworkResolution>true</DisableStandardFrameworkResolution>
+    <PackSymbols>false</PackSymbols>
 		<DocumentationFile />
 	</PropertyGroup>
 	<ItemGroup>
@@ -13,11 +12,6 @@
 			<CodeLanguage>$([System.String]::new('%(Extension)').TrimStart('.'))</CodeLanguage>
 			<BuildAction>None</BuildAction>
 		</Content>
-		<ProjectReference Include="..\common\common.csproj">
-			<Project>$(GuidF)</Project>
-			<Name>common</Name>
-		</ProjectReference>
+		<ProjectReference Include="..\common\common.csproj" />
 	</ItemGroup>
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), fakeframework.targets))\fakeframework.targets" />
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>

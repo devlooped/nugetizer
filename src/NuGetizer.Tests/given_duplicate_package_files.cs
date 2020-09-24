@@ -12,9 +12,11 @@ namespace NuGetizer
 		public given_duplicate_package_files(ITestOutputHelper output)
 		{
 			this.output = output;
-		}
+            Builder.BuildScenario(nameof(given_duplicate_package_files), target: "Restore")
+                .AssertSuccess(output);
+        }
 
-		[Fact]
+        [Fact]
 		public void exact_duplicates_are_removed()
 		{
 			var result = Builder.BuildScenario(nameof(given_duplicate_package_files), target: "Pack");

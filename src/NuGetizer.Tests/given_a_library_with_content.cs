@@ -12,7 +12,9 @@ namespace NuGetizer
 		public given_a_library_with_content(ITestOutputHelper output)
 		{
 			this.output = output;
-		}
+            Builder.BuildScenario(nameof(given_a_library_with_content), target: "Restore")
+                .AssertSuccess(output);
+        }
 
 		[Fact]
 		public void when_library_is_not_packable_then_still_contains_content_files()

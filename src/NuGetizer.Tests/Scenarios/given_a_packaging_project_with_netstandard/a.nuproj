@@ -1,31 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
+<Project Sdk="Microsoft.Build.NoTargets/2.0.1">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
 
-	<PropertyGroup>
-		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-		<ProjectGuid>{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}</ProjectGuid>
-	</PropertyGroup>
+  <PropertyGroup>
+    <!-- Required package metadata -->
+    <Authors>NuGet</Authors>
+    <Description>Package for '$(MSBuildProjectName)' project.</Description>
+    <OutputPath>bin</OutputPath>
 
-	<PropertyGroup>
-		<!-- Required package metadata -->
-		<Authors>NuGet</Authors>
-		<Description>Package for '$(MSBuildProjectName)' project.</Description>
-		<OutputPath>bin</OutputPath>
+    <PackageId>a.package</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+  </PropertyGroup>
 
-		<PackageId>a.package</PackageId>
-		<PackageVersion>1.0.0</PackageVersion>
-	</PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildProjectDirectory)\b\b.csproj" />
+  </ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
-
-	<ItemGroup>
-		<ProjectReference Include="$(MSBuildProjectDirectory)\b\b.csproj">
-			<Project>$(GuidB)</Project>
-			<Name>b</Name>
-		</ProjectReference>
-	</ItemGroup>
-
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>

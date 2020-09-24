@@ -1,20 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build;Dump" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
-	<PropertyGroup>
-		<AssemblyName>Forms</AssemblyName>
-		<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-		<ProjectGuid>$(GuidC)</ProjectGuid>
-		<OutputPath>bin</OutputPath>
-		<IntermediateOutputPath>obj\</IntermediateOutputPath>
-		<PackSymbols>false</PackSymbols>
-		<DocumentationFile />
-	</PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\common\common.csproj">
-			<Project>$(GuidF)</Project>
-			<Name>common</Name>
-		</ProjectReference>
-	</ItemGroup>
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+    <AssemblyName>Forms</AssemblyName>
+    <TargetFramework>net472</TargetFramework>
+    <PackSymbols>false</PackSymbols>
+    <DocumentationFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\common\common.csproj" />
+  </ItemGroup>
 </Project>

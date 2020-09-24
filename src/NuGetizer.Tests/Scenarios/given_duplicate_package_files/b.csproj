@@ -1,24 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
   <PropertyGroup>
-    <ProjectGuid>$(GuidB)</ProjectGuid>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFramework>net45</TargetFramework>
     <ReadmeB Condition="'$(ReadmeB)' == ''">This is a readme</ReadmeB>
   </PropertyGroup>
 	<ItemGroup>
-		<Content Include="content\web\**\*.*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<PackageFile Include="content\content.txt">
-			<PackagePath>content\content.txt</PackagePath>
-    </PackageFile>
-    <PackageFile Include="content\content.txt">
-      <PackagePath>content\b\1\content.txt</PackagePath>
-    </PackageFile>
-    <PackageFile Include="content\content.txt">
-      <PackagePath>content\b\2\content.txt</PackagePath>
-    </PackageFile>
+		<Content Include="content\web\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+		<PackageFile Include="content\content.txt" PackagePath="content\content.txt" />
+    <PackageFile Include="content\content.txt" PackagePath="content\b\1\content.txt" />
+    <PackageFile Include="content\content.txt" PackagePath="content\b\2\content.txt" />
   </ItemGroup>
   <Target Name="GenerateReadme" BeforeTargets="GetPackageContents">
     <WriteLinesToFile File="$(OutputPath)\Readme.txt" Lines="$(ReadmeB)" Overwrite="true" />
@@ -28,5 +18,4 @@
       </PackageFile> 
     </ItemGroup>
   </Target>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>
