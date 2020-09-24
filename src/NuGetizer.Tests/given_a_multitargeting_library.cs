@@ -51,5 +51,40 @@ namespace NuGetizer
             Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Pack", output: output)
                 .AssertSuccess(output);
         }
+
+        [Fact]
+        public void when_customizing_item_definition_then_adds_package_metadata()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_multitargeting_library), new
+            {
+                CustomizeItemDefinition = "true"
+            });
+            result.AssertSuccess(output);
+
+            Assert.Single(result.Items, item => item.Matches(new
+            {
+                Kind = "Metadata",
+                LicenseExpression = "MIT",
+            }));
+        }
+
+        [Fact]
+        public void when_customizing_item_then_adds_package_metadata()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_multitargeting_library), new
+            {
+                CustomizeItem = "true",
+                Description = "Customized"
+            });
+            result.AssertSuccess(output);
+
+            Assert.Single(result.Items, item => item.Matches(new
+            {
+                Kind = "Metadata",
+                Description = "Customized",
+                LicenseExpression = "MIT",
+            }));
+        }
+
     }
 }

@@ -5,5 +5,18 @@
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.props))\Scenario.props" />
+
+  <ItemDefinitionGroup Condition="'$(CustomizeItemDefinition)' == 'true'">
+    <PackageMetadata>
+      <LicenseExpression>MIT</LicenseExpression>
+    </PackageMetadata>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Condition="'$(CustomizeItem)' == 'true'">
+    <PackageMetadata Include="LibraryPackage">
+      <LicenseExpression>MIT</LicenseExpression>
+    </PackageMetadata>
+  </ItemGroup>
+  
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />
 </Project>
