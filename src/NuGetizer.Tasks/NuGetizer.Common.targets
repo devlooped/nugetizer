@@ -201,7 +201,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </PackDependsOn>
   </PropertyGroup>
 
-  <Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
+  <Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(_PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
     <MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
     <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(NuspecFile)" Contents="@(_PackageContent)" 
                    TargetPath="@(PackageTargetPath->'%(FullPath)')">

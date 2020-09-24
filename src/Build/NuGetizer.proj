@@ -1,0 +1,26 @@
+﻿<Project>
+  <Import Project="NuGetizer.props" />
+  <Import Project="NuGetizer.tasks" />
+
+  <PropertyGroup>
+    <PackageId>Foo</PackageId>
+    <PackageIconUrl>https://raw.githubusercontent.com/kzu/corebuild/master/docs/corebuild-32.png</PackageIconUrl>
+    <PackageOutputPath>bin</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <PackageMetadata>
+      <MyMetadata>Custom</MyMetadata>
+    </PackageMetadata>
+  </ItemDefinitionGroup>
+
+  <Target Name="Build">
+    <ItemGroup>
+      <PackageTargetPath Include="@(PackageMetadata -> '$(PackageOutputPath.TrimEnd(\))\%(Identity).nupkg')" />
+    </ItemGroup>
+    <Dump Items="@(PackageMetadata)" ItemName="PackageMetadata" />
+    <Dump Items="@(PackageTargetPath)" ItemName="PackageTargetPath" />
+  </Target>
+
+  <Import Project="NuGetizer.targets" />
+</Project>

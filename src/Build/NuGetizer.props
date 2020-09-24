@@ -1,0 +1,8 @@
+﻿<Project>
+
+	<PropertyGroup>
+		<PackageId>Foo</PackageId>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	
+</Project>
