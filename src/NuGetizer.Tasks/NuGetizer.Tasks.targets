@@ -18,7 +18,7 @@
 		<Title>NuGetizer</Title>
 		<Description>Simple and flexible NuGet packaging</Description>
 		<IsDevelopmentDependency>true</IsDevelopmentDependency>
-		<PrimaryOutputKind>build</PrimaryOutputKind>
+		<BuildOutputKind>build</BuildOutputKind>
 
 		<PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\bin</PackageOutputPath>

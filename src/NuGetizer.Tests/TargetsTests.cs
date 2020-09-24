@@ -20,7 +20,7 @@ namespace NuGetizer
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
-				{ "PrimaryOutputKind", "build" }
+				{ "BuildOutputKind", "build" }
 			}, null);
 
 			Assert.NotEqual("true", project.GetPropertyValue("PackFrameworkReferences"));
@@ -31,7 +31,7 @@ namespace NuGetizer
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
-				{ "PrimaryOutputKind", "tool" }
+				{ "BuildOutputKind", "tool" }
 			}, null);
 
 			Assert.NotEqual("true", project.GetPropertyValue("PackFrameworkReferences"));
@@ -42,7 +42,7 @@ namespace NuGetizer
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
-				{ "PrimaryOutputKind", "tools" }
+				{ "BuildOutputKind", "tools" }
 			}, null);
 
 			Assert.NotEqual("true", project.GetPropertyValue("PackFrameworkReferences"));
@@ -53,7 +53,7 @@ namespace NuGetizer
 		{
 			var project = new Project("NuGetizer.targets", new Dictionary<string, string>
 			{
-				{ "PrimaryOutputKind", "lib" }
+				{ "BuildOutputKind", "lib" }
 			}, null);
 
 			Assert.Equal("true", project.GetPropertyValue("PackFrameworkReferences"));

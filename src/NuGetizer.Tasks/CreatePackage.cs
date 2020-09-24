@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using NuGet.Versioning;
 using NuGet.Frameworks;
-using NuGet.Packaging.Core;
 using NuGet.Packaging;
-using System.Collections.Generic;
-using static ThisAssembly.Strings;
-using System.Security.Cryptography;
+using NuGet.Packaging.Core;
 using NuGet.Packaging.Licenses;
+using NuGet.Versioning;
+using static ThisAssembly.Strings;
 
 namespace NuGetizer.Tasks
 {

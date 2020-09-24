@@ -25,6 +25,9 @@
     <Content Include="NuGetizer.props">
       <PackagePath>buildMultiTargeting\NuGetizer.props</PackagePath>
     </Content>
+    <Content Include="NuGetizer.PackageMetadata.targets">
+      <PackagePath>buildMultiTargeting\NuGetizer.PackageMetadata.targets</PackagePath>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

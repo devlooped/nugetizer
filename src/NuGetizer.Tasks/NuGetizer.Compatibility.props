@@ -16,8 +16,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <PropertyGroup>
     <PackOnBuild Condition="'$(GeneratePackageOnBuild)' == 'true'">true</PackOnBuild>
-    <PrimaryOutputKind Condition="'$(IsTool)' == 'true'">tool</PrimaryOutputKind>
-    <PrimaryOutputKind Condition="'$(BuildOutputTargetFolder)' != ''">$(BuildOutputTargetFolder)</PrimaryOutputKind>
+    <BuildOutputKind Condition="'$(IsTool)' == 'true'">tool</BuildOutputKind>
+    <BuildOutputKind Condition="'$(BuildOutputTargetFolder)' != ''">$(BuildOutputTargetFolder)</BuildOutputKind>
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(IncludeSymbols)' != ''">$(IncludeSymbols)</PackSymbols>
     <PackContent Condition="'$(PackContent)' == '' and '$(IncludeContentInPack)' != ''">$(IncludeContentInPack)</PackContent>
     <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IncludeBuildOutput)' != ''">$(IncludeBuildOutput)</PackBuildOutput>
