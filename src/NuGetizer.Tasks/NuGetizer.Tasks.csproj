@@ -7,7 +7,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RootNamespace>NuGetizer</RootNamespace>
-  </PropertyGroup>  
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
@@ -20,7 +20,10 @@
   <ItemGroup>
     <Content Include="@(None)" Exclude="NuGetizer.Tasks.targets" CopyToOutputDirectory="PreserveNewest" />
     <Content Update="NuGetizer.MultiTargeting.targets">
-      <PackagePath>buildMultiTargeting\NuGetizer%(Extension)</PackagePath>
+      <PackagePath>buildMultiTargeting\NuGetizer.targets</PackagePath>
+    </Content>
+    <Content Include="NuGetizer.props">
+      <PackagePath>buildMultiTargeting\NuGetizer.props</PackagePath>
     </Content>
   </ItemGroup>
 

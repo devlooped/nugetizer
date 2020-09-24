@@ -11,38 +11,38 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<!-- The main output in this case will be the package itself. -->
-	<PropertyGroup>
-		<TargetName>$(PackageId)</TargetName>
+  <!-- The main output in this case will be the package itself. -->
+  <PropertyGroup>
+    <TargetName>$(PackageId)</TargetName>
 
-		<!-- Speed-up build since we don't do assembly resolution -->
-		<ResolveAssemblyReferencesDependsOn />
-	</PropertyGroup>
+    <!-- Speed-up build since we don't do assembly resolution -->
+    <ResolveAssemblyReferencesDependsOn />
+  </PropertyGroup>
 
-	<ItemDefinitionGroup>
-		<!-- This turns off _GetProjectReferenceTargetFrameworkProperties which passes down 
+  <ItemDefinitionGroup>
+    <!-- This turns off _GetProjectReferenceTargetFrameworkProperties which passes down 
 			 our TF to referenced projects and causes build to fail even if we don't really 
 			 need to match up with referenced projects outputs. We're basically using the 
 			 documented escape hatch, see 
 			 https://github.com/Microsoft/msbuild/blob/2634f05a660b14c64ae4e924d900dd200d5032e7/src/Tasks/Microsoft.Common.CurrentVersion.targets#L1537
 		-->
-		<ProjectReference>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<AdditionalProperties>FromPackagingProject=true</AdditionalProperties>
-		</ProjectReference>
-	</ItemDefinitionGroup>
+    <ProjectReference>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <AdditionalProperties>FromPackagingProject=true</AdditionalProperties>
+    </ProjectReference>
+  </ItemDefinitionGroup>
 
-	<ItemGroup>
-		<ProjectCapability Include="PackagingProject" />
+  <ItemGroup>
+    <ProjectCapability Include="PackagingProject" />
 
-		<!-- Allows configurations inferred from Condition="CONFIG|PLATFORM" usage -->
-		<ProjectCapability Include="ProjectConfigurationsInferredFromUsage" />
+    <!-- Allows configurations inferred from Condition="CONFIG|PLATFORM" usage -->
+    <ProjectCapability Include="ProjectConfigurationsInferredFromUsage" />
 
-		<!-- DependenciesTree capability lights up a Dependencies tree node and it's sub node providers-->
-		<ProjectCapability Include="DependenciesTree" />
+    <!-- DependenciesTree capability lights up a Dependencies tree node and it's sub node providers-->
+    <ProjectCapability Include="DependenciesTree" />
 
-		<ProjectCapability Include="
+    <ProjectCapability Include="
                           AssemblyReferences;
                           ProjectReferences;
                           PackageReferences;
@@ -53,31 +53,31 @@ Copyright (c) .NET Foundation. All rights reserved.
                           DeclaredSourceItems;
                           UserSourceItems" />
 
-		<!-- Reference Manager capabilities -->
-		<ProjectCapability Include="ReferenceManagerAssemblies" />
-		<ProjectCapability Include="ReferenceManagerBrowse" />
-		<ProjectCapability Include="ReferenceManagerProjects" />
+    <!-- Reference Manager capabilities -->
+    <ProjectCapability Include="ReferenceManagerAssemblies" />
+    <ProjectCapability Include="ReferenceManagerBrowse" />
+    <ProjectCapability Include="ReferenceManagerProjects" />
 
-	</ItemGroup>
+  </ItemGroup>
 
-	<!-- Just to make it easy for consumers to request the TargetPath as usual but get the 
+  <!-- Just to make it easy for consumers to request the TargetPath as usual but get the 
 		 actual package file, which contains the PackageVersion and will be dynamic therefore. -->
-	<Target Name="UpdateTargetPath"
+  <Target Name="UpdateTargetPath"
 			BeforeTargets="GetTargetPath;GetTargetPathWithTargetPlatformMoniker"
 			DependsOnTargets="GetPackageTargetPath">
-		<PropertyGroup>
-			<TargetPath>@(PackageTargetPath->'%(FullPath)')</TargetPath>
-		</PropertyGroup>
-	</Target>
+    <PropertyGroup>
+      <TargetPath>@(PackageTargetPath->'%(FullPath)')</TargetPath>
+    </PropertyGroup>
+  </Target>
 
-	<Target Name="CoreCompile" DependsOnTargets="Pack" />
-	<Target Name="CreateManifestResourceNames" />
-	<Target Name="GetReferenceAssemblyPaths" />
+  <Target Name="CoreCompile" DependsOnTargets="Pack" />
+  <Target Name="CreateManifestResourceNames" />
+  <Target Name="GetReferenceAssemblyPaths" />
 
-	<Target Name="_CleanReferences" AfterTargets="ResolveAssemblyReferences">
-		<ItemGroup>
-			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
-		</ItemGroup>
-	</Target>
+  <Target Name="_CleanReferences" AfterTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+    </ItemGroup>
+  </Target>
 
 </Project>

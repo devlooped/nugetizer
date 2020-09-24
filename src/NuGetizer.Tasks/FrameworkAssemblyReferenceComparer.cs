@@ -5,9 +5,9 @@ using NuGet.Packaging;
 
 namespace NuGetizer.Tasks
 {
-	public class FrameworkAssemblyReferenceComparer : IEqualityComparer<FrameworkAssemblyReference>
+    public class FrameworkAssemblyReferenceComparer : IEqualityComparer<FrameworkAssemblyReference>
     {
-		public static FrameworkAssemblyReferenceComparer Default { get; } = new FrameworkAssemblyReferenceComparer();
+        public static FrameworkAssemblyReferenceComparer Default { get; } = new FrameworkAssemblyReferenceComparer();
 
         public bool Equals(FrameworkAssemblyReference x, FrameworkAssemblyReference y)
         {

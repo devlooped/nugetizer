@@ -1,6 +1,6 @@
 <!--
 ***********************************************************************************************
-NuGetizer.CrossTargeting.targets
+NuGetizer.MultiTargeting.targets
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
@@ -11,21 +11,23 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <Import Project="NuGetizer.Common.targets"/>
+  
   <Target Name="GetNativeManifest" />
   <Target Name="GetCopyToOutputDirectoryItems" />
 
   <!--
-    ============================================================
-					GetTargetPathWithTargetPlatformMoniker
-	NOTE: depends on Microsoft.Common.CrossTargeting.targets
+  ============================================================
+  GetTargetPathWithTargetPlatformMoniker
+  NOTE: depends on Microsoft.Common.CrossTargeting.targets
 
-	When cross-targeting and the authoring project references a 
-	nugetized library, return all the determined target paths.
-    ============================================================
+  When cross-targeting and the authoring project references a 
+  nugetized library, return all the determined target paths.
+  ============================================================
     -->
   <Target Name="GetTargetPathWithTargetPlatformMoniker"
-			DependsOnTargets="_SetGetTargetPathWithTargetPlatformMonikerInnerTarget;DispatchToInnerBuilds"
-			Returns="@(InnerOutput)">
+          DependsOnTargets="_SetGetTargetPathWithTargetPlatformMonikerInnerTarget;DispatchToInnerBuilds"
+          Returns="@(InnerOutput)">
     <ItemGroup>
       <InnerOutput>
         <IsNuGetized>true</IsNuGetized>
@@ -41,18 +43,28 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <!--
 	============================================================
-                             GetPackageContents
-   Cross-targeting version of GetPackageContents. 
-   NOTE: depends on Microsoft.Common.CrossTargeting.targets
+  GetPackageContents
+  Cross-targeting version of GetPackageContents. 
+  NOTE: depends on Microsoft.Common.CrossTargeting.targets
    
-   [OUT]
-   @(InnerOutput) - The combined output items of the inner targets across
-                    all builds.
+  [OUT]
+  @(InnerOutput) - The combined output items of the inner targets across
+                   all builds.
   ============================================================
   -->
-  <Target Name="GetPackageContents" DependsOnTargets="_SetGetPackageContentsInnerTarget;DispatchToInnerBuilds" Returns="@(InnerOutput)">
+  <Target Name="GetPackageContents" DependsOnTargets="_SetGetPackageContentsInnerTarget;DispatchToInnerBuilds" Returns="@(_PackageContent)">
     <ItemGroup>
       <_PackageContent Include="@(InnerOutput)" />
+    </ItemGroup>
+  
+    <!-- _AddPackageManifest adds per-TFM, so deduplicate and remove the TFM -->
+    <ItemGroup Condition="'$(IsPackable)' == 'true'">
+      <_PackageMetadataContent Include="@(_PackageContent -> WithMetadataValue('Kind', 'Metadata'))" />
+      <_PackageContent Remove="@(_PackageMetadataContent)" />
+      <_PackageContent Include="@(_PackageMetadataContent -> Distinct())">
+        <Platform>$(Platform)</Platform>
+        <TargetFrameworkMoniker />
+      </_PackageContent>
     </ItemGroup>
   </Target>
 
@@ -61,5 +73,6 @@ Copyright (c) .NET Foundation. All rights reserved.
       <InnerTargets>GetPackageContents</InnerTargets>
     </PropertyGroup>
   </Target>
+
 
 </Project>

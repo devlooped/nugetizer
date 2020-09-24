@@ -11,175 +11,33 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project InitialTargets="_SetPropertiesFromCapabilities" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="NuGetizer.Tasks.AssignPackagePath" AssemblyFile="NuGetizer.Tasks.dll" />
-  <UsingTask TaskName="NuGetizer.Tasks.CreatePackage" AssemblyFile="NuGetizer.Tasks.dll" />
 
   <Import Project="NuGetizer.props" Condition="'$(NuGetizerPropsImported)' == ''" />
   <!-- Adds compatibility targets with Pack SDK -->
   <Import Project="NuGetizer.Compatibility.props" />
+  <Import Project="NuGetizer.Common.targets" />
 
-  <PropertyGroup>
-    <!-- Whether include referenced projects' contents the package -->
-    <PackProjectReference Condition="'$(PackProjectReference)' == ''">true</PackProjectReference>
-
-    <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
-
-    <!-- NOTE: we will always have this property in projects referencing this targets file. Can be used to detect this. -->
-    <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
-    <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
-    <!-- When the project is building a package, AssignPackagePath always assigns a PackagePath, regardless of the project PackageId -->
-    <BuildingPackage Condition="'$(BuildingPackage)' == '' and '$(IsPackagingProject)' == 'true'">true</BuildingPackage>
-
-    <!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
-    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)</PackageOutputPath>
-
-    <!-- This file signals that the Build should actually do a Pack. Supports the IDE solution-wide Build command for authoring projects. -->
-    <PackOnBuildFile>$(MSBuildProjectDirectory)\.packonbuild</PackOnBuildFile>
-
-    <!-- Whether to emit the nuspec that's used to create the final package -->
-    <EmitNuSpec Condition="'$(EmitNuSpec)' == ''">false</EmitNuSpec>
-    <!-- Only default the nuspec file if we are supposed to emit one. -->
-    <NuspecFile Condition="'$(NuspecFile)' == '' and '$(EmitNuSpec)' == 'true'">$(OutputPath)\$(PackageId).nuspec</NuspecFile>
-  </PropertyGroup>
-
-  <Import Project="NuGetizer.Inference.targets" Condition="'$(InferPackageContents)' != 'false'" />
-
-  <ItemGroup>
-    <!-- This is the capability that CPS in .NETStandard/.NETCore uses to enable the Pack context menu. Unify with that -->
-    <ProjectCapability Include="Pack" Condition="'$(IsPackable)' == 'true'" />
-  </ItemGroup>
-
-  <!-- Extends the built-in GetTargetPathWithTargetPlatformMoniker output to signal that the project has been nugetized -->
-  <ItemDefinitionGroup>
-    <TargetPathWithTargetPlatformMoniker>
-      <IsPackable>$(IsPackable)</IsPackable>
-      <IsNuGetized>true</IsNuGetized>
-    </TargetPathWithTargetPlatformMoniker>
-  </ItemDefinitionGroup>
+  <!-- We don't need to do the inference in the crosstargeting scenario, we'd infer in the inner build instead -->
+  <Import Project="NuGetizer.Inference.targets" Condition="'$(EnablePackInference)' != 'false' and '$(IsCrossTargetingBuild)' != 'true'" />
 
   <!--
-	=================================================================================================
-	GetPackageVersion
-	=================================================================================================
+  =================================================================================================
+  GetPackageContents
+  =================================================================================================
 
-	This target sets the default $(PackageVersion) to $(Version) if empty, and returns it. 
-	The $(Version) property is the upcoming default way .NET projects are versioned. See 
-	https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/build/Microsoft.NET.GenerateAssemblyInfo.targets#L108
+  Returns the "virtual package" for the current project, containing 
+  all items that would end up in a .nupkg if the project were 
+  to be packed. 
 	
-	It can be redefined to change how the package version is 
-	determined.
+  If the project has NuGet metadata to generate a .nupkg, a metadata 
+  item containing the manifest information will also be returned, as 
 	
-	OUTPUTS:
-		$(PackageVersion)            The determined package version
+    Identity=$(PackageId)
+      %(Kind)=Metadata
+      ... all manifest values as metadata items ...
 	
-    =================================================================================================
-	-->
-  <PropertyGroup>
-    <GetPackageVersionDependsOn>
-      $(GetPackageVersionDependsOn);
-      _SetDefaultPackageVersion
-    </GetPackageVersionDependsOn>
-  </PropertyGroup>
-  <Target Name="GetPackageVersion" DependsOnTargets="$(GetPackageVersionDependsOn)" Returns="$(PackageVersion)" />
-  <Target Name="_SetDefaultPackageVersion" Condition="'$(PackageVersion)' == ''" Returns="$(PackageVersion)">
-    <PropertyGroup>
-      <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
-
-  <!--
-    =================================================================================================
-	GetPackageTargetPath
-    =================================================================================================
-
-    If the project builds a package (that is, it has a PackageId), 
-    this target returns an item for the $(PackageTargetPath) that 
-    the project builds, as well as manifest metadata included in 
-    the project for the resulting package, not including its 
-    contents and dependencies, which must be retrieved from the 
-    GetPackageContents target instead.
-	
-    OUTPUTS:
-        @(PackageTargetPath)            The metadata of the package that would be built.
-    =================================================================================================
-	-->
-  <PropertyGroup>
-    <GetPackageTargetPathDependsOn>
-      $(GetPackageTargetPathDependsOn);
-      GetPackageVersion;
-      _SetDefaultPackageTargetPath;
-    </GetPackageTargetPathDependsOn>
-  </PropertyGroup>
-  <Target Name="GetPackageTargetPath" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageTargetPathDependsOn)" Returns="@(PackageTargetPath)">
-    <Error Text="The 'PackageVersion' property cannot be empty." Code="NG1002" Condition="'$(PackageVersion)' == ''" />
-    <ItemGroup>
-      <!-- Ensure we got a full path -->
-      <PackageTargetPath Include="$([System.IO.Path]::GetFullPath('$(PackageTargetPath)'))">
-        <Id>$(PackageId)</Id>
-        <Version>$(PackageVersion)</Version>
-        <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
-
-        <Authors>$(Authors)</Authors>
-        <Owners>$(Owners)</Owners>
-        <Title>$(Title)</Title>
-        <Description>$(Description)</Description>
-        <Summary>$(Summary)</Summary>
-        <Language>$(NeutralLanguage)</Language>
-        <Copyright>$(Copyright)</Copyright>
-
-        <RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
-        <LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
-        <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
-        <IconUrl>$(PackageIconUrl)</IconUrl>
-        <Tags>$(PackageTags)</Tags>
-
-        <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
-        <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
-        <RepositoryType>$(RepositoryType)</RepositoryType>
-        <PackageTypes>$(PackageType)</PackageTypes>
-      </PackageTargetPath>
-    </ItemGroup>
-  </Target>
-  <Target Name="_SetDefaultPackageTargetPath" Condition="'$(IsPackable)' == 'true' and '$(PackageTargetPath)' == '' and '$(PackageVersion)' != ''">
-    <PropertyGroup>
-      <PackageTargetPath Condition="'$(PackageTargetPath)' == ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
-    </PropertyGroup>
-  </Target>
-
-  <!--
-    =================================================================================================
-	PackageOutputGroup
-    =================================================================================================
-	
-	For compatibility and naming consistency with the targets in AllProjectOutputGroups, this target 
-	returns the same output as GetPackageTargetPath
-	
-    OUTPUTS:
-        @(PackageTargetPath)            The metadata of the package that would be built.	
-    =================================================================================================
-    -->
-  <PropertyGroup>
-    <PackageOutputGroupDependsOn>GetPackageTargetPath;$(PackageOutputGroupDependsOn)</PackageOutputGroupDependsOn>
-  </PropertyGroup>
-  <Target Name="PackageOutputGroup" BeforeTargets="AllProjectOutputGroups" Returns="@(PackageTargetPath)" DependsOnTargets="$(PackageOutputGroupDependsOn)" />
-
-  <!--
-    =================================================================================================
-	GetPackageContents
-    =================================================================================================
-
-    Returns the "virtual package" for the current project, containing 
-	all items that would end up in a .nupkg if the project were 
-	to be packed. 
-	
-	If the project has NuGet metadata to generate a .nupkg, a metadata 
-	item containing the manifest information will also be returned, as 
-	
-		Identity=$(PackageId)
-		   %(Kind)=Metadata
-		   ... all manifest values as metadata items ...
-	
-	All items returned from this target contain a %(PackageId) metadata 
-	with the project's $(PackageId), if any.
+  All items returned from this target contain a %(PackageId) metadata 
+  with the project's $(PackageId), if any.
 	
     OUTPUTS:
         @(_PackageContent)            The contents that this project contributes to a package
@@ -221,7 +79,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="_AddPackageManifest" Condition="'$(IsPackable)' == 'true'">
     <!-- If packaging the project, provide the metadata as a non-file item -->
     <ItemGroup>
-      <PackageFile Include="@(PackageTargetPath->'%(Id)')" Condition="'$(IsPackable)' == 'true'">
+      <PackageFile Include="@(PackageMetadata)">
         <Kind>Metadata</Kind>
         <PackageId>$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
@@ -239,26 +97,24 @@ Copyright (c) .NET Foundation. All rights reserved.
 				   Text="Some project references cannot be properly packaged. Please install the NuGetizer package on the following projects: @(_NonNuGetizedProjectReference)." />
 
     <!-- 
-			PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
-			NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
-			current project.
+    PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
+    NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
+    current project.
 		-->
 
-    <!--
-			Workaround for Xamarin.Android 9.4 requires DesignTimeBuild to be set for its FilterAssemblies target
-		-->
+    <!-- Workaround for Xamarin.Android 9.4 requires DesignTimeBuild to be set for its FilterAssemblies target -->
     <MSBuild Projects="@(_NuGetizedProjectReference)"
-					 Targets="GetPackageContents"
-					 BuildInParallel="$(BuildInParallel)"
-					 Properties="%(_NuGetizedProjectReference.SetConfiguration); %(_NuGetizedProjectReference.SetPlatform); BuildingPackage=$(BuildingPackage); DesignTimeBuild=false"
-					 Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_NuGetizedProjectReference)' != ''"
-					 RemoveProperties="%(_NuGetizedProjectReference.GlobalPropertiesToRemove)">
+             Targets="GetPackageContents"
+             BuildInParallel="$(BuildInParallel)"
+             Properties="%(_NuGetizedProjectReference.SetConfiguration); %(_NuGetizedProjectReference.SetPlatform); BuildingPackage=$(BuildingPackage); DesignTimeBuild=false"
+             Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_NuGetizedProjectReference)' != ''"
+             RemoveProperties="%(_NuGetizedProjectReference.GlobalPropertiesToRemove)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
     </MSBuild>
 
     <ItemGroup>
       <_ReferencedPackageDependency Include="@(_ReferencedPackageContent)"
-												Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.Kind)' == 'Metadata'">
+                                    Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.Kind)' == 'Metadata'">
         <!-- For consistency, annotate like the rest -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
@@ -266,15 +122,14 @@ Copyright (c) .NET Foundation. All rights reserved.
       </_ReferencedPackageDependency>
       <!-- Remove the referenced package actual contents if it provides a manifest, since it will be a dependency in that case. -->
       <_PackageContentFromDependency Include="@(_ReferencedPackageContent)"
-												 Condition="'%(_ReferencedPackageContent.PackageId)' != '' and 
-										              '%(_ReferencedPackageContent.PackageId)' != '$(PackageId)'" />
+                                     Condition="'%(_ReferencedPackageContent.PackageId)' != '' and '%(_ReferencedPackageContent.PackageId)' != '$(PackageId)'" />
       <_ReferencedPackageContent Remove="@(_PackageContentFromDependency)" />
     </ItemGroup>
 
     <!-- Always annotate package contents with the original target framework and moniker -->
     <CreateItem Include="@(_ReferencedPackageContent)" PreserveExistingMetadata="true"
-						Condition="'@(_ReferencedPackageContent)' != ''"
-						AdditionalMetadata="OriginalTargetFramework=%(_ReferencedPackageContent.TargetFramework);OriginalTargetFrameworkMoniker=%(_ReferencedPackageContent.TargetFrameworkMoniker)">
+                Condition="'@(_ReferencedPackageContent)' != ''"
+                AdditionalMetadata="OriginalTargetFramework=%(_ReferencedPackageContent.TargetFramework);OriginalTargetFrameworkMoniker=%(_ReferencedPackageContent.TargetFrameworkMoniker)">
       <Output TaskParameter="Include" ItemName="_ReferencedPackageContentWithOriginalValues"/>
     </CreateItem>
 
@@ -283,18 +138,19 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
-        <!-- Only do this for assets that come from project references that don't build nugets themselves (IsPackagingProject=='true' above) -->
+        <!-- Only do this for assets that come from project references that don't build nugets (PackageId=='' above) -->
         <TargetFramework></TargetFramework>
-        <!-- NOTE: we're always overwriting the TFM for framework-specific 
-					 items in this case since this item will end up making up the 
-					 contents of this package project in its current TFM configuration. 
-					 TBD: we might want to preserve it anyways and adjust later 
-					 (i.e. net45 project references netstandard1.6 project)
-					 TODO: take into account cross-targeting.
+        <!-- NOTE: we're always overwriting the TFM for framework-specific items in this case 
+             since this item will end up making up the contents of this package project in its 
+             current TFM configuration. 
+             TBD: we might want to preserve it anyways and adjust later (i.e. net45 project 
+             references netstandard1.6 project)
+             TODO: take into account cross-targeting.
 				-->
         <TargetFrameworkMoniker Condition="'%(_ReferencedPackageContentWithOriginalValues.FrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
       </_ReferencedPackageContentWithOriginalValues>
     </ItemGroup>
+    
     <!-- Otherwise, assign target paths based on the original TFM -->
     <ItemGroup Condition="'$(IsPackagingProject)' == 'true'">
       <!-- Retarget content for the currently building package, if necessary -->
@@ -309,9 +165,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ItemGroup>
       <!-- Ensure referenced package content gets assigned a package path if it didn't provide one already.
-				 This happens for project references' that don't have a PackageId, since their package path will 
-				 depend on the referencing project's TFM.
-			-->
+           This happens for project references' that don't have a PackageId, since their package path will 
+           depend on the referencing project's TFM. 
+      -->
       <PackageFile Include="@(_ReferencedPackageContentWithOriginalValues);@(_ReferencedPackageDependency)">
         <IsPackaging>$(BuildingPackage)</IsPackaging>
       </PackageFile>
@@ -320,70 +176,31 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <!-- This target separates project references that have the packaging targets from those that don't -->
   <Target Name="_SplitProjectReferencesByIsNuGetized"
-			  Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
-			  Inputs="@(_MSBuildProjectReferenceExistent)"
-			  Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
+          Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
+          Inputs="@(_MSBuildProjectReferenceExistent)"
+          Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
 
     <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
-				 Targets="GetTargetPathWithTargetPlatformMoniker"
-				 BuildInParallel="$(BuildInParallel)"
-				 Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
-				 RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+             Targets="GetTargetPathWithTargetPlatformMoniker"
+             BuildInParallel="$(BuildInParallel)"
+             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
+             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectTargetPath" />
     </MSBuild>
 
     <PropertyGroup>
-      <_IsExcludedFromPack>%(_MSBuildProjectReferenceExistent.Pack)</_IsExcludedFromPack>
+      <_ShouldPack>%(_MSBuildProjectReferenceExistent.Pack)</_ShouldPack>
       <_IsNuGetized>%(_ReferencedProjectTargetPath.IsNuGetized)</_IsNuGetized>
     </PropertyGroup>
 
     <!-- Only process references that aren't excluded from Pack -->
-    <ItemGroup Condition="'$(_IsExcludedFromPack)' != 'false'">
+    <ItemGroup Condition="'$(_ShouldPack)' != 'false'">
       <!-- We will fail for this first group: project references that aren't excluded from packaging, yet haven't been nugetized -->
       <_NonNuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_IsNuGetized)' != 'true'" />
       <!-- We will only process for packaging the project references that haven't been excluded from packaging and are nugetized -->
       <_NuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_IsNuGetized)' == 'true'" />
     </ItemGroup>
 
-  </Target>
-
-  <PropertyGroup>
-    <!-- If we're packing on build, just add Pack as a dependency for Build -->
-    <_ShouldPackOnBuild Condition="('$(PackOnBuild)' == 'true' Or Exists('$(PackOnBuildFile)')) And '$(IsPackable)' == 'true'">true</_ShouldPackOnBuild>
-    <BuildDependsOn Condition="'$(_ShouldPackOnBuild)' == 'true'">
-      $(BuildDependsOn);
-      Pack;
-    </BuildDependsOn>
-    <!-- If we're not packing on build, set up a dependency from Pack>Build for non-NuProj that are packable, so Build runs before Pack -->
-    <PackDependsOn Condition="'$(IsPackagingProject)' != 'true' And '$(_ShouldPackOnBuild)' != 'true' And '$(IsPackable)' == 'true'">
-      Build;
-    </PackDependsOn>
-    <PackDependsOn>
-      $(PackDependsOn)
-      GetPackageTargetPath;
-      GetPackageContents
-    </PackDependsOn>
-  </PropertyGroup>
-
-  <!--
-  =================================================================================================
-    Pack
-  =================================================================================================
-
-    Creates the output .nupkg if the project is packable.
-	
-    OUTPUTS:
-        @(PackageTargetPath)     The output path of the package that was built with its metadata.
-    =================================================================================================
-	-->
-  <Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
-    <MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
-    <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(NuspecFile)" Contents="@(_PackageContent)" TargetPath="@(PackageTargetPath->'%(FullPath)')">
-      <Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
-      <Output TaskParameter="OutputPackage" ItemName="FileWrites" />
-    </CreatePackage>
-
-    <Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />
   </Target>
 
   <Target Name="_SetPropertiesFromCapabilities">

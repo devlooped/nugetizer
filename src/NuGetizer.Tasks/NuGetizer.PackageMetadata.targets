@@ -1,0 +1,40 @@
+<!--
+***********************************************************************************************
+NuGetizer.PackageMetadata.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemDefinitionGroup>
+    <PackageMetadata>
+      <Id>$(PackageId)</Id>
+      <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
+
+      <Authors>$(Authors)</Authors>
+      <Owners>$(Owners)</Owners>
+      <Title>$(Title)</Title>
+      <Description>$(Description)</Description>
+      <Summary>$(Summary)</Summary>
+      <Language>$(NeutralLanguage)</Language>
+      <Copyright>$(Copyright)</Copyright>
+
+      <RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
+      <LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
+      <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
+      <IconUrl>$(PackageIconUrl)</IconUrl>
+      <Tags>$(PackageTags)</Tags>
+
+      <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
+      <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+      <RepositoryType>$(RepositoryType)</RepositoryType>
+      <PackageTypes>$(PackageType)</PackageTypes>
+    </PackageMetadata>
+  </ItemDefinitionGroup>
+  
+</Project>

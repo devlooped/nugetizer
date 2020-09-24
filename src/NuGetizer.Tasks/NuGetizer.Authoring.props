@@ -10,23 +10,23 @@ Copyright (c) .NET Foundation. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-		<TargetFramework>netstandard1.0</TargetFramework>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <TargetFramework>netstandard1.0</TargetFramework>
     <AssetTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;net47;net471;net472;net48;netcore;netcore45;netcore451;netcore50;net5.0;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netstandard2.1;netcoreapp1.0;netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</AssetTargetFallback>
 
-		<TargetExt>.nupkg</TargetExt>
-		
-		<!-- The Pack target generates to the output path directly -->
-		<SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+    <TargetExt>.nupkg</TargetExt>
 
-		<!-- Packaging project doesn't need resolved nuget package dependencies -->
-		<ResolveNuGetPackages>false</ResolveNuGetPackages>
+    <!-- The Pack target generates to the output path directly -->
+    <SkipCopyBuildProduct>true</SkipCopyBuildProduct>
 
-		<PrimaryOutputFrameworkSpecific>false</PrimaryOutputFrameworkSpecific>
-	</PropertyGroup>
+    <!-- Packaging project doesn't need resolved nuget package dependencies -->
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
 
-	<!--
+    <PrimaryOutputFrameworkSpecific>false</PrimaryOutputFrameworkSpecific>
+  </PropertyGroup>
+
+  <!--
       Properties relevant to Visual Studio:
       $(BuildingInsideVisualStudio)       This will indicate whether this project is building inside the IDE. When
                                           building via MSBuild, this property will not be set.
@@ -36,8 +36,8 @@ Copyright (c) .NET Foundation. All rights reserved.
                                           around resolved dependencies and properties back to Visual Studio without
                                           actually producing assets on disk.
 	-->
-	<PropertyGroup>
-		<!-- We don't want to build in case we're performing a design time build as we are expected to not
+  <PropertyGroup>
+    <!-- We don't want to build in case we're performing a design time build as we are expected to not
          produce any assets.
          We also don't want to build the references in cases where we build inside the IDE. The reason
          is that Visual Studio already built our dependencies. Doing it again can regress performance.
@@ -47,10 +47,10 @@ Copyright (c) .NET Foundation. All rights reserved.
          will end up causing multiple build breaks being reported because it will re-delete outputs that
          VS just produced and that other project references that are building in parallel now expect to
          be there. -->
-		<BuildProjectReferences Condition="'$(BuildProjectReferences)' == '' and ('$(BuildingInsideVisualStudio)' == 'true' or '$(DesignTimeBuild)' == 'true')">false</BuildProjectReferences>
-		<!-- By default we will build (and if applicable, clean) all project references. But this can be used
+    <BuildProjectReferences Condition="'$(BuildProjectReferences)' == '' and ('$(BuildingInsideVisualStudio)' == 'true' or '$(DesignTimeBuild)' == 'true')">false</BuildProjectReferences>
+    <!-- By default we will build (and if applicable, clean) all project references. But this can be used
          to disable that. -->
-		<BuildProjectReferences Condition="'$(BuildProjectReferences)' == ''">true</BuildProjectReferences>
-	</PropertyGroup>
+    <BuildProjectReferences Condition="'$(BuildProjectReferences)' == ''">true</BuildProjectReferences>
+  </PropertyGroup>
 
 </Project>

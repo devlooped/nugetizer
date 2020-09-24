@@ -24,12 +24,6 @@
 
     <ProjectGuid>$(GuidA)</ProjectGuid>
 
-    <!-- Used for Dump/Introspect -->
-    <UseCompiledTasks>true</UseCompiledTasks>
-
-    <!-- Prevents Fody.VerifyTask from running -->
-    <NCrunch>1</NCrunch>
-
     <!-- Avoids architecture mismatch warnings -->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <!-- Avoids build error from metadata attribute missing in NS1.6 -->
