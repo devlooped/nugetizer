@@ -11,8 +11,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.9.20" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Common" Version="5.7.0" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Frameworks" Version="5.7.0" PrivateAssets="all" />
     <PackageReference Include="NuGet.Packaging" Version="5.7.0" PrivateAssets="all" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Versioning" Version="5.7.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly" Version="0.10.6" PrivateAssets="all" />
   </ItemGroup>
 

@@ -28,10 +28,7 @@
 
   <Target Name="CleanContents" BeforeTargets="GetPackageContents" DependsOnTargets="InferPackageContents" Returns="@(PackageFile)">
     <ItemGroup>
-      <PackageFile Remove="@(PackageFile)" Condition="
-				$([System.String]::new('%(PackageFile.NuGetPackageId)').StartsWith('Microsoft')) or 
-				$([System.String]::new('%(PackageFile.NuGetPackageId)').StartsWith('Newtonsoft')) or 
-				$([System.String]::new('%(PackageFile.NuGetPackageId)').StartsWith('NuGet'))" />
+      <PackageFile Remove="@(PackageFile)" Condition="$([System.String]::new('%(PackageFile.NuGetPackageId)').StartsWith('Microsoft.Build'))" />
     </ItemGroup>
   </Target>
 
