@@ -48,7 +48,7 @@ namespace NuGetizer
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
-				IncludeNoneInPackage = "false"
+				PackNone = "false"
 			});
 
 			result.AssertSuccess(output);
@@ -436,7 +436,7 @@ namespace NuGetizer
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
 				PackageId = "ContentPackage",
-				IncludeNoneInPackage = "true",
+				PackNone = "true",
 			});
 
 			result.AssertSuccess(output);
@@ -485,7 +485,7 @@ namespace NuGetizer
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
 				PackageId = "ContentPackage",
-				IncludeNoneInPackage = "false"
+				PackNone = "false"
 			});
 
 			result.AssertSuccess(output);
@@ -536,7 +536,7 @@ namespace NuGetizer
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
 			{
 				PackageId = "ContentPackage",
-				IncludeNoneInPackage = "true"
+				PackNone = "true"
 			});
 
 			result.AssertSuccess(output);

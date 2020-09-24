@@ -18,7 +18,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
 		<PackContent Condition="'$(PackContent)' == ''">true</PackContent>
 		<!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
-		<IncludeNoneInPackage Condition="'$(IncludeNoneInPackage)' == ''">false</IncludeNoneInPackage>
+		<PackNone Condition="'$(PackNone)' == ''">false</PackNone>
 		<!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
 		<IncludeOutputsInPackage Condition="'$(IncludeOutputsInPackage)' == ''">true</IncludeOutputsInPackage>
 		<!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
@@ -81,7 +81,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 		<AssignTargetPath Files="@(None)" RootFolder="$(MSBuildProjectDirectory)"
 						  Condition="'%(None.Pack)' == 'true' or 
 									 '%(None.Kind)' != '' or 
-									 ('$(IncludeNoneInPackage)' == 'true' and '%(None.Pack)' != 'false')">
+									 ('$(PackNone)' == 'true' and '%(None.Pack)' != 'false')">
 			<Output TaskParameter="AssignedFiles" ItemName="_NoneToInfer" />
 		</AssignTargetPath>
 
@@ -133,7 +133,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				<Kind Condition="'%(_ContentToInfer.Kind)' == ''">Content</Kind>
 			</_InferredPackageFile>
 
-			<!-- NOTE: None is also opt-out (must have Pack=false to exclude if IncludeNoneInPackage=true, but this property defaults to false) -->
+			<!-- NOTE: None is also opt-out (must have Pack=false to exclude if PackNone=true, but this property defaults to false) -->
 			<!-- Likewise, include from target path if it's copied, from source path otherwise -->
 			<_InferredPackageFile Include="@(_NoneToInfer->'$(_OutputFullPath)\%(TargetPath)')"
 							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' != '' and '%(_NoneToInfer.CopyToOutputDirectory)' != 'Never'">
