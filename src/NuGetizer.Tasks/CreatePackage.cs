@@ -10,6 +10,7 @@ using NuGet.Packaging;
 using System.Collections.Generic;
 using static ThisAssembly.Strings;
 using System.Security.Cryptography;
+using NuGet.Packaging.Licenses;
 
 namespace NuGetizer.Tasks
 {
@@ -19,7 +20,7 @@ namespace NuGetizer.Tasks
         public ITaskItem Manifest { get; set; }
 
         [Required]
-        public ITaskItem[] Contents { get; set; }
+        public ITaskItem[] Contents { get; set; } = Array.Empty<ITaskItem>();
 
         [Required]
         public string TargetPath { get; set; }
@@ -66,9 +67,13 @@ namespace NuGetizer.Tasks
         {
             var metadata = new ManifestMetadata();
 
-            metadata.Id = Manifest.GetMetadata("Id");
-            metadata.Version = NuGetVersion.Parse(Manifest.GetMetadata(MetadataName.Version));
-            metadata.DevelopmentDependency = Manifest.GetBoolean("DevelopmentDependency");
+            metadata.Id = Manifest.GetMetadata(nameof(ManifestMetadata.Id));
+
+            if (Manifest.TryGetMetadata(nameof(ManifestMetadata.Version), out var version))
+                metadata.Version = NuGetVersion.Parse(Manifest.GetMetadata(MetadataName.Version));
+
+            if (Manifest.TryGetBoolMetadata(nameof(ManifestMetadata.DevelopmentDependency), out var devDep) && devDep)
+                metadata.DevelopmentDependency = true;
 
             metadata.Title = Manifest.GetMetadata("Title");
             metadata.Description = Manifest.GetMetadata("Description");
@@ -85,8 +90,17 @@ namespace NuGetizer.Tasks
 
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("LicenseUrl")))
                 metadata.SetLicenseUrl(Manifest.GetMetadata("LicenseUrl"));
+
+            if (Manifest.TryGetMetadata("LicenseExpression", out var expression))
+                metadata.LicenseMetadata = new LicenseMetadata(
+                    LicenseType.Expression,
+                    expression,
+                    NuGetLicenseExpression.Parse(expression),
+                    null, LicenseMetadata.CurrentVersion);
+
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("ProjectUrl")))
                 metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
+
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("IconUrl")))
                 metadata.SetIconUrl(Manifest.GetMetadata("IconUrl"));
 

@@ -12,6 +12,7 @@ using NuGet.Packaging.Core;
 using Metadata = System.Collections.Generic.Dictionary<string, string>;
 using NuGetizer.Tasks;
 using NuGet.Packaging;
+using NuGet.Packaging.Licenses;
 
 namespace NuGetizer
 {
@@ -127,7 +128,21 @@ namespace NuGetizer
 			Assert.True(metadata.DevelopmentDependency);
 		}
 
-		[Fact]
+        [Fact]
+        public void when_creating_package_has_license_expression_then_manifest_has_license()
+        {
+            task.Manifest.SetMetadata("LicenseUrl", "");
+            task.Manifest.SetMetadata("LicenseExpression", "MIT");
+
+            var metadata = ExecuteTask().Metadata;
+
+            Assert.Equal("MIT", metadata.LicenseMetadata.License);
+            Assert.Equal(LicenseType.Expression, metadata.LicenseMetadata.Type);
+            Assert.Equal(LicenseExpressionType.License, metadata.LicenseMetadata.LicenseExpression.Type);
+            Assert.True(metadata.LicenseMetadata.LicenseExpression is NuGetLicense license && license.IsStandardLicense);
+        }
+
+        [Fact]
 		public void when_creating_package_with_simple_dependency_then_contains_dependency_group()
 		{
 			task.Contents = new[]

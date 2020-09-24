@@ -17,6 +17,25 @@ namespace NuGetizer
 
         public static IEnumerable<T> NullAsEmpty<T>(this IEnumerable<T> source) => source ?? Enumerable.Empty<T>();
 
+        public static bool TryGetMetadata(this ITaskItem taskItem, string metadataName, out string value)
+        {
+            value = taskItem.GetMetadata(metadataName);
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            return true;
+        }
+
+        public static bool TryGetBoolMetadata(this ITaskItem taskItem, string metadataName, out bool value)
+        {
+            value = false;
+            var metadataValue = taskItem.GetMetadata(metadataName);
+            if (string.IsNullOrEmpty(metadataValue))
+                return false;
+
+            return bool.TryParse(metadataValue, out value);
+        }
+
         public static bool GetBoolean(this ITaskItem taskItem, string metadataName, bool defaultValue = false)
         {
             var result = false;
