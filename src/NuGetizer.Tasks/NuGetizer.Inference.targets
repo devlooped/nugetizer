@@ -73,6 +73,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- Ensure TargetPath -->
     <AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)"
                       Condition="'%(Content.Pack)' == 'true' or 
+                                 '%(Content.PackagePath)' != '' or
                                  '%(Content.Kind)' != '' or 
                                  ('$(PackContent)' == 'true' and '%(Content.Pack)' != 'false')">
       <Output TaskParameter="AssignedFiles" ItemName="_ContentToInfer" />
@@ -80,6 +81,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <AssignTargetPath Files="@(None)" RootFolder="$(MSBuildProjectDirectory)"
                       Condition="'%(None.Pack)' == 'true' or 
+                                 '%(None.PackagePath)' != '' or
                                  '%(None.Kind)' != '' or 
                                  ('$(PackNone)' == 'true' and '%(None.Pack)' != 'false')">
       <Output TaskParameter="AssignedFiles" ItemName="_NoneToInfer" />
@@ -152,7 +154,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
 				current project.
 			-->
-      <PackageFile Include="@(_InferredPackageFile -> Distinct())">
+      <PackageFile Include="@(_InferredPackageFile)">
         <Source>Implicit</Source>
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>

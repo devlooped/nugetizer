@@ -346,11 +346,28 @@ namespace NuGetizer
 			}));
 		}
 
-		#endregion
+        [Fact]
+        public void content_with_package_path_is_included_even_with_pack_content_false()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+            {
+                PackageId = "ContentPackage",
+                PackContent = "false"
+            });
 
-		#region None scenarios
+            result.AssertSuccess(output);
 
-		[Fact]
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"build\content-with-packagepath.txt",
+            }));
+        }
+
+        #endregion
+
+        #region None scenarios
+
+        [Fact]
 		public void none_no_copy_is_specified_relative_path()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
@@ -579,6 +596,39 @@ namespace NuGetizer
 			}));
 		}
 
-		#endregion
-	}
+        [Fact]
+        public void none_with_package_path_is_included_by_default()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+            {
+                PackageId = "ContentPackage",
+            });
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"build\none-with-packagepath.txt",
+            }));
+        }
+
+        [Fact]
+        public void none_with_package_path_is_included_even_with_pack_none_false()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+            {
+                PackageId = "ContentPackage",
+                PackNone = "false",
+            });
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"build\none-with-packagepath.txt",
+            }));
+        }
+
+        #endregion
+    }
 }

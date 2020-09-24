@@ -30,5 +30,7 @@
 
   <Target Name="Pack" />
   <Target Name="Test" />
-  
+
+  <Import Project="NuGetizer.Tasks\NuGetizer.props" Condition="'$(PackOnBuild)' == 'true'" />
+
 </Project>

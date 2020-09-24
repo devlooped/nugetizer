@@ -3,11 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>NuGetizer</PackageId>
-    <NuGetBuildTasksPackTargets>NO-SDK-PACK</NuGetBuildTasksPackTargets>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RootNamespace>NuGetizer</RootNamespace>
-    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,15 +18,9 @@
 
   <ItemGroup>
     <Content Include="@(None)" Exclude="NuGetizer.Tasks.targets" CopyToOutputDirectory="PreserveNewest" />
-    <Content Update="NuGetizer.MultiTargeting.targets">
-      <PackagePath>buildMultiTargeting\NuGetizer.targets</PackagePath>
-    </Content>
-    <Content Include="NuGetizer.props">
-      <PackagePath>buildMultiTargeting\NuGetizer.props</PackagePath>
-    </Content>
-    <Content Include="NuGetizer.PackageMetadata.targets">
-      <PackagePath>buildMultiTargeting\NuGetizer.PackageMetadata.targets</PackagePath>
-    </Content>
+    <Content Update="NuGetizer.MultiTargeting.targets" PackagePath="buildMultiTargeting\NuGetizer.targets" />
+    <None Include="NuGetizer.props;NuGetizer.Common.targets;NuGetizer.PackageMetadata.targets" 
+          PackagePath="buildMultiTargeting\%(Filename)%(Extension)" />
     <Content Include="..\..\img\nugetizer-256.png" Link="icon-236.png" CopyToOutputDirectory="PreserveNewest" PackagePath="icon.png" />
   </ItemGroup>
 

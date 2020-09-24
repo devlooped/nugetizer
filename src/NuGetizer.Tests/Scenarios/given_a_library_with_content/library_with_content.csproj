@@ -43,6 +43,8 @@
     <Content Include="content-copy-with-include-false.txt" Pack="false" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="relative\content-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="relative\content-copy.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="none-with-packagepath.txt" PackagePath="build\%(Filename)%(Extension)" />
+    <Content Include="content-with-packagepath.txt" PackagePath="build\%(Filename)%(Extension)" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), fakeframework.targets))\fakeframework.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Scenario.targets))\Scenario.targets" />

@@ -2,6 +2,8 @@
 
 # NuGetizer 3000
 
+Simple, flexible and powerful NuGet packaging
+
 For the original design and intended goals and features, check out the [spec](https://github.com/NuGet/Home/wiki/NuGetizer-3000).
 
 ## Why
