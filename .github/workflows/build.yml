@@ -22,4 +22,4 @@ jobs:
       - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
       - run: msbuild -r
       - run: msbuild -t:test
-      - run: msbuild -t:pack -p:packonbuild=true -p:version=42.42.42-$(git name-rev --name-only --refs=refs/heads/* HEAD).$(git rev-list --count a12adfe..HEAD)
+      - run: msbuild -t:pack -p:packonbuild=true -p:version=42.42.42-$(git name-rev --name-only --refs=refs/heads/* HEAD).$($env:GITHUB_RUN_NUMBER)
