@@ -40,7 +40,7 @@
     <XmlPoke Namespaces="$(XmlNs)"
 				 XmlInputPath="$(OutputPath)NuGetizer.Version.props"
 				 Query="/msb:Project/msb:PropertyGroup/msb:PackVersion"
-				 Value="$(PackageVersion)"/>
+				 Value="$(Version)"/>
   </Target>
 
   <PropertyGroup>

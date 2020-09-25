@@ -101,6 +101,24 @@ namespace NuGetizer.Tasks
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("ProjectUrl")))
                 metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
 
+            if (Manifest.TryGetMetadata("RepositoryType", out var repoType))
+                (metadata.Repository ??= new RepositoryMetadata()).Type = repoType;
+
+            if (Manifest.TryGetMetadata("RepositoryUrl", out var repoUrl))
+                (metadata.Repository ??= new RepositoryMetadata()).Url = repoUrl;
+
+            if (Manifest.TryGetMetadata("RepositoryBranch", out var repoBranch))
+                (metadata.Repository ??= new RepositoryMetadata()).Branch = repoBranch;
+
+            if (Manifest.TryGetMetadata("RepositoryCommit", out var repoCommit))
+                (metadata.Repository ??= new RepositoryMetadata()).Commit = repoCommit;
+
+            if (!string.IsNullOrEmpty(Manifest.GetMetadata("ProjectUrl")))
+                metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
+
+            if (!string.IsNullOrEmpty(Manifest.GetMetadata("ProjectUrl")))
+                metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
+
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("IconUrl")))
                 metadata.SetIconUrl(Manifest.GetMetadata("IconUrl"));
 

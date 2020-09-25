@@ -104,16 +104,43 @@ Copyright (c) .NET Foundation. All rights reserved.
   </PropertyGroup>
   <Target Name="GetPackageMetadata" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageMetadataDependsOn)" Returns="@(PackageMetadata)">
     <Error Text="The 'PackageVersion' property cannot be empty." Code="NG1002" Condition="'$(PackageVersion)' == ''" />
-    <!-- Another extensibility mechanism would be for the author to include a PackageMetadata themselves too. -->
-    <ItemGroup Condition="'@(PackageMetadata)' == ''">
-      <PackageMetadata Include="$(PackageId)">
-        <!-- All the other metadata already populated by the ItemDefinitionGroup in NuGetizer.PackageMetadata.targets -->
+    <ItemGroup>
+      <!-- By not re-creating the item, we preserve whatever metadata was provided already -->
+      <PackageMetadata Include="$(PackageId)" Condition="'@(PackageMetadata)' == ''">
+        <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
+        <Authors>$(Authors)</Authors>
+        <Owners>$(Owners)</Owners>
+        <Title>$(Title)</Title>
+        <Description>$(Description)</Description>
+        <Summary>$(Summary)</Summary>
+        <Language>$(NeutralLanguage)</Language>
+        <Copyright>$(Copyright)</Copyright>
+        <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
+        <RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
+        <LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
+        <LicenseExpression>$(PackageLicenseExpression)</LicenseExpression>
+        <Icon>$(PackageIcon)</Icon>
+        <IconUrl>$(PackageIconUrl)</IconUrl>
+        <Tags>$(PackageTags)</Tags>
+        <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
+        <PackageTypes>$(PackageType)</PackageTypes>
+      </PackageMetadata>
+      
+      <!-- Next, just update the typically dynamic properties we allow update hooks for.
+           For advanced metadata tweaking scenarios, users can simply create the PackageMetadata 
+           before this method run (or update it after it does). -->
+      <PackageMetadata Update="@(PackageMetadata)">
         <Version>$(PackageVersion)</Version>
+        <!-- Provided by source control providers -->        
+        <RepositoryType>$(RepositoryType)</RepositoryType>
+        <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+        <RepositoryBranch>$(RepositoryBranch)</RepositoryBranch>
+        <RepositoryCommit>$(RepositoryCommit)</RepositoryCommit>
       </PackageMetadata>
     </ItemGroup>
   </Target>
 
-  <Target Name="_InitializeRepositoryProperties" DependsOnTargets="InitializeSourceControlInformation" Condition="'(SourceControlInformationFeatureSupported)' == 'true'">
+  <Target Name="_InitializeRepositoryProperties" DependsOnTargets="InitializeSourceControlInformation" Condition="'$(SourceControlInformationFeatureSupported)' == 'true'">
     <PropertyGroup>
       <!-- The project must specify PublishRepositoryUrl=true in order to publish the URL, in order to prevent inadvertent leak of internal URL. -->
       <RepositoryUrl Condition="'$(RepositoryUrl)' == '' and '$(PublishRepositoryUrl)' == 'true'">$(PrivateRepositoryUrl)</RepositoryUrl>
