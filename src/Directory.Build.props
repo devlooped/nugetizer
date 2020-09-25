@@ -7,8 +7,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
-    <Version>42.42.42</Version>
-    <PackageVersion>$(Version)</PackageVersion>
+    <VersionPrefix>42.42.42</VersionPrefix>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GenerateRepositoryUrlAttribute>true</GenerateRepositoryUrlAttribute>
