@@ -14,6 +14,9 @@ jobs:
           dotnet-version: 5.0.100-rc.1.20452.10
       - uses: actions/setup-dotnet@v1
         with:
+          dotnet-version: 2.1.x
+      - uses: actions/setup-dotnet@v1
+        with:
           dotnet-version: 3.1.x
       - run: dotnet tool update -g dotnet-vs
       - run: echo "::set-env name=MSB::$(vs where preview --prop=InstallationPath)"
@@ -24,5 +27,5 @@ jobs:
       - run: msbuild -t:test
       - run: msbuild -t:pack -p:packonbuild=true -p:versionsuffix=$(git name-rev --name-only --refs=refs/heads/* HEAD).$($env:GITHUB_RUN_NUMBER)
       - run: |
-          dotnet nuget add source https://nuget.pkg.github.com/kzu/index.json -n github -u kzu -p ${{ secrets.GITHUB_TOKEN }}
-          dotnet nuget push bin/**/*.nupkg -s github --skip-duplicate --no-symbols true
+          dotnet tool install -g --version 2.3.33 sleet 
+          sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure"
