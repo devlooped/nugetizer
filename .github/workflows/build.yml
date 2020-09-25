@@ -23,4 +23,6 @@ jobs:
       - run: msbuild -r
       - run: msbuild -t:test
       - run: msbuild -t:pack -p:packonbuild=true -p:versionsuffix=$(git name-rev --name-only --refs=refs/heads/* HEAD).$($env:GITHUB_RUN_NUMBER)
-      - run: dotnet nuget push bin/**/*.nupkg -s https://nuget.pkg.github.com/kzu/NuGetizer/index.json -k ${{ secrets.GITHUB_TOKEN }} --skip-duplicate --no-symbols true
+      - run: |
+          dotnet nuget add source https://nuget.pkg.github.com/kzu/index.json -n github -u kzu -p ${{ secrets.GITHUB_TOKEN }}
+          dotnet nuget push bin/**/*.nupkg -s github --skip-duplicate --no-symbols true
