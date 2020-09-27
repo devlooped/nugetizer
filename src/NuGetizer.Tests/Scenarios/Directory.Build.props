@@ -6,9 +6,15 @@
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <EnableDefaultItems>false</EnableDefaultItems>
 
-    <OutputPath>bin\$(MSBuildProjectName)</OutputPath>
-    <BaseIntermediateOutputPath>obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <!-- Modified from Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets -->
+    <BaseOutputPath Condition="'$(BaseOutputPath)' == ''">bin\$(MSBuildProjectName)\</BaseOutputPath>
+    <BaseOutputPath Condition="!HasTrailingSlash('$(BaseOutputPath)')">$(BaseOutputPath)\</BaseOutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath Condition="!HasTrailingSlash('$(BaseIntermediateOutputPath)')">$(BaseIntermediateOutputPath)\</BaseIntermediateOutputPath>
 
+    <!-- By default, don't append configuration, since we don't do anything different depending on config -->
+    <OutputPath>$(BaseOutputPath)</OutputPath>
+    
     <!-- Avoids architecture mismatch warnings -->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>

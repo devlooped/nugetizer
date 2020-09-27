@@ -24,10 +24,12 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
     <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(BaseOutputPath)</PackageOutputPath>
 
-    <!-- Whether to emit the nuspec that's used to create the final package. -->
-    <EmitNuSpec Condition="'$(EmitNuSpec)' == ''">false</EmitNuSpec>
-    <!-- Nuspec file path if EmitNuSpec is true. -->
-    <NuspecFile Condition="'$(NuspecFile)' == '' and '$(EmitNuSpec)' == 'true'">$(BaseOutputPath)\$(PackageId).nuspec</NuspecFile>
+    <!-- Whether to emit the final .nupkg for packable projects. Defaults to true. -->
+    <EmitPackage Condition="'$(EmitPackage)' == ''">true</EmitPackage>
+
+    <!-- Whether to emit the nuspec that's used to create the final package. Defaults to false. -->
+    <EmitNuspec Condition="'$(EmitNuspec)' == ''">false</EmitNuspec>
+    <NuspecFile Condition="'$(NuspecFile)' == ''">$(BaseOutputPath)\$(PackageId).nuspec</NuspecFile>
   </PropertyGroup>
 
   <PropertyGroup Label="Hidden">
@@ -178,7 +180,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   </Target>
   <Target Name="_SetDefaultPackageTargetPath" Condition="'$(IsPackable)' == 'true' and '$(PackageTargetPath)' == '' and '$(PackageVersion)' != ''">
     <PropertyGroup>
-      <PackageTargetPath Condition="'$(PackageTargetPath)' == ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
+      <PackageTargetPath>$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
     </PropertyGroup>
   </Target>
 
@@ -231,9 +233,11 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(_PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
     <MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
     <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(NuspecFile)" Contents="@(_PackageContent)" 
+                   EmitPackage="$(EmitPackage)" EmitNuspec="$(EmitNuspec)"
                    TargetPath="@(PackageTargetPath->'%(FullPath)')">
       <Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
-      <Output TaskParameter="OutputPackage" ItemName="FileWrites" />
+      <Output TaskParameter="OutputPackage" ItemName="FileWrites" Condition="'$(EmitPackage)' == 'true'" />
+      <Output TaskParameter="NuspecFile" ItemName="FileWrites" Condition="'$(EmitNuspec)' == 'true'" />
     </CreatePackage>
 
     <Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />

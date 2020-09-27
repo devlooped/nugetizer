@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Microsoft.Build.Execution;
 using NuGet.Frameworks;
 using Xunit;
@@ -217,5 +218,49 @@ namespace NuGetizer
 
 			Assert.Equal(TargetResultCode.Skipped, result.ResultCode);
 		}
-	}
+
+        [Fact]
+        public void when_pack_with_emit_nuspec_but_not_package_then_creates_nuspec_but_not_package()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_complex_pack), 
+                new 
+                { 
+                    EmitNuspec = "true",
+                    EmitPackage = "false",
+                    BaseOutputPath = Builder.TestOutputPath(),
+                }, 
+                projectName: "a", 
+                target: "Pack", output: output);
+
+            result.AssertSuccess(output);
+            Assert.Single(result.Items);
+
+            var pkgFile = result.Items[0].GetMetadata("FullPath");
+
+            Assert.False(File.Exists(pkgFile));
+            Assert.True(File.Exists(Path.Combine(Path.GetDirectoryName(pkgFile), "A.nuspec")));
+        }
+
+        [Fact]
+        public void when_pack_with_emit_package_but_not_nuspec_then_creates_package_but_not_nuspec()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_complex_pack),
+                new
+                {
+                    EmitNuspec = "false",
+                    EmitPackage = "true",
+                    BaseOutputPath = Builder.TestOutputPath(),
+                },
+                projectName: "a",
+                target: "Pack", output: output);
+
+            result.AssertSuccess(output);
+            Assert.Single(result.Items);
+
+            var pkgFile = result.Items[0].GetMetadata("FullPath");
+
+            Assert.True(File.Exists(pkgFile));
+            Assert.False(File.Exists(Path.Combine(Path.GetDirectoryName(pkgFile), "A.nuspec")));
+        }
+    }
 }

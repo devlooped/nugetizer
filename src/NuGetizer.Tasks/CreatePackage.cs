@@ -25,19 +25,29 @@ namespace NuGetizer.Tasks
         [Required]
         public string TargetPath { get; set; }
 
+        [Required]
+        public string EmitPackage { get; set; }
+
+        [Required]
+        public string EmitNuspec { get; set; }
+
+        [Output]
         public string NuspecFile { get; set; }
 
         [Output]
         public ITaskItem OutputPackage { get; set; }
 
+        Manifest manifest;
+
         public override bool Execute()
         {
             try
             {
-                using (var stream = File.Create(TargetPath))
-                {
-                    BuildPackage(stream);
-                }
+                if (bool.TryParse(EmitPackage, out var emitPkg) && emitPkg)
+                    GeneratePackage();
+
+                if (bool.TryParse(EmitNuspec, out var emitSpec) && emitSpec && !string.IsNullOrEmpty(NuspecFile))
+                    GenerateNuspec();
 
                 OutputPackage = new TaskItem(TargetPath);
                 Manifest.CopyMetadataTo(OutputPackage);
@@ -54,7 +64,7 @@ namespace NuGetizer.Tasks
         // Implementation for testing to avoid I/O
         public Manifest Execute(Stream output)
         {
-            BuildPackage(output);
+            GeneratePackage(output);
 
             output.Seek(0, SeekOrigin.Begin);
             using (var reader = new PackageArchiveReader(output))
@@ -75,16 +85,27 @@ namespace NuGetizer.Tasks
             if (Manifest.TryGetBoolMetadata(nameof(ManifestMetadata.DevelopmentDependency), out var devDep) && devDep)
                 metadata.DevelopmentDependency = true;
 
-            metadata.Title = Manifest.GetMetadata("Title");
-            metadata.Description = Manifest.GetMetadata("Description");
-            metadata.Summary = Manifest.GetMetadata("Summary");
-            metadata.Language = Manifest.GetMetadata("Language");
+            if (Manifest.TryGetMetadata("Title", out var title))
+                metadata.Title = title;
 
-            metadata.Copyright = Manifest.GetMetadata("Copyright");
-            metadata.RequireLicenseAcceptance = Manifest.GetBoolean("RequireLicenseAcceptance");
+            if (Manifest.TryGetMetadata("Description", out var description))
+                metadata.Description = description;
+
+            if (Manifest.TryGetMetadata("Summary", out var summary))
+                metadata.Summary = summary;
+
+            if (Manifest.TryGetMetadata("Language", out var language))
+                metadata.Language = language;
+
+            if (Manifest.TryGetMetadata("Copyright", out var copyright))
+                metadata.Copyright = copyright;
+
+            if (Manifest.TryGetBoolMetadata("RequireLicenseAcceptance", out var requireLicenseAcceptance))
+                metadata.RequireLicenseAcceptance = requireLicenseAcceptance;
 
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("Authors")))
                 metadata.Authors = Manifest.GetMetadata("Authors").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("Owners")))
                 metadata.Owners = Manifest.GetMetadata("Owners").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -92,11 +113,13 @@ namespace NuGetizer.Tasks
                 metadata.SetLicenseUrl(Manifest.GetMetadata("LicenseUrl"));
 
             if (Manifest.TryGetMetadata("LicenseExpression", out var expression))
+            {
                 metadata.LicenseMetadata = new LicenseMetadata(
                     LicenseType.Expression,
                     expression,
                     NuGetLicenseExpression.Parse(expression),
                     null, LicenseMetadata.CurrentVersion);
+            }
 
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("ProjectUrl")))
                 metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
@@ -125,9 +148,15 @@ namespace NuGetizer.Tasks
             if (Manifest.TryGetMetadata("Icon", out var icon))
                 metadata.Icon = icon;
 
-            metadata.ReleaseNotes = Manifest.GetMetadata("ReleaseNotes");
-            metadata.Tags = Manifest.GetMetadata("Tags");
-            metadata.MinClientVersionString = Manifest.GetMetadata("MinClientVersion");
+            if (Manifest.TryGetMetadata("ReleaseNotes", out var releaseNotes))
+                metadata.ReleaseNotes = releaseNotes;
+
+            if (Manifest.TryGetMetadata("Tags", out var tags))
+                metadata.Tags = tags;
+
+            if (Manifest.TryGetMetadata("MinClientVersion", out var minClientVersion))
+                metadata.MinClientVersionString = minClientVersion;
+
             metadata.PackageTypes = ParsePackageTypes(Manifest.GetMetadata("PackageTypes"));
 
             var manifest = new Manifest(metadata);
@@ -137,6 +166,39 @@ namespace NuGetizer.Tasks
             AddFrameworkAssemblies(manifest);
 
             return manifest;
+        }
+
+        void GeneratePackage(Stream output = null)
+        {
+            manifest ??= CreateManifest();
+
+            var builder = new PackageBuilder();
+            builder.Populate(manifest.Metadata);
+
+            // We don't use PopulateFiles because that performs search expansion, base path 
+            // extraction and the like, which messes with our determined files to include.
+            builder.Files.AddRange(manifest.Files.Select(file =>
+                new PhysicalPackageFile { SourcePath = file.Source, TargetPath = file.Target }));
+
+            if (output == null)
+            {
+                using var stream = File.Create(TargetPath);
+                builder.Save(stream);
+            }
+            else
+            {
+                builder.Save(output);
+            }
+        }
+
+        void GenerateNuspec()
+        {
+            manifest ??= CreateManifest();
+
+            Directory.CreateDirectory(Path.GetDirectoryName(NuspecFile));
+
+            using var stream = File.Create(NuspecFile);
+            manifest.Save(stream, true);
         }
 
         void AddDependencies(Manifest manifest)
@@ -284,30 +346,6 @@ namespace NuGetizer.Tasks
                                       )).Distinct(FrameworkAssemblyReferenceComparer.Default);
 
             manifest.Metadata.FrameworkReferences = frameworkReferences;
-        }
-
-        void BuildPackage(Stream output)
-        {
-            var builder = new PackageBuilder();
-            var manifest = CreateManifest();
-
-            builder.Populate(manifest.Metadata);
-            // We don't use PopulateFiles because that performs search expansion, base path 
-            // extraction and the like, which messes with our determined files to include.
-            // TBD: do we support wilcard-based include/exclude?
-            builder.Files.AddRange(manifest.Files.Select(file =>
-                new PhysicalPackageFile { SourcePath = file.Source, TargetPath = file.Target }));
-
-            builder.Save(output);
-
-            if (!string.IsNullOrEmpty(NuspecFile))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(NuspecFile));
-                using (var stream = File.Create(NuspecFile))
-                {
-                    manifest.Save(stream, true);
-                }
-            }
         }
 
         static VersionRange AggregateVersions(VersionRange aggregate, VersionRange next)

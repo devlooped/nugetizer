@@ -17,7 +17,7 @@ using Xunit.Sdk;
 /// </summary>
 static partial class Builder
 {
-	public static TargetResult BuildScenario(
+    public static TargetResult BuildScenario(
 		string scenarioName, 
 		object properties = null, 
 		string projectName = null, 

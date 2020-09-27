@@ -18,6 +18,7 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <LangVersion>Preview</LangVersion>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp</DefaultItemExcludes>

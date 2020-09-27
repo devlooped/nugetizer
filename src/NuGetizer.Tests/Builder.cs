@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
@@ -57,6 +58,8 @@ static partial class Builder
 
 		return Build(projectInstance, targets, properties, loggers);
 	}
+
+    public static string TestOutputPath([CallerMemberName] string testName = null) => "bin\\" + testName + "\\";
 
 	static void AddSolutionConfiguration(string projectFile, Dictionary<string, string> properties)
 	{
