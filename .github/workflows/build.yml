@@ -3,6 +3,7 @@ on: push
 
 env:
   DOTNET_NOLOGO: true
+  MSBUILDDISABLENODEREUSE: 1
 
 jobs:
   build:
