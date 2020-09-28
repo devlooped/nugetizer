@@ -103,7 +103,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       </_InferredProjectOutput>
 
       <_InferredProjectOutput Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                            Condition="'$(PackBuildOutput)' == 'true' and '$(PackSymbols)' == 'true'">
+                            Condition="'$(PackBuildOutput)' == 'true' and '$(PackSymbols)' != 'false'">
         <Kind>$(BuildOutputKind)</Kind>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredProjectOutput>
