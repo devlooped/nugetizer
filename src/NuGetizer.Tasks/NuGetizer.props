@@ -11,12 +11,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
+  <PropertyGroup Label="Hidden">
     <!-- Whether the current project is a packaging project. Defaults to true if project extension is .nuproj, .msbuildproj or .proj. -->
     <IsPackagingProject Condition="'$(IsPackagingProject)' == '' and ('$(MSBuildProjectExtension)' == '.nuproj' or '$(MSBuildProjectExtension)' == '.msbuildproj' or '$(MSBuildProjectExtension)' == '.proj')">true</IsPackagingProject>
-  </PropertyGroup>
-
-  <PropertyGroup Label="Hidden">
     <!-- Disable built-in Pack -->
     <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
     <!-- Ensure the right value is always available  -->
