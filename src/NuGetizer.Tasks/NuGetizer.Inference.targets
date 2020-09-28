@@ -62,10 +62,10 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="_BuildOutputFrameworkSpecific" Returns="$(BuildOutputFrameworkSpecific)">
     <!-- Determine whether primary output is framework specific  -->
     <ItemGroup Condition="'$(BuildOutputFrameworkSpecific)' == ''">
-      <_BuildOutputKind Include="@(PackageItemKind->'%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(BuildOutputKind)'" />
+      <_BuildOutputKindFrameworkSpecific Include="@(PackageItemKind->'%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(BuildOutputKind)'" />
     </ItemGroup>
     <PropertyGroup Condition="'$(BuildOutputFrameworkSpecific)' == ''">
-      <BuildOutputFrameworkSpecific>@(_BuildOutputKind)</BuildOutputFrameworkSpecific>
+      <BuildOutputFrameworkSpecific>@(_BuildOutputKindFrameworkSpecific)</BuildOutputFrameworkSpecific>
     </PropertyGroup>
   </Target>
 
