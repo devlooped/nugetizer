@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="PresentationCore" Pack="$(IncludeWPF)" />
+    <Reference Include="PresentationFramework" Pack="$(IncludeWPF)" />
+    <Reference Include="WindowsBase" Pack="$(IncludeWPF)" />
+  </ItemGroup>
+
+</Project>

@@ -145,7 +145,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 			     it also includes mscorlib which we don't need
 			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
       <_InferredPackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
-                            Condition="'$(PackFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}'">
+                            Condition="'$(PackFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}' and '%(ReferencePath.Pack)' != 'false'">
         <Kind>FrameworkReference</Kind>
       </_InferredPackageFile>
     </ItemGroup>
