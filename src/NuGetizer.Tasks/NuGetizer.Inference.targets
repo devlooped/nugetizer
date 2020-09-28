@@ -29,7 +29,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IsPackagingProject)' != 'true' and '$(BuildOutputKind)' == 'Lib'">true</PackFrameworkReferences>
 
     <_OutputFullPath Condition="$([System.IO.Path]::IsPathRooted($(OutputPath)))">$(OutputPath)</_OutputFullPath>
-    <_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory)\$(OutputPath)</_OutputFullPath>
+    <_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(OutputPath)</_OutputFullPath>
   </PropertyGroup>
 
   <PropertyGroup>

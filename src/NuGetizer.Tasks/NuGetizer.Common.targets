@@ -19,7 +19,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackProjectReference Condition="'$(PackProjectReference)' == ''">true</PackProjectReference>
 
     <!-- Whether to prompt the consumer to accept the package license before installing the package. -->
-    <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">false</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''" />
 
     <!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
     <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(BaseOutputPath)</PackageOutputPath>
@@ -29,7 +29,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- Whether to emit the nuspec that's used to create the final package. Defaults to false. -->
     <EmitNuspec Condition="'$(EmitNuspec)' == ''">false</EmitNuspec>
-    <NuspecFile Condition="'$(NuspecFile)' == ''">$(BaseOutputPath)\$(PackageId).nuspec</NuspecFile>
+    <NuspecFile Condition="'$(NuspecFile)' == '' and '$(PackageId)' != ''">$(BaseOutputPath.TrimEnd('\'))\$(PackageId).nuspec</NuspecFile>
+    <NuspecFile Condition="'$(NuspecFile)' == '' and '$(PackageId)' == ''">$(BaseOutputPath.TrimEnd('\'))\$(AssemblyName).nuspec</NuspecFile>
   </PropertyGroup>
 
   <PropertyGroup Label="Hidden">
@@ -110,22 +111,22 @@ Copyright (c) .NET Foundation. All rights reserved.
       <!-- By not re-creating the item, we preserve whatever metadata was provided already -->
       <PackageMetadata Include="$(PackageId)" Condition="'@(PackageMetadata)' == ''">
         <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
-        <Authors>$(Authors)</Authors>
-        <Owners>$(Owners)</Owners>
-        <Title>$(Title)</Title>
-        <Description>$(Description)</Description>
-        <Summary>$(Summary)</Summary>
-        <Language>$(NeutralLanguage)</Language>
-        <Copyright>$(Copyright)</Copyright>
-        <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
-        <RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
-        <LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
-        <LicenseExpression>$(PackageLicenseExpression)</LicenseExpression>
-        <Icon>$(PackageIcon)</Icon>
-        <IconUrl>$(PackageIconUrl)</IconUrl>
-        <Tags>$(PackageTags)</Tags>
-        <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
-        <PackageTypes>$(PackageType)</PackageTypes>
+        <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
+        <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
+        <Title Condition="'$(Title)' != ''">$(Title)</Title>
+        <Description Condition="'$(Description)' != ''">$(Description)</Description>
+        <Summary Condition="'$(Summary)' != ''">$(Summary)</Summary>
+        <Language Condition="'$(NeutralLanguage)' != ''">$(NeutralLanguage)</Language>
+        <Copyright Condition="'$(Copyright)' != ''">$(Copyright)</Copyright>
+        <ReleaseNotes Condition="'$(PackageReleaseNotes)' != ''">$(PackageReleaseNotes)</ReleaseNotes>
+        <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' != ''">$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
+        <LicenseUrl Condition="'$(PackageLicenseUrl)' != ''">$(PackageLicenseUrl)</LicenseUrl>
+        <LicenseExpression Condition="'$(PackageLicenseExpression)' != ''">$(PackageLicenseExpression)</LicenseExpression>
+        <Icon Condition="'$(PackageIcon)' != ''">$(PackageIcon)</Icon>
+        <IconUrl Condition="'$(PackageIconUrl)' != ''">$(PackageIconUrl)</IconUrl>
+        <Tags Condition="'$(PackageTags)' != ''">$(PackageTags)</Tags>
+        <ProjectUrl Condition="'$(PackageProjectUrl)' != ''">$(PackageProjectUrl)</ProjectUrl>
+        <PackageTypes Condition="'$(PackageType)' != ''">$(PackageType)</PackageTypes>
       </PackageMetadata>
       
       <!-- Next, just update the typically dynamic properties we allow update hooks for.
@@ -134,10 +135,10 @@ Copyright (c) .NET Foundation. All rights reserved.
       <PackageMetadata Update="@(PackageMetadata)">
         <Version>$(PackageVersion)</Version>
         <!-- Provided by source control providers -->        
-        <RepositoryType>$(RepositoryType)</RepositoryType>
-        <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
-        <RepositoryBranch>$(RepositoryBranch)</RepositoryBranch>
-        <RepositoryCommit>$(RepositoryCommit)</RepositoryCommit>
+        <RepositoryType Condition="'$(RepositoryType)' != ''">$(RepositoryType)</RepositoryType>
+        <RepositoryUrl Condition="'$(RepositoryUrl)' != ''">$(RepositoryUrl)</RepositoryUrl>
+        <RepositoryBranch Condition="'$(RepositoryBranch)' != ''">$(RepositoryBranch)</RepositoryBranch>
+        <RepositoryCommit Condition="'$(RepositoryCommit)' != ''">$(RepositoryCommit)</RepositoryCommit>
       </PackageMetadata>
     </ItemGroup>
   </Target>

@@ -16,30 +16,27 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Id>$(PackageId)</Id>
       <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
 
-      <Authors>$(Authors)</Authors>
-      <Owners>$(Owners)</Owners>
-      <Title>$(Title)</Title>
-      <Description>$(Description)</Description>
-      <Summary>$(Summary)</Summary>
-      <Language>$(NeutralLanguage)</Language>
-      <Copyright>$(Copyright)</Copyright>
-      <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
+      <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
+      <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
+      <Title Condition="'$(Title)' != ''">$(Title)</Title>
+      <Description Condition="'$(Description)' != ''">$(Description)</Description>
+      <Summary Condition="'$(Summary)' != ''">$(Summary)</Summary>
+      <Language Condition="'$(NeutralLanguage)' != ''">$(NeutralLanguage)</Language>
+      <Copyright Condition="'$(Copyright)' != ''">$(Copyright)</Copyright>
+      <ReleaseNotes Condition="'$(PackageReleaseNotes)' != ''">$(PackageReleaseNotes)</ReleaseNotes>
+      <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' != ''">$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
+      <LicenseUrl Condition="'$(PackageLicenseUrl)' != ''">$(PackageLicenseUrl)</LicenseUrl>
+      <LicenseExpression Condition="'$(PackageLicenseExpression)' != ''">$(PackageLicenseExpression)</LicenseExpression>
+      <Icon Condition="'$(PackageIcon)' != ''">$(PackageIcon)</Icon>
+      <IconUrl Condition="'$(PackageIconUrl)' != ''">$(PackageIconUrl)</IconUrl>
+      <Tags Condition="'$(PackageTags)' != ''">$(PackageTags)</Tags>
+      <ProjectUrl Condition="'$(PackageProjectUrl)' != ''">$(PackageProjectUrl)</ProjectUrl>
+      <PackageTypes Condition="'$(PackageType)' != ''">$(PackageType)</PackageTypes>
 
-      <RequireLicenseAcceptance>$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
-      <LicenseUrl>$(PackageLicenseUrl)</LicenseUrl>
-      <LicenseExpression>$(PackageLicenseExpression)</LicenseExpression>
-
-      <Icon>$(PackageIcon)</Icon>
-      <IconUrl>$(PackageIconUrl)</IconUrl>
-      <Tags>$(PackageTags)</Tags>
-
-      <ProjectUrl>$(PackageProjectUrl)</ProjectUrl>
-      <RepositoryType>$(RepositoryType)</RepositoryType>
-      <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
-      <RepositoryBranch>$(RepositoryBranch)</RepositoryBranch>
-      <RepositoryCommit>$(RepositoryCommit)</RepositoryCommit>
-      
-      <PackageTypes>$(PackageType)</PackageTypes>
+      <RepositoryType Condition="'$(RepositoryType)' != ''">$(RepositoryType)</RepositoryType>
+      <RepositoryUrl Condition="'$(RepositoryUrl)' != ''">$(RepositoryUrl)</RepositoryUrl>
+      <RepositoryBranch Condition="'$(RepositoryBranch)' != ''">$(RepositoryBranch)</RepositoryBranch>
+      <RepositoryCommit Condition="'$(RepositoryCommit)' != ''">$(RepositoryCommit)</RepositoryCommit>
     </PackageMetadata>
   </ItemDefinitionGroup>
 
