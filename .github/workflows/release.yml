@@ -8,14 +8,26 @@ env:
   MSBUILDDISABLENODEREUSE: 1
 
 jobs:
-  push:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100-rc.1.20452.10
-      - name: build
-        run: dotnet build -p:version=${GITHUB_REF#refs/*/v}
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 2.1.x
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      - run: dotnet tool update -g dotnet-vs
+      - run: echo "::set-env name=MSB::$(vs where preview --prop=InstallationPath)"
+      - run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
+        if: env.MSB == ''
+      - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
+      - run: msbuild -r -p:version=${GITHUB_REF#refs/*/v}
+      - run: msbuild -t:test
+      - run: msbuild -t:pack -p:packonbuild=true -p:nobuild=true -p:version=${GITHUB_REF#refs/*/v}
       - name: push
         run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate

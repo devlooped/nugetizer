@@ -26,7 +26,7 @@ jobs:
       - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
       - run: msbuild -r
       - run: msbuild -t:test
-      - run: msbuild -t:pack -p:packonbuild=true -p:versionsuffix=$(git name-rev --name-only --refs=refs/heads/* HEAD).$($env:GITHUB_RUN_NUMBER)
+      - run: msbuild -t:pack -p:packonbuild=true -p:nobuild=true -p:versionsuffix=$(git name-rev --name-only --refs=refs/heads/* HEAD).$($env:GITHUB_RUN_NUMBER)
       - run: |
           dotnet tool install -g --version 2.3.33 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure"

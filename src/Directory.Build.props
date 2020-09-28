@@ -22,6 +22,9 @@
 
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp</DefaultItemExcludes>
+
+    <!-- See: https://www.cazzulino.com/project-dependencies-as-project-references.html -->
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
   </PropertyGroup>
 
   <PropertyGroup Label="CI" Condition="'$(CI)' == ''">
