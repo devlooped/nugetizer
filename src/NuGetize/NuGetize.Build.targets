@@ -1,0 +1,36 @@
+<Project>
+
+  <PropertyGroup>
+    <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)NuGetize.Tweaks.targets</CustomAfterMicrosoftCommonTargets>
+    <RestoreSources>$$tooldir$$;$(RestoreSources)</RestoreSources>
+    <EmitNuspec>true</EmitNuspec>
+    <EmitPackage>false</EmitPackage>
+    <EmitContents>true</EmitContents>
+    
+    <_DirectoryProject>$([MSBuild]::GetPathOfFileAbove('$(MSBuildThisFile)', '$(MSBuildThisFileDirectory)..'))</_DirectoryProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" Version="$$version$$" />
+  </ItemGroup>
+
+  <Target Name="WritePackageContents" AfterTargets="GetPackageContents">
+    <PropertyGroup>
+      <_NuspecFile Condition="$([System.IO.Path]::IsPathRooted($(NuspecFile)))">$(NuspecFile)</_NuspecFile>
+      <_NuspecFile Condition="'$(_NuspecFile)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(NuspecFile)</_NuspecFile>
+      <_NuspecFile>$([System.IO.Path]::GetFullPath('$(_NuspecFile)'))</_NuspecFile>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageMetadata Update="@(PackageMetadata)" Nuspec="$(_NuspecFile)" NuPkg="@(PackageTargetPath)" />
+      <PackageContent Include="@(_PackageContent)" Exclude="@(PackageMetadata)" />
+    </ItemGroup>
+    <WriteItemsToFile Overwrite="true" Items="@(PackageMetadata)" ItemName="PackageMetadata" File="$(MSBuildProjectDirectory.TrimEnd('\'))\NuGetizer.items" />    
+    <WriteItemsToFile Overwrite="false" Items="@(PackageContent)" ItemName="PackageContent" File="$(MSBuildProjectDirectory.TrimEnd('\'))\NuGetizer.items" />
+  </Target>
+
+  <!-- If we drop a Directory.Build.props/targets, we'd be preventing the import of the existing one, 
+       so we import explicitly if we find one -->
+  <Import Project="$(_DirectoryProject)" Condition="'$(_DirectoryProject)' != ''"/>
+  <Import Project="$(CustomAfterMicrosoftCommonTargets)" Condition="'$(NuGetizeTweaksImported)' != 'true'"/>  
+
+</Project>

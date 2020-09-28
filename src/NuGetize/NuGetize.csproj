@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <PackageId>dotnet-nugetize</PackageId>
+    <ToolCommandName>nugetize</ToolCommandName>
+    <PackAsTool>true</PackAsTool>
+
+    <Title>Discover how NuGetizer packs a project</Title>
+    <Description>Run the `nugetize` tool on a folder with a packable project (i.e. it has at least a PackageId value) to see what package structure NuGetizer would produce.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ColoredConsole" Version="1.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20371.2" />
+    <PackageReference Include="ThisAssembly" Version="0.10.6" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NuGetize.Tweaks.targets" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="NuGetize.Build.targets" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(PackageOutputPath)\*.nupkg" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <ProjectProperty Include="Version" />
+  </ItemGroup>
+  
+</Project>

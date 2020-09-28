@@ -9,7 +9,7 @@ namespace NuGetizer
 		ITestOutputHelper output;
 
 		public given_a_library_with_non_nugetized_reference(ITestOutputHelper output) => this.output = output;
-
+        
 		[Fact]
 		public void when_getting_contents_then_fails()
 		{
@@ -17,7 +17,7 @@ namespace NuGetizer
 			{
 				Configuration = "Release",
 				IncludeFrameworkReferences = "false",
-			};
+            };
 
 			Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), properties, projectName: "a", target: "Restore")
                 .AssertSuccess(output);
@@ -35,8 +35,8 @@ namespace NuGetizer
 			{
 				Configuration = "Release",
 				IncludeFrameworkReferences = "false",
-				IncludeInPackage = "false"
-			};
+				IncludeInPackage = "false",
+            };
 			
             Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), properties, projectName: "a", target: "Restore")
                 .AssertSuccess(output);

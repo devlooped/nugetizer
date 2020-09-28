@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NuGetize": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Code\\kzu\\NuGetizer\\src\\NuGetizer.Tests\\Scenarios\\given_a_library_with_content"
+    }
+  }
+}
