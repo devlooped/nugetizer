@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <NuGetize>false</NuGetize>
 
     <PackageId>dotnet-nugetize</PackageId>
     <ToolCommandName>nugetize</ToolCommandName>
@@ -15,20 +17,19 @@
   <ItemGroup>
     <PackageReference Include="ColoredConsole" Version="1.0.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20371.2" />
+    <PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly" Version="0.10.6" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="NuGetize.Tweaks.targets" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectCapability Include="Pack" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <None Update="NuGetize.Build.targets" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Remove="Range.cs" Condition="'$(TargetFramework)' != 'netcoreapp2.1'" />
     <ProjectProperty Include="Version" />
+    <ProjectProperty Include="ToolCommandName" />
   </ItemGroup>
 
-  <Target Name="AddNuGetizer" BeforeTargets="GetPackageContents">
-    <ItemGroup>
-      <Content Include="$(PackageOutputPath)\*.nupkg" CopyToOutputDirectory="PreserveNewest" />
-    </ItemGroup>
-  </Target>
-  
 </Project>

@@ -77,7 +77,7 @@ namespace NuGetizer.Tasks
         {
             var metadata = new ManifestMetadata();
 
-            metadata.Id = Manifest.GetMetadata(nameof(ManifestMetadata.Id));
+            metadata.Id = Manifest.GetMetadata(nameof(MetadataName.PackageId));
 
             if (Manifest.TryGetMetadata(nameof(ManifestMetadata.Version), out var version))
                 metadata.Version = NuGetVersion.Parse(Manifest.GetMetadata(MetadataName.Version));
@@ -100,7 +100,8 @@ namespace NuGetizer.Tasks
             if (Manifest.TryGetMetadata("Copyright", out var copyright))
                 metadata.Copyright = copyright;
 
-            if (Manifest.TryGetBoolMetadata("RequireLicenseAcceptance", out var requireLicenseAcceptance))
+            if (Manifest.TryGetBoolMetadata("RequireLicenseAcceptance", out var requireLicenseAcceptance) && 
+                requireLicenseAcceptance)
                 metadata.RequireLicenseAcceptance = requireLicenseAcceptance;
 
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("Authors")))

@@ -1,6 +1,6 @@
 <!--
 ***********************************************************************************************
-NuGetizer.Common.targets
+NuGetizer.Shared.targets
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
@@ -113,6 +113,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ItemGroup>
       <!-- By not re-creating the item, we preserve whatever metadata was provided already -->
       <PackageMetadata Include="$(PackageId)" Condition="'@(PackageMetadata)' == ''">
+        <PackageId>$(PackageId)</PackageId>
         <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
         <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
         <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
@@ -122,7 +123,7 @@ Copyright (c) .NET Foundation. All rights reserved.
         <Language Condition="'$(NeutralLanguage)' != ''">$(NeutralLanguage)</Language>
         <Copyright Condition="'$(Copyright)' != ''">$(Copyright)</Copyright>
         <ReleaseNotes Condition="'$(PackageReleaseNotes)' != ''">$(PackageReleaseNotes)</ReleaseNotes>
-        <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' != ''">$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
+        <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == 'true'">true</RequireLicenseAcceptance>
         <LicenseUrl Condition="'$(PackageLicenseUrl)' != ''">$(PackageLicenseUrl)</LicenseUrl>
         <LicenseExpression Condition="'$(PackageLicenseExpression)' != ''">$(PackageLicenseExpression)</LicenseExpression>
         <Icon Condition="'$(PackageIcon)' != ''">$(PackageIcon)</Icon>
@@ -244,7 +245,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Output TaskParameter="NuspecFile" ItemName="FileWrites" Condition="'$(EmitNuspec)' == 'true'" />
     </CreatePackage>
 
-    <Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." />
+    <Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." Condition="'$(EmitPackage)' == 'true'" />
   </Target>
 
   <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />

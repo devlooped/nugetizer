@@ -3,10 +3,14 @@
   <PropertyGroup Label="Pack">
     <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
     <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
-    <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(PackOnBuild)' != 'true'">false</ImportNuGetBuildTasksPackTargetsFromSdk>
   </PropertyGroup>
 
-  <Import Project="NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="$(IsPackable) and '$(PackOnBuild)' == 'true'" />
+  <PropertyGroup Condition="'$(NuGetize)' != 'false'">
+    <!-- GeneratePackageOnBuild=false is used by VS when right-click Pack is used :) -->
+    <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(NuGetize)' == 'true' or '$(GeneratePackageOnBuild)' != ''">false</ImportNuGetBuildTasksPackTargetsFromSdk>
+  </PropertyGroup>
+
+  <Import Project="NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="$(IsPackable) and '$(NuGetize)' == 'true'" />
 
   <PropertyGroup>
     <PackageItemKindFile>$(IntermediateOutputPath)PackageItemKind.g$(DefaultLanguageSourceExtension)</PackageItemKindFile>

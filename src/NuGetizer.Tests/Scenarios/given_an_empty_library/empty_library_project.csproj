@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    <Reference Include="PresentationFramework" Condition="'$(TargetFramework)' == 'net472'" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(AdvancedCustomization)' == 'true'">

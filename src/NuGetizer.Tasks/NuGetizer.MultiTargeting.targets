@@ -11,7 +11,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="NuGetizer.Common.targets"/>
+  <Import Project="$(NuGetizerTargets)"/>
   
   <Target Name="GetNativeManifest" />
   <Target Name="GetCopyToOutputDirectoryItems" />
@@ -71,6 +71,6 @@ Copyright (c) .NET Foundation. All rights reserved.
     
   </Target>
 
-  <Import Project="NuGetizer.PackageMetadata.targets" />
+  <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
 
 </Project>

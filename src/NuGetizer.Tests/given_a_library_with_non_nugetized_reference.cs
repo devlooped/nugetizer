@@ -16,7 +16,7 @@ namespace NuGetizer
 			var properties = new
 			{
 				Configuration = "Release",
-				IncludeFrameworkReferences = "false",
+				PackFrameworkReferences = "false",
             };
 
 			Builder.BuildScenario(nameof(given_a_library_with_non_nugetized_reference), properties, projectName: "a", target: "Restore")
@@ -34,7 +34,7 @@ namespace NuGetizer
 			var properties = new
 			{
 				Configuration = "Release",
-				IncludeFrameworkReferences = "false",
+				PackFrameworkReferences = "false",
 				IncludeInPackage = "false",
             };
 			

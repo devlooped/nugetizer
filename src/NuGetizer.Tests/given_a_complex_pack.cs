@@ -28,7 +28,7 @@ namespace NuGetizer
 			var metadata = result.Items.FirstOrDefault();
 
 			Assert.NotNull(metadata);
-			Assert.Equal("A", metadata.GetMetadata("Id"));
+			Assert.Equal("A", metadata.GetMetadata("PackageId"));
 			Assert.Equal("1.0.0", metadata.GetMetadata("Version"));
 			Assert.Equal("NuGet", metadata.GetMetadata("Authors"));
 		}
@@ -63,7 +63,7 @@ namespace NuGetizer
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Id = "B",
+				Identity = "B",
 				Kind = "Dependency",
 				Version = "2.0.0",
 			}));
@@ -99,7 +99,7 @@ namespace NuGetizer
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Id = "C",
+				Identity = "C",
 				Kind = "Dependency",
 				Version = "3.0.0",
 			}));

@@ -24,11 +24,12 @@
 
   <ItemGroup>
     <None Update="@(None)" CopyToOutputDirectory="PreserveNewest" Pack="true" />
-    <Content Update="NuGetizer.MultiTargeting.targets" PackagePath="buildMultiTargeting\NuGetizer.targets" />
-    <None Include="NuGetizer.props;NuGetizer.Common.targets;NuGetizer.PackageMetadata.targets" 
-          PackagePath="buildMultiTargeting\%(Filename)%(Extension)"
+    <None Update="NuGetizer.MultiTargeting.props" PackagePath="buildMultiTargeting\NuGetizer.props" />
+    <None Update="NuGetizer.MultiTargeting.targets" PackagePath="buildMultiTargeting\NuGetizer.targets" />
+    <None Include="NuGetizer.PackageMetadata.targets;dotnet-nugetize.props;dotnet-nugetize.targets" 
+          PackagePath="buildMultiTargeting\%(Filename)%(Extension)" 
           Pack="true" />
-    <None Include="..\..\img\nugetizer-256.png" Link="icon.png" CopyToOutputDirectory="PreserveNewest" PackagePath="icon.png" />
+    <None Include="..\..\img\nugetizer-256.png" Link="icon.png" PackagePath="icon.png" />
   </ItemGroup>
 
   <ItemGroup>

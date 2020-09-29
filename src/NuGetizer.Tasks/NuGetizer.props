@@ -135,4 +135,5 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <Import Project="NuGetizer.Version.props" />
   <Import Project="NuGetizer.Authoring.props" Condition="'$(IsPackagingProject)' == 'true'" />
+  <Import Project="dotnet-nugetize.props" Condition="'$(dotnet-nugetize)' != ''"/>
 </Project>

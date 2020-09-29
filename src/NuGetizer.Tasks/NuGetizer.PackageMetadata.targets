@@ -13,7 +13,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <ItemDefinitionGroup>
     <PackageMetadata>
-      <Id>$(PackageId)</Id>
+      <PackageId>$(PackageId)</PackageId>
       <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
 
       <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
@@ -24,7 +24,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Language Condition="'$(NeutralLanguage)' != ''">$(NeutralLanguage)</Language>
       <Copyright Condition="'$(Copyright)' != ''">$(Copyright)</Copyright>
       <ReleaseNotes Condition="'$(PackageReleaseNotes)' != ''">$(PackageReleaseNotes)</ReleaseNotes>
-      <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' != ''">$(PackageRequireLicenseAcceptance)</RequireLicenseAcceptance>
+      <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == 'true'">true</RequireLicenseAcceptance>
       <LicenseUrl Condition="'$(PackageLicenseUrl)' != ''">$(PackageLicenseUrl)</LicenseUrl>
       <LicenseExpression Condition="'$(PackageLicenseExpression)' != ''">$(PackageLicenseExpression)</LicenseExpression>
       <Icon Condition="'$(PackageIcon)' != ''">$(PackageIcon)</Icon>

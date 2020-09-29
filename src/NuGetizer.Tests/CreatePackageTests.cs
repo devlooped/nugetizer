@@ -86,7 +86,7 @@ namespace NuGetizer
 
 			Assert.True(metadata.RequireLicenseAcceptance);
 
-			Assert.Equal(task.Manifest.GetMetadata("Id"), metadata.Id);
+			Assert.Equal(task.Manifest.GetMetadata("PackageId"), metadata.Id);
 			Assert.Equal(task.Manifest.GetMetadata("Version"), metadata.Version.ToString());
 			Assert.Equal(task.Manifest.GetMetadata("Title"), metadata.Title);
 			Assert.Equal(task.Manifest.GetMetadata("Description"), metadata.Description);

@@ -34,13 +34,13 @@
 
   <Target Name="Pack" Condition="$(IsPackable)" Returns="@(PackOutput)">
     <!-- Typically called in the IDE when we run Pack context menu. -->
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Properties="PackOnBuild=true" Targets="Pack">
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Properties="NuGetize=true" Targets="Pack">
       <Output TaskParameter="TargetOutputs" ItemName="PackOutput"/>
     </MSBuild>
   </Target>
   
   <Target Name="Test" />
 
-  <Import Project="NuGetizer.Tasks\NuGetizer.props" Condition="'$(PackOnBuild)' == 'true'" />
+  <Import Project="NuGetizer.Tasks\NuGetizer.props" Condition="'$(NuGetize)' == 'true'" />
 
 </Project>
