@@ -166,42 +166,6 @@ namespace NuGetizer
 		}
 
         [Fact]
-        public void when_getting_metadata_then_adds_repository_info()
-        {
-            var result = Builder.BuildScenario(nameof(given_an_empty_library), new 
-            { 
-                PackageId = "Foo",
-                PublishRepositoryUrl = "true",
-            }, target: "GetPackageMetadata", output: output);
-
-            result.AssertSuccess(output);
-
-            Assert.Single(result.Items);
-            var metadata = result.Items[0];
-
-            Assert.Equal("git", metadata.GetMetadata("RepositoryType"));
-            Assert.Equal("https://github.com/kzu/NuGetizer", metadata.GetMetadata("RepositoryUrl"));
-            Assert.NotEmpty(metadata.GetMetadata("RepositoryCommit"));
-        }
-
-        [Fact]
-        public void when_getting_metadata_with_no_explicit_publish_repo_url_then_does_not_expose_it()
-        {
-            var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-            {
-                PackageId = "Foo",
-            }, target: "GetPackageMetadata", output: output);
-
-            result.AssertSuccess(output);
-
-            Assert.Single(result.Items);
-            var metadata = result.Items[0];
-
-            Assert.Empty(metadata.GetMetadata("RepositoryUrl"));
-            Assert.NotEmpty(metadata.GetMetadata("RepositoryCommit"));
-        }
-
-        [Fact]
         public void when_updating_package_item_metadata_then_updates_metadata()
         {
             var result = Builder.BuildScenario(nameof(given_an_empty_library), new
