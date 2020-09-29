@@ -23,8 +23,8 @@ Copyright (c) .NET Foundation. All rights reserved.
       <PackageMetadata Update="@(PackageMetadata)" Nuspec="$(_AbsoluteNuspecFile)" NuPkg="@(PackageTargetPath)" />
       <PackageContent Include="@(_PackageContent)" Exclude="@(PackageMetadata)" />
     </ItemGroup>
-    <WriteItemsToFile Overwrite="false" Items="@(PackageMetadata)" ItemName="PackageMetadata" File="$(dotnet-nugetize)" />
-    <WriteItemsToFile Overwrite="false" Items="@(PackageContent)" ItemName="PackageContent" File="$(dotnet-nugetize)" />
+    <WriteItemsToFile Condition="'@(PackageMetadata)' != ''" Overwrite="false" Items="@(PackageMetadata)" ItemName="PackageMetadata" File="$(dotnet-nugetize)" />
+    <WriteItemsToFile Condition="'@(PackageContent)' != ''" Overwrite="false" Items="@(PackageContent)" ItemName="PackageContent" File="$(dotnet-nugetize)" />
   </Target>
 
 </Project>
