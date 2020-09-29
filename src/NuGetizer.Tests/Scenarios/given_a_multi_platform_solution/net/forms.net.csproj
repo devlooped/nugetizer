@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+    <AssemblyName>Forms</AssemblyName>
+    <TargetFramework>net472</TargetFramework>
+    <PackSymbols>false</PackSymbols>
+    <DocumentationFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\common\common.csproj" />
+  </ItemGroup>
+</Project>

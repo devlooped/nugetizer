@@ -6,7 +6,7 @@
 	<Target Name="BeforeRestore" BeforeTargets="RestorePackages">
 		<!-- NOTE: build the solution that creates your .nupkgs -->
 		<!-- See NuGet.Config where we set the repository path  -->
-		<MSBuild Projects="..\NuGet.Build.Packaging.sln" Properties="PackOnBuild=true;PackageOutputPath=$(MSBuildThisFileDirectory)..\..\..\out" />
+		<MSBuild Projects="..\NuGetizer.sln" Properties="PackOnBuild=true;PackageOutputPath=$(MSBuildThisFileDirectory)..\..\..\out" />
 	</Target>
 
 	<Target Name="AfterRestore" AfterTargets="RestorePackages">

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+		<TargetFramework>net46</TargetFramework>
+		<PackageId>a.package</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
+	</PropertyGroup>
+	<ItemGroup>
+    <ProjectReference Include="b\b.csproj" Pack="$(IncludeInPackage)" />
+		<ProjectReference Include="c.csproj" />
+	</ItemGroup>
+</Project>

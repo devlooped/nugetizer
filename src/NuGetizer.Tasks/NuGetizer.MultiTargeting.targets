@@ -1,0 +1,76 @@
+<!--
+***********************************************************************************************
+NuGetizer.MultiTargeting.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="$(NuGetizerTargets)"/>
+  
+  <Target Name="GetNativeManifest" />
+  <Target Name="GetCopyToOutputDirectoryItems" />
+
+  <!--
+  ============================================================
+  GetTargetPathWithTargetPlatformMoniker
+  NOTE: depends on Microsoft.Common.CrossTargeting.targets
+
+  When cross-targeting and the authoring project references a 
+  nugetized library, return all the determined target paths.
+  ============================================================
+    -->
+  <Target Name="GetTargetPathWithTargetPlatformMoniker"
+          DependsOnTargets="_ComputeTargetFrameworkItems"
+          Returns="@(TargetPathWithTargetPlatformMoniker)">
+
+    <MSBuild Projects="@(_InnerBuildProjects)"
+             Condition="'@(_InnerBuildProjects)' != '' "
+             Targets="GetTargetPathWithTargetPlatformMoniker"
+             BuildInParallel="$(BuildInParallel)">
+      <Output ItemName="TargetPathWithTargetPlatformMoniker" TaskParameter="TargetOutputs" />
+    </MSBuild>
+
+  </Target>
+
+  <!--
+	============================================================
+  GetPackageContents
+  Cross-targeting version of GetPackageContents. 
+  NOTE: depends on Microsoft.Common.CrossTargeting.targets
+   
+  [OUT]
+  @(InnerOutput) - The combined output items of the inner targets across
+                   all builds.
+  ============================================================
+  -->
+  <Target Name="GetPackageContents" DependsOnTargets="_ComputeTargetFrameworkItems" Returns="@(_PackageContent)">
+
+    <MSBuild Projects="@(_InnerBuildProjects)"
+             Condition="'@(_InnerBuildProjects)' != '' "
+             Targets="GetPackageContents"
+             BuildInParallel="$(BuildInParallel)">
+      <Output ItemName="_PackageContent" TaskParameter="TargetOutputs" />
+    </MSBuild>
+  
+    <!-- _AddPackageManifest adds per-TFM, so deduplicate and remove the TFM -->
+    <ItemGroup Condition="'$(IsPackable)' == 'true'">
+      <_PackageMetadataContent Include="@(_PackageContent -> WithMetadataValue('Kind', 'Metadata'))" />
+      <_PackageContent Remove="@(_PackageMetadataContent)" />
+      <_PackageContent Include="@(_PackageMetadataContent -> Distinct())">
+        <AdditionalProperties />
+        <Platform>$(Platform)</Platform>
+        <TargetFrameworkMoniker />
+      </_PackageContent>
+    </ItemGroup>
+    
+  </Target>
+
+  <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
+
+</Project>

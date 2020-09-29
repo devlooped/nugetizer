@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+	<PropertyGroup>
+		<TargetFramework>net45</TargetFramework>
+		<PackageId>E</PackageId>
+		<PackageVersion>2.0.0</PackageVersion>
+	</PropertyGroup>
+</Project>

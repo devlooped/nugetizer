@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+    <TargetFramework Condition="'$(SimulateCrossTargeting)' != 'true'">netstandard1.6</TargetFramework>
+		<TargetFrameworks Condition="'$(SimulateCrossTargeting)' == 'true'">netstandard1.6;net45</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+  </ItemGroup>
+</Project>

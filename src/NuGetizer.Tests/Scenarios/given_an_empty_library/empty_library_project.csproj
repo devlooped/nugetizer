@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    <Reference Include="PresentationFramework" Condition="'$(TargetFramework)' == 'net472'" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(AdvancedCustomization)' == 'true'">
+    <!-- Advanced package metadata scenario -->
+    <PackageMetadata Include="$(PackageId)" Condition="'$(PackageId)' != ''">
+      <Description>ItemDescription</Description>
+    </PackageMetadata>
+  </ItemGroup>
+
+  <Target Name="BeforeGetMetadata" BeforeTargets="GetPackageMetadata">
+    <PropertyGroup>
+      <!-- Simple dynamic metadata property updating. 
+           Not compatible with the item-based one since we 
+           don't overwrite an item already created. -->
+      <Description>PropertyDescription</Description>
+    </PropertyGroup>
+  </Target>
+  
+</Project>

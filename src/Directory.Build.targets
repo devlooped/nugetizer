@@ -1,5 +1,17 @@
 <Project>
 
+  <PropertyGroup Label="Pack">
+    <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
+    <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(NuGetize)' != 'false'">
+    <!-- GeneratePackageOnBuild=false is used by VS when right-click Pack is used :) -->
+    <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(NuGetize)' == 'true' or '$(GeneratePackageOnBuild)' != ''">false</ImportNuGetBuildTasksPackTargetsFromSdk>
+  </PropertyGroup>
+
+  <Import Project="NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="$(IsPackable) and '$(NuGetize)' == 'true'" />
+
   <PropertyGroup>
     <PackageItemKindFile>$(IntermediateOutputPath)PackageItemKind.g$(DefaultLanguageSourceExtension)</PackageItemKindFile>
   </PropertyGroup>
@@ -8,22 +20,7 @@
     <UpToDateCheckInput Include="@(None);@(Content)" />
   </ItemGroup>
   
-  <PropertyGroup Label="Pack">
-    <!-- The Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets unconditionally sets 
-        PackageId=AssemblyName if no PackageId is provided, and then defaults IsPackable=true if 
-        a PackageId is set (?!), meaning that by default everything is packable in Sdk-style 
-        projects. 
-
-        The Directory.Build.targets are imported after the user's project properties have been 
-        read, and therefore gives us a chance to inspect if an explicit PackageId was provided, 
-        before the NuGet SDK target is imported and defaults it. At this point, we can give 
-        IsPackable a more sensible default, making it false if no PackageId was provided at this 
-        point. -->
-    <IsPackable Condition="'$(IsPackable)' == '' And '$(PackageId)' == ''">false</IsPackable>
-    <IsPackable Condition="'$(IsPackable)' == '' And '$(PackageId)' != ''">true</IsPackable>
-  </PropertyGroup>
-  
-  <PropertyGroup Label="NuGet Pack">
+  <PropertyGroup Label="NuGet">
     <HttpNuGetCache>$(LocalAppData)\NuGet\v3-cache</HttpNuGetCache>
     <!-- By default, we clear the HTTP cache if our project is packable. This does *not* clear the cached installed packages -->
     <ClearHttpNuGetCacheOnPack Condition="'$(ClearHttpNuGetCacheOnPack)' == ''">$(IsPackable)</ClearHttpNuGetCacheOnPack>
@@ -64,7 +61,7 @@
   <!-- Clears nuget cache for the current project package id -->
   <Target Name="ClearCachedPackageId"
           Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack" DependsOnTargets="Pack">
+          AfterTargets="Build;Pack">
     <PropertyGroup>
       <PackageFolder>$(NuGetCache)\$(PackageId.ToLowerInvariant())</PackageFolder>
     </PropertyGroup>
@@ -76,7 +73,7 @@
 
   <Target Name="ClearHttpNuGetCache"
           Condition="!$(CI) And $(ClearHttpNuGetCacheOnPack) And Exists('$(HttpNuGetCache)') And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack" DependsOnTargets="Pack">
+          AfterTargets="Build;Pack">
     <Message Text="Nuking $(HttpNuGetCache)" Importance="high" />
     <Exec Command='rd "$(HttpNuGetCache)" /q /s' Condition="'$(OS)' == 'Windows_NT'" />
     <Exec Command='rm -rf "$(HttpNuGetCache)"' Condition="'$(OS)' != 'Windows_NT'" />

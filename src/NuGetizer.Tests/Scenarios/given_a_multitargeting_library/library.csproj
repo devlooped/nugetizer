@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <AssemblyName>Library</AssemblyName>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(CustomizeItemDefinition)' == 'true'">
+    <PackageMetadata>
+      <NewMetadata>Foo</NewMetadata>
+    </PackageMetadata>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Condition="'$(CustomizeItem)' == 'true'">
+    <PackageMetadata Include="LibraryPackage">
+      <LicenseExpression>MIT</LicenseExpression>
+    </PackageMetadata>
+  </ItemGroup>
+  
+</Project>

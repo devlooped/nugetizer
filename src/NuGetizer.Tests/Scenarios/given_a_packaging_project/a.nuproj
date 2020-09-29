@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.Build.NoTargets/2.0.1">
+    <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+	<PropertyGroup>
+		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+		<TargetFramework>netstandard1.0</TargetFramework>
+		<PackageId>a.package</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="b\b.csproj" />
+		<ProjectReference Include="c.csproj" />
+		<ProjectReference Include="e.csproj" />
+	</ItemGroup>
+	<Target Name="_AugmentMetadata" BeforeTargets="GetPackageContents">
+		<ItemGroup>
+			<PackageFile Condition="'%(PackageFile.Kind)' == 'Metadata'">
+				<Foo>Bar</Foo>
+			</PackageFile>
+		</ItemGroup>
+	</Target>
+</Project>

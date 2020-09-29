@@ -7,20 +7,24 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
-    <Version>42.42.42</Version>
-    <PackageVersion>$(Version)</PackageVersion>
+    <VersionPrefix>42.42.42</VersionPrefix>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GenerateRepositoryUrlAttribute>true</GenerateRepositoryUrlAttribute>
 
-    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(MSBuildThisFileDirectory)..\bin</PackageOutputPath>
+    <PackageOutputPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\bin'))</PackageOutputPath>
 
+    <Deterministic>true</Deterministic>
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <LangVersion>Preview</LangVersion>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp</DefaultItemExcludes>
+
+    <!-- See: https://www.cazzulino.com/project-dependencies-as-project-references.html -->
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
   </PropertyGroup>
 
   <PropertyGroup Label="CI" Condition="'$(CI)' == ''">
@@ -28,7 +32,15 @@
     <CI Condition="'$(TF_BUILD)' == 'true'">true</CI>
   </PropertyGroup>
 
-  <Target Name="Pack" />
-  <Target Name="Test" />
+  <Target Name="Pack" Condition="$(IsPackable)" Returns="@(PackOutput)">
+    <!-- Typically called in the IDE when we run Pack context menu. -->
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Properties="NuGetize=true" Targets="Pack">
+      <Output TaskParameter="TargetOutputs" ItemName="PackOutput"/>
+    </MSBuild>
+  </Target>
   
+  <Target Name="Test" />
+
+  <Import Project="NuGetizer.Tasks\NuGetizer.props" Condition="'$(NuGetize)' == 'true'" />
+
 </Project>

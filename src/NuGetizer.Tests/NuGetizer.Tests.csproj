@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Scenarios\**\*</DefaultItemExcludes>
+    <LangVersion>Preview</LangVersion>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <!--<ProjectReference Include="..\NuGetizer.Tasks\NuGetizer.Tasks.csproj" />-->
+    <Reference Include="NuGetizer.Tasks">
+      <HintPath>..\NuGetizer.Tasks\bin\$(Configuration)\NuGetizer.Tasks.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build" Version="16.6.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.6.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.2.6" />
+    <PackageReference Include="MSBuild.StructuredLogger" Version="2.1.176" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
+    <PackageReference Include="NuGet.Packaging" Version="5.7.0" />
+    <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.console" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.msbuild" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Include="ThisAssembly" Version="0.10.6" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="Scenarios\**\*.*" Exclude="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\NuGetizer.Tasks\bin\$(Configuration)\*.*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="..\NuGetizer.Tasks\Resources.resx" Link="Resources.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectProperty Include="NuGetRestoreTargets" />
+    <ProjectProperty Include="NuGetTargets" />
+    <ProjectProperty Include="MSBuildBinPath" />
+  </ItemGroup>
+
+  <Target Name="Test" DependsOnTargets="GetTargetPath">
+    <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" Condition="'$(UseConsole)' == 'true'" WorkingDirectory="$(MSBuildProjectDirectory)$(OutptuPath)" />
+    <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />
+  </Target>
+  
+  <Target Name="ClearMSBuild" AfterTargets="Build">
+    <ItemGroup>
+      <MSBuildAssembly Include="$(OutputPath)\Microsoft.Build*.dll" Exclude="$(OutputPath)\Microsoft.Build.Locator.dll" />
+    </ItemGroup>
+    <Delete Files="@(MSBuildAssembly)">
+      <Output TaskParameter="DeletedFiles" ItemName="DeletedFiles" />
+    </Delete>
+    <Message Text="Deleted: @(DeletedFiles)" Importance="high" />
+  </Target>
+  
+  <Import Project="NuGetizer.Tests.targets" />
+
+</Project>

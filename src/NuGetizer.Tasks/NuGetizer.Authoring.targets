@@ -1,0 +1,83 @@
+<!--
+***********************************************************************************************
+Microsoft.NuGet.Packaging.Authoring.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- The main output in this case will be the package itself. -->
+  <PropertyGroup>
+    <TargetName>$(PackageId)</TargetName>
+
+    <!-- Speed-up build since we don't do assembly resolution -->
+    <ResolveAssemblyReferencesDependsOn />
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <!-- This turns off _GetProjectReferenceTargetFrameworkProperties which passes down 
+			 our TF to referenced projects and causes build to fail even if we don't really 
+			 need to match up with referenced projects outputs. We're basically using the 
+			 documented escape hatch, see 
+			 https://github.com/Microsoft/msbuild/blob/2634f05a660b14c64ae4e924d900dd200d5032e7/src/Tasks/Microsoft.Common.CurrentVersion.targets#L1537
+		-->
+    <ProjectReference>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <AdditionalProperties>FromPackagingProject=true</AdditionalProperties>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <ProjectCapability Include="PackagingProject" />
+
+    <!-- Allows configurations inferred from Condition="CONFIG|PLATFORM" usage -->
+    <ProjectCapability Include="ProjectConfigurationsInferredFromUsage" />
+
+    <!-- DependenciesTree capability lights up a Dependencies tree node and it's sub node providers-->
+    <ProjectCapability Include="DependenciesTree" />
+
+    <ProjectCapability Include="
+                          AssemblyReferences;
+                          ProjectReferences;
+                          PackageReferences;
+                          OutputGroups;
+                          AllTargetOutputGroups;
+                          VisualStudioWellKnownOutputGroups;
+                          SingleFileGenerators;
+                          DeclaredSourceItems;
+                          UserSourceItems" />
+
+    <!-- Reference Manager capabilities -->
+    <ProjectCapability Include="ReferenceManagerAssemblies" />
+    <ProjectCapability Include="ReferenceManagerBrowse" />
+    <ProjectCapability Include="ReferenceManagerProjects" />
+
+  </ItemGroup>
+
+  <!-- Just to make it easy for consumers to request the TargetPath as usual but get the 
+		 actual package file, which contains the PackageVersion and will be dynamic therefore. -->
+  <Target Name="UpdateTargetPath"
+			BeforeTargets="GetTargetPath;GetTargetPathWithTargetPlatformMoniker"
+			DependsOnTargets="GetPackageTargetPath">
+    <PropertyGroup>
+      <TargetPath>@(PackageTargetPath->'%(FullPath)')</TargetPath>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CoreCompile" DependsOnTargets="Pack" />
+  <Target Name="CreateManifestResourceNames" />
+  <Target Name="GetReferenceAssemblyPaths" />
+
+  <Target Name="_CleanReferences" AfterTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

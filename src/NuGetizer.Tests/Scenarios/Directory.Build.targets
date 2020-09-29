@@ -1,0 +1,13 @@
+<Project>
+
+  <PropertyGroup>
+    <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+  <!-- Ensure we get proper NuGet behavior always -->
+  <Import Project="$(NuGetRestoreTargets)" Condition="'$(IsRestoreTargetsFileLoaded)' != 'true' and '$(NuGetRestoreTargets)' != ''" />
+  <Import Project="$(NuGetTargets)" Condition="'$(ResolveNuGetPackageAssetsDependsOn)' == '' and '$(NuGetTargets)' != ''" />
+
+  <Import Project="Scenario.targets" Condition="'$(IsNuGetized)' == 'true'" />
+  
+</Project>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+    <AssemblyName>library</AssemblyName>
+    <PackageId>library</PackageId>
+    <TargetFramework>net45</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.es-AR.resx" />
+    <EmbeddedResource Include="Resources.resx" />
+  </ItemGroup>
+</Project>

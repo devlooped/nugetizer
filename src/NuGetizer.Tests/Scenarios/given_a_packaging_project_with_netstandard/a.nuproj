@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.Build.NoTargets/2.0.1">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+
+  <PropertyGroup>
+    <!-- Required package metadata -->
+    <Authors>NuGet</Authors>
+    <Description>Package for '$(MSBuildProjectName)' project.</Description>
+    <OutputPath>bin</OutputPath>
+
+    <PackageId>a.package</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildProjectDirectory)\b\b.csproj" />
+  </ItemGroup>
+
+</Project>

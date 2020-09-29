@@ -1,0 +1,43 @@
+<!--
+***********************************************************************************************
+NuGetizer.PackageMetadata.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemDefinitionGroup>
+    <PackageMetadata>
+      <PackageId>$(PackageId)</PackageId>
+      <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
+
+      <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
+      <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
+      <Title Condition="'$(Title)' != ''">$(Title)</Title>
+      <Description Condition="'$(Description)' != ''">$(Description)</Description>
+      <Summary Condition="'$(Summary)' != ''">$(Summary)</Summary>
+      <Language Condition="'$(NeutralLanguage)' != ''">$(NeutralLanguage)</Language>
+      <Copyright Condition="'$(Copyright)' != ''">$(Copyright)</Copyright>
+      <ReleaseNotes Condition="'$(PackageReleaseNotes)' != ''">$(PackageReleaseNotes)</ReleaseNotes>
+      <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == 'true'">true</RequireLicenseAcceptance>
+      <LicenseUrl Condition="'$(PackageLicenseUrl)' != ''">$(PackageLicenseUrl)</LicenseUrl>
+      <LicenseExpression Condition="'$(PackageLicenseExpression)' != ''">$(PackageLicenseExpression)</LicenseExpression>
+      <Icon Condition="'$(PackageIcon)' != ''">$(PackageIcon)</Icon>
+      <IconUrl Condition="'$(PackageIconUrl)' != ''">$(PackageIconUrl)</IconUrl>
+      <Tags Condition="'$(PackageTags)' != ''">$(PackageTags)</Tags>
+      <ProjectUrl Condition="'$(PackageProjectUrl)' != ''">$(PackageProjectUrl)</ProjectUrl>
+      <PackageTypes Condition="'$(PackageType)' != ''">$(PackageType)</PackageTypes>
+
+      <RepositoryType Condition="'$(RepositoryType)' != ''">$(RepositoryType)</RepositoryType>
+      <RepositoryUrl Condition="'$(RepositoryUrl)' != ''">$(RepositoryUrl)</RepositoryUrl>
+      <RepositoryBranch Condition="'$(RepositoryBranch)' != ''">$(RepositoryBranch)</RepositoryBranch>
+      <RepositoryCommit Condition="'$(RepositoryCommit)' != ''">$(RepositoryCommit)</RepositoryCommit>
+    </PackageMetadata>
+  </ItemDefinitionGroup>
+
+</Project>

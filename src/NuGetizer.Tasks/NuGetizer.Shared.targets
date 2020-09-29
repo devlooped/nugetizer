@@ -1,0 +1,252 @@
+<!--
+***********************************************************************************************
+NuGetizer.Shared.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file is shared between multitargeting and regular build targets.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="NuGetizer.Tasks.CreatePackage" AssemblyFile="NuGetizer.Tasks.dll" />
+
+  <PropertyGroup>
+    <!-- Whether to infer package contents -->
+    <EnablePackInference Condition="'$(EnablePackInference)' == ''" />
+
+    <!-- Whether include referenced projects' contents in the package. -->
+    <PackProjectReference Condition="'$(PackProjectReference)' == ''">true</PackProjectReference>
+
+    <!-- Whether to prompt the consumer to accept the package license before installing the package. -->
+    <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''" />
+
+    <!-- Directory where the .nupkg will be saved to if Pack is run, used also in GetPackageTargetPath -->
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(BaseOutputPath)</PackageOutputPath>
+
+    <!-- Whether to emit the final .nupkg for packable projects. Defaults to true. -->
+    <EmitPackage Condition="'$(EmitPackage)' == ''">true</EmitPackage>
+
+    <!-- Whether to emit the nuspec that's used to create the final package. Defaults to false. -->
+    <EmitNuspec Condition="'$(EmitNuspec)' == ''">false</EmitNuspec>
+    <NuspecFile Condition="'$(NuspecFile)' == '' and '$(PackageId)' != ''">$(BaseOutputPath.TrimEnd('\'))\$(PackageId).nuspec</NuspecFile>
+    <NuspecFile Condition="'$(NuspecFile)' == '' and '$(PackageId)' == ''">$(BaseOutputPath.TrimEnd('\'))\$(AssemblyName).nuspec</NuspecFile>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Hidden">
+    <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
+    <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
+    <!-- When the project is building a package, AssignPackagePath always assigns a PackagePath, regardless of the project PackageId -->
+    <BuildingPackage Condition="'$(BuildingPackage)' == '' and '$(IsPackagingProject)' == 'true'">true</BuildingPackage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- This is the capability that CPS in .NETStandard/.NETCore uses to enable the Pack context menu. Unify with that -->
+    <ProjectCapability Include="Pack" Condition="'$(IsPackable)' == 'true'" />
+  </ItemGroup>
+
+  <!-- Extends the built-in GetTargetPathWithTargetPlatformMoniker output to signal that the project has been nugetized -->
+  <ItemDefinitionGroup>
+    <TargetPathWithTargetPlatformMoniker>
+      <IsPackable>$(IsPackable)</IsPackable>
+      <IsNuGetized>true</IsNuGetized>
+    </TargetPathWithTargetPlatformMoniker>
+  </ItemDefinitionGroup>
+
+  <!--
+	=================================================================================================
+	GetPackageVersion
+	=================================================================================================
+
+	This target sets the default $(PackageVersion) to $(Version) if empty, and returns it. 	
+	It can be redefined to change how the package version is determined.
+	
+	OUTPUTS:
+		$(PackageVersion)            The determined package version
+	
+    =================================================================================================
+	-->
+  <PropertyGroup>
+    <GetPackageVersionDependsOn>
+      $(GetPackageVersionDependsOn);
+      _SetDefaultPackageVersion
+    </GetPackageVersionDependsOn>
+  </PropertyGroup>
+  <Target Name="GetPackageVersion" DependsOnTargets="$(GetPackageVersionDependsOn)" Returns="$(PackageVersion)" />
+  <Target Name="_SetDefaultPackageVersion" Condition="'$(PackageVersion)' == ''" Returns="$(PackageVersion)">
+    <PropertyGroup>
+      <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(Version)</PackageVersion>
+    </PropertyGroup>
+  </Target>
+
+  <!--
+  =================================================================================================
+	GetPackageMetadata
+  =================================================================================================
+
+  If the project builds a package (that is, it has a PackageId),
+  this target returns an item with all the metadata that will be 
+  used for creating the package, not including its contents and 
+  dependencies, which must be retrieved from the GetPackageContents 
+  target instead.
+  
+  Extending package metadata can be achieved by declaring an 
+  <ItemDefinitionGroup> and adding extra default metadata for 
+  the PackageMetadata item.
+	
+  OUTPUTS:
+      @(PackageMetadata)            The metadata of the package that would be built.
+  =================================================================================================
+	-->
+  <PropertyGroup>
+    <GetPackageMetadataDependsOn>
+      $(GetPackageMetadataDependsOn);
+      _InitializeRepositoryProperties;
+      GetPackageVersion;
+    </GetPackageMetadataDependsOn>
+  </PropertyGroup>
+  <Target Name="GetPackageMetadata" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageMetadataDependsOn)" Returns="@(PackageMetadata)">
+    <Error Text="The 'PackageVersion' property cannot be empty." Code="NG1002" Condition="'$(PackageVersion)' == ''" />
+    <ItemGroup>
+      <!-- By not re-creating the item, we preserve whatever metadata was provided already -->
+      <PackageMetadata Include="$(PackageId)" Condition="'@(PackageMetadata)' == ''">
+        <PackageId>$(PackageId)</PackageId>
+        <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
+        <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
+        <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
+        <Title Condition="'$(Title)' != ''">$(Title)</Title>
+        <Description Condition="'$(Description)' != ''">$(Description)</Description>
+        <Summary Condition="'$(Summary)' != ''">$(Summary)</Summary>
+        <Language Condition="'$(NeutralLanguage)' != ''">$(NeutralLanguage)</Language>
+        <Copyright Condition="'$(Copyright)' != ''">$(Copyright)</Copyright>
+        <ReleaseNotes Condition="'$(PackageReleaseNotes)' != ''">$(PackageReleaseNotes)</ReleaseNotes>
+        <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == 'true'">true</RequireLicenseAcceptance>
+        <LicenseUrl Condition="'$(PackageLicenseUrl)' != ''">$(PackageLicenseUrl)</LicenseUrl>
+        <LicenseExpression Condition="'$(PackageLicenseExpression)' != ''">$(PackageLicenseExpression)</LicenseExpression>
+        <Icon Condition="'$(PackageIcon)' != ''">$(PackageIcon)</Icon>
+        <IconUrl Condition="'$(PackageIconUrl)' != ''">$(PackageIconUrl)</IconUrl>
+        <Tags Condition="'$(PackageTags)' != ''">$(PackageTags)</Tags>
+        <ProjectUrl Condition="'$(PackageProjectUrl)' != ''">$(PackageProjectUrl)</ProjectUrl>
+        <PackageTypes Condition="'$(PackageType)' != ''">$(PackageType)</PackageTypes>
+      </PackageMetadata>
+      
+      <!-- Next, just update the typically dynamic properties we allow update hooks for.
+           For advanced metadata tweaking scenarios, users can simply create the PackageMetadata 
+           before this method run (or update it after it does). -->
+      <PackageMetadata Update="@(PackageMetadata)">
+        <Version>$(PackageVersion)</Version>
+        <!-- Provided by source control providers -->        
+        <RepositoryType Condition="'$(RepositoryType)' != ''">$(RepositoryType)</RepositoryType>
+        <RepositoryUrl Condition="'$(RepositoryUrl)' != ''">$(RepositoryUrl)</RepositoryUrl>
+        <RepositoryBranch Condition="'$(RepositoryBranch)' != ''">$(RepositoryBranch)</RepositoryBranch>
+        <RepositoryCommit Condition="'$(RepositoryCommit)' != ''">$(RepositoryCommit)</RepositoryCommit>
+      </PackageMetadata>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_InitializeRepositoryProperties" DependsOnTargets="InitializeSourceControlInformation" Condition="'$(SourceControlInformationFeatureSupported)' == 'true'">
+    <PropertyGroup>
+      <!-- The project must specify PublishRepositoryUrl=true in order to publish the URL, in order to prevent inadvertent leak of internal URL. -->
+      <RepositoryUrl Condition="'$(RepositoryUrl)' == '' and '$(PublishRepositoryUrl)' == 'true'">$(PrivateRepositoryUrl)</RepositoryUrl>
+      <RepositoryCommit Condition="'$(RepositoryCommit)' == ''">$(SourceRevisionId)</RepositoryCommit>
+    </PropertyGroup>    
+  </Target>
+  
+  <!--
+  =================================================================================================
+	GetPackageTargetPath
+  =================================================================================================
+
+  Returns the @(PackageMetadata) but using the final package target 
+  path as the item identity.
+	
+  OUTPUTS:
+      @(PackageTargetPath)            The metadata of the package that would be built.
+  =================================================================================================
+	-->
+  <PropertyGroup>
+    <GetPackageTargetPathDependsOn>
+      $(GetPackageTargetPathDependsOn);
+      GetPackageMetadata;
+      _SetDefaultPackageTargetPath;
+    </GetPackageTargetPathDependsOn>
+  </PropertyGroup>
+  <Target Name="GetPackageTargetPath" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageTargetPathDependsOn)" Returns="@(PackageTargetPath)">
+    <Error Text="The 'PackageVersion' property cannot be empty." Code="NG1002" Condition="'$(PackageVersion)' == ''" />
+    <PropertyGroup>
+      <PackageTargetPath>$([System.IO.Path]::GetFullPath('$(PackageTargetPath)'))</PackageTargetPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageTargetPath Include="@(PackageMetadata -> '$(PackageTargetPath)')" />
+    </ItemGroup>
+  </Target>
+  <Target Name="_SetDefaultPackageTargetPath" Condition="'$(IsPackable)' == 'true' and '$(PackageTargetPath)' == '' and '$(PackageVersion)' != ''">
+    <PropertyGroup>
+      <PackageTargetPath>$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(PackageId).$(PackageVersion).nupkg'))</PackageTargetPath>
+    </PropertyGroup>
+  </Target>
+
+  <!--
+  =================================================================================================
+  PackageOutputGroup
+  =================================================================================================
+	
+  For compatibility and naming consistency with the targets in AllProjectOutputGroups, this target 
+  returns the same output as GetPackageTargetPath
+	
+    OUTPUTS:
+        @(PackageTargetPath)            The metadata of the package that would be built.	
+    =================================================================================================
+    -->
+  <PropertyGroup>
+    <PackageOutputGroupDependsOn>GetPackageTargetPath;$(PackageOutputGroupDependsOn)</PackageOutputGroupDependsOn>
+  </PropertyGroup>
+  <Target Name="PackageOutputGroup" BeforeTargets="AllProjectOutputGroups" Returns="@(PackageTargetPath)" DependsOnTargets="$(PackageOutputGroupDependsOn)" />
+
+  <!--
+  =================================================================================================
+  Pack
+  =================================================================================================
+
+  Creates the output .nupkg if the project is packable.
+	
+  OUTPUTS:
+      @(PackageTargetPath)     The output path of the package that was built with its metadata.
+  =================================================================================================
+	-->
+  <PropertyGroup Label="Hidden">
+    <!-- If we're packing on build, just add Pack as a dependency for Build -->
+    <_ShouldPackOnBuild Condition="'$(PackOnBuild)' == 'true' And '$(IsPackable)' == 'true'">true</_ShouldPackOnBuild>
+    <BuildDependsOn Condition="'$(NoBuild)' != 'true' And '$(_ShouldPackOnBuild)' == 'true'">
+      $(BuildDependsOn);
+      Pack;
+    </BuildDependsOn>
+    <!-- If we're not packing on build, set up a dependency from Pack>Build for non-NuProj that are packable, so Build runs before Pack -->
+    <PackDependsOn Condition="'$(NoBuild)' != 'true' And '$(IsPackagingProject)' != 'true' And '$(_ShouldPackOnBuild)' != 'true' And '$(IsPackable)' == 'true'">
+      Build;
+    </PackDependsOn>
+    <PackDependsOn>
+      $(PackDependsOn)
+      GetPackageTargetPath;
+      GetPackageContents
+    </PackDependsOn>
+  </PropertyGroup>
+
+  <Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(_PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
+    <MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
+    <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(NuspecFile)" Contents="@(_PackageContent)" 
+                   EmitPackage="$(EmitPackage)" EmitNuspec="$(EmitNuspec)"
+                   TargetPath="@(PackageTargetPath->'%(FullPath)')">
+      <Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
+      <Output TaskParameter="OutputPackage" ItemName="FileWrites" Condition="'$(EmitPackage)' == 'true'" />
+      <Output TaskParameter="NuspecFile" ItemName="FileWrites" Condition="'$(EmitNuspec)' == 'true'" />
+    </CreatePackage>
+
+    <Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." Condition="'$(EmitPackage)' == 'true'" />
+  </Target>
+
+  <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
+</Project>

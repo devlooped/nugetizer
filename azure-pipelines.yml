@@ -1,7 +1,18 @@
 pool:
   vmImage: 'windows-2019'
+
+variables:
+  - name: DOTNET_NOLOGO
+    value: 'true'
+
 steps:
 - checkout: self
+
+- task: UseDotNet@2
+  inputs:
+    packageType: sdk
+    version: 5.0.100-rc.1.20452.10
+    performMultiLevelLookup: true
 
 - task: UseDotNet@2
   inputs:
@@ -17,7 +28,12 @@ steps:
   condition: eq(variables['MSB'], '')
 - pwsh: echo "##vso[task.prependpath]$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
   displayName: prepend MSBuild to %PATH%
-- script: msbuild -r
+- script: msbuild -r -bl:$(System.DefaultWorkingDirectory)/logs/build.binlog
   displayName: msbuild -r
 - script: msbuild -t:test
   displayName: msbuild -t:test
+- publish: $(System.DefaultWorkingDirectory)/logs
+  artifact: logs
+  condition: always()
+- script: msbuild -t:Pack -p:PackOnBuild=true
+  displayName: msbuild -t:pack

@@ -1,0 +1,88 @@
+<Project>
+
+  <ItemGroup>
+    <ProjectProperty Include="PackageId" />
+  </ItemGroup>
+
+  <ItemDefinitionGroup>
+    <Content>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+    </Content>
+  </ItemDefinitionGroup>
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+
+    <PackageId>NuGetizer</PackageId>
+    <Title>NuGetizer</Title>
+    <Description>Simple, flexible and powerful NuGet packaging</Description>
+    <PackageIcon>icon.png</PackageIcon>
+
+    <IsDevelopmentDependency>true</IsDevelopmentDependency>
+    <BuildOutputKind>build</BuildOutputKind>
+
+    <PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\bin</PackageOutputPath>
+  </PropertyGroup>
+
+  <Target Name="CleanContents" BeforeTargets="GetPackageContents" DependsOnTargets="InferPackageContents" Returns="@(PackageFile)">
+    <ItemGroup>
+      <PackageFile Remove="@(PackageFile)" Condition="$([System.String]::new('%(PackageFile.NuGetPackageId)').StartsWith('Microsoft.Build'))" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="UpdatePackagingVersion" BeforeTargets="Pack">
+    <!-- Update packaging version targets -->
+    <PropertyGroup>
+      <XmlNs>&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;</XmlNs>
+    </PropertyGroup>
+    <XmlPoke Namespaces="$(XmlNs)"
+				 XmlInputPath="$(OutputPath)NuGetizer.Version.props"
+				 Query="/msb:Project/msb:PropertyGroup/msb:PackVersion"
+				 Value="$(Version)"/>
+  </Target>
+
+  <PropertyGroup>
+    <CoreCompileDependsOn>
+      PackageItemKind;
+      $(CoreCompileDependsOn);
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <Target Name="PackageItemKind" BeforeTargets="BuildOnlySettings" DependsOnTargets="GeneratePackageItemKind">
+    <ItemGroup>
+      <Compile Include="$(PackageItemKindFile)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GeneratePackageItemKind" Inputs="$(MSBuildThisFileFullPath);NuGetizer.props" Outputs="$(PackageItemKindFile)">
+    <MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
+    <MSBuild Projects="NuGetizer.props" Targets="_GetPackageItemKinds">
+      <Output ItemName="_PackageItemKind" TaskParameter="TargetOutputs" />
+    </MSBuild>
+
+    <WriteLinesToFile Lines='
+namespace $(RootNamespace)
+{
+	/// &lt;summary&gt;Available Kind metadata for PackageFile and _PackageContent items&lt;/summary&gt;
+	public static partial class PackageItemKind
+	{
+' Overwrite='true' File='$(PackageItemKindFile)' />
+
+    <WriteLinesToFile Lines='				  
+		/// &lt;summary&gt;Kind: %(_PackageItemKind.Identity)&lt;/summary&gt;
+		public const string %(_PackageItemKind.Identity) = nameof(%(_PackageItemKind.Identity))%3B
+' Overwrite='false' File='$(PackageItemKindFile)' />
+
+    <WriteLinesToFile Lines='
+	}
+}
+' Overwrite='false' File='$(PackageItemKindFile)' />
+
+    <ItemGroup>
+      <FileWrites Include="$(PackageItemKindFile)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

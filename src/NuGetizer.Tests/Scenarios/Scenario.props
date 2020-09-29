@@ -1,0 +1,31 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <RootNamespace>Scenario</RootNamespace>
+
+    <!-- A bunch of known GUIDs for P2P references -->
+    <GuidA>{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}</GuidA>
+    <GuidB>{BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB}</GuidB>
+    <GuidC>{CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC}</GuidC>
+    <GuidD>{DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD}</GuidD>
+    <GuidE>{EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE}</GuidE>
+    <GuidF>{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}</GuidF>
+
+    <ProjectGuid>$(GuidA)</ProjectGuid>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Required package metadata -->
+    <Authors>NuGet</Authors>
+    <Description>Package for '$(MSBuildProjectName)' project.</Description>
+
+    <!-- This will be the right path when we run from xunit in the bin/$(Configuration) folder -->
+    <NuGetTargetsPath Condition="'$(NuGetTargetsPath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGetizer.props))</NuGetTargetsPath>
+    <!-- This will be the right path when we run from MSBuild from the source location inside the tests project -->
+    <NuGetTargetsPath Condition="!Exists('$(NuGetTargetsPath)\NuGetizer.props')">$(MSBuildThisFileDirectory)..\..\NuGetizer.Tasks\bin\$(Configuration)</NuGetTargetsPath>
+    <NuGetizerProps>$(NuGetTargetsPath)\NuGetizer.props</NuGetizerProps>
+    <NuGetizerTargets>$(NuGetTargetsPath)\NuGetizer.Shared.targets</NuGetizerTargets>
+  </PropertyGroup>
+
+  <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetizerPropsImported)' != 'true'" />
+</Project>

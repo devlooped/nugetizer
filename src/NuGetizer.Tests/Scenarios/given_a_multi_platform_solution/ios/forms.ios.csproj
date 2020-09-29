@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+    <AssemblyName>Forms</AssemblyName>
+    <TargetFramework>xamarinios10</TargetFramework>
+    <DisableStandardFrameworkResolution>true</DisableStandardFrameworkResolution>
+    <PackSymbols>false</PackSymbols>
+    <DocumentationFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\common\common.csproj" />
+  </ItemGroup>
+</Project>
