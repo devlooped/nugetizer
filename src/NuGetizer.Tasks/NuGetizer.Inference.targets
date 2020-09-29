@@ -59,12 +59,12 @@ Copyright (c) .NET Foundation. All rights reserved.
     </_ReferenceRelatedPaths>
   </ItemDefinitionGroup>
 
-  <Target Name="_BuildOutputFrameworkSpecific" Returns="$(BuildOutputFrameworkSpecific)">
+  <Target Name="_BuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''" Returns="$(BuildOutputFrameworkSpecific)">
     <!-- Determine whether primary output is framework specific  -->
-    <ItemGroup Condition="'$(BuildOutputFrameworkSpecific)' == ''">
+    <ItemGroup>
       <_BuildOutputKindFrameworkSpecific Include="@(PackageItemKind->'%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(BuildOutputKind)'" />
     </ItemGroup>
-    <PropertyGroup Condition="'$(BuildOutputFrameworkSpecific)' == ''">
+    <PropertyGroup>
       <BuildOutputFrameworkSpecific>@(_BuildOutputKindFrameworkSpecific)</BuildOutputFrameworkSpecific>
     </PropertyGroup>
   </Target>
@@ -191,17 +191,18 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
     <PropertyGroup>
       <_PrivateAssets>@(_PrimaryPackageReference -> '%(PrivateAssets)')</_PrivateAssets>
+      <_ShouldPack>@(_PrimaryPackageReference -> '%(Pack)')</_ShouldPack>
       <_ShouldIncludeAssetsRegex>$(_NuGetPackageId)\\.+\\$(_PrivateAssets)\\.*</_ShouldIncludeAssetsRegex>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(_PrivateAssets)' == 'all'">
+    <ItemGroup Condition="'$(_ShouldPack)' != 'false' and '$(_PrivateAssets)' == 'all'">
       <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="'%(_PrimaryOutputRelatedFile.FrameworkFile)' != 'true'">
         <Kind>$(BuildOutputKind)</Kind>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
     </ItemGroup>
 
-    <ItemGroup Condition="'$(_PrivateAssets)' != 'all' and '$(_PrivateAssets)' != 'none' and '$(_PrivateAssets)' != ''">
+    <ItemGroup Condition="'$(_ShouldPack)' != 'false' and '$(_PrivateAssets)' != 'all' and '$(_PrivateAssets)' != 'none' and '$(_PrivateAssets)' != ''">
       <!-- In this case, we only add files that have a matching path to the private assets value. 
 				 i.e. for Mono.Options, PrivateAssets=lib, we'll include the file if its full path contains 
 				 'Mono.Options\*\lib\*', meaning the file is a lib. -->
