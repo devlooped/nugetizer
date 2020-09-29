@@ -12,6 +12,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - name: set version
+        run: echo "::set-env name=VERSION::${GITHUB_REF#refs/*/v}"
+        shell: bash
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100-rc.1.20452.10
@@ -22,8 +25,6 @@ jobs:
         with:
           dotnet-version: 3.1.x
       - run: dotnet tool update -g dotnet-vs
-      - name: set version
-        run: echo "::set-env name=VERSION::${GITHUB_REF#refs/*/v}"
       - run: echo "::set-env name=MSB::$(vs where preview --prop=InstallationPath)"
       - run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
         if: env.MSB == ''
@@ -35,4 +36,4 @@ jobs:
       - name: pack
         run: msbuild -t:pack -p:nobuild=true -p:version=$($env:VERSION)
       - name: push
-        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        run: dotnet nuget push bin\**\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate

@@ -10,6 +10,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - name: set version
+        run: echo "::set-env name=VERSION_SUFFIX::$(git name-rev --name-only --refs=refs/heads/* HEAD).$($env:GITHUB_RUN_NUMBER)"
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100-rc.1.20452.10
@@ -20,8 +22,6 @@ jobs:
         with:
           dotnet-version: 3.1.x
       - run: dotnet tool update -g dotnet-vs
-      - name: set version
-        run: echo "::set-env name=VERSION_SUFFIX::$(git name-rev --name-only --refs=refs/heads/* HEAD).$($env:GITHUB_RUN_NUMBER)"
       - run: echo "::set-env name=MSB::$(vs where preview --prop=InstallationPath)"
       - run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
         if: env.MSB == ''

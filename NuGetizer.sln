@@ -24,6 +24,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetizer.Tests", "src\NuGe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-nugetize", "src\dotnet-nugetize\dotnet-nugetize.csproj", "{53B47B9E-212F-420D-9E9A-68EC3B44D39E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{AFDBEE29-AF6A-4BC2-8960-DAFD2B2C2D2A}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +52,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AFDBEE29-AF6A-4BC2-8960-DAFD2B2C2D2A} = {CDF1828A-0877-4238-A218-5E4FE219F6CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2260BB27-4F44-4309-9D78-E459B90C1A3B}
