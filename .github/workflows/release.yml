@@ -23,7 +23,7 @@ jobs:
           dotnet-version: 3.1.x
       - run: dotnet tool update -g dotnet-vs
       - name: set version
-        run: echo "::set-env name=VERSION::${GITHUB_REF#refs/*/v}
+        run: echo "::set-env name=VERSION::${GITHUB_REF#refs/*/v}"
       - run: echo "::set-env name=MSB::$(vs where preview --prop=InstallationPath)"
       - run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
         if: env.MSB == ''
