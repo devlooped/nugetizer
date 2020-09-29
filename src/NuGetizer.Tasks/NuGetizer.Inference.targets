@@ -36,6 +36,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <GetPackageContentsDependsOn>
       $(GetPackageContentsDependsOn);
       _BuildOutputFrameworkSpecific;
+      _SetDefaultPackageReferencePack;
       InferPackageContents
     </GetPackageContentsDependsOn>
   </PropertyGroup>
@@ -67,6 +68,14 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PropertyGroup>
       <BuildOutputFrameworkSpecific>@(_BuildOutputKindFrameworkSpecific)</BuildOutputFrameworkSpecific>
     </PropertyGroup>
+  </Target>
+  
+  <Target Name="_SetDefaultPackageReferencePack" Condition="'$(BuildOutputKind)' == 'build'" BeforeTargets="InferPrimaryOutputDependencies;InferPackageContents">
+    <ItemGroup>
+      <PackageReference Update="@(PackageReference)"
+                        Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').StartsWith('Microsoft.Build')) and '%(Pack)' != 'true'"
+                        Pack="false" />
+    </ItemGroup>
   </Target>
 
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
@@ -132,7 +141,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' == '' or '%(_NoneToInfer.CopyToOutputDirectory)' == 'Never'">
         <Kind Condition="'%(_NoneToInfer.Kind)' == ''">None</Kind>
       </_InferredPackageFile>
-
+      
       <_InferredPackageFile Include="@(PackageReference)" 
                             Condition="'%(PackageReference.Identity)' != 'NuGetizer' and
                                        '%(PackageReference.Identity)' != 'NETStandard.Library' and 

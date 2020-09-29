@@ -53,5 +53,54 @@ namespace NuGetizer
                 PackagePath = @"lib\netstandard2.0\Newtonsoft.Json.dll",
             }));
         }
+
+        [Fact]
+        public void when_build_kind_then_does_not_pack_msbuild()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <BuildOutputKind>build</BuildOutputKind>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.Build.Tasks.Core' Version='16.6.0' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "Microsoft.Build.Tasks.Core",
+                Kind = PackageItemKind.Dependency,
+            }));
+        }
+
+        [Fact]
+        public void when_build_kind_and_explicit_pack_then_packs_msbuild()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <BuildOutputKind>build</BuildOutputKind>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.Build.Tasks.Core' Version='16.6.0' Pack='true' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Microsoft.Build.Tasks.Core",
+                Kind = PackageItemKind.Dependency,
+            }));
+        }
+
     }
 }

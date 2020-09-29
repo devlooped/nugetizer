@@ -28,8 +28,8 @@ static partial class Builder
         LoggerVerbosity? verbosity = null)
     {
         using var sha = new SHA1Managed();
-        var hash = Base62.Encode(BitConverter.ToInt64(
-            sha.ComputeHash(Encoding.UTF8.GetBytes(projectContent)), 0));
+        var hash = Base62.Encode(Math.Abs(BitConverter.ToInt64(
+            sha.ComputeHash(Encoding.UTF8.GetBytes(projectContent)), 0)));
 
         var scenarioName = hash;
         var scenarioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scenarios", scenarioName);
