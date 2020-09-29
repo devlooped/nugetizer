@@ -104,7 +104,8 @@ namespace NuGetize
                         x.Element("PackageId")?.Value == packageId)
                     .Select(x => x.Element("PackagePath").Value)
                     .Distinct()
-                    .OrderBy(x => x);
+                    .OrderBy(x => Path.GetDirectoryName(x))
+                    .ThenBy(x => x);
 
                 RenderContents(contents.ToList(), 0, 0, "");
                 Console.WriteLine();
