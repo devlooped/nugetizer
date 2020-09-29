@@ -27,16 +27,19 @@ namespace NuGetize
         {
             var tooldir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var project = "";
-            var bl = binlog ? $"-bl:\"{Directory.GetCurrentDirectory()}\\msbuild.binlog;ProjectImports=None\"" : "";
+            var bl = binlog ? $"-bl:\"{Directory.GetCurrentDirectory()}\\build.binlog;ProjectImports=None\"" : "";
             var file = Path.Combine(Directory.GetCurrentDirectory(), "dotnet-nugetize.items");
 
             var projects = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.*proj").ToList();
+            var solutions = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.sln").ToList();
 
             // TODO: allow specifying which project.
-            if (projects.Count > 1)
+            if (solutions.Count == 1)
+                project = solutions[0];
+            else if (projects.Count > 1)
                 project = projects[0];
 
-            if (!Execute(DotnetMuxer.Path.FullName, $"restore {project} -nologo {bl}", debug))
+            if (!Execute(DotnetMuxer.Path.FullName, $"restore {project} -nologo {bl.Replace("build.binlog", "restore.binlog")}", debug))
                 return -1;
 
             if (File.Exists(file))
@@ -100,6 +103,7 @@ namespace NuGetize
                         x.Element("PackagePath") != null && 
                         x.Element("PackageId")?.Value == packageId)
                     .Select(x => x.Element("PackagePath").Value)
+                    .Distinct()
                     .OrderBy(x => x);
 
                 RenderContents(contents.ToList(), 0, 0, "");
