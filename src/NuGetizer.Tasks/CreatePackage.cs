@@ -51,6 +51,8 @@ namespace NuGetizer.Tasks
 
                 OutputPackage = new TaskItem(TargetPath);
                 Manifest.CopyMetadataTo(OutputPackage);
+                if (emitSpec)
+                    OutputPackage.SetMetadata("Nuspec", NuspecFile);
 
                 return !Log.HasLoggedErrors;
             }
