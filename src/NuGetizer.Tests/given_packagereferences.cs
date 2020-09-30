@@ -33,6 +33,82 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_privateassets_all_then_packs_transitive_libraries()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Prism.Forms' Version='7.2.0.1422' PrivateAssets='all' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Prism.dll",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Prism.Forms.dll",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Core.dll",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Platform.dll",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Xaml.dll",
+            }));
+        }
+
+        [Fact]
+        public void when_privateassets_all_and_pack_false_then_does_not_pack_transitively()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Prism.Forms' Version='7.2.0.1422' PrivateAssets='all' Pack='false' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Prism.dll",
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Prism.Forms.dll",
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Core.dll",
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Platform.dll",
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Xaml.dll",
+            }));
+        }
+
+        [Fact]
         public void when_privateassets_pack_false_then_does_not_pack()
         {
             var result = Builder.BuildProject(@"
