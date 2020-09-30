@@ -16,6 +16,8 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- The Kind of primary output (build, symbols and doc) set if PackBuildOutput = true -->
     <BuildOutputKind Condition="'$(BuildOutputKind)' == ''">Lib</BuildOutputKind>
 
+    <!-- Whether to include @(Compile) items in the package -->
+    <PackCompile Condition="'$(PackCompile)' == ''">false</PackCompile>
     <!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
     <PackContent Condition="'$(PackContent)' == ''">true</PackContent>
     <!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
@@ -59,6 +61,9 @@ Copyright (c) .NET Foundation. All rights reserved.
       <NuGetPackageId />
       <Pack />
     </_ReferenceRelatedPaths>
+    <Compile>
+      <CodeLanguage />
+    </Compile>
   </ItemDefinitionGroup>
 
   <Target Name="_BuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''" Returns="$(BuildOutputFrameworkSpecific)">
@@ -81,7 +86,27 @@ Copyright (c) .NET Foundation. All rights reserved.
   </Target>
 
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
+    <!-- For Compile, the CodeLanguage should default to the project's default source extension -->
+    <ItemGroup Condition="'$(PackCompile)' == 'true'">
+      <Compile Update="@(Compile)" Condition="'%(CodeLanguage)' == ''">
+        <CodeLanguage>$(DefaultLanguageSourceExtension.TrimStart('.'))</CodeLanguage>
+      </Compile>
+    </ItemGroup>
+    
     <!-- Ensure TargetPath -->
+    <AssignTargetPath Files="@(Compile)" RootFolder="$(MSBuildProjectDirectory)"
+                      Condition="'%(Compile.Pack)' == 'true' or 
+                                 '%(Compile.PackagePath)' != '' or
+                                 '%(Compile.Kind)' != '' or 
+                                 ('$(PackCompile)' == 'true' and '%(Compile.Pack)' != 'false')">
+      <!-- NOTE: we infer Compile with PackCompile=true just like we infer Content.
+           Main difference is that PackCompile is false by default. Opting in triggers 
+           same rules as content: if CopyToOutputDirectory is present, the file becomes 
+           part of the build output kind, otherwise, it becomes contentFiles.
+      -->
+      <Output TaskParameter="AssignedFiles" ItemName="_ContentToInfer" />
+    </AssignTargetPath>
+
     <AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)"
                       Condition="'%(Content.Pack)' == 'true' or 
                                  '%(Content.PackagePath)' != '' or

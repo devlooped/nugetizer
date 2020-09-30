@@ -127,8 +127,13 @@ namespace NuGetizer.Tasks
                 var codeLanguage = file.GetMetadata(MetadataName.ContentFile.CodeLanguage);
                 if (string.IsNullOrEmpty(codeLanguage))
                 {
-                    codeLanguage = PackagingConstants.AnyFramework;
+                    codeLanguage = PackagingConstants.AnyCodeLanguage;
                     output.SetMetadata(MetadataName.ContentFile.CodeLanguage, codeLanguage);
+                }
+                else
+                {
+                    // This allows setting the codeLanguage to just the %(Extension) of the source file
+                    codeLanguage = codeLanguage.TrimStart('.');
                 }
 
                 packageFolder = Path.Combine(packageFolder, codeLanguage);
