@@ -14,13 +14,11 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="CopyFilesToOutputDirectory" />
 
   <Target Name="_WritePackageContents" Condition="'$(dotnet-nugetize)' != ''" AfterTargets="GetPackageContents">
-    <PropertyGroup>
-      <_AbsoluteNuspecFile Condition="$([System.IO.Path]::IsPathRooted($(NuspecFile)))">$(NuspecFile)</_AbsoluteNuspecFile>
-      <_AbsoluteNuspecFile Condition="'$(_NuspecFile)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(NuspecFile)</_AbsoluteNuspecFile>
-      <_AbsoluteNuspecFile>$([System.IO.Path]::GetFullPath('$(_AbsoluteNuspecFile)'))</_AbsoluteNuspecFile>
-    </PropertyGroup>    
     <ItemGroup>
-      <PackageMetadata Update="@(PackageMetadata)" Nuspec="$(_AbsoluteNuspecFile)" NuPkg="@(PackageTargetPath)" />
+      <NuspecFile Include="$(NuspecFile)" />
+    </ItemGroup>    
+    <ItemGroup>
+      <PackageMetadata Update="@(PackageMetadata)" Nuspec="@(NuspecFile -> '%(FullPath)')" NuPkg="@(PackageTargetPath)" />
       <PackageContent Include="@(_PackageContent)" Exclude="@(PackageMetadata)" />
     </ItemGroup>
     <WriteItemsToFile Condition="'@(PackageMetadata)' != ''" Overwrite="false" Items="@(PackageMetadata)" ItemName="PackageMetadata" File="$(dotnet-nugetize)" />

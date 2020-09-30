@@ -53,7 +53,7 @@ namespace NuGetize
             var foundPackage = false;
 
             foreach (var metadata in items.Root.Descendants("PackageMetadata")
-                .Distinct(AnonymousEqualityComparer.Create<XElement>(
+                .Distinct(AnonymousComparer.Create<XElement>(
                     (x, y) => x.Element("PackageId")?.Value == y.Element("PackageId")?.Value, 
                     x => x.Element("PackageId")?.Value.GetHashCode() ?? 0)))
             {
@@ -102,12 +102,12 @@ namespace NuGetize
                     .Where(x => 
                         x.Element("PackagePath") != null && 
                         x.Element("PackageId")?.Value == packageId)
-                    .Select(x => x.Element("PackagePath").Value)
-                    .Distinct()
-                    .OrderBy(x => Path.GetDirectoryName(x))
-                    .ThenBy(x => x);
+                    //.Select(x => x.Element("PackagePath").Value)
+                    .Distinct(AnonymousComparer.Create<XElement>(x => x.Element("PackagePath").Value))
+                    .OrderBy(x => Path.GetDirectoryName(x.Element("PackagePath").Value))
+                    .ThenBy(x => x.Element("PackagePath").Value);
 
-                RenderContents(contents.ToList(), 0, 0, "");
+                Render(contents.ToList(), 0, 0, "");
                 Console.WriteLine();
             }
 
@@ -123,12 +123,12 @@ namespace NuGetize
             return 0;
         }
 
-        static int RenderContents(IList<string> files, int index, int level, string path)
+        static int Render(IList<XElement> files, int index, int level, string path)
         {
             while (index < files.Count)
-
             {
-                var file = files[index];
+                var element = files[index];
+                var file = element.Element("PackagePath").Value;
                 var dir = Path.GetDirectoryName(file);
                 var paths = dir.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -143,7 +143,7 @@ namespace NuGetize
                         ColorConsole.Write("/".Gray());
 
                     ColorConsole.WriteLine(paths[level].Green(), "/".Gray());
-                    index = RenderContents(files, index, level + 1, string.Join(Path.DirectorySeparatorChar, paths[..(level + 1)]));
+                    index = Render(files, index, level + 1, string.Join(Path.DirectorySeparatorChar, paths[..(level + 1)]));
                 }
                 else
                 {
@@ -151,7 +151,20 @@ namespace NuGetize
                     if (level == 0)
                         ColorConsole.Write("/".Gray());
 
-                    ColorConsole.WriteLine(Path.GetFileName(file).White());
+                    var attributes = new List<string>();
+                    if (element.Element("BuildAction")?.Value is string buildAction)
+                        attributes.Add("buildAction=" + buildAction);
+                    if (element.Element("CopyToOutput")?.Value is string copyToOutput)
+                        attributes.Add("copyToOutput=" + copyToOutput);
+                    if (element.Element("Flatten")?.Value is string flatten)
+                        attributes.Add("flatten=" + flatten);
+
+                    ColorConsole.Write(Path.GetFileName(file).White());
+                    if (attributes.Count > 0)
+                        ColorConsole.Write((" (" + string.Join(',', attributes) + ")").Gray());
+
+                    Console.WriteLine();
+
                     index++;
                 }
             }
@@ -183,10 +196,13 @@ namespace NuGetize
             return proc.ExitCode == 0;
         }
 
-        static class AnonymousEqualityComparer
+        static class AnonymousComparer
         {
             public static IEqualityComparer<T> Create<T>(Func<T, T, bool> equals, Func<T, int> getHashCode)
                 => new AnonymousEqualityComparer<T>(equals, getHashCode);
+
+            public static IEqualityComparer<T> Create<T>(Func<T, object> value)
+                => new AnonymousEqualityComparer<T>((x, y) => Equals(value(x), value(y)), x => value(x).GetHashCode());
         }
 
         class AnonymousEqualityComparer<T> : IEqualityComparer<T>

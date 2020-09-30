@@ -25,7 +25,8 @@ static partial class Builder
         string projectContent = null,
         string target = "GetPackageContents",
         ITestOutputHelper output = null,
-        LoggerVerbosity? verbosity = null)
+        LoggerVerbosity? verbosity = null, 
+        params (string name, string contents)[] files)
     {
         using var sha = new SHA1Managed();
         var hash = Base62.Encode(Math.Abs(BitConverter.ToInt64(
@@ -39,6 +40,11 @@ static partial class Builder
             .Parse("<Import Project='$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))' />"));
         
         doc.Save(Path.Combine(scenarioDir, "library.csproj"));
+
+        foreach (var file in files)
+        {
+            File.WriteAllText(Path.Combine(scenarioDir, file.name), file.contents);
+        }
 
         var openLog = OpenBuildLogAttribute.IsActive;
         try
