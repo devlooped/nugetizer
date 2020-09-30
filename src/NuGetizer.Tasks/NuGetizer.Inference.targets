@@ -10,6 +10,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="NuGetizer.Tasks.InferImplicitPackageReference" AssemblyFile="NuGetizer.Tasks.dll" />
 
   <PropertyGroup>
     <!-- The Kind of primary output (build, symbols and doc) set if PackBuildOutput = true -->
@@ -36,6 +37,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <GetPackageContentsDependsOn>
       $(GetPackageContentsDependsOn);
       _BuildOutputFrameworkSpecific;
+      _SetDefaultPackageReferencePack;
       InferPackageContents
     </GetPackageContentsDependsOn>
   </PropertyGroup>
@@ -59,14 +61,23 @@ Copyright (c) .NET Foundation. All rights reserved.
     </_ReferenceRelatedPaths>
   </ItemDefinitionGroup>
 
-  <Target Name="_BuildOutputFrameworkSpecific" Returns="$(BuildOutputFrameworkSpecific)">
+  <Target Name="_BuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''" Returns="$(BuildOutputFrameworkSpecific)">
     <!-- Determine whether primary output is framework specific  -->
-    <ItemGroup Condition="'$(BuildOutputFrameworkSpecific)' == ''">
+    <ItemGroup>
       <_BuildOutputKindFrameworkSpecific Include="@(PackageItemKind->'%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(BuildOutputKind)'" />
     </ItemGroup>
-    <PropertyGroup Condition="'$(BuildOutputFrameworkSpecific)' == ''">
+    <PropertyGroup>
       <BuildOutputFrameworkSpecific>@(_BuildOutputKindFrameworkSpecific)</BuildOutputFrameworkSpecific>
     </PropertyGroup>
+  </Target>
+  
+  <Target Name="_SetDefaultPackageReferencePack" Condition="'$(BuildOutputKind)' == 'build'"
+          BeforeTargets="InferPrimaryOutputDependencies;InferPackageContents">
+    <ItemGroup>
+      <PackageReference Update="@(PackageReference)"
+                        Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').StartsWith('Microsoft.Build')) and '%(Pack)' != 'true'"
+                        Pack="false" />
+    </ItemGroup>
   </Target>
 
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
@@ -132,7 +143,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' == '' or '%(_NoneToInfer.CopyToOutputDirectory)' == 'Never'">
         <Kind Condition="'%(_NoneToInfer.Kind)' == ''">None</Kind>
       </_InferredPackageFile>
-
+      
       <_InferredPackageFile Include="@(PackageReference)" 
                             Condition="'%(PackageReference.Identity)' != 'NuGetizer' and
                                        '%(PackageReference.Identity)' != 'NETStandard.Library' and 
@@ -145,7 +156,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 			     it also includes mscorlib which we don't need
 			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
       <_InferredPackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
-                            Condition="'$(PackFrameworkReferences)' == 'true' and '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}' and '%(ReferencePath.Pack)' != 'false'">
+                            Condition="'$(PackFrameworkReferences)' == 'true' and 
+                                       '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}' and 
+                                       '%(ReferencePath.Pack)' != 'false'">
         <Kind>FrameworkReference</Kind>
       </_InferredPackageFile>
     </ItemGroup>
@@ -165,21 +178,31 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
-  <Target Name="_CollectPrimaryOutputRelatedFiles" DependsOnTargets="BuildOnlySettings;ResolveReferences" Returns="@(_PrimaryOutputRelatedFile)">
+  <Target Name="_CollectPrimaryOutputDependencies" DependsOnTargets="BuildOnlySettings;ResolveReferences" Returns="@(ImplicitPackageReference)">
     <ItemGroup>
       <_PrimaryOutputRelatedFile Include="@(ReferencePath);@(_ReferenceRelatedPaths)"
                                  Condition="'%(NuGetPackageId)' != 'NETStandard.Library' and 
                                             '%(Facade)' != 'true' and 
                                             '%(FrameworkFile)' != 'true' and 
                                             '%(Pack)' != 'false'"/>
+      <_PrivateAssetsPackageReference Include="@(PackageReference -> WithMetadataValue('PrivateAssets', 'all'))"
+                                      Condition="'%(PackageReference.IsImplicitlyDefined)' != 'true' and '%(PackageReference.Pack)' != 'false'"/>
     </ItemGroup>
+    <InferImplicitPackageReference Condition="'@(_PrivateAssetsPackageReference)' != '' and '@(PackageDependencies)' != ''" 
+                                   PackageReferences="@(_PrivateAssetsPackageReference)" 
+                                   PackageDependencies="@(PackageDependencies)">
+      <Output TaskParameter="ImplicitPackageReferences" ItemName="ImplicitPackageReference" />
+    </InferImplicitPackageReference>
   </Target>
+  
+  <Target Name="_ResolvePackageDependencies" Condition="'$(UsingMicrosoftNETSdk)' == 'true'" DependsOnTargets="RunResolvePackageDependencies" />
 
   <Target Name="InferPrimaryOutputDependencies"
           Inputs="@(_PrimaryOutputRelatedFile)"
           Outputs="%(_PrimaryOutputRelatedFile.NuGetPackageId)"
           Returns="@(_InferredPackageFile)"
-          DependsOnTargets="_CollectPrimaryOutputRelatedFiles">
+          DependsOnTargets="_ResolvePackageDependencies;_CollectPrimaryOutputDependencies">
+    
     <ItemGroup>
       <_NuGetPackageId Include="@(_PrimaryOutputRelatedFile -> '%(NuGetPackageId)')" Condition="'%(NuGetPackageId)' != 'NETStandard.Library'" />
     </ItemGroup>
@@ -187,25 +210,28 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_NuGetPackageId>@(_NuGetPackageId -> Distinct())</_NuGetPackageId>
     </PropertyGroup>
     <ItemGroup>
-      <_PrimaryPackageReference Include="@(PackageReference)" Condition="'$(_NuGetPackageId)' != '' and '%(Identity)' == '$(_NuGetPackageId)'" />
+      <_PrimaryPackageReference Include="@(PackageReference);@(ImplicitPackageReference)" Condition="'$(_NuGetPackageId)' != '' and '%(Identity)' == '$(_NuGetPackageId)'" />
     </ItemGroup>
+    
     <PropertyGroup>
       <_PrivateAssets>@(_PrimaryPackageReference -> '%(PrivateAssets)')</_PrivateAssets>
+      <_ShouldPack>@(_PrimaryPackageReference -> '%(Pack)')</_ShouldPack>
       <_ShouldIncludeAssetsRegex>$(_NuGetPackageId)\\.+\\$(_PrivateAssets)\\.*</_ShouldIncludeAssetsRegex>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(_PrivateAssets)' == 'all'">
+    <ItemGroup Condition="'$(_ShouldPack)' != 'false' and '$(_PrivateAssets)' == 'all'">
       <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="'%(_PrimaryOutputRelatedFile.FrameworkFile)' != 'true'">
         <Kind>$(BuildOutputKind)</Kind>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
     </ItemGroup>
 
-    <ItemGroup Condition="'$(_PrivateAssets)' != 'all' and '$(_PrivateAssets)' != 'none' and '$(_PrivateAssets)' != ''">
+    <ItemGroup Condition="'$(_ShouldPack)' != 'false' and '$(_PrivateAssets)' != 'all' and '$(_PrivateAssets)' != 'none' and '$(_PrivateAssets)' != ''">
       <!-- In this case, we only add files that have a matching path to the private assets value. 
 				 i.e. for Mono.Options, PrivateAssets=lib, we'll include the file if its full path contains 
 				 'Mono.Options\*\lib\*', meaning the file is a lib. -->
-      <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputRelatedFile.FullPath)', '$(_ShouldIncludeAssetsRegex)', 'RegexOptions.IgnoreCase')) == 'true'">
+      <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" 
+                            Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputRelatedFile.FullPath)', '$(_ShouldIncludeAssetsRegex)', 'RegexOptions.IgnoreCase')) == 'true'">
         <Kind>$(BuildOutputKind)</Kind>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
