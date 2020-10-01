@@ -491,5 +491,54 @@ namespace NuGetizer
                 PackagePath = "contentFiles\\cs\\net472\\Bar.cs"
             }));
         }
+
+        [Fact]
+        public void when_adding_new_inference_then_can_change_defaults()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Data>
+        <Kind>content</Kind>
+        <Pack>true</Pack>
+        <BuildAction>Data</BuildAction>
+        <CopyToOutput>true</CopyToOutput>
+        <Flatten>true</Flatten>
+        <FrameworkSpecific>false</FrameworkSpecific>
+    </Data>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <PackInference Include='Data' />
+    <Data Include='Main.sql' />
+    <Data Include='Backup.sql' BuildAction='EmbeddedResource' CopyToOutput='false' />
+    <Data Include='None.sql' Pack='false' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "contentFiles\\any\\any\\Main.sql",
+                BuildAction = "Data",
+                Flatten = true,
+                CopyToOutput = true,
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "contentFiles\\any\\any\\Backup.sql",
+                BuildAction = "EmbeddedResource",
+                CopyToOutput = false,
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "None",
+                Extension = ".sql",
+            }));
+        }
     }
 }
