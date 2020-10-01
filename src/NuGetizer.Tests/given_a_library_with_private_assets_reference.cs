@@ -22,12 +22,12 @@ namespace NuGetizer
 
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.Dependency,
+                PackFolder = PackFolderKind.Dependency,
 				Identity = "Mono.Options",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.Lib,
+                PackFolder = PackFolderKind.Lib,
 				Filename = "Mono.Options",
 				NuGetSourceType = "Package",
 				NuGetPackageId = "Mono.Options",
@@ -46,12 +46,12 @@ namespace NuGetizer
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.Dependency,
+                PackFolder = PackFolderKind.Dependency,
 				Identity = "Newtonsoft.Json",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.Lib,
+                PackFolder = PackFolderKind.Lib,
 				Filename = "Newtonsoft.Json",
 				NuGetSourceType = "Package",
 				NuGetPackageId = "Newtonsoft.Json",
@@ -70,12 +70,12 @@ namespace NuGetizer
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.Dependency,
+                PackFolder = PackFolderKind.Dependency,
 				Identity = "xunit",
 			}));
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.Lib,
+                PackFolder = PackFolderKind.Lib,
 				Filename = "xunit",
 				NuGetSourceType = "Package",
 				NuGetPackageId = "xunit",

@@ -45,43 +45,43 @@
 
   <PropertyGroup>
     <CoreCompileDependsOn>
-      PackageItemKind;
+      IncludePackFolderKind;
       $(CoreCompileDependsOn);
     </CoreCompileDependsOn>
   </PropertyGroup>
 
-  <Target Name="PackageItemKind" BeforeTargets="BuildOnlySettings" DependsOnTargets="GeneratePackageItemKind">
+  <Target Name="IncludePackFolderKind" BeforeTargets="BuildOnlySettings" DependsOnTargets="GeneratePackFolderKind">
     <ItemGroup>
-      <Compile Include="$(PackageItemKindFile)" />
+      <Compile Include="$(PackFolderKindFile)" />
     </ItemGroup>
   </Target>
 
-  <Target Name="GeneratePackageItemKind" Inputs="$(MSBuildThisFileFullPath);NuGetizer.props" Outputs="$(PackageItemKindFile)">
+  <Target Name="GeneratePackFolderKind" Inputs="$(MSBuildThisFileFullPath);NuGetizer.props" Outputs="$(PackFolderKindFile)">
     <MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
-    <MSBuild Projects="NuGetizer.props" Targets="_GetPackageItemKinds">
-      <Output ItemName="_PackageItemKind" TaskParameter="TargetOutputs" />
+    <MSBuild Projects="NuGetizer.props" Targets="_GetPackFolders">
+      <Output ItemName="_PackFolderKind" TaskParameter="TargetOutputs" />
     </MSBuild>
 
     <WriteLinesToFile Lines='
 namespace $(RootNamespace)
 {
-	/// &lt;summary&gt;Available Kind metadata for PackageFile and _PackageContent items&lt;/summary&gt;
-	public static partial class PackageItemKind
+	/// &lt;summary&gt;Known PackFolder metadata values for PackageFile and _PackageContent items&lt;/summary&gt;
+	public static partial class PackFolderKind
 	{
-' Overwrite='true' File='$(PackageItemKindFile)' />
+' Overwrite='true' File='$(PackFolderKindFile)' />
 
-    <WriteLinesToFile Lines='				  
-		/// &lt;summary&gt;Kind: %(_PackageItemKind.Identity)&lt;/summary&gt;
-		public const string %(_PackageItemKind.Identity) = nameof(%(_PackageItemKind.Identity))%3B
-' Overwrite='false' File='$(PackageItemKindFile)' />
+    <WriteLinesToFile Lines='
+		/// &lt;summary&gt;PackageFolder: $([MSBuild]::ValueOrDefault(%(PackageFolder), %(Identity)))&lt;/summary&gt;
+		public const string %(_PackFolderKind.Identity) = "$([MSBuild]::ValueOrDefault(%(PackageFolder), %(Identity)))"%3B
+' Overwrite='false' File='$(PackFolderKindFile)' />
 
     <WriteLinesToFile Lines='
 	}
 }
-' Overwrite='false' File='$(PackageItemKindFile)' />
+' Overwrite='false' File='$(PackFolderKindFile)' />
 
     <ItemGroup>
-      <FileWrites Include="$(PackageItemKindFile)" />
+      <FileWrites Include="$(PackFolderKindFile)" />
     </ItemGroup>
   </Target>
 

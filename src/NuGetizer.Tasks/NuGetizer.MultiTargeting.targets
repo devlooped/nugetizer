@@ -60,7 +60,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   
     <!-- _AddPackageManifest adds per-TFM, so deduplicate and remove the TFM -->
     <ItemGroup Condition="'$(IsPackable)' == 'true'">
-      <_PackageMetadataContent Include="@(_PackageContent -> WithMetadataValue('Kind', 'Metadata'))" />
+      <_PackageMetadataContent Include="@(_PackageContent -> WithMetadataValue('PackFolder', 'Metadata'))" />
       <_PackageContent Remove="@(_PackageMetadataContent)" />
       <_PackageContent Include="@(_PackageMetadataContent -> Distinct())">
         <AdditionalProperties />

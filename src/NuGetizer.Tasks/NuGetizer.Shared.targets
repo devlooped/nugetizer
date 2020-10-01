@@ -16,7 +16,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <PropertyGroup>
     <!-- Whether to infer package contents -->
-    <EnablePackInference Condition="'$(EnablePackInference)' == ''" />
+    <EnablePackInference Condition="'$(EnablePackInference)' == ''">true</EnablePackInference>
 
     <!-- Whether include referenced projects' contents in the package. -->
     <PackProjectReference Condition="'$(PackProjectReference)' == ''">true</PackProjectReference>

@@ -25,24 +25,24 @@
     <Content Include="contentFiles\cs\monoandroid\content.cs" Condition="'$(IncludeContentWithReservedRelativeDir)' == 'true'" />
     <Content Include="cs\any\any-content.cs" />
     <None Include="none.txt" />
-    <None Include="none-with-kind.txt" Kind="build" />
+    <None Include="none-with-kind.txt" PackFolder="build" />
     <None Include="none-with-include-true.txt" Pack="true" />
 		<None Include="none-with-include-false.txt" Pack="false" />
     <None Include="none-copy.txt" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="none-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="none-copy-with-kind.txt" PackFolder="build" CopyToOutputDirectory="PreserveNewest" />
     <None Include="none-copy-with-include-true.txt" Pack="true" CopyToOutputDirectory="PreserveNewest" />
     <None Include="none-copy-with-include-false.txt" Pack="false" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="relative\none-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="relative\none-copy-with-kind.txt" PackFolder="build" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="relative\none-copy.txt" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="content.txt" />
-    <Content Include="content-with-kind.txt" Kind="build" />
+    <Content Include="content-with-kind.txt" PackFolder="build" />
     <Content Include="content-with-include-true.txt" Pack="true" />
     <Content Include="content-with-include-false.txt" Pack="false" />
     <Content Include="content-copy.txt" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="content-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="content-copy-with-kind.txt" PackFolder="build" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="content-copy-with-include-true.txt" Pack="true" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="content-copy-with-include-false.txt" Pack="false" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="relative\content-copy-with-kind.txt" Kind="build" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="relative\content-copy-with-kind.txt" PackFolder="build" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="relative\content-copy.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Include="none-with-packagepath.txt" PackagePath="build\%(Filename)%(Extension)" />
     <Content Include="content-with-packagepath.txt" PackagePath="build\%(Filename)%(Extension)" />
@@ -50,7 +50,7 @@
   </ItemGroup>
 	<Target Name="RemoveContent" Condition="'$(RemoveContent)' == 'true'" BeforeTargets="GetPackageContents">
 		<ItemGroup>
-			<PackageFile Remove="@(PackageFile)" Condition="'%(Kind)' == 'Content' Or '%(Kind)' == 'None'" />
+			<PackageFile Remove="@(PackageFile)" Condition="'%(PackFolder)' == 'content' Or '%(PackFolder)' == 'none'" />
     </ItemGroup>
   </Target>
 </Project>

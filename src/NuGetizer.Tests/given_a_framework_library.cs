@@ -23,7 +23,7 @@ namespace NuGetizer
             Assert.Contains(result.Items, item => item.Matches(new
             {
                 Identity = "PresentationCore",
-                Kind = PackageItemKind.FrameworkReference,
+                PackFolder = PackFolderKind.FrameworkReference,
             }));
         }
 
@@ -39,7 +39,7 @@ namespace NuGetizer
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
                 Identity = "PresentationCore",
-                Kind = PackageItemKind.FrameworkReference,
+                PackFolder = PackFolderKind.FrameworkReference,
             }));
         }
     }

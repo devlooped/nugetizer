@@ -32,8 +32,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <ItemDefinitionGroup>
     <PackageFile>
-      <!-- See @(PackageItemKind) below -->
-      <Kind>None</Kind>
+      <!-- See @(PackFolderKind) below -->
+      <PackFolder>None</PackFolder>
       <!-- By default, we consider all PackageFile items to be explicitly added by the user
 				 the automatic discovery will annotate those with Implicit instead. 
 				 This allows the duplicate item detection to either warn (Implicit) or error (Explicit). -->
@@ -46,18 +46,18 @@ Copyright (c) .NET Foundation. All rights reserved.
       <!-- When set to All, denotes a development dependency -->
       <PrivateAssets />
     </PackageReference>
-    <PackageItemKind>
+    <PackFolderKind>
       <!-- PackageFolder should map to a supported folder as defined in PackagingConstants.Folders -->
       <!-- If empty, causes the file to end up in %(RelativeDir) -->
       <PackageFolder />
       <!-- FrameworkSpecific is whether the PackagePath will include the project's TF or not -->
       <FrameworkSpecific>false</FrameworkSpecific>
-    </PackageItemKind>
+    </PackFolderKind>
   </ItemDefinitionGroup>
 
-  <!-- Default mapping between %(PackageFile.Kind) metadata and package folders inside .nupkg -->
+  <!-- Default mapping between %(PackageFile.PackageFolder) metadata and package folders inside .nupkg -->
   <ItemGroup>
-    <PackageItemKind Include="Content;ContentFiles">
+    <PackFolderKind Include="Content;ContentFiles">
       <!-- 
 					Plain "content" is deprecated as of NuGet v3+
 					See https://docs.nuget.org/ndocs/schema/nuspec#using-the-contentfiles-element-for-content-files
@@ -69,61 +69,61 @@ Copyright (c) .NET Foundation. All rights reserved.
 			-->
       <PackageFolder>contentFiles</PackageFolder>
       <FrameworkSpecific>true</FrameworkSpecific>
-    </PackageItemKind>
-    <PackageItemKind Include="None" />
+    </PackFolderKind>
+    <PackFolderKind Include="None" />
     <!-- 
 				NOTE: these aren't strictly necessary since we turn any custom 
-				Kind metadata into a PackageFolder by making the first char lowercase
+				PackageFolder metadata into a PackageFolder by making the first char lowercase
 				We also add singular form of the built-in plural form folders where it makes sense.
 		-->
-    <PackageItemKind Include="Lib">
+    <PackFolderKind Include="Lib">
       <PackageFolder>lib</PackageFolder>
       <FrameworkSpecific>true</FrameworkSpecific>
-    </PackageItemKind>
-    <PackageItemKind Include="Build">
+    </PackFolderKind>
+    <PackFolderKind Include="Build">
       <PackageFolder>build</PackageFolder>
-    </PackageItemKind>
-    <PackageItemKind Include="Tool;Tools">
+    </PackFolderKind>
+    <PackFolderKind Include="Tool;Tools">
       <PackageFolder>tools</PackageFolder>
-    </PackageItemKind>
-    <PackageItemKind Include="Native">
+    </PackFolderKind>
+    <PackFolderKind Include="Native">
       <PackageFolder>native</PackageFolder>
-    </PackageItemKind>
-    <PackageItemKind Include="Runtime;Runtimes">
+    </PackFolderKind>
+    <PackFolderKind Include="Runtime;Runtimes">
       <PackageFolder>runtimes</PackageFolder>
-    </PackageItemKind>
-    <PackageItemKind Include="Ref">
+    </PackFolderKind>
+    <PackFolderKind Include="Ref">
       <PackageFolder>ref</PackageFolder>
-    </PackageItemKind>
-    <PackageItemKind Include="Analyzer;Analyzers">
+    </PackFolderKind>
+    <PackFolderKind Include="Analyzer;Analyzers">
       <PackageFolder>analyzers</PackageFolder>
-    </PackageItemKind>
-    <PackageItemKind Include="Source">
+    </PackFolderKind>
+    <PackFolderKind Include="Source">
       <PackageFolder>source</PackageFolder>
-    </PackageItemKind>
+    </PackFolderKind>
 
-    <!-- For unknown Kind we apply the heuristics of turning the metadata value into pascalCase 
+    <!-- For unknown PackageFolder we apply the heuristics of turning the metadata value into pascalCase 
              and using that as the package folder (i.e. 'Workbooks' -> 'workbooks') -->
 
     <!-- Finally, specially treated items that we include here for completeness and documentation -->
 
     <!-- PackageReference items end up as Dependency -->
     <!-- Project references that build packages also end up as package dependencies -->
-    <PackageItemKind Include="Dependency">
+    <PackFolderKind Include="Dependency">
       <!-- See https://github.com/NuGet/Home/wiki/PackageReference-Specification for the available metadata -->
       <FrameworkSpecific>true</FrameworkSpecific>
-    </PackageItemKind>
+    </PackFolderKind>
 
     <!-- The package metadata item if the project generates a package -->
-    <PackageItemKind Include="Metadata" />
+    <PackFolderKind Include="Metadata" />
 
     <!-- Platform targets could turn @(ReferencePath) with ResolvedFrom={TargetFrameworkDirectory} to FrameworkReference, for example -->
-    <PackageItemKind Include="FrameworkReference">
+    <PackFolderKind Include="FrameworkReference">
       <FrameworkSpecific>true</FrameworkSpecific>
-    </PackageItemKind>
+    </PackFolderKind>
   </ItemGroup>
 
-  <Target Name="_GetPackageItemKinds" Returns="@(PackageItemKind)" />
+  <Target Name="_GetPackFolders" Returns="@(PackFolderKind)" />
   <!-- Redefined in Common targets. See PackageOutputGroup target -->
   <Target Name="AllProjectOutputGroups" />
 

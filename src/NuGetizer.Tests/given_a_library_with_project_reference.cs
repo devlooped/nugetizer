@@ -23,8 +23,8 @@ namespace NuGetizer
 			result.AssertSuccess(output);
 
 			// TODO: build some helpers to make this easier to assert.
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include main project output as Library");
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include referenced project output as Library");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("PackFolder") == PackFolderKind.Lib), "Did not include main project output as Library");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("PackFolder") == PackFolderKind.Lib), "Did not include referenced project output as Library");
 		}
 
 		[Fact]
@@ -35,8 +35,8 @@ namespace NuGetizer
 			result.AssertSuccess(output);
 
 			// TODO: build some helpers to make this easier to assert.
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include main project symbols");
-			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("Kind") == PackageItemKind.Lib), "Did not include referenced project symbols");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "a" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("PackFolder") == PackFolderKind.Lib), "Did not include main project symbols");
+			Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("PackFolder") == PackFolderKind.Lib), "Did not include referenced project symbols");
 		}
 
 		[Fact]
@@ -51,8 +51,8 @@ namespace NuGetizer
 			Assert.DoesNotContain(result.Items, item => item.Matches(new
 			{
 				Filename = "b", 
-				Extension = ".dll", 
-				Kind = "Lib",
+				Extension = ".dll",
+                PackFolder = "lib",
 			}));
 		}
 
@@ -73,7 +73,7 @@ namespace NuGetizer
 			{
 				Filename = "b",
 				Extension = ".dll",
-				Kind = "Lib",
+                PackFolder = "lib",
 			}));
 		}
 	}

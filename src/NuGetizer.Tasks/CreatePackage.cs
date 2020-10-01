@@ -78,7 +78,7 @@ namespace NuGetizer.Tasks
         public Manifest CreateManifest()
         {
             var metadata = new ManifestMetadata();
-
+            
             metadata.Id = Manifest.GetMetadata(nameof(MetadataName.PackageId));
 
             if (Manifest.TryGetMetadata(nameof(ManifestMetadata.Version), out var version))
@@ -207,7 +207,7 @@ namespace NuGetizer.Tasks
         void AddDependencies(Manifest manifest)
         {
             var dependencies = from item in Contents
-                               where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Dependency &&
+                               where PackFolderKind.Dependency.Equals(item.GetMetadata(MetadataName.PackFolder), StringComparison.OrdinalIgnoreCase) &&
                                      !"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase)
                                select new Dependency
                                {
@@ -237,7 +237,7 @@ namespace NuGetizer.Tasks
 
             // include frameworks referenced by libraries, but without dependencies..
             foreach (var targetFramework in (from item in Contents
-                                             where item.GetMetadata(MetadataName.Kind) == PackageItemKind.Lib &&
+                                             where PackFolderKind.Lib.Equals(item.GetMetadata(MetadataName.PackFolder), StringComparison.OrdinalIgnoreCase) &&
                                                    !"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase)
                                              select item.GetNuGetTargetFramework()))
                 if (!definedDependencyGroups.ContainsKey(targetFramework.GetFrameworkString()))
@@ -283,10 +283,8 @@ namespace NuGetizer.Tasks
             var md5 = new Lazy<HashAlgorithm>(() => MD5.Create());
             string hash(ITaskItem item)
             {
-                using (var file = File.OpenRead(item.GetMetadata("FullPath")))
-                {
-                    return string.Concat(md5.Value.ComputeHash(file).Select(x => x.ToString("x2")));
-                }
+                using var file = File.OpenRead(item.GetMetadata("FullPath"));
+                return string.Concat(md5.Value.ComputeHash(file).Select(x => x.ToString("x2")));
             }
 
             // Last remaining attempt at de-duplication is costly, but by now, we should 
@@ -341,7 +339,7 @@ namespace NuGetizer.Tasks
         void AddFrameworkAssemblies(Manifest manifest)
         {
             var frameworkReferences = (from item in Contents
-                                       where item.GetMetadata(MetadataName.Kind) == PackageItemKind.FrameworkReference
+                                       where item.GetMetadata(MetadataName.PackFolder) == PackFolderKind.FrameworkReference
                                        select new FrameworkAssemblyReference
                                       (
                                           item.ItemSpec,

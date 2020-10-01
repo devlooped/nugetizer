@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorCode_NG0010" xml:space="preserve">
-    <value>Package file '{0}' must have either 'Kind' or 'PackagePath' metadata.</value>
+    <value>Package file '{0}' must have either 'PackFolder' or 'PackagePath' metadata.</value>
   </data>
   <data name="ErrorCode_NG0011" xml:space="preserve">
     <value>Project references to include in package must be nugetized.</value>

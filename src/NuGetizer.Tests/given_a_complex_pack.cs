@@ -58,13 +58,13 @@ namespace NuGetizer
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = "Metadata",
+                PackFolder = PackFolderKind.Metadata,
 				Filename = "A",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Identity = "B",
-				Kind = "Dependency",
+                PackFolder = PackFolderKind.Dependency,
 				Version = "2.0.0",
 			}));
 		}
@@ -94,13 +94,13 @@ namespace NuGetizer
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = "Metadata",
+                PackFolder = PackFolderKind.Metadata,
 				Filename = "B",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Identity = "C",
-				Kind = "Dependency",
+                PackFolder = PackFolderKind.Dependency,
 				Version = "3.0.0",
 			}));
 		}
@@ -122,13 +122,13 @@ namespace NuGetizer
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = "Metadata",
+                PackFolder = PackFolderKind.Metadata,
 				Filename = "C",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Identity = "Foo",
-				Kind = "Dependency",
+                PackFolder = PackFolderKind.Dependency,
 				Version = "1.0.0",
 			}));
 		}
@@ -144,14 +144,14 @@ namespace NuGetizer
 			{
 				Filename = "d",
 				Extension = ".dll",
-				Kind = PackageItemKind.Lib,
+                PackFolder = PackFolderKind.Lib,
 				PackagePath = "",
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
 				Filename = "d",
 				Extension = ".xml",
-				Kind = PackageItemKind.Lib,
+                PackFolder = PackFolderKind.Lib,
 				PackagePath = "",
 			}));
 		}

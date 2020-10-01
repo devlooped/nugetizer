@@ -11,7 +11,7 @@
   <Target Name="Report" DependsOnTargets="GetPackageContents">
     <Message Importance="high" 
              Text="%(_PackageContent.RelativeDir)%(_PackageContent.Filename)%(_PackageContent.Extension)
-	Kind=%(_PackageContent.Kind)
+	Kind=%(_PackageContent.PackFolder)
 	PackagePath=%(_PackageContent.PackagePath)
 	TargetPath=%(_PackageContent.TargetPath)"/>
   </Target>

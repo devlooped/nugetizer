@@ -14,7 +14,6 @@ namespace NuGetizer
                 .AssertSuccess(output);
         }
 
-		
         [Fact]
 		public void when_gettingcontents_then_includes_content_from_all_frameworks()
 		{
@@ -40,7 +39,7 @@ namespace NuGetizer
 
             Assert.Single(result.Items, item => item.Matches(new
             {
-                Kind = "Metadata",
+                PackFolder = PackFolderKind.Metadata,
                 TargetFrameworkMoniker = "",
             }));
         }
@@ -63,7 +62,7 @@ namespace NuGetizer
 
             Assert.Single(result.Items, item => item.Matches(new
             {
-                Kind = "Metadata",
+                PackFolder = PackFolderKind.Metadata,
                 NewMetadata = "Foo",
             }));
         }
@@ -80,7 +79,7 @@ namespace NuGetizer
 
             Assert.Single(result.Items, item => item.Matches(new
             {
-                Kind = "Metadata",
+                PackFolder = PackFolderKind.Metadata,
                 Description = "Customized",
                 LicenseExpression = "MIT",
             }));

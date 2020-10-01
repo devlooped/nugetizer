@@ -13,7 +13,7 @@
   <Import Project="NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="$(IsPackable) and '$(NuGetize)' == 'true'" />
 
   <PropertyGroup>
-    <PackageItemKindFile>$(IntermediateOutputPath)PackageItemKind.g$(DefaultLanguageSourceExtension)</PackageItemKindFile>
+    <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
   </PropertyGroup>
 
   <ItemGroup>

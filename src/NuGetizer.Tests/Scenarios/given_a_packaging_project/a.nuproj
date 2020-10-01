@@ -13,7 +13,7 @@
 	</ItemGroup>
 	<Target Name="_AugmentMetadata" BeforeTargets="GetPackageContents">
 		<ItemGroup>
-			<PackageFile Condition="'%(PackageFile.Kind)' == 'Metadata'">
+			<PackageFile Condition="'%(PackageFile.PackFolder)' == 'Metadata'">
 				<Foo>Bar</Foo>
 			</PackageFile>
 		</ItemGroup>

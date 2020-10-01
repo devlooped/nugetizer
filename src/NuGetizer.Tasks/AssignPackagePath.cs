@@ -13,7 +13,7 @@ namespace NuGetizer.Tasks
     /// Ensures all files have the PackagePath metadata.
     /// If the PackagePath was not explicitly specified, 
     /// determine one from the project relative	path and 
-    /// the TargetFramework and Kind metadata, and set it 
+    /// the TargetFramework and PackFolder metadata, and set it 
     /// on the projected item.
     /// </summary>
     public class AssignPackagePath : Task
@@ -24,14 +24,14 @@ namespace NuGetizer.Tasks
         public ITaskItem[] Files { get; set; }
 
         [Required]
-        public ITaskItem[] Kinds { get; set; }
+        public ITaskItem[] KnownFolders { get; set; }
 
         [Output]
         public ITaskItem[] AssignedFiles { get; set; }
 
         public override bool Execute()
         {
-            var kindMap = Kinds.ToDictionary(
+            var kindMap = KnownFolders.ToDictionary(
                 kind => kind.ItemSpec,
                 StringComparer.OrdinalIgnoreCase);
 
@@ -44,24 +44,24 @@ namespace NuGetizer.Tasks
         {
             var output = new TaskItem(file);
 
-            // Map the Kind to a target top-level directory.
-            var kind = file.GetMetadata("Kind");
+            // Map the pack folder to a target top-level directory.
+            var packFolder = file.GetMetadata("PackFolder");
             var packageFolder = "";
             var frameworkSpecific = false;
-            if (!string.IsNullOrEmpty(kind) && kindMap.TryGetValue(kind, out var kindItem))
+            if (!string.IsNullOrEmpty(packFolder) && kindMap.TryGetValue(packFolder, out var kindItem))
             {
                 packageFolder = kindItem.GetMetadata(MetadataName.PackageFolder);
                 bool.TryParse(kindItem.GetMetadata(MetadataName.FrameworkSpecific), out frameworkSpecific);
             }
-            else if (!string.IsNullOrEmpty(kind))
+            else if (!string.IsNullOrEmpty(packFolder))
             {
-                // By convention, we just turn the first letter of Kind to lowercase and assume that 
+                // By convention, we just turn the first letter of PackFolder to lowercase and assume that 
                 // to be a valid folder kind.
-                packageFolder = char.IsLower(kind[0]) ? kind :
-                    char.ToLower(kind[0]).ToString() + kind.Substring(1);
+                packageFolder = char.IsLower(packFolder[0]) ? packFolder :
+                    char.ToLower(packFolder[0]).ToString() + packFolder.Substring(1);
             }
 
-            // Specific PackageFile can always override Kind-inferred FrameworkSpecific value.
+            // Specific PackageFile can always override PackFolder-inferred FrameworkSpecific value.
             if (bool.TryParse(file.GetMetadata(MetadataName.FrameworkSpecific), out var frameworkSpecificOverride))
                 frameworkSpecific = frameworkSpecificOverride;
 
@@ -100,8 +100,8 @@ namespace NuGetizer.Tasks
             if (string.IsNullOrEmpty(file.GetMetadata("PackageId")) && !isPackaging)
                 return output;
 
-            // If we got this far but there wasn't a Kind to process, it's an error.
-            if (string.IsNullOrEmpty(kind))
+            // If we got this far but there wasn't a PackFolder to process, it's an error.
+            if (string.IsNullOrEmpty(packFolder))
             {
                 Log.LogErrorCode(nameof(ErrorCode.NG0010), ErrorCode.NG0010(file.ItemSpec));
                 // We return the file anyway, since the task result will still be false.
@@ -110,7 +110,7 @@ namespace NuGetizer.Tasks
 
             // If the kind is known but it isn't mapped to a folder inside the package, we're done.
             // Special-case None kind since that means 'leave it wherever it lands' ;)
-            if (string.IsNullOrEmpty(packageFolder) && !kind.Equals(PackageItemKind.None, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(packageFolder) && !packFolder.Equals(PackFolderKind.None, StringComparison.OrdinalIgnoreCase))
                 return output;
 
             // Special case for contentFiles, since they can also provide a codeLanguage metadata

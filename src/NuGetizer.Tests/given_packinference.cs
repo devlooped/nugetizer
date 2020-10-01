@@ -43,7 +43,7 @@ namespace NuGetizer
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <None Include='Library.props' Kind='build' />
+    <None Include='Library.props' PackFolder='build' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output);
@@ -66,7 +66,7 @@ namespace NuGetizer
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <None Include='Library.props' Kind='build' FrameworkSpecific='true' />
+    <None Include='Library.props' PackFolder='build' FrameworkSpecific='true' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output);
@@ -136,7 +136,7 @@ namespace NuGetizer
     <PackContent>false</PackContent>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include='Library.props' Kind='build' />
+    <Content Include='Library.props' PackFolder='build' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output);
@@ -326,7 +326,7 @@ namespace NuGetizer
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include='Pack.cs' Pack='true' Kind='content' CodeLanguage='%(Extension)' />
+    <Compile Include='Pack.cs' Pack='true' PackFolder='content' CodeLanguage='%(Extension)' />
     <Compile Include='NonPack.cs' />
   </ItemGroup>
 </Project>",
@@ -503,7 +503,7 @@ namespace NuGetizer
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Data>
-        <Kind>content</Kind>
+        <PackFolder>content</PackFolder>
         <Pack>true</Pack>
         <BuildAction>Data</BuildAction>
         <CopyToOutput>true</CopyToOutput>
