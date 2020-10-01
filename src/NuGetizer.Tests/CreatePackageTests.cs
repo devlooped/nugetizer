@@ -76,7 +76,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),
@@ -115,7 +115,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),
@@ -150,7 +150,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" }
@@ -177,7 +177,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" },
@@ -203,7 +203,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" },
@@ -229,7 +229,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" }
@@ -253,7 +253,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" }
@@ -277,7 +277,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "net45" },
 					{ MetadataName.FrameworkSpecific, "false" },
@@ -285,7 +285,7 @@ namespace NuGetizer
 				new TaskItem("Microsoft.Build", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "15.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),
@@ -320,14 +320,14 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "any" },
 				}),
 				new TaskItem("Microsoft.Build", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "15.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),
@@ -360,34 +360,34 @@ namespace NuGetizer
 				new TaskItem(Path.GetTempFileName(), new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.None },
+					{ MetadataName.PackFolder, PackFolderKind.None },
 					{ MetadataName.PackagePath, "readme.txt" }
 				}),
 				new TaskItem("_._", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "*" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),
 				new TaskItem("_._", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "*" },
 					{ MetadataName.TargetFramework, "win" }
 				}),
 				new TaskItem("_._", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "*" },
 					{ MetadataName.TargetFramework, "wpa" }
 				}),
 				new TaskItem("_._", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "*" },
 					{ MetadataName.TargetFramework, "MonoAndroid10" }
 				}),
@@ -412,21 +412,21 @@ namespace NuGetizer
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.PackagePath, "lib\\net35\\library.dll" },
-					{ MetadataName.Kind, PackageItemKind.Lib },
+					{ MetadataName.PackFolder, PackFolderKind.Lib },
 					{ MetadataName.TargetFramework, "net35" }
 				}),
 				new TaskItem(Path.GetTempFileName(), new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.PackagePath, "lib\\net40\\library.dll" },
-					{ MetadataName.Kind, PackageItemKind.Lib },
+					{ MetadataName.PackFolder, PackFolderKind.Lib },
 					{ MetadataName.TargetFramework, "net40" }
 				}),
 				new TaskItem(Path.GetTempFileName(), new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.PackagePath, "lib\\net45\\library.dll" },
-					{ MetadataName.Kind, PackageItemKind.Lib },
+					{ MetadataName.PackFolder, PackFolderKind.Lib },
 					{ MetadataName.TargetFramework, "net45" }
 				})
 			};
@@ -453,14 +453,14 @@ namespace NuGetizer
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.None },
+					{ MetadataName.PackFolder, PackFolderKind.None },
 					{ MetadataName.PackagePath, "readme.txt" }
 				}),
 				new TaskItem("Helpers", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
 					{ MetadataName.Version, "1.0.0" },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.PrivateAssets, "all" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" }
@@ -480,7 +480,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
 					{ MetadataName.TargetFramework, "net45" }
@@ -508,7 +508,7 @@ namespace NuGetizer
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.None },
+					{ MetadataName.PackFolder, PackFolderKind.None },
 					{ MetadataName.PackagePath, "readme.txt" }
 				}),
 			};
@@ -528,7 +528,7 @@ namespace NuGetizer
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.ContentFiles },
+					{ MetadataName.PackFolder, PackFolderKind.ContentFiles },
 					{ MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
 					{ MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
 				}),
@@ -549,7 +549,7 @@ namespace NuGetizer
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.ContentFiles },
+					{ MetadataName.PackFolder, PackFolderKind.ContentFiles },
 					{ MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
 					{ MetadataName.ContentFile.BuildAction, "EmbeddedResource" },
 					{ MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
@@ -572,7 +572,7 @@ namespace NuGetizer
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.ContentFiles },
+					{ MetadataName.PackFolder, PackFolderKind.ContentFiles },
 					{ MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
 					{ MetadataName.ContentFile.CopyToOutput, "true" },
 					{ MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
@@ -604,7 +604,7 @@ namespace NuGetizer
 				new TaskItem(content, new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.ContentFiles },
+					{ MetadataName.PackFolder, PackFolderKind.ContentFiles },
 					{ MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
 					{ MetadataName.ContentFile.Flatten, "true" },
 					{ MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
@@ -641,13 +641,13 @@ namespace NuGetizer
 				new TaskItem("System.Xml", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.PackFolder, PackFolderKind.FrameworkReference },
 					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET45 }
 				}),
 				new TaskItem("System.Xml", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.PackFolder, PackFolderKind.FrameworkReference },
 					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.PCL78 }
 				}),
 			};
@@ -673,25 +673,25 @@ namespace NuGetizer
 				new TaskItem("System.Xml", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.PackFolder, PackFolderKind.FrameworkReference },
 					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET45 }
 				}),
 				new TaskItem("System.Xml", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.PackFolder, PackFolderKind.FrameworkReference },
 					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET45 }
 				}),
 				new TaskItem("System.Xml", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.PackFolder, PackFolderKind.FrameworkReference },
 					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.PCL78 }
 				}),
 				new TaskItem("System.Xml", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.FrameworkReference },
+					{ MetadataName.PackFolder, PackFolderKind.FrameworkReference },
 					{ MetadataName.TargetFrameworkMoniker, TargetFrameworks.PCL78 }
 				}),
 			};
@@ -728,7 +728,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),
@@ -758,7 +758,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),
@@ -788,7 +788,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),
@@ -823,7 +823,7 @@ namespace NuGetizer
 				new TaskItem("Newtonsoft.Json", new Metadata
 				{
 					{ MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-					{ MetadataName.Kind, PackageItemKind.Dependency },
+					{ MetadataName.PackFolder, PackFolderKind.Dependency },
 					{ MetadataName.Version, "8.0.0" },
 					{ MetadataName.TargetFramework, "net45" }
 				}),

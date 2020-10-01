@@ -34,7 +34,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   item containing the manifest information will also be returned, as 
 	
     Identity=$(PackageId)
-      %(Kind)=Metadata
+      %(PackFolder)=metadata
       ... all manifest values as metadata items ...
 	
   All items returned from this target contain a %(PackageId) metadata 
@@ -72,7 +72,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- We batch depending on the IsPackaging metadata, which is only specified for referenced content 
 			 if the current project is building a package, to force retargeting of the referenced content. -->
-    <AssignPackagePath Files="@(PackageFile)" Kinds="@(PackageItemKind)" IsPackaging="%(PackageFile.IsPackaging)">
+    <AssignPackagePath Files="@(PackageFile)" KnownFolders="@(PackFolderKind)" IsPackaging="%(PackageFile.IsPackaging)">
       <Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
     </AssignPackagePath>
   </Target>
@@ -81,7 +81,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- If packaging the project, provide the metadata as a non-file item -->
     <ItemGroup>
       <PackageFile Include="@(PackageMetadata)">
-        <Kind>Metadata</Kind>
+        <PackFolder>metadata</PackFolder>
         <PackageId>$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
         <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
@@ -115,11 +115,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ItemGroup>
       <_ReferencedPackageDependency Include="@(_ReferencedPackageContent)"
-                                    Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.Kind)' == 'Metadata'">
+                                    Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.PackFolder)' == 'metadata'">
         <!-- For consistency, annotate like the rest -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
-        <Kind>Dependency</Kind>
+        <PackFolder>Dependency</PackFolder>
       </_ReferencedPackageDependency>
       <!-- Remove the referenced package actual contents if it provides a manifest, since it will be a dependency in that case. -->
       <_PackageContentFromDependency Include="@(_ReferencedPackageContent)"

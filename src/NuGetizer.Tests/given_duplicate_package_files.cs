@@ -32,22 +32,22 @@ namespace NuGetizer
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.None,
+                PackFolder = PackFolderKind.None,
 				PackagePath = @"content\a\1\content.txt"
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.None,
+                PackFolder = PackFolderKind.None,
 				PackagePath = @"content\a\2\content.txt"
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.None,
+                PackFolder = PackFolderKind.None,
 				PackagePath = @"content\b\1\content.txt"
 			}));
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = PackageItemKind.None,
+                PackFolder = PackFolderKind.None,
 				PackagePath = @"content\b\2\content.txt"
 			}));
 

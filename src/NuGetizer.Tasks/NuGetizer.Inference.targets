@@ -13,25 +13,19 @@ Copyright (c) .NET Foundation. All rights reserved.
   <UsingTask TaskName="NuGetizer.Tasks.InferImplicitPackageReference" AssemblyFile="NuGetizer.Tasks.dll" />
 
   <PropertyGroup>
-    <!-- The Kind of primary output (build, symbols and doc) set if PackBuildOutput = true -->
-    <BuildOutputKind Condition="'$(BuildOutputKind)' == ''">Lib</BuildOutputKind>
+    <!-- The PackFolder of primary output (build, symbols, doc and satellite assemblies) set if PackBuildOutput = true -->
+    <PackFolder Condition="'$(PackFolder)' == ''">lib</PackFolder>
 
-    <!-- Whether to include @(Compile) items in the package -->
-    <PackCompile Condition="'$(PackCompile)' == ''">false</PackCompile>
     <!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
     <PackContent Condition="'$(PackContent)' == ''">true</PackContent>
-    <!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
-    <PackNone Condition="'$(PackNone)' == ''">false</PackNone>
-    <!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
-    <PackEmbeddedResource Condition="'$(PackEmbeddedResource)' == ''">false</PackEmbeddedResource>   
     <!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
     <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IsPackagingProject)' != 'true'">true</PackBuildOutput>
     <!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(PackBuildOutput)' == 'true'">true</PackSymbols>
-    <!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
 
+    <!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
     <!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
-    <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IsPackagingProject)' != 'true' and '$(BuildOutputKind)' == 'Lib'">true</PackFrameworkReferences>
+    <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IsPackagingProject)' != 'true' and '$(PackFolder)' == 'lib'">true</PackFrameworkReferences>
 
     <_OutputFullPath Condition="$([System.IO.Path]::IsPathRooted($(OutputPath)))">$(OutputPath)</_OutputFullPath>
     <_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(OutputPath)</_OutputFullPath>
@@ -41,81 +35,81 @@ Copyright (c) .NET Foundation. All rights reserved.
     <Compile>
       <!-- For Compile, the CodeLanguage should default to the project's default source extension -->
       <CodeLanguage>$(DefaultLanguageSourceExtension.TrimStart('.'))</CodeLanguage>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackCompile)' == 'true'">true</Pack>
       <BuildAction>Compile</BuildAction>
     </Compile>
     <Content>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackContent)' == true">true</Pack>
       <BuildAction>Content</BuildAction>
     </Content>
     <EmbeddedResource>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackEmbeddedResource)' == true">true</Pack>
       <BuildAction>EmbeddedResource</BuildAction>
     </EmbeddedResource>
     <None>
-      <DefaultKind>none</DefaultKind>
+      <DefaultPackFolder>none</DefaultPackFolder>
       <Pack Condition="'$(PackNone)' == true">true</Pack>
       <BuildAction>None</BuildAction>
     </None>
     <ApplicationDefinition>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackApplicationDefinition)' == true">true</Pack>
       <BuildAction>ApplicationDefinition</BuildAction>
     </ApplicationDefinition>
     <Page>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackPage)' == true">true</Pack>
       <BuildAction>Page</BuildAction>
     </Page>
     <Resource>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackResource)' == true">true</Pack>
       <BuildAction>Resource</BuildAction>
     </Resource>
     <SplashScreen>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackSplashScreen)' == true">true</Pack>
       <BuildAction>SplashScreen</BuildAction>
     </SplashScreen>
     <DesignData>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackDesignData)' == true">true</Pack>
       <BuildAction>DesignData</BuildAction>
     </DesignData>
     <DesignDataWithDesignTimeCreatableTypes>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackDesignDataWithDesignTimeCreatableTypes)' == true">true</Pack>
       <BuildAction>DesignDataWithDesignTimeCreatableTypes</BuildAction>
     </DesignDataWithDesignTimeCreatableTypes>
     <CodeAnalysisDictionary>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackCodeAnalysisDictionary)' == true">true</Pack>
       <BuildAction>CodeAnalysisDictionary</BuildAction>
     </CodeAnalysisDictionary>
     <AndroidAsset>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackAndroidAsset)' == true">true</Pack>
       <BuildAction>AndroidAsset</BuildAction>
     </AndroidAsset>
     <AndroidResource>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackAndroidResource)' == true">true</Pack>
       <BuildAction>AndroidResource</BuildAction>
     </AndroidResource>    
     <BundleResource>
-      <DefaultKind>content</DefaultKind>
+      <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackBundleResource)' == true">true</Pack>
       <BuildAction>BundleResource</BuildAction>
     </BundleResource>
     
     <InferenceCandidate>
-      <DefaultKind />
+      <DefaultPackFolder />
       <Pack />
       <PackagePath />
-      <Kind />
+      <PackFolder />
       <ShouldPack />
     </InferenceCandidate>
   </ItemDefinitionGroup>
@@ -151,14 +145,14 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="_SetBuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''" Returns="$(BuildOutputFrameworkSpecific)">
     <!-- Determine whether primary output is framework specific  -->
     <ItemGroup>
-      <_BuildOutputKindFrameworkSpecific Include="@(PackageItemKind->'%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(BuildOutputKind)'" />
+      <_BuildOutputFrameworkSpecific Include="@(PackFolderKind -> '%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(PackFolder)'" />
     </ItemGroup>
     <PropertyGroup>
-      <BuildOutputFrameworkSpecific>@(_BuildOutputKindFrameworkSpecific)</BuildOutputFrameworkSpecific>
+      <BuildOutputFrameworkSpecific>@(_BuildOutputFrameworkSpecific)</BuildOutputFrameworkSpecific>
     </PropertyGroup>
   </Target>
   
-  <Target Name="_SetDefaultPackageReferencePack" Condition="'$(BuildOutputKind)' == 'build'"
+  <Target Name="_SetDefaultPackageReferencePack" Condition="'$(PackFolder)' == 'build'"
           BeforeTargets="InferPrimaryOutputDependencies;InferPackageContents">
     <ItemGroup>
       <PackageReference Update="@(PackageReference)"
@@ -177,7 +171,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ItemGroup>
       <InferenceCandidate Include="@(%(PackInference.Identity))" />
       <InferenceCandidate>
-        <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(Kind)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
+        <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(PackFolder)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
       </InferenceCandidate>
     </ItemGroup>
 
@@ -187,13 +181,13 @@ Copyright (c) .NET Foundation. All rights reserved.
     </AssignTargetPath>
 
     <ItemGroup Label="PackInference">
-      <_InferenceCandidateWithTargetPath Condition="'%(Kind)' == ''">
+      <_InferenceCandidateWithTargetPath Condition="'%(PackFolder)' == ''">
         <!-- Items that are copied to the output directory adopt the kind of the build output -->
-        <Kind Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != '' or 
-                         '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != 'Never'">$(BuildOutputKind)</Kind>
+        <PackFolder Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != '' or 
+                               '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != 'Never'">$(PackFolder)</PackFolder>
         <!-- Otherwise they cake on whichever is the default for their item type, as defined by their PackInference item -->
-        <Kind Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == '' or 
-                         '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == 'Never'">%(_InferenceCandidateWithTargetPath.DefaultKind)</Kind>        
+        <PackFolder Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == '' or 
+                               '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == 'Never'">%(_InferenceCandidateWithTargetPath.DefaultPackFolder)</PackFolder>        
       </_InferenceCandidateWithTargetPath>
       
         <!-- Items that are copied to the output directory are included from the target path -->
@@ -217,13 +211,13 @@ Copyright (c) .NET Foundation. All rights reserved.
                                      @(BuiltProjectOutputGroupKeyOutput -> '%(FinalOutputPath)');
                                      @(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)');
                                      @(_SatelliteDllsProjectOutputGroupOutput -> '%(FinalOutputPath)')">
-        <Kind>$(BuildOutputKind)</Kind>
+        <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredProjectOutput>
 
       <_InferredProjectOutput Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                             Condition="'$(PackSymbols)' != 'false'">
-        <Kind>$(BuildOutputKind)</Kind>
+        <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredProjectOutput>
 
@@ -236,7 +230,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                                        '%(PackageReference.Identity)' != 'NETStandard.Library' and 
                                        '%(PackageReference.PrivateAssets)' != 'all' and
                                        '%(PackageReference.Pack)' != 'false'">
-        <Kind>Dependency</Kind>
+        <PackFolder>Dependency</PackFolder>
       </_InferredPackageFile>
 
       <!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
@@ -246,7 +240,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                             Condition="'$(PackFrameworkReferences)' == 'true' and 
                                        '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}' and 
                                        '%(ReferencePath.Pack)' != 'false'">
-        <Kind>FrameworkReference</Kind>
+        <PackFolder>FrameworkReference</PackFolder>
       </_InferredPackageFile>
     </ItemGroup>
 
@@ -308,7 +302,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ItemGroup Condition="'$(_ShouldPack)' != 'false' and '$(_PrivateAssets)' == 'all'">
       <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="'%(_PrimaryOutputRelatedFile.FrameworkFile)' != 'true'">
-        <Kind>$(BuildOutputKind)</Kind>
+        <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
     </ItemGroup>
@@ -319,7 +313,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 				 'Mono.Options\*\lib\*', meaning the file is a lib. -->
       <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" 
                             Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputRelatedFile.FullPath)', '$(_ShouldIncludeAssetsRegex)', 'RegexOptions.IgnoreCase')) == 'true'">
-        <Kind>$(BuildOutputKind)</Kind>
+        <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
     </ItemGroup>

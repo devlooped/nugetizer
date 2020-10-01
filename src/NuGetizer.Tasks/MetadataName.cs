@@ -4,7 +4,7 @@
     {
         public const string FileSource = "FullPath";
 
-        public const string Kind = nameof(Kind);
+        public const string PackFolder = nameof(PackFolder);
 
         public const string Version = nameof(Version);
 

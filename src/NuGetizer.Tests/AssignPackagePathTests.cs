@@ -18,7 +18,7 @@ namespace NuGetizer
 
 		static ITaskItem[] Kinds
             => kinds ??= new Project(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "NuGetizer.props"), null, null, new ProjectCollection())
-                .GetItems("PackageItemKind")
+                .GetItems("PackFolderKind")
                 .Select(item => new TaskItem(item.EvaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
                 .ToArray();
 
@@ -37,7 +37,7 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -58,7 +58,7 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -83,7 +83,7 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
@@ -109,20 +109,20 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("a.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Lib" }
+						{ "PackFolder", "lib" }
 					}),
 					new TaskItem("a.pdb", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Symbols" }
+						{ "PackFolder", "symbols" }
 					})
 				}
 			};
@@ -138,13 +138,13 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Lib" }
+						{ "PackFolder", "lib" }
 					})
 				}
 			};
@@ -160,13 +160,13 @@ namespace NuGetizer
 			{
 				IsPackaging = "true",
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Lib" }
+						{ "PackFolder", "lib" }
 					})
 				}
 			};
@@ -181,13 +181,13 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Lib" }
+						{ "PackFolder", "lib" }
 					})
 				}
 			};
@@ -205,13 +205,13 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Lib" }
+						{ "PackFolder", "lib" }
 					})
 				}
 			};
@@ -229,13 +229,13 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
-						{ "Kind", "Lib" }
+						{ "PackFolder", "lib" }
 					})
 				}
 			};
@@ -255,13 +255,13 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
-						{ "Kind", "ContentFiles" },
+						{ "PackFolder", "contentFiles" },
 						{ "TargetFramework", "any" },
 						{ "TargetFrameworkMoniker", "MonoAndroid,Version=v2.5" },
 					})
@@ -282,14 +282,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem(@"..\..\readme.txt", new Metadata
 					{
 						{ "Link", @"docs\readme.txt" },
 						{ "PackageId", "A" },
-						{ "Kind", "Content" },
+						{ "PackFolder", "content" },
 						{ "TargetFramework", "any" },
 					})
 				}
@@ -310,14 +310,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem(@"..\..\readme.txt", new Metadata
 					{
 						{ "Link", @"docs\readme.txt" },
 						{ "PackageId", "A" },
-						{ "Kind", "None" },
+						{ "PackFolder", "none" },
 						{ "TargetFramework", "any" },
 					})
 				}
@@ -339,13 +339,13 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("readme.txt", new Metadata
 					{
 						{ "PackageId", "A" },
-						{ "Kind", "Content" },
+						{ "PackFolder", "content" },
 						{ "FrameworkSpecific", "false" },
 						{ "TargetFrameworkMoniker", "MonoAndroid,Version=v2.5" },
 					})
@@ -375,14 +375,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", targetFrameworkMoniker },
-						{ "Kind", "Lib" }
+						{ "PackFolder", "lib" }
 					})
 				}
 			};
@@ -411,14 +411,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", packageFileKind }
+						{ "PackFolder", packageFileKind }
 					})
 				}
 			};
@@ -437,7 +437,7 @@ namespace NuGetizer
 		public static IEnumerable<object[]> GetUnmappedKnownKinds => Kinds
 			.Where(kind => string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) && 
 				kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles" && 
-				kind.ItemSpec != PackageItemKind.None)
+				kind.ItemSpec != PackFolderKind.None)
 			.Select(kind => new object[] { kind.ItemSpec });
 
 		[MemberData(nameof(GetUnmappedKnownKinds))]
@@ -447,14 +447,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("Foo", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", packageFileKind }
+						{ "PackFolder", packageFileKind }
 					})
 				}
 			};
@@ -472,14 +472,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("readme.txt", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "None" },
+						{ "PackFolder", "none" },
 						{ "PackagePath", "docs\\readme.txt" }
 					})
 				}
@@ -503,14 +503,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("Sample.cs", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", tfm },
-						{ "Kind", "Content" },
+						{ "PackFolder", "content" },
 						{ "CodeLanguage", lang }
 					})
 				}
@@ -528,7 +528,7 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem(@"contentFiles\cs\monodroid\content.cs", new Metadata
@@ -536,7 +536,7 @@ namespace NuGetizer
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
 						{ "TargetPath", @"contentFiles\cs\monodroid\content.cs" },
-						{ "Kind", "Content" },
+						{ "PackFolder", "content" },
 					})
 				}
 			};
@@ -551,14 +551,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("Sample.cs", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Content" },
+						{ "PackFolder", "content" },
 						{ MetadataName.ContentFile.CodeLanguage, "cs" },
 						{ MetadataName.ContentFile.BuildAction, "EmbeddedResource" },
 						{ MetadataName.ContentFile.CopyToOutput, "true" },
@@ -583,14 +583,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem(@"content\docs\readme.txt", new Metadata
 					{						
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "None" },
+						{ "PackFolder", "none" },
 					})
 				}
 			};
@@ -609,14 +609,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "None" },
+						{ "PackFolder", "none" },
 						{ "TargetPath", "workbook\\library.dll"}
 					})
 				}
@@ -636,14 +636,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "None" }
+						{ "PackFolder", "none" }
 					})
 				}
 			};
@@ -661,14 +661,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("library.dll", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", packageFileKind }
+						{ "PackFolder", packageFileKind }
 					})
 				}
 			};
@@ -687,13 +687,13 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("sdk\\bin\\tool.exe", new Metadata
 					{
 						{ "PackageId", "A" },
-						{ "Kind", "Tool" },
+						{ "PackFolder", "tool" },
 						{ "TargetPath", "sdk\\bin\\tool.exe"}
 					})
 				}
@@ -712,14 +712,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("sdk\\bin\\tool.exe", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Tool" },
+						{ "PackFolder", "tool" },
 						{ "FrameworkSpecific", "true" },
 						{ "TargetPath", "sdk\\bin\\tool.exe"}
 					})
@@ -739,14 +739,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("console.exe", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Lib" },
+						{ "PackFolder", "lib" },
 						{ "FrameworkSpecific", "false" },
 					})
 				}
@@ -765,14 +765,14 @@ namespace NuGetizer
 			var task = new AssignPackagePath
 			{
 				BuildEngine = engine,
-				Kinds = Kinds,
+				KnownFolders = Kinds,
 				Files = new ITaskItem[]
 				{
 					new TaskItem("tools\\foo.exe", new Metadata
 					{
 						{ "PackageId", "A" },
 						{ "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-						{ "Kind", "Tools" },
+						{ "PackFolder", "tools" },
 					})
 				}
 			};

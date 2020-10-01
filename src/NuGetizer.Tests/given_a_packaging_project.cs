@@ -44,7 +44,7 @@ namespace NuGetizer
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = "Metadata",
+                PackFolder = PackFolderKind.Metadata,
 				Foo = "Bar",
 			}));
 		}
@@ -101,7 +101,7 @@ namespace NuGetizer
 
 			Assert.Contains(result.Items, item => item.Matches(new
 			{
-				Kind = "Dependency",
+                PackFolder = PackFolderKind.Dependency,
 				Identity = "E",
 			}));
 		}

@@ -79,7 +79,7 @@ namespace NuGetize
 
                 var dependencies = items.Root.Descendants("PackageContent")
                     .Where(x =>
-                        "Dependency".Equals(x.Element("Kind")?.Value, StringComparison.OrdinalIgnoreCase) &&
+                        "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase) &&
                         x.Element("PackageId")?.Value == packageId)
                     .ToList();
 

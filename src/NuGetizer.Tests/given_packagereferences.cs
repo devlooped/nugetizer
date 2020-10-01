@@ -138,7 +138,7 @@ namespace NuGetizer
   <PropertyGroup>
     <PackageId>Library</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <BuildOutputKind>build</BuildOutputKind>
+    <PackFolder>build</PackFolder>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include='Microsoft.Build.Tasks.Core' Version='16.6.0' />
@@ -150,7 +150,7 @@ namespace NuGetizer
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
                 Identity = "Microsoft.Build.Tasks.Core",
-                Kind = PackageItemKind.Dependency,
+                PackFolder = PackFolderKind.Dependency,
             }));
         }
 
@@ -162,7 +162,7 @@ namespace NuGetizer
   <PropertyGroup>
     <PackageId>Library</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <BuildOutputKind>build</BuildOutputKind>
+    <PackFolder>build</PackFolder>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include='Microsoft.Build.Tasks.Core' Version='16.6.0' Pack='true' />
@@ -174,7 +174,7 @@ namespace NuGetizer
             Assert.Contains(result.Items, item => item.Matches(new
             {
                 Identity = "Microsoft.Build.Tasks.Core",
-                Kind = PackageItemKind.Dependency,
+                PackFolder = PackFolderKind.Dependency,
             }));
         }
 
