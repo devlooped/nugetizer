@@ -46,17 +46,9 @@ static partial class Builder
             File.WriteAllText(Path.Combine(scenarioDir, file.name), file.contents);
         }
 
-        var openLog = OpenBuildLogAttribute.IsActive;
-        try
-        {
-            OpenBuildLogAttribute.IsActive = false;
+        using (var disable = OpenBuildLogAttribute.Disable())
             BuildScenario(scenarioName, target: "Restore", output: output, verbosity: verbosity)
                 .AssertSuccess(output);
-        }
-        finally
-        {
-            OpenBuildLogAttribute.IsActive = openLog;
-        }
 
         return BuildScenario(scenarioName, target: target, output: output, verbosity: verbosity);
     }
@@ -231,6 +223,7 @@ internal class OpenBuildLogAttribute : BeforeAfterTestAttribute
             }
         }
     }
+    public static IDisposable Disable() => new DisposableOpenBinlog();
 
     public override void Before(MethodInfo methodUnderTest)
     {
@@ -242,6 +235,19 @@ internal class OpenBuildLogAttribute : BeforeAfterTestAttribute
     {
         IsActive = false;
         base.After(methodUnderTest);
+    }
+
+    class DisposableOpenBinlog : IDisposable
+    {
+        bool isActive;
+
+        public DisposableOpenBinlog()
+        {
+            isActive = IsActive;
+            IsActive = false;
+        }
+
+        public void Dispose() => IsActive = isActive;
     }
 }
 

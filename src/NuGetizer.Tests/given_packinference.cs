@@ -295,7 +295,7 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_compile_has_Pack_and_CodeLanguage_then_sets_subpath()
+        public void when_content_has_CodeLanguage_and_CodeLanguage_then_sets_subpath()
         {
             var result = Builder.BuildProject(@"
 <Project Sdk='Microsoft.NET.Sdk'>
@@ -304,7 +304,7 @@ namespace NuGetizer
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include='Foo.cs' Pack='true' Kind='content' CodeLanguage='%(Extension)' />
+    <Content Include='Foo.vb' TargetFramework='any' CodeLanguage='%(Extension)' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output);
@@ -312,7 +312,129 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\cs\\netstandard2.0\\Foo.cs"
+                PackagePath = "contentFiles\\vb\\any\\Foo.vb"
+            }));
+        }
+
+        [Fact]
+        public void check_compile_pack_default()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include='Pack.cs' Pack='true' Kind='content' CodeLanguage='%(Extension)' />
+    <Compile Include='NonPack.cs' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "Pack",
+                Extension = ".cs",
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "NonPack",
+                Extension = ".cs",
+            }));
+        }
+
+        [Fact]
+        public void check_embeddedresource_pack_default()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include='Pack.resx' Pack='true' />
+    <EmbeddedResource Include='NonPack.resx' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "Pack",
+                Extension = ".resx",
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "NonPack",
+                Extension = ".resx",
+            }));
+        }
+
+        [Fact]
+        public void check_none_pack_default()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include='Pack.txt' Pack='true' />
+    <None Include='NonPack.txt' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "Pack",
+                Extension = ".txt",
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "NonPack",
+                Extension = ".txt",
+            }));
+        }
+
+        [Fact]
+        public void check_content_pack_default()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include='Pack.txt' Pack='true' />
+    <Content Include='NonPack.txt' />
+    <Content Include='PackFalse.txt' Pack='false' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "Pack",
+                Extension = ".txt",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "NonPack",
+                Extension = ".txt",
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "PackFalse",
+                Extension = ".txt",
             }));
         }
 
