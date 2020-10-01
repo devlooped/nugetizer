@@ -12,8 +12,9 @@ namespace NuGetizer
 		[Fact]
 		public void when_getting_package_contents_then_contains_private_assets_as_primary_output()
 		{
-			Builder.BuildScenario(nameof(given_a_library_with_private_assets_reference), target: "Restore", output: output)
-                .AssertSuccess(output);
+            using (var disable = OpenBuildLogAttribute.Disable())
+                Builder.BuildScenario(nameof(given_a_library_with_private_assets_reference), target: "Restore", output: output)
+                    .AssertSuccess(output);
 
 			var result = Builder.BuildScenario(nameof(given_a_library_with_private_assets_reference), output: output);
 

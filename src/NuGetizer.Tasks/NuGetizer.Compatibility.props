@@ -20,6 +20,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <BuildOutputKind Condition="'$(BuildOutputTargetFolder)' != ''">$(BuildOutputTargetFolder)</BuildOutputKind>
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(IncludeSymbols)' != ''">$(IncludeSymbols)</PackSymbols>
     <PackContent Condition="'$(PackContent)' == '' and '$(IncludeContentInPack)' != ''">$(IncludeContentInPack)</PackContent>
+    <PackCompile Condition="'$(PackCompile)' == '' and '$(IncludeSource)' != ''">$(IncludeSource)</PackCompile>
     <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IncludeBuildOutput)' != ''">$(IncludeBuildOutput)</PackBuildOutput>
     <Description Condition="'$(Description)' == '' and '$(PackageDescription)' != ''">$(PackageDescription)</Description>
   </PropertyGroup>

@@ -12,6 +12,7 @@ namespace NuGetizer
 		public given_a_library_with_content(ITestOutputHelper output)
 		{
 			this.output = output;
+            using var disable = OpenBuildLogAttribute.Disable();
             Builder.BuildScenario(nameof(given_a_library_with_content), target: "Restore")
                 .AssertSuccess(output);
         }
@@ -137,7 +138,7 @@ namespace NuGetizer
 			}));
 		}
 
-		[Fact]
+        [Fact]
 		public void content_no_copy_is_included_from_source()
 		{
 			var result = Builder.BuildScenario(nameof(given_a_library_with_content), new

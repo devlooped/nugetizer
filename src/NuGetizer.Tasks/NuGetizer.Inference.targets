@@ -16,10 +16,14 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- The Kind of primary output (build, symbols and doc) set if PackBuildOutput = true -->
     <BuildOutputKind Condition="'$(BuildOutputKind)' == ''">Lib</BuildOutputKind>
 
+    <!-- Whether to include @(Compile) items in the package -->
+    <PackCompile Condition="'$(PackCompile)' == ''">false</PackCompile>
     <!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
     <PackContent Condition="'$(PackContent)' == ''">true</PackContent>
     <!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
     <PackNone Condition="'$(PackNone)' == ''">false</PackNone>
+    <!-- Whether to include @(None) items with CopyToOutputDirectory != '' in the package -->
+    <PackEmbeddedResource Condition="'$(PackEmbeddedResource)' == ''">false</PackEmbeddedResource>   
     <!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
     <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IsPackagingProject)' != 'true'">true</PackBuildOutput>
     <!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
@@ -33,15 +37,89 @@ Copyright (c) .NET Foundation. All rights reserved.
     <_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(OutputPath)</_OutputFullPath>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <GetPackageContentsDependsOn>
-      $(GetPackageContentsDependsOn);
-      _BuildOutputFrameworkSpecific;
-      _SetDefaultPackageReferencePack;
-      InferPackageContents
-    </GetPackageContentsDependsOn>
-  </PropertyGroup>
-
+  <ItemDefinitionGroup Label="Inference Defaults">
+    <Compile>
+      <!-- For Compile, the CodeLanguage should default to the project's default source extension -->
+      <CodeLanguage>$(DefaultLanguageSourceExtension.TrimStart('.'))</CodeLanguage>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackCompile)' == 'true'">true</Pack>
+      <BuildAction>Compile</BuildAction>
+    </Compile>
+    <Content>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackContent)' == true">true</Pack>
+      <BuildAction>Content</BuildAction>
+    </Content>
+    <EmbeddedResource>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackEmbeddedResource)' == true">true</Pack>
+      <BuildAction>EmbeddedResource</BuildAction>
+    </EmbeddedResource>
+    <None>
+      <DefaultKind>none</DefaultKind>
+      <Pack Condition="'$(PackNone)' == true">true</Pack>
+      <BuildAction>None</BuildAction>
+    </None>
+    <ApplicationDefinition>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackApplicationDefinition)' == true">true</Pack>
+      <BuildAction>ApplicationDefinition</BuildAction>
+    </ApplicationDefinition>
+    <Page>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackPage)' == true">true</Pack>
+      <BuildAction>Page</BuildAction>
+    </Page>
+    <Resource>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackResource)' == true">true</Pack>
+      <BuildAction>Resource</BuildAction>
+    </Resource>
+    <SplashScreen>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackSplashScreen)' == true">true</Pack>
+      <BuildAction>SplashScreen</BuildAction>
+    </SplashScreen>
+    <DesignData>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackDesignData)' == true">true</Pack>
+      <BuildAction>DesignData</BuildAction>
+    </DesignData>
+    <DesignDataWithDesignTimeCreatableTypes>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackDesignDataWithDesignTimeCreatableTypes)' == true">true</Pack>
+      <BuildAction>DesignDataWithDesignTimeCreatableTypes</BuildAction>
+    </DesignDataWithDesignTimeCreatableTypes>
+    <CodeAnalysisDictionary>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackCodeAnalysisDictionary)' == true">true</Pack>
+      <BuildAction>CodeAnalysisDictionary</BuildAction>
+    </CodeAnalysisDictionary>
+    <AndroidAsset>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackAndroidAsset)' == true">true</Pack>
+      <BuildAction>AndroidAsset</BuildAction>
+    </AndroidAsset>
+    <AndroidResource>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackAndroidResource)' == true">true</Pack>
+      <BuildAction>AndroidResource</BuildAction>
+    </AndroidResource>    
+    <BundleResource>
+      <DefaultKind>content</DefaultKind>
+      <Pack Condition="'$(PackBundleResource)' == true">true</Pack>
+      <BuildAction>BundleResource</BuildAction>
+    </BundleResource>
+    
+    <InferenceCandidate>
+      <DefaultKind />
+      <Pack />
+      <PackagePath />
+      <Kind />
+      <ShouldPack />
+    </InferenceCandidate>
+  </ItemDefinitionGroup>
+  
   <!-- Extend some built-in items with metadata we use in our inference targets -->
   <ItemDefinitionGroup>
     <PackageReference>
@@ -61,7 +139,16 @@ Copyright (c) .NET Foundation. All rights reserved.
     </_ReferenceRelatedPaths>
   </ItemDefinitionGroup>
 
-  <Target Name="_BuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''" Returns="$(BuildOutputFrameworkSpecific)">
+  <PropertyGroup>
+    <GetPackageContentsDependsOn>
+      $(GetPackageContentsDependsOn);
+      _SetBuildOutputFrameworkSpecific;
+      _SetDefaultPackageReferencePack;
+      InferPackageContents
+    </GetPackageContentsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="_SetBuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''" Returns="$(BuildOutputFrameworkSpecific)">
     <!-- Determine whether primary output is framework specific  -->
     <ItemGroup>
       <_BuildOutputKindFrameworkSpecific Include="@(PackageItemKind->'%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(BuildOutputKind)'" />
@@ -80,71 +167,71 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
+  <ItemGroup>
+    <PackInference Include="Compile;Content;EmbeddedResource;None;ApplicationDefinition;Page;
+                            Resource;SplashScreen;DesignData;DesignDataWithDesignTimeCreatableTypes;
+                            CodeAnalysisDictionary;AndroidAsset;AndroidResource;BundleResource" />
+  </ItemGroup>
+  
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
-    <!-- Ensure TargetPath -->
-    <AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)"
-                      Condition="'%(Content.Pack)' == 'true' or 
-                                 '%(Content.PackagePath)' != '' or
-                                 '%(Content.Kind)' != '' or 
-                                 ('$(PackContent)' == 'true' and '%(Content.Pack)' != 'false')">
-      <Output TaskParameter="AssignedFiles" ItemName="_ContentToInfer" />
-    </AssignTargetPath>
-
-    <AssignTargetPath Files="@(None)" RootFolder="$(MSBuildProjectDirectory)"
-                      Condition="'%(None.Pack)' == 'true' or 
-                                 '%(None.PackagePath)' != '' or
-                                 '%(None.Kind)' != '' or 
-                                 ('$(PackNone)' == 'true' and '%(None.Pack)' != 'false')">
-      <Output TaskParameter="AssignedFiles" ItemName="_NoneToInfer" />
-    </AssignTargetPath>
-
     <ItemGroup>
+      <InferenceCandidate Include="@(%(PackInference.Identity))" />
+      <InferenceCandidate>
+        <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(Kind)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
+      </InferenceCandidate>
+    </ItemGroup>
+
+    <AssignTargetPath Files="@(InferenceCandidate)" RootFolder="$(MSBuildProjectDirectory)"
+                      Condition="'%(ShouldPack)' == 'true'">
+      <Output TaskParameter="AssignedFiles" ItemName="_InferenceCandidateWithTargetPath" />
+    </AssignTargetPath>
+
+    <ItemGroup Label="PackInference">
+      <_InferenceCandidateWithTargetPath Condition="'%(Kind)' == ''">
+        <!-- Items that are copied to the output directory adopt the kind of the build output -->
+        <Kind Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != '' or 
+                         '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != 'Never'">$(BuildOutputKind)</Kind>
+        <!-- Otherwise they cake on whichever is the default for their item type, as defined by their PackInference item -->
+        <Kind Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == '' or 
+                         '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == 'Never'">%(_InferenceCandidateWithTargetPath.DefaultKind)</Kind>        
+      </_InferenceCandidateWithTargetPath>
+      
+        <!-- Items that are copied to the output directory are included from the target path -->
+      <_InferredPackageFile Include="@(_InferenceCandidateWithTargetPath -> '$(_OutputFullPath)\%(TargetPath)')"
+                            Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != '' and 
+                                       '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != 'Never'" />
+      <!-- Otherwise, they are included from the source location -->
+      <_InferredPackageFile Include="@(_InferenceCandidateWithTargetPath->'%(FullPath)')"
+                            Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == '' or 
+                                       '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == 'Never'" />
+    </ItemGroup>
+
+    <ItemGroup Label="BuildOutput Inference" Condition="'$(PackBuildOutput)' == 'true'">
 			<!-- Unfortunately, even with https://github.com/Microsoft/msbuild/pull/1115, when multi-targeting 
            .NETFramework, the desktop WinFX.targets are imported which don't have the fix, so we need to 
            do it "the old way" for this particular output group -->
-			<_SatelliteDllsProjectOutputGroupOutput Include="@(SatelliteDllsProjectOutputGroupOutput)" FinalOutputPath="'%(FullPath)')" />
+			<_SatelliteDllsProjectOutputGroupOutput Include="@(SatelliteDllsProjectOutputGroupOutput)" 
+                                              FinalOutputPath="'%(FullPath)')" />
       
       <_InferredProjectOutput Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)');
                                      @(BuiltProjectOutputGroupKeyOutput -> '%(FinalOutputPath)');
                                      @(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)');
-                                     @(_SatelliteDllsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                            Condition="'$(PackBuildOutput)' == 'true'">
+                                     @(_SatelliteDllsProjectOutputGroupOutput -> '%(FinalOutputPath)')">
         <Kind>$(BuildOutputKind)</Kind>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredProjectOutput>
 
       <_InferredProjectOutput Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                            Condition="'$(PackBuildOutput)' == 'true' and '$(PackSymbols)' != 'false'">
+                            Condition="'$(PackSymbols)' != 'false'">
         <Kind>$(BuildOutputKind)</Kind>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredProjectOutput>
 
       <_InferredPackageFile Include="@(_InferredProjectOutput -> Distinct())" />
+    </ItemGroup>
 
-      <!-- NOTE: Content is opt-out (must have Pack=false to exclude if PackContent=true) -->
-      <!-- Stuff that is copied to output should be included from that output location -->
-      <_InferredPackageFile Include="@(_ContentToInfer->'$(_OutputFullPath)\%(TargetPath)')"
-							   Condition="'%(_ContentToInfer.CopyToOutputDirectory)' != '' and '%(_ContentToInfer.CopyToOutputDirectory)' != 'Never'">
-        <Kind Condition="'%(_ContentToInfer.Kind)' == ''">$(BuildOutputKind)</Kind>
-      </_InferredPackageFile>
-      <!-- Otherwise, include from source location and default to content -->
-      <_InferredPackageFile Include="@(_ContentToInfer->'%(FullPath)')"
-							   Condition="'%(_ContentToInfer.CopyToOutputDirectory)' == '' or '%(_ContentToInfer.CopyToOutputDirectory)' == 'Never'">
-        <Kind Condition="'%(_ContentToInfer.Kind)' == ''">Content</Kind>
-      </_InferredPackageFile>
-
-      <!-- NOTE: None is also opt-out (must have Pack=false to exclude if PackNone=true, but this property defaults to false) -->
-      <!-- Likewise, include from target path if it's copied, from source path otherwise -->
-      <_InferredPackageFile Include="@(_NoneToInfer->'$(_OutputFullPath)\%(TargetPath)')"
-							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' != '' and '%(_NoneToInfer.CopyToOutputDirectory)' != 'Never'">
-        <Kind Condition="'%(_NoneToInfer.Kind)' == ''">$(BuildOutputKind)</Kind>
-      </_InferredPackageFile>
-      <_InferredPackageFile Include="@(_NoneToInfer->'%(FullPath)')"
-							   Condition="'%(_NoneToInfer.CopyToOutputDirectory)' == '' or '%(_NoneToInfer.CopyToOutputDirectory)' == 'Never'">
-        <Kind Condition="'%(_NoneToInfer.Kind)' == ''">None</Kind>
-      </_InferredPackageFile>
-      
-      <_InferredPackageFile Include="@(PackageReference)" 
+    <ItemGroup Label="References Inference">
+      <_InferredPackageFile Include="@(PackageReference)"
                             Condition="'%(PackageReference.Identity)' != 'NuGetizer' and
                                        '%(PackageReference.Identity)' != 'NETStandard.Library' and 
                                        '%(PackageReference.PrivateAssets)' != 'all' and

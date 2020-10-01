@@ -110,7 +110,7 @@ namespace NuGetizer.Tasks
 
             // If the kind is known but it isn't mapped to a folder inside the package, we're done.
             // Special-case None kind since that means 'leave it wherever it lands' ;)
-            if (string.IsNullOrEmpty(packageFolder) && kind != PackageItemKind.None)
+            if (string.IsNullOrEmpty(packageFolder) && !kind.Equals(PackageItemKind.None, StringComparison.OrdinalIgnoreCase))
                 return output;
 
             // Special case for contentFiles, since they can also provide a codeLanguage metadata
@@ -127,8 +127,13 @@ namespace NuGetizer.Tasks
                 var codeLanguage = file.GetMetadata(MetadataName.ContentFile.CodeLanguage);
                 if (string.IsNullOrEmpty(codeLanguage))
                 {
-                    codeLanguage = PackagingConstants.AnyFramework;
+                    codeLanguage = PackagingConstants.AnyCodeLanguage;
                     output.SetMetadata(MetadataName.ContentFile.CodeLanguage, codeLanguage);
+                }
+                else
+                {
+                    // This allows setting the codeLanguage to just the %(Extension) of the source file
+                    codeLanguage = codeLanguage.TrimStart('.');
                 }
 
                 packageFolder = Path.Combine(packageFolder, codeLanguage);
