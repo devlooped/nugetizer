@@ -120,6 +120,20 @@ namespace NuGetize
             Console.WriteLine();
             ColorConsole.WriteLine("Items: ", file.Yellow());
 
+            if (binlog)
+            {
+                // Attempt to open binlog automatically if msbuildlog.com is installed
+                try
+                {
+                    Process.Start(new ProcessStartInfo(Directory.GetCurrentDirectory() + "\\build.binlog")
+                    {
+                        UseShellExecute = true,
+                        WindowStyle = ProcessWindowStyle.Maximized
+                    });
+                }
+                catch { }
+            }
+
             return 0;
         }
 
