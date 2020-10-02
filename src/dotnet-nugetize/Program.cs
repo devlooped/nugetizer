@@ -152,12 +152,19 @@ namespace NuGetize
                         ColorConsole.Write("/".Gray());
 
                     var attributes = new List<string>();
-                    if (element.Element("BuildAction")?.Value is string buildAction)
-                        attributes.Add("buildAction=" + buildAction);
-                    if (element.Element("CopyToOutput")?.Value is string copyToOutput)
-                        attributes.Add("copyToOutput=" + copyToOutput);
-                    if (element.Element("Flatten")?.Value is string flatten)
-                        attributes.Add("flatten=" + flatten);
+                    var packFolder = element.Element("PackFolder")?.Value;
+
+                    if (packFolder != null && 
+                        ("content".Equals(packFolder, StringComparison.OrdinalIgnoreCase) || 
+                         "contentFiles".Equals(packFolder, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        if (element.Element("BuildAction")?.Value is string buildAction)
+                            attributes.Add("buildAction=" + buildAction);
+                        if (element.Element("CopyToOutput")?.Value is string copyToOutput)
+                            attributes.Add("copyToOutput=" + copyToOutput);
+                        if (element.Element("Flatten")?.Value is string flatten)
+                            attributes.Add("flatten=" + flatten);
+                    }
 
                     ColorConsole.Write(Path.GetFileName(file).White());
                     if (attributes.Count > 0)
