@@ -39,18 +39,30 @@ static partial class Builder
         doc.Root.AddFirst(XElement
             .Parse("<Import Project='$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))' />"));
 
-        doc.Save(Path.Combine(scenarioDir, "library.csproj"));
+        doc.Save(Path.Combine(scenarioDir, "scenario.csproj"));
 
         foreach (var file in files)
         {
-            File.WriteAllText(Path.Combine(scenarioDir, file.name), file.contents);
+            try
+            {
+                doc = XDocument.Parse(file.contents);
+                doc.Root.AddFirst(XElement
+                    .Parse("<Import Project='$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))' />"));
+
+                doc.Save(Path.Combine(scenarioDir, file.name));
+            }
+            catch (System.Xml.XmlException)
+            {
+                File.WriteAllText(Path.Combine(scenarioDir, file.name), file.contents);
+            }
+
         }
 
         using (var disable = OpenBuildLogAttribute.Disable())
-            BuildScenario(scenarioName, target: "Restore", output: output, verbosity: verbosity)
+            BuildScenario(scenarioName, projectName: "scenario", target: "Restore", output: output, verbosity: verbosity)
                 .AssertSuccess(output);
 
-        return BuildScenario(scenarioName, target: target, output: output, verbosity: verbosity);
+        return BuildScenario(scenarioName, projectName: "scenario", target: target, output: output, verbosity: verbosity);
     }
 
     public static TargetResult BuildScenario(
