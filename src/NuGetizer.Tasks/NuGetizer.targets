@@ -34,7 +34,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   item containing the manifest information will also be returned, as 
 	
     Identity=$(PackageId)
-      %(PackFolder)=metadata
+      %(PackFolder)=Metadata
       ... all manifest values as metadata items ...
 	
   All items returned from this target contain a %(PackageId) metadata 
@@ -81,7 +81,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- If packaging the project, provide the metadata as a non-file item -->
     <ItemGroup>
       <PackageFile Include="@(PackageMetadata)">
-        <PackFolder>metadata</PackFolder>
+        <PackFolder>Metadata</PackFolder>
         <PackageId>$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
         <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
@@ -115,7 +115,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ItemGroup>
       <_ReferencedPackageDependency Include="@(_ReferencedPackageContent)"
-                                    Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.PackFolder)' == 'metadata'">
+                                    Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.PackFolder)' == 'Metadata'">
         <!-- For consistency, annotate like the rest -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
