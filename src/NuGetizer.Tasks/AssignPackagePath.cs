@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using static ThisAssembly.Strings;
 using NuGet.Packaging;
+using static ThisAssembly.Strings;
 
 namespace NuGetizer.Tasks
 {

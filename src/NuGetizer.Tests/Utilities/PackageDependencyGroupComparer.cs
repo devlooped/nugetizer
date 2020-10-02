@@ -5,9 +5,9 @@ using NuGet.Packaging.Core;
 
 namespace NuGetizer
 {
-	class PackageDependencyGroupComparer : IEqualityComparer<PackageDependencyGroup>
+    class PackageDependencyGroupComparer : IEqualityComparer<PackageDependencyGroup>
     {
-		public static PackageDependencyGroupComparer Default { get; } = new PackageDependencyGroupComparer();
+        public static PackageDependencyGroupComparer Default { get; } = new PackageDependencyGroupComparer();
 
         public bool Equals(PackageDependencyGroup x, PackageDependencyGroup y)
         {

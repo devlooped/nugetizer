@@ -54,7 +54,7 @@ namespace NuGetize
 
             foreach (var metadata in items.Root.Descendants("PackageMetadata")
                 .Distinct(AnonymousComparer.Create<XElement>(
-                    (x, y) => x.Element("PackageId")?.Value == y.Element("PackageId")?.Value, 
+                    (x, y) => x.Element("PackageId")?.Value == y.Element("PackageId")?.Value,
                     x => x.Element("PackageId")?.Value.GetHashCode() ?? 0)))
             {
                 var packageId = metadata.Element("PackageId").Value;
@@ -68,9 +68,9 @@ namespace NuGetize
                     .First();
 
                 foreach (var md in metadata.Elements()
-                    .Where(x => 
-                        x.Name != "PackageId" && 
-                        x.Name != "Nuspec" && 
+                    .Where(x =>
+                        x.Name != "PackageId" &&
+                        x.Name != "Nuspec" &&
                         x.Name != "NuPkg")
                     .OrderBy(x => x.Name.LocalName))
                 {
@@ -99,8 +99,8 @@ namespace NuGetize
                 ColorConsole.WriteLine($"  Contents:".Yellow());
 
                 var contents = items.Root.Descendants("PackageContent")
-                    .Where(x => 
-                        x.Element("PackagePath") != null && 
+                    .Where(x =>
+                        x.Element("PackagePath") != null &&
                         x.Element("PackageId")?.Value == packageId)
                     //.Select(x => x.Element("PackagePath").Value)
                     .Distinct(AnonymousComparer.Create<XElement>(x => x.Element("PackagePath").Value))
@@ -154,8 +154,8 @@ namespace NuGetize
                     var attributes = new List<string>();
                     var packFolder = element.Element("PackFolder")?.Value;
 
-                    if (packFolder != null && 
-                        ("content".Equals(packFolder, StringComparison.OrdinalIgnoreCase) || 
+                    if (packFolder != null &&
+                        ("content".Equals(packFolder, StringComparison.OrdinalIgnoreCase) ||
                          "contentFiles".Equals(packFolder, StringComparison.OrdinalIgnoreCase)))
                     {
                         if (element.Element("BuildAction")?.Value is string buildAction)

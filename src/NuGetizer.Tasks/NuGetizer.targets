@@ -89,13 +89,14 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
-  <Target Name="_GetReferencedPackageContents"
-			Condition="'$(_SupportsProjectReferences)' == 'true'"
-			DependsOnTargets="$(_GetReferencedPackageContentsDependsOn)"
-			Returns="@(PackageFile)">
+  <Target Name="_GetReferencedPackageContents" 
+          Condition="'$(_SupportsProjectReferences)' == 'true'"
+          DependsOnTargets="$(_GetReferencedPackageContentsDependsOn)"
+          Returns="@(PackageFile)">
+    
     <Error Condition="'@(_NonNuGetizedProjectReference)' != ''"
-				   Code="NG0011"
-				   Text="Some project references cannot be properly packaged. Please install the NuGetizer package on the following projects: @(_NonNuGetizedProjectReference)." />
+           Code="NG0011"
+           Text="Some project references cannot be properly packaged. Please install the NuGetizer package on the following projects: @(_NonNuGetizedProjectReference)." />
 
     <!-- 
     PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 

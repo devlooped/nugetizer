@@ -6,7 +6,7 @@ namespace NuGetizer
 {
     class ManifestFileComparer : IEqualityComparer<ManifestFile>
     {
-		public static ManifestFileComparer Default { get; } = new ManifestFileComparer();
+        public static ManifestFileComparer Default { get; } = new ManifestFileComparer();
 
         public bool Equals(ManifestFile x, ManifestFile y)
         {
@@ -15,9 +15,9 @@ namespace NuGetizer
             if (x == null || y == null)
                 return false;
 
-			// We don't compare the Source since it's different for packaged manifests 
-			return StringComparer.OrdinalIgnoreCase.Equals(x.Target, y.Target)
-				&& StringComparer.OrdinalIgnoreCase.Equals(x.Exclude, x.Exclude);
+            // We don't compare the Source since it's different for packaged manifests 
+            return StringComparer.OrdinalIgnoreCase.Equals(x.Target, y.Target)
+                && StringComparer.OrdinalIgnoreCase.Equals(x.Exclude, x.Exclude);
         }
 
         public int GetHashCode(ManifestFile obj)
@@ -25,8 +25,8 @@ namespace NuGetizer
             if (obj == null)
                 throw new ArgumentNullException("obj");
 
-			return StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Target ?? "")
-				+ StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Exclude ?? "");
-		}
-	}
+            return StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Target ?? "")
+                + StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Exclude ?? "");
+        }
+    }
 }

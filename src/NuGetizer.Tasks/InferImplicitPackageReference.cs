@@ -41,7 +41,7 @@ namespace NuGetizer.Tasks
 
             var inferred = new HashSet<PackageIdentity>();
 
-            foreach (var reference in PackageReferences.Where(x => 
+            foreach (var reference in PackageReferences.Where(x =>
                 "all".Equals(x.GetMetadata("PrivateAssets"), StringComparison.OrdinalIgnoreCase) &&
                 // Unless explicitly set to Pack=false
                 (!x.TryGetBoolMetadata("Pack", out var pack) || pack != false) &&
@@ -58,8 +58,8 @@ namespace NuGetizer.Tasks
             ImplicitPackageReferences = inferred
                 .Select(x => new TaskItem(
                     x.Id,
-                    new Dictionary<string, string> 
-                    { 
+                    new Dictionary<string, string>
+                    {
                         { "Version", x.Version } ,
                         { "PrivateAssets", "all" },
                     }))
@@ -92,7 +92,7 @@ namespace NuGetizer.Tasks
             public string Id { get; }
             public string Version { get; }
 
-            public override bool Equals(object obj) 
+            public override bool Equals(object obj)
                 => obj is PackageIdentity dependency &&
                     dependency.Id == Id &&
                     dependency.Version == Version;
