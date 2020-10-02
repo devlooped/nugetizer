@@ -46,7 +46,7 @@ namespace NuGetize
                 File.Delete(file);
 
             // Optimize the "build" so that it doesn't actually do a full compile if possible.
-            if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} -m:1 -p:dotnet-nugetize=\"{file}\" -nologo {bl} -t:\"GetPackageContents;Pack\" -p:EmitNuspec=true -p:EmitPackage=false -p:SkipCompilerExecution=true -p:DesignTimeBuild=true -p:DesignTimeSilentResolution=true -p:ResolveAssemblyReferencesSilent=true", debug))
+            if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} -m:1 -p:dotnet-nugetize=\"{file}\" -nologo {bl} -t:\"GetPackageContents;Pack\" -p:EnableSourceLink=true -p:EnableSourceControlManagerQueries=true -p:EmitNuspec=true -p:EmitPackage=false -p:SkipCompilerExecution=true -p:DesignTimeBuild=true -p:DesignTimeSilentResolution=true -p:ResolveAssemblyReferencesSilent=true", debug))
                 return -1;
 
             var items = XDocument.Load(file);
