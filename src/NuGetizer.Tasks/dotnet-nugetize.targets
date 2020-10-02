@@ -14,11 +14,14 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="CopyFilesToOutputDirectory" />
 
   <Target Name="_WritePackageContents" Condition="'$(dotnet-nugetize)' != ''" AfterTargets="GetPackageContents">
-    <ItemGroup>
+    <ItemGroup Condition="'@(NuspecFile)' == ''">
       <NuspecFile Include="$(NuspecFile)" />
-    </ItemGroup>    
+    </ItemGroup>
+    <PropertyGroup>
+      <_NuspecFile>%(NuspecFile.FullPath)</_NuspecFile>
+    </PropertyGroup>
     <ItemGroup>
-      <PackageMetadata Update="@(PackageMetadata)" Nuspec="@(NuspecFile -> '%(FullPath)')" NuPkg="@(PackageTargetPath)" />
+      <PackageMetadata Update="@(PackageMetadata)" Nuspec="$(_NuspecFile)" NuPkg="@(PackageTargetPath)" />
       <PackageContent Include="@(_PackageContent)" Exclude="@(PackageMetadata)" />
     </ItemGroup>
     <WriteItemsToFile Condition="'@(PackageMetadata)' != ''" Overwrite="false" Items="@(PackageMetadata)" ItemName="PackageMetadata" File="$(dotnet-nugetize)" />
