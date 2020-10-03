@@ -62,7 +62,7 @@ item metadata. It can also be turned off by default for all items of a given typ
 The basic item metadata that drive pack inference are:
 
 1. **Pack**: *true*/*false*, determines whether inference applies to the item at all.
-2. **PackagePath**: final path within the package.
+2. **PackagePath**: final path within the package. Can be a directory path ending in `\` and in that case the item's *RelativeDir*, *Filename* and *Extension* will be appended automatically. Linked files are also supported automatically.
 
 If the item does **not** provide a *PackagePath*, and *Pack* is not *false*, the inference targets wil try to determine the right value, based on the following additional metadata:
 

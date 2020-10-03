@@ -332,6 +332,81 @@ namespace NuGetizer
             }));
         }
 
+        [Fact]
+        public void when_package_file_has_directory_package_path_then_appends_file_and_extension()
+        {
+            var task = new AssignPackagePath
+            {
+                BuildEngine = engine,
+                KnownFolders = Kinds,
+                Files = new ITaskItem[]
+                {
+                    new TaskItem(@"readme.txt", new Metadata
+                    {
+                        { "PackageId", "A" },
+                        { "PackFolder", "none" },
+                        { "PackagePath", @"build\" },
+                    })
+                }
+            };
+
+            Assert.True(task.Execute());
+            Assert.Contains(task.AssignedFiles, item => item.Matches(new
+            {
+                PackagePath = @"build\readme.txt",
+            }));
+        }
+
+        [Fact]
+        public void when_package_file_has_directory_package_path_and_relative_dir_then_appends_relative_path_file_and_extension()
+        {
+            var task = new AssignPackagePath
+            {
+                BuildEngine = engine,
+                KnownFolders = Kinds,
+                Files = new ITaskItem[]
+                {
+                    new TaskItem(@"quickstarts\readme.txt", new Metadata
+                    {
+                        { "PackageId", "A" },
+                        { "PackFolder", "none" },
+                        { "PackagePath", @"docs\" },
+                    })
+                }
+            };
+
+            Assert.True(task.Execute());
+            Assert.Contains(task.AssignedFiles, item => item.Matches(new
+            {
+                PackagePath = @"docs\quickstarts\readme.txt",
+            }));
+        }
+
+        [Fact]
+        public void when_package_file_has_directory_package_path_and_link_then_appends_linked_file()
+        {
+            var task = new AssignPackagePath
+            {
+                BuildEngine = engine,
+                KnownFolders = Kinds,
+                Files = new ITaskItem[]
+                {
+                    new TaskItem(@"..\..\foo\bar\readme.txt", new Metadata
+                    {
+                        { "PackageId", "A" },
+                        { "PackFolder", "none" },
+                        { "Link", @"quickstarts\readme.txt" },
+                        { "PackagePath", @"docs\" },
+                    })
+                }
+            };
+
+            Assert.True(task.Execute());
+            Assert.Contains(task.AssignedFiles, item => item.Matches(new
+            {
+                PackagePath = @"docs\quickstarts\readme.txt",
+            }));
+        }
 
         [Fact]
         public void when_content_is_not_framework_specific_then_has_any_lang_and_tfm()
