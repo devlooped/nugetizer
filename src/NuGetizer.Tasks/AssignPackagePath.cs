@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
@@ -31,6 +32,9 @@ namespace NuGetizer.Tasks
 
         public override bool Execute()
         {
+            if (Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") == "1")
+                Debugger.Break();
+
             var kindMap = KnownFolders.ToDictionary(
                 kind => kind.ItemSpec,
                 StringComparer.OrdinalIgnoreCase);

@@ -236,7 +236,6 @@ Copyright (c) .NET Foundation. All rights reserved.
   </PropertyGroup>
 
   <Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(_PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
-    <MakeDir Directories="$(PackageOutputPath)" Condition="!Exists('$(PackageOutputPath)')" />
     <ItemGroup Condition="'@(NuspecFile)' == ''">
       <NuspecFile Include="$(NuspecFile)" />
     </ItemGroup>

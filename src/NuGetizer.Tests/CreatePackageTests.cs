@@ -33,8 +33,8 @@ namespace NuGetizer
                 NuspecFile = Path.GetTempFileName(),
                 Manifest = new TaskItem("package", new Metadata
                 {
-                    { "Id", "package" },
-                    { "Version", "1.0.0" },
+                    { MetadataName.PackageId, "package" },
+                    { MetadataName.Version, "1.0.0" },
                     { "Title", "title" },
                     { "Description", "description" },
                     { "Summary", "summary" },
@@ -66,6 +66,29 @@ namespace NuGetizer
         Manifest ExecuteTask() => createPackage ?
                 task.Execute(new MemoryStream()) :
                 task.CreateManifest();
+
+        [Fact]
+        public void when_output_path_not_exists_then_creates_it()
+        {
+            task.Contents = new[]
+            {
+				// Need at least one dependency or content file for the generation to succeed.
+				new TaskItem("Newtonsoft.Json", new Metadata
+                {
+                    { MetadataName.PackageId, "package" },
+                    { MetadataName.PackFolder, PackFolderKind.Dependency },
+                    { MetadataName.Version, "8.0.0" },
+                    { MetadataName.TargetFramework, "net45" }
+                }),
+            };
+
+            task.EmitPackage = "true";
+            task.TargetPath = Path.Combine(Base62.Encode(DateTime.Now.Ticks), "output.nupkg");
+
+            Assert.True(task.Execute());
+            Assert.True(File.Exists(task.TargetPath));
+        }
+
 
         [Fact]
         public void when_creating_package_then_contains_all_metadata()
