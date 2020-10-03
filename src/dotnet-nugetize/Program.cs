@@ -81,6 +81,12 @@ namespace NuGetize
                     .Where(x =>
                         "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase) &&
                         x.Element("PackageId")?.Value == packageId)
+                    .Distinct(AnonymousComparer.Create<XElement>(x => 
+                        x.Attribute("Include").Value + "|" + 
+                        x.Element("Version").Value + "|" +
+                        x.Element("TargetFramework").Value))
+                    .OrderBy(x => x.Element("TargetFramework").Value)
+                    .ThenBy(x => x.Attribute("Include").Value)
                     .ToList();
 
                 if (dependencies.Count > 0)
@@ -102,7 +108,6 @@ namespace NuGetize
                     .Where(x =>
                         x.Element("PackagePath") != null &&
                         x.Element("PackageId")?.Value == packageId)
-                    //.Select(x => x.Element("PackagePath").Value)
                     .Distinct(AnonymousComparer.Create<XElement>(x => x.Element("PackagePath").Value))
                     .OrderBy(x => Path.GetDirectoryName(x.Element("PackagePath").Value))
                     .ThenBy(x => x.Element("PackagePath").Value);
@@ -197,21 +202,33 @@ namespace NuGetize
         {
             var info = new ProcessStartInfo(program, arguments)
             {
-                RedirectStandardOutput = debug,
-                RedirectStandardError = debug
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
 
             var proc = Process.Start(info);
+
             if (debug)
             {
                 Console.Out.Write(proc.StandardOutput.ReadToEnd());
                 Console.Error.Write(proc.StandardError.ReadToEnd());
             }
 
-            if (!proc.WaitForExit(5000))
+            var timedout = false;
+
+            // If process takes too long, start to automatically 
+            // render the output.
+            while (!proc.WaitForExit(5000))
             {
-                proc.Kill();
-                return false;
+                timedout = true;
+                Console.Out.Write(proc.StandardOutput.ReadToEnd());
+                Console.Error.Write(proc.StandardError.ReadToEnd());
+            }
+
+            if ((proc.ExitCode != 0 && !debug) || timedout)
+            {
+                Console.Out.Write(proc.StandardOutput.ReadToEnd());
+                Console.Error.Write(proc.StandardError.ReadToEnd());
             }
 
             return proc.ExitCode == 0;
