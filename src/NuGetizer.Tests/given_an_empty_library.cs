@@ -11,6 +11,41 @@ namespace NuGetizer
         public given_an_empty_library(ITestOutputHelper output) => this.output = output;
 
         [Fact]
+        public void when_is_packable_true_then_package_id_defaults_to_assembly_name()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Metadata
+            }));
+        }
+
+        [Fact]
+        public void when_no_is_packable_and_no_package_id_then_defaults_to_non_packable()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Metadata
+            }));
+        }
+
+        [Fact]
         public void when_getting_package_contents_then_includes_output_assembly()
         {
             var result = Builder.BuildProject(@"

@@ -37,6 +37,9 @@ Copyright (c) .NET Foundation. All rights reserved.
   </PropertyGroup>
 
   <PropertyGroup Label="Hidden">
+    <!-- Matches the SDK Pack default when set to true. -->
+    <PackageId Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''">$(AssemblyName)</PackageId>
+
     <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
     <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
     <!-- When the project is building a package, AssignPackagePath always assigns a PackagePath, regardless of the project PackageId -->
