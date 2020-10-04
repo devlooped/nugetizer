@@ -15,7 +15,7 @@ namespace NuGetize
         static int Main(string[] args)
         {
             var binlog = Debugger.IsAttached || args.Any(arg => arg == "--bl" || arg == "-bl");
-            var debug = args.Any(args => args == "--debug");
+            var debug = Debugger.IsAttached || args.Any(args => args == "--debug");
 
             if (args.Any(arg => arg == "--version"))
                 ColorConsole.WriteLine($"{ThisAssembly.Project.ToolCommandName} version {ThisAssembly.Project.Version}".Green());
