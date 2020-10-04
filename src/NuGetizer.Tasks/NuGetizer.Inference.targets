@@ -131,6 +131,9 @@ Copyright (c) .NET Foundation. All rights reserved.
       <NuGetPackageId />
       <Pack />
     </_ReferenceRelatedPaths>
+    <PackageDependencies>
+      <ParentPackage />
+    </PackageDependencies>
   </ItemDefinitionGroup>
 
   <PropertyGroup>
@@ -259,7 +262,39 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
+  <Target Name="_UpdatePackageReferenceVersions" 
+          Inputs="@(PackageReference)" 
+          Outputs="|%(Identity)|" 
+          Condition="'$(UsingMicrosoftNETSdk)' == 'true' and '$(ManagePackageVersionsCentrally)' == 'true'"
+          DependsOnTargets="RunResolvePackageDependencies"
+          Returns="@(_CentrallyManagedDependency)">
+
+    <PropertyGroup>
+      <_CandidatePackageId>%(PackageReference.Identity)</_CandidatePackageId>
+      <_CandidatePackageVersion>%(PackageReference.Version)</_CandidatePackageVersion>
+      <_CandidatePackageIsImplicit>%(PackageReference.IsImplicitlyDefined)</_CandidatePackageIsImplicit>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(_CandidatePackageVersion)' == '' and '$(_CandidatePackageIsImplicit)' != 'true'">
+      <_CentrallyManagedDependency Include="@(PackageDependencies)" 
+                                   Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').StartsWith('$(_CandidatePackageId)/')) and 
+                                              $([MSBuild]::ValueOrDefault('%(ParentPackage)', '')) == ''" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'@(_CentrallyManagedDependency)' != ''">
+      <_CentrallyManagedDependency>%(_CentrallyManagedDependency.Identity)</_CentrallyManagedDependency>
+      <_CentrallyManagedVersion>$(_CentrallyManagedDependency.Replace('$(_CandidatePackageId)/', ''))</_CentrallyManagedVersion>
+    </PropertyGroup>
+    
+    <ItemGroup Condition="'$(_CentrallyManagedVersion)' != ''">
+      <PackageReference Update="@(PackageReference)" Version="$(_CentrallyManagedVersion)" />
+    </ItemGroup>
+  
+  </Target>
+  
   <Target Name="_CollectPrimaryOutputDependencies" DependsOnTargets="BuildOnlySettings;ResolveReferences" Returns="@(ImplicitPackageReference)">
+    <Error Code="NG1003" Text="Centrally managed package versions is only supported when using the Microsoft.NET.Sdk."
+           Condition="'$(ManagePackageVersionsCentrally)' == 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
     <ItemGroup>
       <_PrimaryOutputRelatedFile Include="@(ReferencePath);@(_ReferenceRelatedPaths)"
                                  Condition="'%(NuGetPackageId)' != 'NETStandard.Library' and 
@@ -332,8 +367,15 @@ Copyright (c) .NET Foundation. All rights reserved.
 
       <InferPackageContentsDependsOn Condition="'$(_SupportsReferences)' == 'true'">
         ResolveReferences;
+        _UpdatePackageReferenceVersions;
         InferPrimaryOutputDependencies
       </InferPackageContentsDependsOn>
+      <InferPackageContentsDependsOn Condition="$(_AllProjectCapabilities.Contains('PackageReferences')) and 
+                                               '$(UsingMicrosoftNETSdk)' == 'true' and 
+                                               '$(ManagePackageVersionsCentrally)' == 'true'">
+        $(InferPackageContentsDependsOn);
+        _UpdatePackageReferenceVersions
+      </InferPackageContentsDependsOn>      
       <InferPackageContentsDependsOn>
         $(InferPackageContentsDependsOn);
         GetPackageTargetPath
