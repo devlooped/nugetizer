@@ -40,7 +40,7 @@
         Built from $(RepositoryUrl)/tree/$(SourceRevisionId.Substring(0, 9))
       </Description>
       <!-- Update nuspec properties too -->
-      <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+      <PackageProjectUrl>$([System.Text.RegularExpressions.Regex]::Replace('$(RepositoryUrl)', '^(http.*)github\.com/(.+?)/(.*)', '$1$2.github.io/$3'))</PackageProjectUrl>
       <PackageDescription> $(Description)</PackageDescription>
     </PropertyGroup>
   </Target>
