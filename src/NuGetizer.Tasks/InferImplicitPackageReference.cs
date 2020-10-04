@@ -36,6 +36,14 @@ namespace NuGetizer.Tasks
                 {
                     packages.GetOrAdd(parse(parent), _ => new List<PackageIdentity>())
                         .Add(identity);
+                } 
+                else
+                {
+                    // In centrally managed package versions, at this point we have 
+                    // the right version if the project is using centrally managed versions
+                    var primaryReference = PackageReferences.FirstOrDefault(x => x.ItemSpec == identity.Id);
+                    if (primaryReference != null && primaryReference.GetNullableMetadata("Version") == null)
+                        primaryReference.SetMetadata("Version", identity.Version);
                 }
             }
 

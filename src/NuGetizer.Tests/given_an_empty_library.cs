@@ -29,6 +29,31 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_is_packable_true_but_packageid_empty_then_fails()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output, 
+            files: (name: "Directory.Build.targets", @"
+<Project>
+  <Import Project='$([MSBuild]::GetPathOfFileAbove(Directory.Build.targets, $(MSBuildThisFileDirectory)..))' />
+  <PropertyGroup>
+    <PackageId />
+  </PropertyGroup>
+</Project>"));
+
+            Assert.Equal(TargetResultCode.Failure, result.ResultCode);
+            // Next best to checking the full string. No way I could find to 
+            // get the actually build error code.
+            Assert.Contains("PackageId", result.ToString());
+            Assert.Contains("IsPackable", result.ToString());
+        }
+
+        [Fact]
         public void when_no_is_packable_and_no_package_id_then_defaults_to_non_packable()
         {
             var result = Builder.BuildProject(@"
