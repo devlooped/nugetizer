@@ -62,7 +62,7 @@ item metadata. It can also be turned off by default for all items of a given typ
 The basic item metadata that drive pack inference are:
 
 1. **Pack**: *true*/*false*, determines whether inference applies to the item at all.
-2. **PackagePath**: final path within the package.
+2. **PackagePath**: final path within the package. Can be a directory path ending in `\` and in that case the item's *RelativeDir*, *Filename* and *Extension* will be appended automatically. Linked files are also supported automatically.
 
 If the item does **not** provide a *PackagePath*, and *Pack* is not *false*, the inference targets wil try to determine the right value, based on the following additional metadata:
 
@@ -136,7 +136,7 @@ This even works transitively, so if you use *PrivateAssets=all* on package refer
 
 As usual, you can change this default behavior by using `Pack=false` metadata.
 
-### Project References
+### ProjectReference
 
 Unlike SDK Pack that [considers project references as package references by default](https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#project-to-project-references), NuGetizer has an explicit contract between projects: the `GetPackageContents` target. This target is invoked when packing project references, and it returns whatever the referenced project exposes as package contents (including the inference rules above). If the project is *packable* (that is, it produces a package, denoted by the presence of a `PackageId` property), it will be packed as a dependency/package reference instead.
 
@@ -180,6 +180,8 @@ Package: Sample.1.0.0.nupkg
         sample.dll
         sample.pdb
 ```
+
+Finally, you can focedly turn a project reference build output into a private asset even if it defines a `PackageId` by adding `PrivateAssets=all`. This is very useful for build and analyzer packages, which typically reference the main library project too, but need its output as private, since neither can use dependencies at run-time.
 
 ### dotnet-nugetize
 

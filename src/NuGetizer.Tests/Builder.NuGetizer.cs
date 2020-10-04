@@ -25,7 +25,7 @@ static partial class Builder
         string projectContent = null,
         string target = "GetPackageContents",
         ITestOutputHelper output = null,
-        LoggerVerbosity? verbosity = null, 
+        LoggerVerbosity? verbosity = null,
         params (string name, string contents)[] files)
     {
         using var sha = new SHA1Managed();
@@ -38,19 +38,31 @@ static partial class Builder
         var doc = XDocument.Parse(projectContent);
         doc.Root.AddFirst(XElement
             .Parse("<Import Project='$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))' />"));
-        
-        doc.Save(Path.Combine(scenarioDir, "library.csproj"));
+
+        doc.Save(Path.Combine(scenarioDir, "scenario.csproj"));
 
         foreach (var file in files)
         {
-            File.WriteAllText(Path.Combine(scenarioDir, file.name), file.contents);
+            try
+            {
+                doc = XDocument.Parse(file.contents);
+                doc.Root.AddFirst(XElement
+                    .Parse("<Import Project='$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))' />"));
+
+                doc.Save(Path.Combine(scenarioDir, file.name));
+            }
+            catch (System.Xml.XmlException)
+            {
+                File.WriteAllText(Path.Combine(scenarioDir, file.name), file.contents);
+            }
+
         }
 
         using (var disable = OpenBuildLogAttribute.Disable())
-            BuildScenario(scenarioName, target: "Restore", output: output, verbosity: verbosity)
+            BuildScenario(scenarioName, projectName: "scenario", target: "Restore", output: output, verbosity: verbosity)
                 .AssertSuccess(output);
 
-        return BuildScenario(scenarioName, target: target, output: output, verbosity: verbosity);
+        return BuildScenario(scenarioName, projectName: "scenario", target: target, output: output, verbosity: verbosity);
     }
 
     public static TargetResult BuildScenario(
@@ -198,7 +210,7 @@ internal class OpenBuildLogAttribute : BeforeAfterTestAttribute
 
             return Thread.GetData(data) != null;
 #else
-			return false;
+            return false;
 #endif
         }
         set
@@ -220,35 +232,35 @@ internal class OpenBuildLogAttribute : BeforeAfterTestAttribute
                 if (data != null)
                     Thread.SetData(data, null);
 #endif
-            }
         }
     }
-    public static IDisposable Disable() => new DisposableOpenBinlog();
+}
+public static IDisposable Disable() => new DisposableOpenBinlog();
 
-    public override void Before(MethodInfo methodUnderTest)
-    {
-        IsActive = true;
-        base.Before(methodUnderTest);
-    }
+public override void Before(MethodInfo methodUnderTest)
+{
+    IsActive = true;
+    base.Before(methodUnderTest);
+}
 
-    public override void After(MethodInfo methodUnderTest)
+public override void After(MethodInfo methodUnderTest)
+{
+    IsActive = false;
+    base.After(methodUnderTest);
+}
+
+class DisposableOpenBinlog : IDisposable
+{
+    bool isActive;
+
+    public DisposableOpenBinlog()
     {
+        isActive = IsActive;
         IsActive = false;
-        base.After(methodUnderTest);
     }
 
-    class DisposableOpenBinlog : IDisposable
-    {
-        bool isActive;
-
-        public DisposableOpenBinlog()
-        {
-            isActive = IsActive;
-            IsActive = false;
-        }
-
-        public void Dispose() => IsActive = isActive;
-    }
+    public void Dispose() => IsActive = isActive;
+}
 }
 
 /// <summary>

@@ -34,7 +34,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   item containing the manifest information will also be returned, as 
 	
     Identity=$(PackageId)
-      %(PackFolder)=metadata
+      %(PackFolder)=Metadata
       ... all manifest values as metadata items ...
 	
   All items returned from this target contain a %(PackageId) metadata 
@@ -81,7 +81,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- If packaging the project, provide the metadata as a non-file item -->
     <ItemGroup>
       <PackageFile Include="@(PackageMetadata)">
-        <PackFolder>metadata</PackFolder>
+        <PackFolder>Metadata</PackFolder>
         <PackageId>$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
         <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
@@ -89,13 +89,14 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
-  <Target Name="_GetReferencedPackageContents"
-			Condition="'$(_SupportsProjectReferences)' == 'true'"
-			DependsOnTargets="$(_GetReferencedPackageContentsDependsOn)"
-			Returns="@(PackageFile)">
+  <Target Name="_GetReferencedPackageContents" 
+          Condition="'$(_SupportsProjectReferences)' == 'true'"
+          DependsOnTargets="$(_GetReferencedPackageContentsDependsOn)"
+          Returns="@(PackageFile)">
+    
     <Error Condition="'@(_NonNuGetizedProjectReference)' != ''"
-				   Code="NG0011"
-				   Text="Some project references cannot be properly packaged. Please install the NuGetizer package on the following projects: @(_NonNuGetizedProjectReference)." />
+           Code="NG0011"
+           Text="Some project references cannot be properly packaged. Please install the NuGetizer package on the following projects: @(_NonNuGetizedProjectReference)." />
 
     <!-- 
     PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
@@ -107,7 +108,10 @@ Copyright (c) .NET Foundation. All rights reserved.
     <MSBuild Projects="@(_NuGetizedProjectReference)"
              Targets="GetPackageContents"
              BuildInParallel="$(BuildInParallel)"
-             Properties="%(_NuGetizedProjectReference.SetConfiguration); %(_NuGetizedProjectReference.SetPlatform); BuildingPackage=$(BuildingPackage); DesignTimeBuild=false"
+             Properties="%(_NuGetizedProjectReference.SetConfiguration); 
+                         %(_NuGetizedProjectReference.SetPlatform); 
+                         BuildingPackage=$(BuildingPackage); 
+                         DesignTimeBuild=false"
              Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_NuGetizedProjectReference)' != ''"
              RemoveProperties="%(_NuGetizedProjectReference.GlobalPropertiesToRemove)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedPackageContent" />
@@ -115,7 +119,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ItemGroup>
       <_ReferencedPackageDependency Include="@(_ReferencedPackageContent)"
-                                    Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and '%(_ReferencedPackageContent.PackFolder)' == 'metadata'">
+                                    Condition="'%(_ReferencedPackageContent.PackageId)' != '$(PackageId)' and 
+                                               '%(_ReferencedPackageContent.PackFolder)' == 'Metadata'">
         <!-- For consistency, annotate like the rest -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
@@ -123,14 +128,16 @@ Copyright (c) .NET Foundation. All rights reserved.
       </_ReferencedPackageDependency>
       <!-- Remove the referenced package actual contents if it provides a manifest, since it will be a dependency in that case. -->
       <_PackageContentFromDependency Include="@(_ReferencedPackageContent)"
-                                     Condition="'%(_ReferencedPackageContent.PackageId)' != '' and '%(_ReferencedPackageContent.PackageId)' != '$(PackageId)'" />
+                                     Condition="'%(_ReferencedPackageContent.PackageId)' != '' and 
+                                                '%(_ReferencedPackageContent.PackageId)' != '$(PackageId)'" />
       <_ReferencedPackageContent Remove="@(_PackageContentFromDependency)" />
     </ItemGroup>
 
     <!-- Always annotate package contents with the original target framework and moniker -->
     <CreateItem Include="@(_ReferencedPackageContent)" PreserveExistingMetadata="true"
                 Condition="'@(_ReferencedPackageContent)' != ''"
-                AdditionalMetadata="OriginalTargetFramework=%(_ReferencedPackageContent.TargetFramework);OriginalTargetFrameworkMoniker=%(_ReferencedPackageContent.TargetFrameworkMoniker)">
+                AdditionalMetadata="OriginalTargetFramework=%(_ReferencedPackageContent.TargetFramework);
+                                    OriginalTargetFrameworkMoniker=%(_ReferencedPackageContent.TargetFrameworkMoniker)">
       <Output TaskParameter="Include" ItemName="_ReferencedPackageContentWithOriginalValues"/>
     </CreateItem>
 
@@ -192,6 +199,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PropertyGroup>
       <_ShouldPack>%(_MSBuildProjectReferenceExistent.Pack)</_ShouldPack>
       <_IsNuGetized>%(_ReferencedProjectTargetPath.IsNuGetized)</_IsNuGetized>
+      <_PrivateAssets>%(_MSBuildProjectReferenceExistent.PrivateAssets)</_PrivateAssets>
     </PropertyGroup>
 
     <!-- Only process references that aren't excluded from Pack -->
@@ -199,7 +207,14 @@ Copyright (c) .NET Foundation. All rights reserved.
       <!-- We will fail for this first group: project references that aren't excluded from packaging, yet haven't been nugetized -->
       <_NonNuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_IsNuGetized)' != 'true'" />
       <!-- We will only process for packaging the project references that haven't been excluded from packaging and are nugetized -->
-      <_NuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_IsNuGetized)' == 'true'" />
+      <_NuGetizedProjectReference Include="@(_MSBuildProjectReferenceExistent)" Condition="'$(_IsNuGetized)' == 'true'">
+        <!-- By flagging PrivateAssets=all nugetized references as IsPackable=false, we cause its assets to be 
+             packed together with the build output, instead of referenced as a dependency.
+             This works because default value for IsPackable checks for '' before defaulting 
+             to whether there is a PackageId property.
+             Also, passing our own PackFolder causes it to be the overriden default for the referenced project. -->
+        <AdditionalProperties Condition="'$(_PrivateAssets)' == 'all'">IsPackable=false;PackFolder=$(PackFolder)</AdditionalProperties>
+      </_NuGetizedProjectReference>
     </ItemGroup>
 
   </Target>

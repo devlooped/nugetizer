@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -41,6 +42,9 @@ namespace NuGetizer.Tasks
 
         public override bool Execute()
         {
+            if (Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") == "1")
+                Debugger.Break();
+
             try
             {
                 if (bool.TryParse(EmitPackage, out var emitPkg) && emitPkg)
@@ -78,8 +82,8 @@ namespace NuGetizer.Tasks
         public Manifest CreateManifest()
         {
             var metadata = new ManifestMetadata();
-            
-            metadata.Id = Manifest.GetMetadata(nameof(MetadataName.PackageId));
+
+            metadata.Id = Manifest.GetNullableMetadata(MetadataName.PackageId) ?? Manifest.GetMetadata("Id");
 
             if (Manifest.TryGetMetadata(nameof(ManifestMetadata.Version), out var version))
                 metadata.Version = NuGetVersion.Parse(Manifest.GetMetadata(MetadataName.Version));
@@ -102,7 +106,7 @@ namespace NuGetizer.Tasks
             if (Manifest.TryGetMetadata("Copyright", out var copyright))
                 metadata.Copyright = copyright;
 
-            if (Manifest.TryGetBoolMetadata("RequireLicenseAcceptance", out var requireLicenseAcceptance) && 
+            if (Manifest.TryGetBoolMetadata("RequireLicenseAcceptance", out var requireLicenseAcceptance) &&
                 requireLicenseAcceptance)
                 metadata.RequireLicenseAcceptance = requireLicenseAcceptance;
 
@@ -185,6 +189,7 @@ namespace NuGetizer.Tasks
 
             if (output == null)
             {
+                Directory.CreateDirectory(Path.GetDirectoryName(TargetPath));
                 using var stream = File.Create(TargetPath);
                 builder.Save(stream);
             }

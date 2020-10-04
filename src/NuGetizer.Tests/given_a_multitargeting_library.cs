@@ -5,20 +5,20 @@ namespace NuGetizer
 {
     public class given_a_multitargeting_library
     {
-		ITestOutputHelper output;
+        ITestOutputHelper output;
 
-		public given_a_multitargeting_library(ITestOutputHelper output)
-		{
-			this.output = output;
+        public given_a_multitargeting_library(ITestOutputHelper output)
+        {
+            this.output = output;
             Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Restore", output: output)
                 .AssertSuccess(output);
         }
 
         [Fact]
-		public void when_gettingcontents_then_includes_content_from_all_frameworks()
-		{
+        public void when_gettingcontents_then_includes_content_from_all_frameworks()
+        {
             var result = Builder.BuildScenario(nameof(given_a_multitargeting_library), output: output);
-			result.AssertSuccess(output);
+            result.AssertSuccess(output);
 
             Assert.Contains(result.Items, item => item.Matches(new
             {

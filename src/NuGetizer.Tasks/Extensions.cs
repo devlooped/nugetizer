@@ -4,10 +4,10 @@ using System.Linq;
 using System.Runtime.Versioning;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using NuGetizer.Tasks;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
+using NuGetizer.Tasks;
 
 namespace NuGetizer
 {

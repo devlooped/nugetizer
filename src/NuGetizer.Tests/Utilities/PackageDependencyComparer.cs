@@ -4,9 +4,9 @@ using NuGet.Packaging.Core;
 
 namespace NuGetizer
 {
-	class PackageDependencyComparer : IEqualityComparer<PackageDependency>
+    class PackageDependencyComparer : IEqualityComparer<PackageDependency>
     {
-		public static PackageDependencyComparer Default { get; } = new PackageDependencyComparer();
+        public static PackageDependencyComparer Default { get; } = new PackageDependencyComparer();
 
         public bool Equals(PackageDependency x, PackageDependency y)
         {
@@ -24,7 +24,7 @@ namespace NuGetizer
                 throw new ArgumentNullException("obj");
 
             return StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Id ?? "") +
-				StringComparer.OrdinalIgnoreCase.GetHashCode(obj.VersionRange.ToString() ?? "");
+                StringComparer.OrdinalIgnoreCase.GetHashCode(obj.VersionRange.ToString() ?? "");
         }
     }
 }

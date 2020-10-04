@@ -4,8 +4,8 @@ using Xunit.Abstractions;
 namespace NuGetizer
 {
     public class given_sourcelink
-	{
-		ITestOutputHelper output;
+    {
+        ITestOutputHelper output;
 
         public given_sourcelink(ITestOutputHelper output) => this.output = output;
 
@@ -22,7 +22,7 @@ namespace NuGetizer
   <ItemGroup>
     <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.0.0' PrivateAssets='all' />
   </ItemGroup>
-</Project>", 
+</Project>",
             "GetPackageMetadata", output);
 
             result.AssertSuccess(output);

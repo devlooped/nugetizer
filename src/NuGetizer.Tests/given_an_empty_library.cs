@@ -5,174 +5,252 @@ using Xunit.Abstractions;
 namespace NuGetizer
 {
     public class given_an_empty_library
-	{
-		ITestOutputHelper output;
+    {
+        ITestOutputHelper output;
 
-		public given_an_empty_library(ITestOutputHelper output)
-		{
-			this.output = output;
-            Builder.BuildScenario(nameof(given_an_empty_library), target: "Restore")
-                .AssertSuccess(output);
+        public given_an_empty_library(ITestOutputHelper output) => this.output = output;
+
+        [Fact]
+        public void when_is_packable_true_then_package_id_defaults_to_assembly_name()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Metadata
+            }));
         }
 
         [Fact]
-		public void when_getting_package_contents_then_includes_output_assembly()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library));
+        public void when_no_is_packable_and_no_package_id_then_defaults_to_non_packable()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
 
-			result.AssertSuccess(output);
-			Assert.Contains(result.Items, item => item.Matches(new
-			{
-				Extension = ".dll",
-                PackFolder = PackFolderKind.Lib
-            }));
-		}
-
-		[Fact]
-		public void when_include_outputs_in_package_is_false_then_does_not_include_main_assembly()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-			{
-				PackBuildOutput = false,
-			});
-
-			result.AssertSuccess(output);
-			Assert.DoesNotContain(result.Items, item => item.Matches(new
-			{
-				Extension = ".dll",
-                PackFolder = PackFolderKind.Lib
-            }));
-		}
-
-		[Fact]
-		public void when_getting_package_contents_then_includes_symbols()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library), new { Configuration = "Debug" });
-
-			result.AssertSuccess(output);
-			Assert.Contains(result.Items, item => item.Matches(new
-			{
-				Extension = ".pdb",
-			}));
-		}
-
-		[Fact]
-		public void when_include_symbols_in_package_is_true_but_include_outputs_is_false_then_does_not_include_symbols()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-			{
-				PackBuildOutput = false,
-				PackSymbols = true,
-			});
-
-			result.AssertSuccess(output);
-			Assert.DoesNotContain(result.Items, item => item.Matches(new
-			{
-				Extension = ".pdb",
-			}));
-		}
-
-		[Fact]
-		public void when_include_symbols_in_package_is_false_then_does_not_include_symbols()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-			{
-				PackSymbols = false,
-			});
-
-			result.AssertSuccess(output);
-			Assert.DoesNotContain(result.Items, item => item.Matches(new
-			{
-				Extension = ".pdb",
-			}));
-		}
-
-		[Fact]
-		public void when_getting_package_contents_then_includes_xmldoc()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library));
-
-			Assert.Equal(TargetResultCode.Success, result.ResultCode);
-			Assert.Contains(result.Items, item => item.Matches(new
-			{
-				Extension = ".xml",
-                PackFolder = PackFolderKind.Lib,
-			}));
-		}
-
-		[Fact]
-		public void when_include_output_in_package_is_false_then_does_not_include_xmldoc()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-			{
-				PackBuildOutput = false,
-			});
-
-			result.AssertSuccess(output);
-			Assert.DoesNotContain(result.Items, item => item.Matches(new
-			{
-				Extension = ".xml",
-                PackFolder = PackFolderKind.Lib,
-			}));
-		}
-
-		[Fact]
-		public void when_getting_package_contents_then_annotates_items_with_package_id()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library), new { PackageId = "Foo" }, output: output);
-
-			result.AssertSuccess(output);
-			Assert.All(result.Items, item => Assert.Equal("Foo", item.GetMetadata("PackageId")));
-		}
-
-		[Fact]
-		public void when_getting_package_contents_then_includes_framework_reference()
-		{
-            Builder.BuildScenario(nameof(given_an_empty_library), new
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                PackageId = "Foo",
-                TargetFramework = "net472",
-            },target: "Restore").AssertSuccess(output);
+                PackFolder = PackFolderKind.Metadata
+            }));
+        }
 
-            var result = Builder.BuildScenario(nameof(given_an_empty_library), new 
-            { 
-                PackageId = "Foo",
-                TargetFramework = "net472",
-            }, output: output);
+        [Fact]
+        public void when_getting_package_contents_then_includes_output_assembly()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
 
-			result.AssertSuccess(output);
-			Assert.Contains(result.Items, item => item.Matches(new
-			{
-				Identity = "PresentationFramework",
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Extension = ".dll",
+                PackFolder = PackFolderKind.Lib
+            }));
+        }
+
+        [Fact]
+        public void when_include_outputs_in_package_is_false_then_does_not_include_main_assembly()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackBuildOutput>false</PackBuildOutput>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Extension = ".dll",
+                PackFolder = PackFolderKind.Lib
+            }));
+        }
+
+        [Fact]
+        public void when_getting_package_contents_then_includes_symbols()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Extension = ".pdb",
+            }));
+        }
+
+        [Fact]
+        public void when_include_symbols_in_package_is_true_but_include_outputs_is_false_then_does_not_include_symbols()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackBuildOutput>false</PackBuildOutput>
+    <PackSymbols>true</PackSymbols>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Extension = ".pdb",
+            }));
+        }
+
+        [Fact]
+        public void when_include_symbols_in_package_is_false_then_does_not_include_symbols()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackSymbols>false</PackSymbols>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Extension = ".pdb",
+            }));
+        }
+
+        [Fact]
+        public void when_getting_package_contents_then_includes_xmldoc()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackSymbols>false</PackSymbols>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Extension = ".xml",
+                PackFolder = PackFolderKind.Lib,
+            }));
+        }
+
+        [Fact]
+        public void when_include_output_in_package_is_false_then_does_not_include_xmldoc()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackBuildOutput>false</PackBuildOutput>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Extension = ".xml",
+                PackFolder = PackFolderKind.Lib,
+            }));
+        }
+
+        [Fact]
+        public void when_getting_package_contents_then_annotates_items_with_package_id()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Foo</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.All(result.Items, item => Assert.Equal("Foo", item.GetMetadata("PackageId")));
+        }
+
+        [Fact]
+        public void when_getting_package_contents_then_includes_framework_reference()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Foo</PackageId>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include='PresentationFramework' />
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "PresentationFramework",
                 PackFolder = PackFolderKind.FrameworkReference,
-			}));
-		}
+            }));
+        }
 
-		[Fact]
-		public void when_include_framework_references_in_package_is_false_then_does_not_include_framework_reference()
-		{
-			var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-			{
-				PackFrameworkReferences = false,
-				PackageId = "Foo",
-			}, output: output);
+        [Fact]
+        public void when_include_framework_references_in_package_is_false_then_does_not_include_framework_reference()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Foo</PackageId>
+    <PackFrameworkReferences>false</PackFrameworkReferences>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include='PresentationFramework' />
+  </ItemGroup>
+</Project>", output: output);
 
-			result.AssertSuccess(output);
-			Assert.DoesNotContain(result.Items, item => item.Matches(new
-			{
-				Identity = "System.Core",
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "PresentationFramework",
                 PackFolder = PackFolderKind.FrameworkReference,
-			}));
-		}
+            }));
+        }
 
         [Fact]
         public void when_updating_package_item_metadata_then_updates_metadata()
         {
-            var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-            {
-                PackageId = "Foo",
-                AdvancedCustomization = "true",
-            }, target: "GetPackageMetadata", output: output);
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Foo</PackageId>
+    <PackBuildOutput>false</PackBuildOutput>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageMetadata Include='Foo'>
+      <Description>ItemDescription</Description>
+    </PackageMetadata>
+  </ItemGroup>
+</Project>", output: output);
 
             result.AssertSuccess(output);
 
@@ -183,12 +261,21 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_updating_package_metadata_property_in_target_then_updates_metadata()
+        public void when_updating_package_metadata_via_target_then_updates_metadata()
         {
-            var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-            {
-                PackageId = "Foo",
-            }, target: "GetPackageMetadata", output: output);
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Foo</PackageId>
+    <PackBuildOutput>false</PackBuildOutput>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <Target Name='BeforeGetMetadata' BeforeTargets='GetPackageMetadata'>
+    <PropertyGroup>
+      <Description>PropertyDescription</Description>
+    </PropertyGroup>
+  </Target>
+</Project>", output: output);
 
             result.AssertSuccess(output);
 
@@ -201,11 +288,20 @@ namespace NuGetizer
         [Fact]
         public void when_setting_metadata_property_then_updates_metadata()
         {
-            var result = Builder.BuildScenario(nameof(given_an_empty_library), new
-            {
-                PackageId = "Foo",
-                Title = "MyPackage",
-            }, target: "GetPackageMetadata", output: output);
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Foo</PackageId>
+    <PackBuildOutput>false</PackBuildOutput>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <Target Name='BeforeGetMetadata' BeforeTargets='GetPackageMetadata'>
+    <PropertyGroup>
+      <Description>PropertyDescription</Description>
+    </PropertyGroup>
+  </Target>
+</Project>", output: output);
 
             result.AssertSuccess(output);
 

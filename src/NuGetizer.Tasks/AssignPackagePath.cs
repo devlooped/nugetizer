@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using static ThisAssembly.Strings;
 using NuGet.Packaging;
+using static ThisAssembly.Strings;
 
 namespace NuGetizer.Tasks
 {
@@ -31,6 +32,9 @@ namespace NuGetizer.Tasks
 
         public override bool Execute()
         {
+            if (Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") == "1")
+                Debugger.Break();
+
             var kindMap = KnownFolders.ToDictionary(
                 kind => kind.ItemSpec,
                 StringComparer.OrdinalIgnoreCase);
@@ -79,8 +83,25 @@ namespace NuGetizer.Tasks
             }
 
             // If PackagePath already specified, we're done.
-            if (!string.IsNullOrEmpty(file.GetMetadata("PackagePath")))
+            if (file.TryGetMetadata("PackagePath", out var packagePath))
+            {
+                // If PackagePath ends in directory separator, we assume 
+                // the file/path needs to be appended too.
+                if (packagePath.EndsWith("\\"))
+                {
+                    if (file.TryGetMetadata("Link", out var link))
+                        packagePath = Path.Combine(packagePath, link);
+                    else
+                        packagePath = Path.Combine(packagePath,
+                            file.GetMetadata("RelativeDir"),
+                            file.GetMetadata("FileName") +
+                            file.GetMetadata("Extension"));
+
+                    output.SetMetadata("PackagePath", packagePath);
+                }
+
                 return output;
+            }
 
             // If a packaging project is requesting the package path assignment, 
             // perform it regardless of whether there is a PackageId on the items, 
@@ -180,7 +201,7 @@ namespace NuGetizer.Tasks
             // If we have no known package folder, files go to their RelativeDir location.
             // This allows custom packaging paths such as "workbooks", "docs" or whatever, which aren't prohibited by 
             // the format.
-            var packagePath = string.IsNullOrEmpty(packageFolder) ?
+            packagePath = string.IsNullOrEmpty(packageFolder) ?
                 // File goes to the determined target path (or the root of the package), such as a readme.txt
                 targetPath :
                 frameworkSpecific ?

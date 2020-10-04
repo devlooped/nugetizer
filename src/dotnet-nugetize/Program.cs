@@ -46,7 +46,7 @@ namespace NuGetize
                 File.Delete(file);
 
             // Optimize the "build" so that it doesn't actually do a full compile if possible.
-            if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} -m:1 -p:dotnet-nugetize=\"{file}\" -nologo {bl} -t:\"GetPackageContents;Pack\" -p:EmitNuspec=true -p:EmitPackage=false -p:SkipCompilerExecution=true -p:DesignTimeBuild=true -p:DesignTimeSilentResolution=true -p:ResolveAssemblyReferencesSilent=true", debug))
+            if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} -m:1 -p:dotnet-nugetize=\"{file}\" -nologo {bl} -t:\"GetPackageContents;Pack\" -p:EnableSourceLink=true -p:EnableSourceControlManagerQueries=true -p:EmitNuspec=true -p:EmitPackage=false -p:SkipCompilerExecution=true -p:DesignTimeBuild=true -p:DesignTimeSilentResolution=true -p:ResolveAssemblyReferencesSilent=true", debug))
                 return -1;
 
             var items = XDocument.Load(file);
@@ -54,7 +54,7 @@ namespace NuGetize
 
             foreach (var metadata in items.Root.Descendants("PackageMetadata")
                 .Distinct(AnonymousComparer.Create<XElement>(
-                    (x, y) => x.Element("PackageId")?.Value == y.Element("PackageId")?.Value, 
+                    (x, y) => x.Element("PackageId")?.Value == y.Element("PackageId")?.Value,
                     x => x.Element("PackageId")?.Value.GetHashCode() ?? 0)))
             {
                 var packageId = metadata.Element("PackageId").Value;
@@ -68,9 +68,9 @@ namespace NuGetize
                     .First();
 
                 foreach (var md in metadata.Elements()
-                    .Where(x => 
-                        x.Name != "PackageId" && 
-                        x.Name != "Nuspec" && 
+                    .Where(x =>
+                        x.Name != "PackageId" &&
+                        x.Name != "Nuspec" &&
                         x.Name != "NuPkg")
                     .OrderBy(x => x.Name.LocalName))
                 {
@@ -81,6 +81,12 @@ namespace NuGetize
                     .Where(x =>
                         "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase) &&
                         x.Element("PackageId")?.Value == packageId)
+                    .Distinct(AnonymousComparer.Create<XElement>(x => 
+                        x.Attribute("Include").Value + "|" + 
+                        x.Element("Version").Value + "|" +
+                        x.Element("TargetFramework").Value))
+                    .OrderBy(x => x.Element("TargetFramework").Value)
+                    .ThenBy(x => x.Attribute("Include").Value)
                     .ToList();
 
                 if (dependencies.Count > 0)
@@ -99,10 +105,9 @@ namespace NuGetize
                 ColorConsole.WriteLine($"  Contents:".Yellow());
 
                 var contents = items.Root.Descendants("PackageContent")
-                    .Where(x => 
-                        x.Element("PackagePath") != null && 
+                    .Where(x =>
+                        x.Element("PackagePath") != null &&
                         x.Element("PackageId")?.Value == packageId)
-                    //.Select(x => x.Element("PackagePath").Value)
                     .Distinct(AnonymousComparer.Create<XElement>(x => x.Element("PackagePath").Value))
                     .OrderBy(x => Path.GetDirectoryName(x.Element("PackagePath").Value))
                     .ThenBy(x => x.Element("PackagePath").Value);
@@ -119,6 +124,20 @@ namespace NuGetize
 
             Console.WriteLine();
             ColorConsole.WriteLine("Items: ", file.Yellow());
+
+            if (binlog)
+            {
+                // Attempt to open binlog automatically if msbuildlog.com is installed
+                try
+                {
+                    Process.Start(new ProcessStartInfo(Directory.GetCurrentDirectory() + "\\build.binlog")
+                    {
+                        UseShellExecute = true,
+                        WindowStyle = ProcessWindowStyle.Maximized
+                    });
+                }
+                catch { }
+            }
 
             return 0;
         }
@@ -152,12 +171,19 @@ namespace NuGetize
                         ColorConsole.Write("/".Gray());
 
                     var attributes = new List<string>();
-                    if (element.Element("BuildAction")?.Value is string buildAction)
-                        attributes.Add("buildAction=" + buildAction);
-                    if (element.Element("CopyToOutput")?.Value is string copyToOutput)
-                        attributes.Add("copyToOutput=" + copyToOutput);
-                    if (element.Element("Flatten")?.Value is string flatten)
-                        attributes.Add("flatten=" + flatten);
+                    var packFolder = element.Element("PackFolder")?.Value;
+
+                    if (packFolder != null &&
+                        ("content".Equals(packFolder, StringComparison.OrdinalIgnoreCase) ||
+                         "contentFiles".Equals(packFolder, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        if (element.Element("BuildAction")?.Value is string buildAction)
+                            attributes.Add("buildAction=" + buildAction);
+                        if (element.Element("CopyToOutput")?.Value is string copyToOutput)
+                            attributes.Add("copyToOutput=" + copyToOutput);
+                        if (element.Element("Flatten")?.Value is string flatten)
+                            attributes.Add("flatten=" + flatten);
+                    }
 
                     ColorConsole.Write(Path.GetFileName(file).White());
                     if (attributes.Count > 0)
@@ -176,21 +202,33 @@ namespace NuGetize
         {
             var info = new ProcessStartInfo(program, arguments)
             {
-                RedirectStandardOutput = debug,
-                RedirectStandardError = debug
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
 
             var proc = Process.Start(info);
+
             if (debug)
             {
                 Console.Out.Write(proc.StandardOutput.ReadToEnd());
                 Console.Error.Write(proc.StandardError.ReadToEnd());
             }
 
-            if (!proc.WaitForExit(5000))
+            var timedout = false;
+
+            // If process takes too long, start to automatically 
+            // render the output.
+            while (!proc.WaitForExit(5000))
             {
-                proc.Kill();
-                return false;
+                timedout = true;
+                Console.Out.Write(proc.StandardOutput.ReadToEnd());
+                Console.Error.Write(proc.StandardError.ReadToEnd());
+            }
+
+            if ((proc.ExitCode != 0 && !debug) || timedout)
+            {
+                Console.Out.Write(proc.StandardOutput.ReadToEnd());
+                Console.Error.Write(proc.StandardError.ReadToEnd());
             }
 
             return proc.ExitCode == 0;
