@@ -31,7 +31,7 @@ namespace NuGetizer
             var metadata = result.Items[0];
 
             Assert.Equal("git", metadata.GetMetadata("RepositoryType"));
-            Assert.Equal("https://github.com/kzu/NuGetizer", metadata.GetMetadata("RepositoryUrl"));
+            Assert.Equal(ThisAssembly.Project.PrivateRepositoryUrl, metadata.GetMetadata("RepositoryUrl"));
             Assert.NotEmpty(metadata.GetMetadata("RepositoryCommit"));
         }
 

@@ -4,6 +4,8 @@
     <TargetFramework>net472</TargetFramework>
     <DefaultItemExcludes>$(DefaultItemExcludes);Scenarios\**\*</DefaultItemExcludes>
     <LangVersion>Preview</LangVersion>
+    <EnableSourceLink>true</EnableSourceLink>
+    <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
   </PropertyGroup>
   
   <ItemGroup>
@@ -14,6 +16,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build" Version="16.6.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.6.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.2.6" />
@@ -43,8 +46,11 @@
     <ProjectProperty Include="NuGetRestoreTargets" />
     <ProjectProperty Include="NuGetTargets" />
     <ProjectProperty Include="MSBuildBinPath" />
+    <ProjectProperty Include="PrivateRepositoryUrl" />
   </ItemGroup>
 
+  <Target Name="EnsureProjectInformation" BeforeTargets="InjectThisAssemblyProject;GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />
+  
   <Target Name="Test" DependsOnTargets="GetTargetPath">
     <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" Condition="'$(UseConsole)' == 'true'" WorkingDirectory="$(MSBuildProjectDirectory)$(OutptuPath)" />
     <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />
