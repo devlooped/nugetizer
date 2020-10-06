@@ -30,7 +30,7 @@ jobs:
         if: env.MSB == ''
       - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
       - name: build
-        run: msbuild -r -p:version=$($env:VERSION)
+        run: msbuild -r -p:version=$($env:VERSION) -p:Configuration=Release
       - name: test
         run: msbuild -t:test
       - name: pack
