@@ -17,7 +17,7 @@ namespace NuGetize
         bool binlog = Debugger.IsAttached;
         bool debug = Debugger.IsAttached && Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") != "0";
         bool quiet = false;
-        string? items;
+        string items;
         List<string> extra;
 
         static int Main(string[] args)
@@ -58,7 +58,7 @@ namespace NuGetize
 
             if (binlog)
             {
-                extra.Add($"-bl:msbuild.binlog;ProjectImports=None");
+                extra.Add($"-bl:\"msbuild.binlog;ProjectImports=None\"");
             }
 
             // Built-in args we always pass to MSBuild
@@ -268,16 +268,16 @@ namespace NuGetize
             var info = new ProcessStartInfo(program, arguments)
             {
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
             };
 
             if (debug)
                 info.Environment["DEBUG_NUGETIZER"] = "1";
 
             var proc = Process.Start(info);
-            var output = new StringBuilder();
-            var error = new StringBuilder();
+            proc.ErrorDataReceived += (sender, args) => ColorConsole.Write(args.Data.Red());
 
+            var output = new StringBuilder();
             var timedout = false;
 
             // If process takes too long, start to automatically 
@@ -286,14 +286,13 @@ namespace NuGetize
             {
                 timedout = true;
                 output.Append(proc.StandardOutput.ReadToEnd());
-                error.Append(proc.StandardError.ReadToEnd());
             }
 
+            if (!timedout)
+                output.Append(proc.StandardOutput.ReadToEnd());
+
             if (!quiet || timedout || proc.ExitCode != 0)
-            {
                 Console.Out.Write(output.ToString());
-                Console.Error.Write(error.ToString());
-            }
 
             return proc.ExitCode == 0;
         }
