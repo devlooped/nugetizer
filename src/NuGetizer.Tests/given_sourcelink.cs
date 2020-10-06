@@ -36,6 +36,55 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_no_project_url_and_publish_repository_url_then_defaults_to_repository_url()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.0.0' PrivateAssets='all' />
+  </ItemGroup>
+</Project>",
+            "GetPackageMetadata", output);
+
+            result.AssertSuccess(output);
+
+            Assert.Single(result.Items);
+            var metadata = result.Items[0];
+
+            Assert.Equal(ThisAssembly.Project.PrivateRepositoryUrl, metadata.GetMetadata("ProjectUrl"));
+        }
+
+        [Fact]
+        public void when_project_url_and_publish_repository_url_then_preserves_value()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageProjectUrl>foo.com</PackageProjectUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.0.0' PrivateAssets='all' />
+  </ItemGroup>
+</Project>",
+            "GetPackageMetadata", output);
+
+            result.AssertSuccess(output);
+
+            Assert.Single(result.Items);
+            var metadata = result.Items[0];
+
+            Assert.Equal("foo.com", metadata.GetMetadata("ProjectUrl"));
+        }
+
+        [Fact]
         public void when_getting_metadata_with_no_explicit_publish_repo_url_then_does_not_expose_it()
         {
             var result = Builder.BuildProject(@"
