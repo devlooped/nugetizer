@@ -16,14 +16,15 @@ namespace NuGetize
         {
             var binlog = Debugger.IsAttached || args.Any(arg => arg == "--bl" || arg == "-bl");
             var debug = Debugger.IsAttached || args.Any(args => args == "--debug");
+            var quiet = !Debugger.IsAttached || args.Any(args => args == "--quiet");
 
             if (args.Any(arg => arg == "--version"))
                 ColorConsole.WriteLine($"{ThisAssembly.Project.ToolCommandName} version {ThisAssembly.Project.Version}".Green());
 
-            return Execute(binlog, debug);
+            return Execute(binlog, debug, quiet);
         }
 
-        static int Execute(bool binlog, bool debug)
+        static int Execute(bool binlog, bool debug, bool quiet)
         {
             var tooldir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var project = "";
@@ -198,7 +199,7 @@ namespace NuGetize
             return index;
         }
 
-        static bool Execute(string program, string arguments, bool debug = false)
+        static bool Execute(string program, string arguments, bool debug = false, bool quiet = false)
         {
             var info = new ProcessStartInfo(program, arguments)
             {
@@ -211,7 +212,7 @@ namespace NuGetize
 
             var proc = Process.Start(info);
 
-            if (debug)
+            if (!quiet)
             {
                 Console.Out.Write(proc.StandardOutput.ReadToEnd());
                 Console.Error.Write(proc.StandardError.ReadToEnd());
@@ -228,7 +229,7 @@ namespace NuGetize
                 Console.Error.Write(proc.StandardError.ReadToEnd());
             }
 
-            if ((proc.ExitCode != 0 && !debug) || timedout)
+            if (proc.ExitCode != 0 || timedout)
             {
                 Console.Out.Write(proc.StandardOutput.ReadToEnd());
                 Console.Error.Write(proc.StandardError.ReadToEnd());
