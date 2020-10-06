@@ -206,6 +206,9 @@ namespace NuGetize
                 RedirectStandardError = true
             };
 
+            if (debug)
+                info.Environment["DEBUG_NUGETIZER"] = "1";
+
             var proc = Process.Start(info);
 
             if (debug)
