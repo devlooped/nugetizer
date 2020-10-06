@@ -122,11 +122,8 @@ Copyright (c) .NET Foundation. All rights reserved.
         <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
         <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
         <Title Condition="'$(Title)' != ''">$(Title)</Title>
-        <Description Condition="'$(Description)' != ''">$(Description)</Description>
-        <Summary Condition="'$(Summary)' != ''">$(Summary)</Summary>
         <Language Condition="'$(NeutralLanguage)' != ''">$(NeutralLanguage)</Language>
         <Copyright Condition="'$(Copyright)' != ''">$(Copyright)</Copyright>
-        <ReleaseNotes Condition="'$(PackageReleaseNotes)' != ''">$(PackageReleaseNotes)</ReleaseNotes>
         <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == 'true'">true</RequireLicenseAcceptance>
         <LicenseUrl Condition="'$(PackageLicenseUrl)' != ''">$(PackageLicenseUrl)</LicenseUrl>
         <LicenseExpression Condition="'$(PackageLicenseExpression)' != ''">$(PackageLicenseExpression)</LicenseExpression>
@@ -135,6 +132,18 @@ Copyright (c) .NET Foundation. All rights reserved.
         <Tags Condition="'$(PackageTags)' != ''">$(PackageTags)</Tags>
         <ProjectUrl Condition="'$(PackageProjectUrl)' != ''">$(PackageProjectUrl)</ProjectUrl>
         <PackageTypes Condition="'$(PackageType)' != ''">$(PackageType)</PackageTypes>
+      </PackageMetadata>
+
+      <!-- Update potentially multi-line metadata values individually, since otherwise 
+           they can cause improper additional metadata entries -->
+      <PackageMetadata Condition="'$(Description)' != ''">
+        <Description>$(Description)</Description>
+      </PackageMetadata>
+      <PackageMetadata Condition="'$(Summary)' != ''">
+        <Summary>$(Summary)</Summary>
+      </PackageMetadata>
+      <PackageMetadata Condition="'$(PackageReleaseNotes)' != ''">
+        <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
       </PackageMetadata>
       
       <!-- Next, just update the typically dynamic properties we allow update hooks for.
