@@ -3,6 +3,7 @@
   <PropertyGroup>
     <Authors>kzu</Authors>
     <Product>NuGetizer</Product>
+    <Copyright>Copyright (C) Daniel Cazzulino $([System.DateTime]::Now.Year). All rights reserved.</Copyright>
 
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -25,6 +26,10 @@
 
     <!-- See: https://www.cazzulino.com/project-dependencies-as-project-references.html -->
     <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+
+    <!-- Allows source control information to always be present in ThisAssembly -->
+    <EnableSourceLink>true</EnableSourceLink>
+    <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
   </PropertyGroup>
 
   <PropertyGroup Label="CI" Condition="'$(CI)' == ''">

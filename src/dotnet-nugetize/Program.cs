@@ -5,8 +5,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml.Linq;
 using ColoredConsole;
+using Mono.Options;
 
 namespace NuGetize
 {
@@ -14,12 +16,35 @@ namespace NuGetize
     {
         static int Main(string[] args)
         {
-            var binlog = Debugger.IsAttached || args.Any(arg => arg == "--bl" || arg == "-bl");
-            var debug = Debugger.IsAttached || args.Any(args => args == "--debug");
-            var quiet = !Debugger.IsAttached || args.Any(args => args == "--quiet");
+            var binlog = Debugger.IsAttached;
+            var debug = Debugger.IsAttached;
+            var quiet = false;
+            var version = false;
+            var help = false;
 
-            if (args.Any(arg => arg == "--version"))
-                ColorConsole.WriteLine($"{ThisAssembly.Project.ToolCommandName} version {ThisAssembly.Project.Version}".Green());
+            var options = new OptionSet
+            {
+                { "?|h|help", "Display this help.", h => help = h != null },
+                { "b|binlog", "Generate binlog.", b => binlog = b != null },
+                { "d|debug", "Debug nugetizer tasks.", d => debug = d != null },
+                { "q|quiet", "Don't render MSBuild output.", q => quiet = q != null },
+                { "v|version", "Render tool version and copyright information.", v => version = v != null },
+            };
+
+            var extra = options.Parse(args);
+
+            if (version)
+            {
+                Console.WriteLine($"{ThisAssembly.Project.Product} version {ThisAssembly.Project.Version}+{ThisAssembly.Project.RepositorySha}");
+                Console.WriteLine($"{ThisAssembly.Project.Copyright}");
+            }
+
+            if (help)
+            {
+                Console.WriteLine($"Usage: {ThisAssembly.Project.ToolCommandName} [options]");
+                options.WriteOptionDescriptions(Console.Out);
+                return 0;
+            }
 
             return Execute(binlog, debug, quiet);
         }
@@ -211,12 +236,8 @@ namespace NuGetize
                 info.Environment["DEBUG_NUGETIZER"] = "1";
 
             var proc = Process.Start(info);
-
-            if (!quiet)
-            {
-                Console.Out.Write(proc.StandardOutput.ReadToEnd());
-                Console.Error.Write(proc.StandardError.ReadToEnd());
-            }
+            var output = new StringBuilder();
+            var error = new StringBuilder();
 
             var timedout = false;
 
@@ -225,14 +246,14 @@ namespace NuGetize
             while (!proc.WaitForExit(5000))
             {
                 timedout = true;
-                Console.Out.Write(proc.StandardOutput.ReadToEnd());
-                Console.Error.Write(proc.StandardError.ReadToEnd());
+                output.Append(proc.StandardOutput.ReadToEnd());
+                error.Append(proc.StandardError.ReadToEnd());
             }
 
-            if (proc.ExitCode != 0 || timedout)
+            if (!quiet || timedout || proc.ExitCode != 0)
             {
-                Console.Out.Write(proc.StandardOutput.ReadToEnd());
-                Console.Error.Write(proc.StandardError.ReadToEnd());
+                Console.Out.Write(output.ToString());
+                Console.Error.Write(error.ToString());
             }
 
             return proc.ExitCode == 0;
