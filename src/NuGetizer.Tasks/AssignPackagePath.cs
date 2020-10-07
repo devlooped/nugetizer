@@ -33,7 +33,7 @@ namespace NuGetizer.Tasks
         public override bool Execute()
         {
             if (Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") == "1")
-                Debugger.Break();
+                Debugger.Launch();
 
             var kindMap = KnownFolders.ToDictionary(
                 kind => kind.ItemSpec,

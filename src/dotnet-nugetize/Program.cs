@@ -5,30 +5,96 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml.Linq;
 using ColoredConsole;
+using Mono.Options;
 
 namespace NuGetize
 {
     class Program
     {
+        bool binlog = Debugger.IsAttached;
+        bool debug = Debugger.IsAttached && Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") != "0";
+        bool quiet = false;
+        string items;
+        List<string> extra;
+
         static int Main(string[] args)
         {
-            var binlog = Debugger.IsAttached || args.Any(arg => arg == "--bl" || arg == "-bl");
-            var debug = Debugger.IsAttached || args.Any(args => args == "--debug");
-
-            if (args.Any(arg => arg == "--version"))
-                ColorConsole.WriteLine($"{ThisAssembly.Project.ToolCommandName} version {ThisAssembly.Project.Version}".Green());
-
-            return Execute(binlog, debug);
+            return new Program().Run(args);
         }
 
-        static int Execute(bool binlog, bool debug)
+        int Run(string[] args)
+        {
+            var version = false;
+            var help = false;
+
+            var options = new OptionSet
+            {
+                { "?|h|help", "Display this help.", h => help = h != null },
+                { "b|bl|binlog", "Generate binlog.", b => binlog = b != null },
+                { "d|debug", "Debug nugetizer tasks.", d => debug = d != null },
+                { "q|quiet", "Don't render MSBuild output.", q => quiet = q != null },
+                { "i|items:", "MSBuild items file path containing full package contents metadata.", i => items = Path.GetFullPath(i) },
+                { "version", "Render tool version and copyright information.", v => version = v != null },
+            }
+            .Add("  [msbuild args]             Examples: ")
+            .Add("                             - Automatically restore: -r")
+            .Add("                             - Set normal MSBuild verbosity: -v:n")
+            .Add("                             - Build configuration: -p:Configuration=Release");
+
+            extra = options.Parse(args);
+
+            if (version)
+            {
+                Console.WriteLine($"{ThisAssembly.Project.Product} version {ThisAssembly.Project.Version}+{ThisAssembly.Project.RepositorySha}");
+                Console.WriteLine($"{ThisAssembly.Project.Copyright}");
+            }
+            else
+            {
+                extra.Add("-nologo");
+            }
+
+            if (binlog)
+            {
+                extra.Add($"-bl:\"msbuild.binlog;ProjectImports=None\"");
+            }
+
+            // Built-in args we always pass to MSBuild
+            extra.AddRange(new[]
+            {
+                // Avoids contention when writing to the dotnet-nugetize MSBuild items file
+                "-m:1",
+                // Enable retrieving source link info if supported by the project
+                "-p:EnableSourceLink=true",
+                "-p:EnableSourceControlManagerQueries=true",
+                // Allow nuspec inspection after nugetizing
+                "-p:EmitNuspec=true",
+                // Never emit the actual pkg since that would be the same as just running dotnet pack
+                "-p:EmitPackage=false",
+                // DTB arguments that speed-up the execution
+                "-p:SkipCompilerExecution=true",
+                "-p:DesignTimeBuild=true",
+                "-p:DesignTimeSilentResolution=true",
+                "-p:ResolveAssemblyReferencesSilent=true"
+            });
+
+            if (help)
+            {
+                Console.WriteLine($"Usage: {ThisAssembly.Project.ToolCommandName} [options] [msbuild args]");
+                options.WriteOptionDescriptions(Console.Out);
+                return 0;
+            }
+
+            return Execute();
+        }
+
+        int Execute()
         {
             var tooldir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var project = "";
-            var bl = binlog ? $"-bl:\"{Directory.GetCurrentDirectory()}\\build.binlog;ProjectImports=None\"" : "";
-            var file = Path.Combine(Directory.GetCurrentDirectory(), "dotnet-nugetize.items");
+            var file = items ?? Path.GetTempFileName();
 
             var projects = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.*proj").ToList();
             var solutions = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.sln").ToList();
@@ -39,25 +105,26 @@ namespace NuGetize
             else if (projects.Count > 1)
                 project = projects[0];
 
-            if (!Execute(DotnetMuxer.Path.FullName, $"restore {project} -nologo {bl.Replace("build.binlog", "restore.binlog")}", debug))
-                return -1;
-
             if (File.Exists(file))
                 File.Delete(file);
 
             // Optimize the "build" so that it doesn't actually do a full compile if possible.
-            if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} -m:1 -p:dotnet-nugetize=\"{file}\" -nologo {bl} -t:\"GetPackageContents;Pack\" -p:EnableSourceLink=true -p:EnableSourceControlManagerQueries=true -p:EmitNuspec=true -p:EmitPackage=false -p:SkipCompilerExecution=true -p:DesignTimeBuild=true -p:DesignTimeSilentResolution=true -p:ResolveAssemblyReferencesSilent=true", debug))
+
+            if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents;Pack\""))
                 return -1;
 
-            var items = XDocument.Load(file);
+            var doc = XDocument.Load(file);
             var foundPackage = false;
 
-            foreach (var metadata in items.Root.Descendants("PackageMetadata")
+            foreach (var metadata in doc.Root.Descendants("PackageMetadata")
                 .Distinct(AnonymousComparer.Create<XElement>(
                     (x, y) => x.Element("PackageId")?.Value == y.Element("PackageId")?.Value,
                     x => x.Element("PackageId")?.Value.GetHashCode() ?? 0)))
             {
                 var packageId = metadata.Element("PackageId").Value;
+                if (string.IsNullOrEmpty(packageId))
+                    continue;
+
                 foundPackage = true;
                 ColorConsole.WriteLine($"Package: {Path.GetFileName(metadata.Element("NuPkg").Value)}".Yellow());
                 ColorConsole.WriteLine($"         {metadata.Element("Nuspec").Value}".Yellow());
@@ -77,12 +144,12 @@ namespace NuGetize
                     ColorConsole.WriteLine($"    {md.Name.LocalName.PadRight(width)}: ", md.Value.White());
                 }
 
-                var dependencies = items.Root.Descendants("PackageContent")
+                var dependencies = doc.Root.Descendants("PackageContent")
                     .Where(x =>
                         "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase) &&
-                        x.Element("PackageId")?.Value == packageId)
-                    .Distinct(AnonymousComparer.Create<XElement>(x => 
-                        x.Attribute("Include").Value + "|" + 
+                        packageId == x.Element("PackageId")?.Value)
+                    .Distinct(AnonymousComparer.Create<XElement>(x =>
+                        x.Attribute("Include").Value + "|" +
                         x.Element("Version").Value + "|" +
                         x.Element("TargetFramework").Value))
                     .OrderBy(x => x.Element("TargetFramework").Value)
@@ -104,7 +171,7 @@ namespace NuGetize
 
                 ColorConsole.WriteLine($"  Contents:".Yellow());
 
-                var contents = items.Root.Descendants("PackageContent")
+                var contents = doc.Root.Descendants("PackageContent")
                     .Where(x =>
                         x.Element("PackagePath") != null &&
                         x.Element("PackageId")?.Value == packageId)
@@ -123,14 +190,15 @@ namespace NuGetize
             }
 
             Console.WriteLine();
-            ColorConsole.WriteLine("Items: ", file.Yellow());
+            if (items != null)
+                ColorConsole.WriteLine("> ", file.Yellow());
 
             if (binlog)
             {
                 // Attempt to open binlog automatically if msbuildlog.com is installed
                 try
                 {
-                    Process.Start(new ProcessStartInfo(Directory.GetCurrentDirectory() + "\\build.binlog")
+                    Process.Start(new ProcessStartInfo(Directory.GetCurrentDirectory() + "\\msbuild.binlog")
                     {
                         UseShellExecute = true,
                         WindowStyle = ProcessWindowStyle.Maximized
@@ -198,38 +266,36 @@ namespace NuGetize
             return index;
         }
 
-        static bool Execute(string program, string arguments, bool debug = false)
+        bool Execute(string program, string arguments)
         {
             var info = new ProcessStartInfo(program, arguments)
             {
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
             };
 
-            var proc = Process.Start(info);
-
             if (debug)
-            {
-                Console.Out.Write(proc.StandardOutput.ReadToEnd());
-                Console.Error.Write(proc.StandardError.ReadToEnd());
-            }
+                info.Environment["DEBUG_NUGETIZER"] = "1";
 
+            var proc = Process.Start(info);
+            proc.ErrorDataReceived += (sender, args) => ColorConsole.Write(args.Data.Red());
+
+            var output = new StringBuilder();
             var timedout = false;
 
             // If process takes too long, start to automatically 
             // render the output.
-            while (!proc.WaitForExit(5000))
+            while (!proc.WaitForExit(10000))
             {
                 timedout = true;
-                Console.Out.Write(proc.StandardOutput.ReadToEnd());
-                Console.Error.Write(proc.StandardError.ReadToEnd());
+                output.Append(proc.StandardOutput.ReadToEnd());
             }
 
-            if ((proc.ExitCode != 0 && !debug) || timedout)
-            {
-                Console.Out.Write(proc.StandardOutput.ReadToEnd());
-                Console.Error.Write(proc.StandardError.ReadToEnd());
-            }
+            if (!timedout)
+                output.Append(proc.StandardOutput.ReadToEnd());
+
+            if (!quiet || timedout || proc.ExitCode != 0)
+                Console.Out.Write(output.ToString());
 
             return proc.ExitCode == 0;
         }

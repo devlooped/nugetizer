@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -20,6 +21,9 @@ namespace NuGetizer.Tasks
 
         public override bool Execute()
         {
+            if (Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") == "1")
+                Debugger.Launch();
+
             var packages = new ConcurrentDictionary<PackageIdentity, List<PackageIdentity>>();
             Func<string, PackageIdentity> parse = value =>
             {

@@ -10,7 +10,15 @@
     <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(NuGetize)' == 'true' or '$(GeneratePackageOnBuild)' != ''">false</ImportNuGetBuildTasksPackTargetsFromSdk>
   </PropertyGroup>
 
-  <Import Project="NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="$(IsPackable) and '$(NuGetize)' == 'true'" />
+  <Target Name="EnsureProjectInformation" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />
+
+  <Target Name="SetRepositorySha" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun" AfterTargets="InitializeSourceControlInformation">
+    <PropertyGroup>
+      <RepositorySha>$(SourceRevisionId.Substring(0, 9))</RepositorySha>
+    </PropertyGroup>
+  </Target>
+  
+  <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="$(IsPackable) and '$(NuGetize)' == 'true'" />
 
   <PropertyGroup>
     <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
@@ -32,7 +40,10 @@
     <MakeDir Directories="$(PackageOutputPath)" Condition="'$(PackageOutputPath)' != '' And !Exists('$(PackageOutputPath)')" />
   </Target>
 
-  <Target Name="UpdatePackageMetadata" BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageMetadata;GenerateNuspec;Pack" Condition="$(IsPackable) And '$(RepositoryUrl)' != '' And '$(SourceRevisionId)' != ''">
+  <Target Name="UpdatePackageMetadata" 
+          BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageMetadata;GenerateNuspec;Pack" 
+          DependsOnTargets="InitializeSourceControlInformation"
+          Condition="$(IsPackable) And '$(RepositoryUrl)' != '' And '$(SourceRevisionId)' != ''">
     <PropertyGroup>
       <Description>
         $(Description)
@@ -40,8 +51,8 @@
         Built from $(RepositoryUrl)/tree/$(SourceRevisionId.Substring(0, 9))
       </Description>
       <!-- Update nuspec properties too -->
-      <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
-      <PackageDescription> $(Description)</PackageDescription>
+      <PackageProjectUrl>$([System.Text.RegularExpressions.Regex]::Replace('$(RepositoryUrl)', '^(http.*)github\.com/(.+?)/(.*)', '$1$2.github.io/$3'))</PackageProjectUrl>
+      <PackageDescription>$(Description)</PackageDescription>
     </PropertyGroup>
   </Target>
 

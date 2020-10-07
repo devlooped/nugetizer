@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="ColoredConsole" Version="1.0.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="Mono.Options" Version="6.6.0.161" />
     <PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly" Version="1.0.0-alpha" />
   </ItemGroup>
@@ -30,6 +31,9 @@
     <Compile Remove="Range.cs" Condition="'$(TargetFramework)' != 'netcoreapp2.1'" />
     <ProjectProperty Include="Version" />
     <ProjectProperty Include="ToolCommandName" />
+    <ProjectProperty Include="Product" />    
+    <ProjectProperty Include="Copyright" />
+    <ProjectProperty Include="RepositorySha" />
   </ItemGroup>
 
 </Project>

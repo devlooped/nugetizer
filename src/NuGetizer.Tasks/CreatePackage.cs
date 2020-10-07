@@ -43,7 +43,7 @@ namespace NuGetizer.Tasks
         public override bool Execute()
         {
             if (Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") == "1")
-                Debugger.Break();
+                Debugger.Launch();
 
             try
             {
@@ -275,8 +275,10 @@ namespace NuGetizer.Tasks
                     item.GetMetadata(MetadataName.PackagePath),
                     item.GetMetadata("Filename"),
                     item.GetMetadata("Extension"),
-                    File.GetLastWriteTime(item.GetMetadata("FullPath")),
-                    new FileInfo(item.GetMetadata("FullPath")).Length))
+                    // Support nugetize CLI by ignoring missing files. When creating the final .nupkg, 
+                    // file existence is checked always already
+                    File.Exists(item.GetMetadata("FullPath")) ? File.GetLastWriteTime(item.GetMetadata("FullPath")) : DateTime.Now,
+                    File.Exists(item.GetMetadata("FullPath")) ? new FileInfo(item.GetMetadata("FullPath")).Length : 0))
                 .ToDictionary(item => item.Key, item => item.ToArray());
 
             // Add the ones we already determined to be duplicates that can safely be 
@@ -288,6 +290,11 @@ namespace NuGetizer.Tasks
             var md5 = new Lazy<HashAlgorithm>(() => MD5.Create());
             string hash(ITaskItem item)
             {
+                // Support nugetize CLI by ignoring missing files. When creating the final .nupkg, 
+                // file existence is checked always already
+                if (!File.Exists(item.GetMetadata("FullPath")))
+                    return item.GetMetadata("FullPath");
+
                 using var file = File.OpenRead(item.GetMetadata("FullPath"));
                 return string.Concat(md5.Value.ComputeHash(file).Select(x => x.ToString("x2")));
             }
