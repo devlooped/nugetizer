@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -231,36 +230,37 @@ internal class OpenBuildLogAttribute : BeforeAfterTestAttribute
                 var data = Thread.GetNamedDataSlot(nameof(OpenBuildLogAttribute));
                 if (data != null)
                     Thread.SetData(data, null);
+            }
 #endif
         }
     }
-}
-public static IDisposable Disable() => new DisposableOpenBinlog();
 
-public override void Before(MethodInfo methodUnderTest)
-{
-    IsActive = true;
-    base.Before(methodUnderTest);
-}
+    public static IDisposable Disable() => new DisposableOpenBinlog();
 
-public override void After(MethodInfo methodUnderTest)
-{
-    IsActive = false;
-    base.After(methodUnderTest);
-}
-
-class DisposableOpenBinlog : IDisposable
-{
-    bool isActive;
-
-    public DisposableOpenBinlog()
+    public override void Before(MethodInfo methodUnderTest)
     {
-        isActive = IsActive;
-        IsActive = false;
+        IsActive = true;
+        base.Before(methodUnderTest);
     }
 
-    public void Dispose() => IsActive = isActive;
-}
+    public override void After(MethodInfo methodUnderTest)
+    {
+        IsActive = false;
+        base.After(methodUnderTest);
+    }
+
+    class DisposableOpenBinlog : IDisposable
+    {
+        bool isActive;
+
+        public DisposableOpenBinlog()
+        {
+            isActive = IsActive;
+            IsActive = false;
+        }
+
+        public void Dispose() => IsActive = isActive;
+    }
 }
 
 /// <summary>
