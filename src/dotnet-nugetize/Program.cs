@@ -36,7 +36,7 @@ namespace NuGetize
                 { "b|bl|binlog", "Generate binlog.", b => binlog = b != null },
                 { "d|debug", "Debug nugetizer tasks.", d => debug = d != null },
                 { "q|quiet", "Don't render MSBuild output.", q => quiet = q != null },
-                { "i|items:", "MSBuild items file path containing full package contents metadata.", i => items = i },
+                { "i|items:", "MSBuild items file path containing full package contents metadata.", i => items = Path.GetFullPath(i) },
                 { "version", "Render tool version and copyright information.", v => version = v != null },
             }
             .Add("  [msbuild args]             Examples: ")
