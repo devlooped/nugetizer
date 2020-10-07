@@ -122,6 +122,9 @@ namespace NuGetize
                     x => x.Element("PackageId")?.Value.GetHashCode() ?? 0)))
             {
                 var packageId = metadata.Element("PackageId").Value;
+                if (string.IsNullOrEmpty(packageId))
+                    continue;
+
                 foundPackage = true;
                 ColorConsole.WriteLine($"Package: {Path.GetFileName(metadata.Element("NuPkg").Value)}".Yellow());
                 ColorConsole.WriteLine($"         {metadata.Element("Nuspec").Value}".Yellow());
@@ -144,7 +147,7 @@ namespace NuGetize
                 var dependencies = doc.Root.Descendants("PackageContent")
                     .Where(x =>
                         "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase) &&
-                        x.Element("PackageId")?.Value == packageId)
+                        packageId == x.Element("PackageId")?.Value)
                     .Distinct(AnonymousComparer.Create<XElement>(x =>
                         x.Attribute("Include").Value + "|" +
                         x.Element("Version").Value + "|" +

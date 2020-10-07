@@ -22,7 +22,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp;nugetize.*</DefaultItemExcludes>
 
     <!-- See: https://www.cazzulino.com/project-dependencies-as-project-references.html -->
     <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>

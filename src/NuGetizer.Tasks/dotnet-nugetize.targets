@@ -13,7 +13,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <Target Name="CopyFilesToOutputDirectory" />
 
-  <Target Name="_WritePackageContents" Condition="'$(dotnet-nugetize)' != ''" AfterTargets="GetPackageContents">
+  <Target Name="_WritePackageContents" Condition="'$(dotnet-nugetize)' != '' and '$(IsPackable)' == 'true'" AfterTargets="GetPackageContents">
     <ItemGroup Condition="'@(NuspecFile)' == ''">
       <NuspecFile Include="$(NuspecFile)" />
     </ItemGroup>
