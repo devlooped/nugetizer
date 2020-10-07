@@ -11,6 +11,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup Label="Hidden">
+    <!-- Matches the SDK Pack default when set to true. -->
+    <PackageId Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''">$(AssemblyName)</PackageId>    
+  </PropertyGroup>
+  
   <ItemDefinitionGroup>
     <PackageMetadata>
       <PackageId>$(PackageId)</PackageId>

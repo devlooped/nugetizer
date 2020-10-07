@@ -114,6 +114,9 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="GetPackageMetadata" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageMetadataDependsOn)" Returns="@(PackageMetadata)">
     <Error Text="The 'PackageId' property cannot be empty when 'IsPackable' is 'true'." Code="NG1001" Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''" />
     <Error Text="The 'PackageVersion' property cannot be empty." Code="NG1002" Condition="'$(PackageVersion)' == ''" />
+    <PropertyGroup>
+      <InitializePackageMetadata Condition="'@(PackageMetadata)' == ''">true</InitializePackageMetadata>
+    </PropertyGroup>
     <ItemGroup>
       <!-- By not re-creating the item, we preserve whatever metadata was provided already -->
       <PackageMetadata Include="$(PackageId)" Condition="'@(PackageMetadata)' == ''">
@@ -136,13 +139,13 @@ Copyright (c) .NET Foundation. All rights reserved.
 
       <!-- Update potentially multi-line metadata values individually, since otherwise 
            they can cause improper additional metadata entries -->
-      <PackageMetadata Condition="'$(Description)' != ''">
+      <PackageMetadata Condition="'$(Description)' != '' and '$(InitializePackageMetadata)' == 'true'">
         <Description>$(Description)</Description>
       </PackageMetadata>
-      <PackageMetadata Condition="'$(Summary)' != ''">
+      <PackageMetadata Condition="'$(Summary)' != '' and '$(InitializePackageMetadata)' == 'true'">
         <Summary>$(Summary)</Summary>
       </PackageMetadata>
-      <PackageMetadata Condition="'$(PackageReleaseNotes)' != ''">
+      <PackageMetadata Condition="'$(PackageReleaseNotes)' != '' and '$(InitializePackageMetadata)' == 'true'">
         <ReleaseNotes>$(PackageReleaseNotes)</ReleaseNotes>
       </PackageMetadata>
       
