@@ -29,7 +29,7 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_is_packable_true_but_packageid_empty_then_fails()
+        public void when_is_packable_true_but_packageid_reset_to_empty_then_fails()
         {
             var result = Builder.BuildProject(@"
 <Project Sdk='Microsoft.NET.Sdk'>
@@ -41,9 +41,13 @@ namespace NuGetizer
             files: (name: "Directory.Build.targets", @"
 <Project>
   <Import Project='$([MSBuild]::GetPathOfFileAbove(Directory.Build.targets, $(MSBuildThisFileDirectory)..))' />
-  <PropertyGroup>
-    <PackageId />
-  </PropertyGroup>
+  <Target Name='BeforeEverything' BeforeTargets='PrepareForBuild'>
+    <!-- We need to try harder to reset it to empty, since it's defaulted 
+         in this case to the AssemblyName automatically -->
+    <PropertyGroup>
+        <PackageId />
+    </PropertyGroup>
+  </Target>
 </Project>"));
 
             Assert.Equal(TargetResultCode.Failure, result.ResultCode);
