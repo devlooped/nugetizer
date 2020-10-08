@@ -28,8 +28,10 @@ static partial class Builder
         params (string name, string contents)[] files)
     {
         using var sha = new SHA1Managed();
+
+        // Combination of last write time for the test assembly + contents of the projects.
         var hash = Base62.Encode(Math.Abs(BitConverter.ToInt64(
-            sha.ComputeHash(Encoding.UTF8.GetBytes(projectContent)), 0)));
+            sha.ComputeHash(Encoding.UTF8.GetBytes(projectContent + string.Join("|", files.Select(f => f.contents)))), 0)));
 
         var scenarioName = hash;
         var scenarioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scenarios", scenarioName);

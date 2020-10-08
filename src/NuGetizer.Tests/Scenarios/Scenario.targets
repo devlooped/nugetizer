@@ -4,6 +4,10 @@
   <Import Project="$(NuGetTargetsPath)\NuGetizer.targets" Condition="'$(IsCrossTargetingBuild)' != 'true' and '$(NuGetizerTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.targets')" />
   <Import Project="$(NuGetTargetsPath)\NuGetizer.Multitargeting.targets" Condition="'$(IsCrossTargetingBuild)' == 'true' and '$(NuGetizerTargetsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.Multitargeting.targets')" />
 
+  <PropertyGroup>
+    <ScenarioTargetsImported>true</ScenarioTargetsImported>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)_._" />
   </ItemGroup>
