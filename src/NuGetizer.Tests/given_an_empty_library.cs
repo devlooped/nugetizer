@@ -37,10 +37,6 @@ namespace NuGetizer
     <IsPackable>true</IsPackable>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-</Project>", output: output, 
-            files: (name: "Directory.Build.targets", @"
-<Project>
-  <Import Project='$([MSBuild]::GetPathOfFileAbove(Directory.Build.targets, $(MSBuildThisFileDirectory)..))' />
   <Target Name='BeforeEverything' BeforeTargets='PrepareForBuild'>
     <!-- We need to try harder to reset it to empty, since it's defaulted 
          in this case to the AssemblyName automatically -->
@@ -48,7 +44,7 @@ namespace NuGetizer
         <PackageId />
     </PropertyGroup>
   </Target>
-</Project>"));
+</Project>", output: output);
 
             Assert.Equal(TargetResultCode.Failure, result.ResultCode);
             // Next best to checking the full string. No way I could find to 

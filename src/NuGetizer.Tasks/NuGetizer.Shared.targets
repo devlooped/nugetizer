@@ -39,6 +39,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <PropertyGroup Label="Hidden">
     <!-- Matches the SDK Pack default when set to true. -->
     <PackageId Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''">$(AssemblyName)</PackageId>
+    <PackageId Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''">$(MSBuildProjectName)</PackageId>
 
     <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
     <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>

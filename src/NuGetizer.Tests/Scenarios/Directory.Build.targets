@@ -8,6 +8,6 @@
   <Import Project="$(NuGetRestoreTargets)" Condition="'$(IsRestoreTargetsFileLoaded)' != 'true' and '$(NuGetRestoreTargets)' != ''" />
   <Import Project="$(NuGetTargets)" Condition="'$(ResolveNuGetPackageAssetsDependsOn)' == '' and '$(NuGetTargets)' != ''" />
 
-  <Import Project="Scenario.targets" Condition="'$(IsNuGetized)' == 'true'" />
+  <Import Project="Scenario.targets" Condition="'$(ScenarioTargetsImported)' != 'true' and '$(IsNuGetized)' != 'false'" />
   
 </Project>
