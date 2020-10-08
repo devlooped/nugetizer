@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging.StructuredLogger;
+using NuGet.ProjectManagement;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -21,7 +22,20 @@ using Xunit.Sdk;
 static partial class Builder
 {
     public static TargetResult BuildProject(
-        string projectContent = null,
+        string projectContent,
+        string target = "GetPackageContents",
+        ITestOutputHelper output = null,
+        LoggerVerbosity? verbosity = null,
+        params (string name, string contents)[] files)
+    {
+        return BuildProjects(
+            target: target,
+            output: output,
+            verbosity: verbosity,
+            files: new[] { ("scenario.csproj", projectContent) }.Concat(files).ToArray());
+    }
+
+    public static TargetResult BuildProjects(
         string target = "GetPackageContents",
         ITestOutputHelper output = null,
         LoggerVerbosity? verbosity = null,
@@ -31,22 +45,17 @@ static partial class Builder
 
         // Combination of last write time for the test assembly + contents of the projects.
         var hash = Base62.Encode(Math.Abs(BitConverter.ToInt64(
-            sha.ComputeHash(Encoding.UTF8.GetBytes(projectContent + string.Join("|", files.Select(f => f.contents)))), 0)));
+            sha.ComputeHash(Encoding.UTF8.GetBytes(string.Join("|", files.Select(f => f.contents)))), 0)));
 
         var scenarioName = hash;
         var scenarioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scenarios", scenarioName);
         Directory.CreateDirectory(scenarioDir);
-        var doc = XDocument.Parse(projectContent);
-        doc.Root.AddFirst(XElement
-            .Parse("<Import Project='$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))' />"));
-
-        doc.Save(Path.Combine(scenarioDir, "scenario.csproj"));
 
         foreach (var file in files)
         {
             try
             {
-                doc = XDocument.Parse(file.contents);
+                var doc = XDocument.Parse(file.contents);
                 doc.Root.AddFirst(XElement
                     .Parse("<Import Project='$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))' />"));
 
@@ -56,14 +65,15 @@ static partial class Builder
             {
                 File.WriteAllText(Path.Combine(scenarioDir, file.name), file.contents);
             }
-
         }
 
+        var main = files.First().name;
+
         using (var disable = OpenBuildLogAttribute.Disable())
-            BuildScenario(scenarioName, projectName: "scenario", target: "Restore", output: output, verbosity: verbosity)
+            BuildScenario(scenarioName, projectName: main, target: "Restore", output: output, verbosity: verbosity)
                 .AssertSuccess(output);
 
-        return BuildScenario(scenarioName, projectName: "scenario", target: target, output: output, verbosity: verbosity);
+        return BuildScenario(scenarioName, projectName: main, target: target, output: output, verbosity: verbosity);
     }
 
     public static TargetResult BuildScenario(
@@ -75,6 +85,8 @@ static partial class Builder
     LoggerVerbosity? verbosity = null)
     {
         var scenarioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scenarios", scenarioName);
+        if (projectName != null && !Path.HasExtension(projectName))
+            projectName = projectName + ".csproj";
 
         if (projectName == null)
         {
@@ -82,15 +94,15 @@ static partial class Builder
             if (scenarioName.StartsWith("given", StringComparison.OrdinalIgnoreCase))
                 projectName = string.Join("_", scenarioName.Split('_').Skip(2));
         }
-        else if (!File.Exists(Path.Combine(scenarioDir, $"{projectName}.csproj")))
+        else if (!File.Exists(Path.Combine(scenarioDir, projectName)))
         {
             throw new FileNotFoundException($"Project '{projectName}' was not found under scenario path '{scenarioDir}'.", projectName);
         }
 
         string projectOrSolution;
 
-        if (File.Exists(Path.Combine(scenarioDir, $"{projectName}.csproj")))
-            projectOrSolution = Path.Combine(scenarioDir, $"{projectName}.csproj");
+        if (File.Exists(Path.Combine(scenarioDir, projectName)))
+            projectOrSolution = Path.Combine(scenarioDir, projectName);
         else
             projectOrSolution = Directory.EnumerateFiles(scenarioDir, "*.*proj").FirstOrDefault();
 

@@ -54,4 +54,6 @@ Copyright (c) .NET Foundation. All rights reserved.
     <BuildProjectReferences Condition="'$(BuildProjectReferences)' == ''">true</BuildProjectReferences>
   </PropertyGroup>
 
+  <Import Project="NuGetizer.Authoring.NoTargets.props" Condition="'$(UsingMicrosoftNoTargetsSdk)' == 'true'"/>
+  
 </Project>
