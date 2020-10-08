@@ -6,6 +6,7 @@ on:
 env:
   DOTNET_NOLOGO: true
   MSBUILDDISABLENODEREUSE: 1
+  Configuration: Release
 
 jobs:
   build:
@@ -30,7 +31,7 @@ jobs:
         if: env.MSB == ''
       - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
       - name: build
-        run: msbuild -r -p:version=$($env:VERSION) -p:Configuration=Release
+        run: msbuild -r -p:version=$($env:VERSION)
       - name: test
         run: msbuild -t:test
       - name: pack
