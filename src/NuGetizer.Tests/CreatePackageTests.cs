@@ -154,6 +154,18 @@ namespace NuGetizer
         [Fact]
         public void when_creating_package_has_license_expression_then_manifest_has_license()
         {
+            task.Contents = new[]
+            {
+				// Need at least one dependency or content file for the generation to succeed.
+				new TaskItem("Newtonsoft.Json", new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.Dependency },
+                    { MetadataName.Version, "8.0.0" },
+                    { MetadataName.TargetFramework, "net45" }
+                }),
+            };
+
             task.Manifest.SetMetadata("LicenseUrl", "");
             task.Manifest.SetMetadata("LicenseExpression", "MIT");
 
