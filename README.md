@@ -183,7 +183,7 @@ Package: Sample.1.0.0.nupkg
 
 Finally, you can focedly turn a project reference build output into a private asset even if it defines a `PackageId` by adding `PrivateAssets=all`. This is very useful for build and analyzer packages, which typically reference the main library project too, but need its output as private, since neither can use dependencies at run-time.
 
-### dotnet-nugetize
+## dotnet-nugetize
 
 Carefully tweaking your packages until they look exactly the way you want them should not be a tedious and slow process. Even requiring your project to be built between changes can be costly and reduce the speed at which you can iterate on the packaging aspects of the project. Also, generating the final `.nupkg`, opening it in a tool and inspecting its content, is also not ideal for rapid iteration.
 
@@ -198,3 +198,29 @@ After installation, you can just run `nugetize` from the project directory to qu
 Here's a sample output screenshot:
 
 ![nugetize screenshot](img/dotnet-nugetize.png)
+
+## Inner DevLoop
+
+Authoring, testing and iterating with your nuget packages should be easy and straightforward. So NuGetizer has built-in support for this process that makes it even enjoyable. The following are some notes and advise on how to make the best of it.
+
+1. Use single `PackageOutputPath`: if you create multiple packages, it's helpful to place them all in a single output directory. This can be achieved easily by adding the property to a `Directory.Build.props` file and place it at your repository root (or your `src` folder).:
+
+    ```xml
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(MSBuildThisFileDirectory)..\bin</PackageOutputPath>
+    ```
+
+2. Use `<RestoreSources>` in your consuming projects: this allows you to point to that common folder and even do it selectively only if the folder exists (i.e. use local packages if you built them, use regular feed otherwise). You can place this too in a `Directory.Build.props` for all your consuming/sample/test projects to use:
+
+    ```xml
+    <RestoreSources>https://api.nuget.org/v3/index.json;$(RestoreSources)</RestoreSources>
+    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\bin\')">
+      $([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\bin'));$(RestoreSources)
+    </RestoreSources>
+    ```
+
+3. NuGetizer will automatically perform the following cleanups whenever you build a new version of a package:
+   a. Clean previous versions of the same package in the package output path
+   b. Clean NuGet cache folder for the package id (i.e. *%userprofile%\.nuget\packages\mypackage*)
+   c. Clean the NuGet HTTP cache: this avoids a subsequent restore from a test/sample project from getting an older version from there, in case you build locally the same version of a previously restored one from an HTTP source.
+
+These cleanups only apply in local builds, never in CI, and you can turn them all off by setting `EnablePackCleanup=false`.
