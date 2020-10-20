@@ -3,6 +3,17 @@
 
 Simple, flexible, intuitive and powerful NuGet packaging.
 
+[![Version](https://img.shields.io/nuget/vpre/NuGetizer.svg?color=royalblue)](https://www.nuget.org/packages/NuGetizer)
+[![Downloads](https://img.shields.io/nuget/dt/NuGetizer?color=darkmagenta)](https://www.nuget.org/packages/NuGetizer)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/kzu/nugetizer/blob/main/LICENSE)
+[![Discord Chat](https://img.shields.io/badge/chat-on%20discord-7289DA.svg)](https://discord.gg/AfGsdRa)
+[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/stunts)
+
+[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/nugetizer/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
+[![GH CI Status](https://github.com/kzu/nugetizer/workflows/build/badge.svg?branch=main)](https://github.com/kzu/nugetizer/actions?query=branch%3Amain+workflow%3Abuild+)
+[![AzDO CI Status](https://dev.azure.com/kzu/oss/_apis/build/status/nugetizer?branchName=main)](http://build.azdo.io/kzu/oss/44)
+
+
 # Why
 
 The .NET SDK has built-in support for packing. The design of its targets, property 
