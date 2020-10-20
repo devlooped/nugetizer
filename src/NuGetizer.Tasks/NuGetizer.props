@@ -25,7 +25,19 @@ Copyright (c) .NET Foundation. All rights reserved.
     <NuGetBuildTasksPackTargets>$(MSBuildThisFileDirectory)NuGetizer.PackageMetadata.targets</NuGetBuildTasksPackTargets>
     <ImportNuGetBuildTasksPackTargetsFromSdk>true</ImportNuGetBuildTasksPackTargetsFromSdk>
   </PropertyGroup>
-  
+
+  <PropertyGroup Label="Hidden" Condition="'$(CI)' == ''">
+    <CI>false</CI>
+    <!-- GH, CircleCI, GitLab and BitBucket already use CI -->
+    <CI Condition="'$(TF_BUILD)' == 'true' or 
+                   '$(TEAMCITY_VERSION)' != '' or 
+                   '$(APPVEYOR)' != '' or 
+                   '$(BuildRunner)' == 'MyGet' or 
+                   '$(JENKINS_URL)' != '' or 
+                   '$(TRAVIS)' == 'true' or 
+                   '$(BUDDY)' == 'true'">true</CI>
+  </PropertyGroup>
+
   <ItemGroup>
     <AvailableItemName Include="PackageFile" />
   </ItemGroup>

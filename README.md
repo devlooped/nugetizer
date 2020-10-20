@@ -3,6 +3,17 @@
 
 Simple, flexible, intuitive and powerful NuGet packaging.
 
+[![Version](https://img.shields.io/nuget/vpre/NuGetizer.svg?color=royalblue)](https://www.nuget.org/packages/NuGetizer)
+[![Downloads](https://img.shields.io/nuget/dt/NuGetizer?color=darkmagenta)](https://www.nuget.org/packages/NuGetizer)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/kzu/nugetizer/blob/main/LICENSE)
+[![Discord Chat](https://img.shields.io/badge/chat-on%20discord-7289DA.svg)](https://discord.gg/AfGsdRa)
+[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/stunts)
+
+[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/nugetizer/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
+[![GH CI Status](https://github.com/kzu/nugetizer/workflows/build/badge.svg?branch=main)](https://github.com/kzu/nugetizer/actions?query=branch%3Amain+workflow%3Abuild+)
+[![AzDO CI Status](https://dev.azure.com/kzu/oss/_apis/build/status/nugetizer?branchName=main)](http://build.azdo.io/kzu/oss/44)
+
+
 # Why
 
 The .NET SDK has built-in support for packing. The design of its targets, property 
@@ -183,7 +194,7 @@ Package: Sample.1.0.0.nupkg
 
 Finally, you can focedly turn a project reference build output into a private asset even if it defines a `PackageId` by adding `PrivateAssets=all`. This is very useful for build and analyzer packages, which typically reference the main library project too, but need its output as private, since neither can use dependencies at run-time.
 
-### dotnet-nugetize
+## dotnet-nugetize
 
 Carefully tweaking your packages until they look exactly the way you want them should not be a tedious and slow process. Even requiring your project to be built between changes can be costly and reduce the speed at which you can iterate on the packaging aspects of the project. Also, generating the final `.nupkg`, opening it in a tool and inspecting its content, is also not ideal for rapid iteration.
 
@@ -198,3 +209,29 @@ After installation, you can just run `nugetize` from the project directory to qu
 Here's a sample output screenshot:
 
 ![nugetize screenshot](img/dotnet-nugetize.png)
+
+## Inner DevLoop
+
+Authoring, testing and iterating with your nuget packages should be easy and straightforward. So NuGetizer has built-in support for this process that makes it even enjoyable. The following are some notes and advise on how to make the best of it.
+
+1. Use single `PackageOutputPath`: if you create multiple packages, it's helpful to place them all in a single output directory. This can be achieved easily by adding the property to a `Directory.Build.props` file and place it at your repository root (or your `src` folder).:
+
+    ```xml
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(MSBuildThisFileDirectory)..\bin</PackageOutputPath>
+    ```
+
+2. Use `<RestoreSources>` in your consuming projects: this allows you to point to that common folder and even do it selectively only if the folder exists (i.e. use local packages if you built them, use regular feed otherwise). You can place this too in a `Directory.Build.props` for all your consuming/sample/test projects to use:
+
+    ```xml
+    <RestoreSources>https://api.nuget.org/v3/index.json;$(RestoreSources)</RestoreSources>
+    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\bin\')">
+      $([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\bin'));$(RestoreSources)
+    </RestoreSources>
+    ```
+
+3. NuGetizer will automatically perform the following cleanups whenever you build a new version of a package:
+   a. Clean previous versions of the same package in the package output path
+   b. Clean NuGet cache folder for the package id (i.e. *%userprofile%\.nuget\packages\mypackage*)
+   c. Clean the NuGet HTTP cache: this avoids a subsequent restore from a test/sample project from getting an older version from there, in case you build locally the same version of a previously restored one from an HTTP source.
+
+These cleanups only apply in local builds, never in CI, and you can turn them all off by setting `EnablePackCleanup=false`.

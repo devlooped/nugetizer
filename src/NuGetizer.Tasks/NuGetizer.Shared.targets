@@ -18,6 +18,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- Whether to infer package contents -->
     <EnablePackInference Condition="'$(EnablePackInference)' == ''">true</EnablePackInference>
 
+    <!-- Whether to cleanup package output folder and nuget caches on pack -->
+    <EnablePackCleanup Condition="'$(EnablePackCleanup)' == ''">true</EnablePackCleanup>
+
     <!-- Whether include referenced projects' contents in the package. -->
     <PackProjectReference Condition="'$(PackProjectReference)' == ''">true</PackProjectReference>
 
@@ -271,5 +274,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <Message Importance="high" Text="Created package at %(_PackageTargetPath.FullPath)." Condition="'$(EmitPackage)' == 'true'" />
   </Target>
 
+  <!-- Cleanups improve the local development loop, by always ensure the fresly built packages can be restored from output -->
+  <Import Project="NuGetizer.Cleanup.targets" Condition="'$(CI)' != 'true' and '$(EnablePackCleanup)' != 'false' and '$(IsPackable)' == 'true' and '$(PackageId)' != ''" />
   <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
 </Project>
