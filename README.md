@@ -79,6 +79,8 @@ If the item does **not** provide a *PackagePath*, and *Pack* is not *false*, the
 
 a. **PackFolder**: typically one of the [built-in package folders](https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/PackagingConstants.cs#L19), such as *build*, *lib*, etc.
 b. **FrameworkSpecific**: *true*/*false*, determines whether the project's target framework is used when building the final *PackagePath*.
+c. **TargetPath**: optional PackFolder-relative path for the item. If not provided, the relative path of the item in the project (or its *Link* metadata) is used.
+
 
 When an item specifies *FrameworkSpecific=true*, the project's target framework is added to the final package path, such as `lib\netstandard2.0\My.dll`. Since the package folder itself typically determines whether it contains framework-specific files or not, the *FrameworkSpecific* value has sensible defaults so you don't have to specify it unless you wnat to override it. The [default values from NuGetizer.props](src/NuGetizer.Tasks/NuGetizer.props) are:
 

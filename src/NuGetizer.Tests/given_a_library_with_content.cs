@@ -366,6 +366,23 @@ namespace NuGetizer
             }));
         }
 
+        [Fact]
+        public void content_with_target_path_is_included_relative_to_pack_folder()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+            {
+                PackageId = "ContentPackage",
+                PackContent = "false"
+            });
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"contentFiles\any\monoandroid51\relative\docs\content-with-targetpath.txt",
+            }));
+        }
+
         #endregion
 
         #region None scenarios
