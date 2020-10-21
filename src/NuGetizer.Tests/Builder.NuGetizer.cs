@@ -11,7 +11,6 @@ using System.Xml.Linq;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging.StructuredLogger;
-using NuGet.ProjectManagement;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -77,12 +76,12 @@ static partial class Builder
     }
 
     public static TargetResult BuildScenario(
-    string scenarioName,
-    object properties = null,
-    string projectName = null,
-    string target = "GetPackageContents",
-    ITestOutputHelper output = null,
-    LoggerVerbosity? verbosity = null)
+        string scenarioName,
+        object properties = null,
+        string projectName = null,
+        string target = "GetPackageContents",
+        ITestOutputHelper output = null,
+        LoggerVerbosity? verbosity = null)
     {
         var scenarioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scenarios", scenarioName);
         if (projectName != null && !Path.HasExtension(projectName))

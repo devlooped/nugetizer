@@ -123,6 +123,32 @@ Whether items are packed by default or not is controlled by properties named aft
 \* Back in the day, PDBs were Windows-only and fat files. Nowadays, portable PDBs 
    (the new default) are lightweight and can even be embedded. Combined with [SourceLink](https://github.com/dotnet/sourcelink), including them in the package (either standalone or embeded) provides the best experience for your users, so it's the default.
 
+The various supported item inference are surfaced as `<PackInference Include="Compile;Content;None;..." />` items, which are ultimately evaluated together with the metadata for the individual items. These make the package inference candidates. You can also provide an exclude expression for that evaluation so that certain items are excluded by default, even if every other item of the same type is included. For example, to pack all `Content` items, except those in the `docs` folder, you can simply update the inference item like so:
+
+```xml
+<ItemGroup>
+  <PackInference Update="Content" PackExclude="docs/**/*.*" />
+</ItemGroup>
+```
+
+Of course you could have achieved a similar effect by updating the Content items themselves too instead:
+
+```xml
+<ItemGroup>
+  <Content Update="docs/**/*.*" Pack="false" />
+</ItemGroup>
+```
+
+By default (see [NuGetizer.Inference.props](src/NuGetizer.Tasks/NuGetizer.Inference.props)), `Compile` has the following exclude expression, so generated intermediate compile files aren't packed:
+
+```xml
+<ItemGroup>
+  <PackInference Include="Compile"
+                 PackExclude="$(IntermediateOutputPath)/**/*$(DefaultLanguageSourceExtension)" />
+</ItemGroup>
+```
+
+
 ### CopyToOutputDirectory
 
 There is a common metadata item that's used quite frequently: *CopyToOutputDirectory*, which is typically set to *PreserveNewest* to change it from its default behavior (when empty or set to *Never*).

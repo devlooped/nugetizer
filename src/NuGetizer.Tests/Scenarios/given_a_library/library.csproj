@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
+  <PropertyGroup>
+		<AssemblyName>library</AssemblyName>
+		<TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <EnableDefaultItems>true</EnableDefaultItems>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>true</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The _._ is added by the scenario targets so that projects aren't entirely empty of compile items -->
+    <Compile Remove="@(Compile -> WithMetadataValue('Extension', '._'))" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(PackOnlyApi)' == 'true'">
+    <PackInference Update="Compile" PackExclude="%(PackExclude);*.cs" />
+  </ItemGroup>
+</Project>

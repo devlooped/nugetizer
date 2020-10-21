@@ -8,10 +8,6 @@
     <ScenarioTargetsImported>true</ScenarioTargetsImported>
   </PropertyGroup>
   
-  <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)_._" />
-  </ItemGroup>
-
   <Target Name="Report" DependsOnTargets="GetPackageContents">
     <Message Importance="high" 
              Text="%(_PackageContent.RelativeDir)%(_PackageContent.Filename)%(_PackageContent.Extension)
