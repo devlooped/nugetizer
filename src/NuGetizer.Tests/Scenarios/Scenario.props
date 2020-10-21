@@ -27,5 +27,9 @@
     <NuGetizerTargets>$(NuGetTargetsPath)\NuGetizer.Shared.targets</NuGetizerTargets>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)_._" />
+  </ItemGroup>
+
   <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetizerPropsImported)' != 'true'" />
 </Project>

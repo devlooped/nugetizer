@@ -104,7 +104,10 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Pack Condition="'$(PackBundleResource)' == true">true</Pack>
       <BuildAction>BundleResource</BuildAction>
     </BundleResource>
-    
+
+    <PackInference>
+      <PackExclude />
+    </PackInference>
     <InferenceCandidate>
       <DefaultPackFolder />
       <Pack />
@@ -163,16 +166,10 @@ Copyright (c) .NET Foundation. All rights reserved.
                         Pack="false" />
     </ItemGroup>
   </Target>
-
-  <ItemGroup>
-    <PackInference Include="Compile;Content;EmbeddedResource;None;ApplicationDefinition;Page;
-                            Resource;SplashScreen;DesignData;DesignDataWithDesignTimeCreatableTypes;
-                            CodeAnalysisDictionary;AndroidAsset;AndroidResource;BundleResource" />
-  </ItemGroup>
   
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
     <ItemGroup>
-      <InferenceCandidate Include="@(%(PackInference.Identity))" />
+      <InferenceCandidate Include="@(%(PackInference.Identity))" Exclude="@(%(PackInference.Identity) -> '%(PackExclude)')"/>
       <InferenceCandidate>
         <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(PackFolder)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
       </InferenceCandidate>
