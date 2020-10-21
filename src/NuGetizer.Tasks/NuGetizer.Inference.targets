@@ -104,13 +104,17 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Pack Condition="'$(PackBundleResource)' == true">true</Pack>
       <BuildAction>BundleResource</BuildAction>
     </BundleResource>
-    
+
+    <PackInference>
+      <PackExclude />
+    </PackInference>
     <InferenceCandidate>
       <DefaultPackFolder />
       <Pack />
       <PackagePath />
       <PackFolder />
       <ShouldPack />
+      <TargetPath />
     </InferenceCandidate>
   </ItemDefinitionGroup>
   
@@ -163,23 +167,20 @@ Copyright (c) .NET Foundation. All rights reserved.
                         Pack="false" />
     </ItemGroup>
   </Target>
-
-  <ItemGroup>
-    <PackInference Include="Compile;Content;EmbeddedResource;None;ApplicationDefinition;Page;
-                            Resource;SplashScreen;DesignData;DesignDataWithDesignTimeCreatableTypes;
-                            CodeAnalysisDictionary;AndroidAsset;AndroidResource;BundleResource" />
-  </ItemGroup>
   
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
     <ItemGroup>
-      <InferenceCandidate Include="@(%(PackInference.Identity))" />
+      <InferenceCandidate Include="@(%(PackInference.Identity))" Exclude="@(%(PackInference.Identity) -> '%(PackExclude)')"/>
       <InferenceCandidate>
         <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(PackFolder)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
       </InferenceCandidate>
+      <!-- No need to re-assign a target path if the item already provides one. We do this because otherwise the built-in AssignTargetPath 
+           task unconditionally re-sets it. See https://github.com/dotnet/msbuild/blob/master/src/Tasks/AssignTargetPath.cs -->
+      <_InferenceCandidateWithTargetPath Include="@(InferenceCandidate)" Condition="'%(ShouldPack)' == 'true' and '%(TargetPath)' != ''" />
     </ItemGroup>
 
     <AssignTargetPath Files="@(InferenceCandidate)" RootFolder="$(MSBuildProjectDirectory)"
-                      Condition="'%(ShouldPack)' == 'true'">
+                      Condition="'%(ShouldPack)' == 'true' and '%(TargetPath)' == ''">
       <Output TaskParameter="AssignedFiles" ItemName="_InferenceCandidateWithTargetPath" />
     </AssignTargetPath>
 

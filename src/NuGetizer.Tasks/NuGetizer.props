@@ -146,6 +146,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   </PropertyGroup>
 
   <Import Project="NuGetizer.Version.props" />
+  <Import Project="NuGetizer.Inference.props" Condition="'$(EnablePackInference)' != 'false'" />
   <Import Project="NuGetizer.Authoring.props" Condition="'$(IsPackagingProject)' == 'true'" />
   <Import Project="dotnet-nugetize.props" Condition="'$(dotnet-nugetize)' != ''"/>
 </Project>

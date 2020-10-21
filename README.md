@@ -79,6 +79,8 @@ If the item does **not** provide a *PackagePath*, and *Pack* is not *false*, the
 
 a. **PackFolder**: typically one of the [built-in package folders](https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/PackagingConstants.cs#L19), such as *build*, *lib*, etc.
 b. **FrameworkSpecific**: *true*/*false*, determines whether the project's target framework is used when building the final *PackagePath*.
+c. **TargetPath**: optional PackFolder-relative path for the item. If not provided, the relative path of the item in the project (or its *Link* metadata) is used.
+
 
 When an item specifies *FrameworkSpecific=true*, the project's target framework is added to the final package path, such as `lib\netstandard2.0\My.dll`. Since the package folder itself typically determines whether it contains framework-specific files or not, the *FrameworkSpecific* value has sensible defaults so you don't have to specify it unless you wnat to override it. The [default values from NuGetizer.props](src/NuGetizer.Tasks/NuGetizer.props) are:
 
@@ -122,6 +124,32 @@ Whether items are packed by default or not is controlled by properties named aft
 
 \* Back in the day, PDBs were Windows-only and fat files. Nowadays, portable PDBs 
    (the new default) are lightweight and can even be embedded. Combined with [SourceLink](https://github.com/dotnet/sourcelink), including them in the package (either standalone or embeded) provides the best experience for your users, so it's the default.
+
+The various supported item inference are surfaced as `<PackInference Include="Compile;Content;None;..." />` items, which are ultimately evaluated together with the metadata for the individual items. These make the package inference candidates. You can also provide an exclude expression for that evaluation so that certain items are excluded by default, even if every other item of the same type is included. For example, to pack all `Content` items, except those in the `docs` folder, you can simply update the inference item like so:
+
+```xml
+<ItemGroup>
+  <PackInference Update="Content" PackExclude="docs/**/*.*" />
+</ItemGroup>
+```
+
+Of course you could have achieved a similar effect by updating the Content items themselves too instead:
+
+```xml
+<ItemGroup>
+  <Content Update="docs/**/*.*" Pack="false" />
+</ItemGroup>
+```
+
+By default (see [NuGetizer.Inference.props](src/NuGetizer.Tasks/NuGetizer.Inference.props)), `Compile` has the following exclude expression, so generated intermediate compile files aren't packed:
+
+```xml
+<ItemGroup>
+  <PackInference Include="Compile"
+                 PackExclude="$(IntermediateOutputPath)/**/*$(DefaultLanguageSourceExtension)" />
+</ItemGroup>
+```
+
 
 ### CopyToOutputDirectory
 
