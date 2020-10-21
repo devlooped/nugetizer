@@ -114,6 +114,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <PackagePath />
       <PackFolder />
       <ShouldPack />
+      <TargetPath />
     </InferenceCandidate>
   </ItemDefinitionGroup>
   
@@ -173,10 +174,13 @@ Copyright (c) .NET Foundation. All rights reserved.
       <InferenceCandidate>
         <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(PackFolder)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
       </InferenceCandidate>
+      <!-- No need to re-assign a target path if the item already provides one. We do this because otherwise the built-in AssignTargetPath 
+           task unconditionally re-sets it. See https://github.com/dotnet/msbuild/blob/master/src/Tasks/AssignTargetPath.cs -->
+      <_InferenceCandidateWithTargetPath Include="@(InferenceCandidate)" Condition="'%(ShouldPack)' == 'true' and '%(TargetPath)' != ''" />
     </ItemGroup>
 
     <AssignTargetPath Files="@(InferenceCandidate)" RootFolder="$(MSBuildProjectDirectory)"
-                      Condition="'%(ShouldPack)' == 'true'">
+                      Condition="'%(ShouldPack)' == 'true' and '%(TargetPath)' == ''">
       <Output TaskParameter="AssignedFiles" ItemName="_InferenceCandidateWithTargetPath" />
     </AssignTargetPath>
 
