@@ -13,7 +13,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <Target Name="CopyFilesToOutputDirectory" />
 
-  <Target Name="_WritePackageContents" Condition="'$(dotnet-nugetize)' != '' and '$(IsPackable)' == 'true'" AfterTargets="GetPackageContents">
+  <Target Name="_WritePackageContents" Condition="'$(dotnet-nugetize)' != '' and ('$(IsPackable)' == 'true' or '$(dotnet-nugetize-contents)' == 'true')" 
+          AfterTargets="GetPackageContents">
     <ItemGroup Condition="'@(NuspecFile)' == ''">
       <NuspecFile Include="$(NuspecFile)" />
     </ItemGroup>
@@ -23,6 +24,14 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ItemGroup>
       <PackageMetadata Update="@(PackageMetadata)" Nuspec="$(_NuspecFile)" NuPkg="@(PackageTargetPath)" />
       <PackageContent Include="@(_PackageContent)" Exclude="@(PackageMetadata)" />
+    </ItemGroup>
+    <!-- Force assign path if rendering contents only -->
+    <AssignPackagePath Files="@(PackageFile)" IsPackaging="true" KnownFolders="@(PackFolderKind)" Condition="'$(dotnet-nugetize-contents)' == 'true'">
+      <Output TaskParameter="AssignedFiles" ItemName="_AssignedPackageContent" />
+    </AssignPackagePath>
+    <ItemGroup Condition="'$(dotnet-nugetize-contents)' == 'true'">
+      <PackageContent Remove="@(PackageContent)" />
+      <PackageContent Include="@(_AssignedPackageContent)" />
     </ItemGroup>
     <WriteItemsToFile Condition="'@(PackageMetadata)' != ''" Overwrite="false" Items="@(PackageMetadata)" ItemName="PackageMetadata" File="$(dotnet-nugetize)" />
     <WriteItemsToFile Condition="'@(PackageContent)' != ''" Overwrite="false" Items="@(PackageContent)" ItemName="PackageContent" File="$(dotnet-nugetize)" />
