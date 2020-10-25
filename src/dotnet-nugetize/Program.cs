@@ -93,61 +93,52 @@ namespace NuGetize
         int Execute()
         {
             var tooldir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var project = "";
+            var invalidChars = Path.GetInvalidPathChars();
+            var project = extra.Where(arg => arg.IndexOfAny(invalidChars) == -1).FirstOrDefault(arg => File.Exists(arg)) ?? "";
             var file = items ?? Path.GetTempFileName();
 
-            var projects = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.*proj").ToList();
-            var solutions = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.sln").ToList();
+            if (string.IsNullOrEmpty(project))
+            {
+                var projects = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.*proj").ToList();
+                var solutions = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.sln").ToList();
 
-            // TODO: allow specifying which project.
-            if (solutions.Count == 1)
-                project = solutions[0];
-            else if (projects.Count > 1)
-                project = projects[0];
+                // TODO: allow specifying which project.
+                if (solutions.Count == 1)
+                    project = solutions[0];
+                else if (projects.Count > 1)
+                    project = projects[0];
+            }
+            else
+            {
+                extra.Remove(project);
+            }
 
             if (File.Exists(file))
                 File.Delete(file);
 
             // Optimize the "build" so that it doesn't actually do a full compile if possible.
-
+            var contentsOnly = false;
             if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents;Pack\""))
                 return -1;
 
-            var doc = XDocument.Load(file);
-            var foundPackage = false;
-
-            foreach (var metadata in doc.Root.Descendants("PackageMetadata")
-                .Distinct(AnonymousComparer.Create<XElement>(
-                    (x, y) => x.Element("PackageId")?.Value == y.Element("PackageId")?.Value,
-                    x => x.Element("PackageId")?.Value.GetHashCode() ?? 0)))
+            if (!File.Exists(file))
             {
-                var packageId = metadata.Element("PackageId").Value;
-                if (string.IsNullOrEmpty(packageId))
-                    continue;
+                // Re-run requesting contents only.
+                if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize-contents=true -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents\""))
+                    return -1;
 
-                foundPackage = true;
-                ColorConsole.WriteLine($"Package: {Path.GetFileName(metadata.Element("NuPkg").Value)}".Yellow());
-                ColorConsole.WriteLine($"         {metadata.Element("Nuspec").Value}".Yellow());
+                contentsOnly = true;
+            }
 
-                var width = metadata.Elements()
-                    .Select(x => x.Name.LocalName.Length)
-                    .OrderByDescending(x => x)
-                    .First();
+            var doc = XDocument.Load(file);
 
-                foreach (var md in metadata.Elements()
-                    .Where(x =>
-                        x.Name != "PackageId" &&
-                        x.Name != "Nuspec" &&
-                        x.Name != "NuPkg")
-                    .OrderBy(x => x.Name.LocalName))
-                {
-                    ColorConsole.WriteLine($"    {md.Name.LocalName.PadRight(width)}: ", md.Value.White());
-                }
-
+            if (contentsOnly)
+            {
+                ColorConsole.WriteLine($"Project {project} is not packable, rendering its contributed package contents.".Yellow());
+            
                 var dependencies = doc.Root.Descendants("PackageContent")
                     .Where(x =>
-                        "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase) &&
-                        packageId == x.Element("PackageId")?.Value)
+                        "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase))
                     .Distinct(AnonymousComparer.Create<XElement>(x =>
                         x.Attribute("Include").Value + "|" +
                         x.Element("Version").Value + "|" +
@@ -172,9 +163,7 @@ namespace NuGetize
                 ColorConsole.WriteLine($"  Contents:".Yellow());
 
                 var contents = doc.Root.Descendants("PackageContent")
-                    .Where(x =>
-                        x.Element("PackagePath") != null &&
-                        x.Element("PackageId")?.Value == packageId)
+                    .Where(x => x.Element("PackagePath") != null)
                     .Distinct(AnonymousComparer.Create<XElement>(x => x.Element("PackagePath").Value))
                     .OrderBy(x => Path.GetDirectoryName(x.Element("PackagePath").Value))
                     .ThenBy(x => x.Element("PackagePath").Value);
@@ -182,11 +171,82 @@ namespace NuGetize
                 Render(contents.ToList(), 0, 0, "");
                 Console.WriteLine();
             }
-
-            if (!foundPackage)
+            else
             {
-                ColorConsole.WriteLine($"No package content was found.".Red());
-                return -1;
+                var foundPackage = false;
+
+                foreach (var metadata in doc.Root.Descendants("PackageMetadata")
+                    .Distinct(AnonymousComparer.Create<XElement>(
+                        (x, y) => x.Element("PackageId")?.Value == y.Element("PackageId")?.Value,
+                        x => x.Element("PackageId")?.Value.GetHashCode() ?? 0)))
+                {
+                    var packageId = metadata.Element("PackageId").Value;
+                    if (string.IsNullOrEmpty(packageId))
+                        continue;
+
+                    foundPackage = true;
+                    ColorConsole.WriteLine($"Package: {Path.GetFileName(metadata.Element("NuPkg").Value)}".Yellow());
+                    ColorConsole.WriteLine($"         {metadata.Element("Nuspec").Value}".Yellow());
+
+                    var width = metadata.Elements()
+                        .Select(x => x.Name.LocalName.Length)
+                        .OrderByDescending(x => x)
+                        .First();
+
+                    foreach (var md in metadata.Elements()
+                        .Where(x =>
+                            x.Name != "PackageId" &&
+                            x.Name != "Nuspec" &&
+                            x.Name != "NuPkg")
+                        .OrderBy(x => x.Name.LocalName))
+                    {
+                        ColorConsole.WriteLine($"    {md.Name.LocalName.PadRight(width)}: ", md.Value.White());
+                    }
+
+                    var dependencies = doc.Root.Descendants("PackageContent")
+                        .Where(x =>
+                            "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase) &&
+                            packageId == x.Element("PackageId")?.Value)
+                        .Distinct(AnonymousComparer.Create<XElement>(x =>
+                            x.Attribute("Include").Value + "|" +
+                            x.Element("Version").Value + "|" +
+                            x.Element("TargetFramework").Value))
+                        .OrderBy(x => x.Element("TargetFramework").Value)
+                        .ThenBy(x => x.Attribute("Include").Value)
+                        .ToList();
+
+                    if (dependencies.Count > 0)
+                    {
+                        ColorConsole.WriteLine($"  Dependencies:".Yellow());
+                        foreach (var group in dependencies.GroupBy(x => x.Element("TargetFramework").Value))
+                        {
+                            ColorConsole.WriteLine("    ", group.Key.Green());
+                            foreach (var dependency in group)
+                            {
+                                ColorConsole.WriteLine("      ", dependency.Attribute("Include").Value.White(), $", {dependency.Element("Version").Value}".Gray());
+                            }
+                        }
+                    }
+
+                    ColorConsole.WriteLine($"  Contents:".Yellow());
+
+                    var contents = doc.Root.Descendants("PackageContent")
+                        .Where(x =>
+                            x.Element("PackagePath") != null &&
+                            x.Element("PackageId")?.Value == packageId)
+                        .Distinct(AnonymousComparer.Create<XElement>(x => x.Element("PackagePath").Value))
+                        .OrderBy(x => Path.GetDirectoryName(x.Element("PackagePath").Value))
+                        .ThenBy(x => x.Element("PackagePath").Value);
+
+                    Render(contents.ToList(), 0, 0, "");
+                    Console.WriteLine();
+                }
+
+                if (!foundPackage)
+                {
+                    ColorConsole.WriteLine($"No package content was found.".Red());
+                    return -1;
+                }
             }
 
             Console.WriteLine();
@@ -212,15 +272,16 @@ namespace NuGetize
 
         static int Render(IList<XElement> files, int index, int level, string path)
         {
+            var normalizedLevelPath = path == "" ? Path.DirectorySeparatorChar.ToString() : (Path.DirectorySeparatorChar + path + Path.DirectorySeparatorChar);
             while (index < files.Count)
             {
                 var element = files[index];
                 var file = element.Element("PackagePath").Value;
                 var dir = Path.GetDirectoryName(file);
                 var paths = dir.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+                var normalizeCurrentPath = Path.DirectorySeparatorChar + string.Join(Path.DirectorySeparatorChar, paths) + Path.DirectorySeparatorChar;
 
-                if (!string.Join(Path.DirectorySeparatorChar, paths).StartsWith(path) ||
-                    paths.Length < level)
+                if (!normalizeCurrentPath.StartsWith(normalizedLevelPath) || paths.Length < level)
                     return index;
 
                 if (paths.Length > level)
