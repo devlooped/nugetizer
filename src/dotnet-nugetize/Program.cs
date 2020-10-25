@@ -272,15 +272,16 @@ namespace NuGetize
 
         static int Render(IList<XElement> files, int index, int level, string path)
         {
+            var normalizedLevelPath = path == "" ? Path.DirectorySeparatorChar.ToString() : (Path.DirectorySeparatorChar + path + Path.DirectorySeparatorChar);
             while (index < files.Count)
             {
                 var element = files[index];
                 var file = element.Element("PackagePath").Value;
                 var dir = Path.GetDirectoryName(file);
                 var paths = dir.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+                var normalizeCurrentPath = Path.DirectorySeparatorChar + string.Join(Path.DirectorySeparatorChar, paths) + Path.DirectorySeparatorChar;
 
-                if (!string.Join(Path.DirectorySeparatorChar, paths).StartsWith(path) ||
-                    paths.Length < level)
+                if (!normalizeCurrentPath.StartsWith(normalizedLevelPath) || paths.Length < level)
                     return index;
 
                 if (paths.Length > level)
