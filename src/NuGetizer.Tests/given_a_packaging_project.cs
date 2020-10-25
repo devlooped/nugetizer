@@ -135,5 +135,13 @@ namespace NuGetizer
                 PackagePath = @"lib\net45\c.xml",
             }));
         }
+
+        [Fact]
+        public void when_packing_then_succeeeds()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "Pack", output: output);
+
+            result.AssertSuccess(output);
+        }
     }
 }
