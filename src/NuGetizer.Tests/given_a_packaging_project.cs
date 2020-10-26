@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.IO;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
@@ -134,6 +135,34 @@ namespace NuGetizer
             {
                 PackagePath = @"lib\net45\c.xml",
             }));
+        }
+
+        [Fact]
+        public void when_getting_contents_then_transitive_content_is_made_full_path()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "Readme",
+                PackFolder = "None",
+            }) && Path.IsPathRooted(item.ItemSpec));
+        }
+
+        [Fact]
+        public void when_getting_contents_then_transitive_content_can_opt_out_of_full_path()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_packaging_project), properties: new { AddAsIs = "true" }, output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "as-is",
+                PackFolder = "None",
+            }) && !Path.IsPathRooted(item.ItemSpec));
         }
 
         [Fact]

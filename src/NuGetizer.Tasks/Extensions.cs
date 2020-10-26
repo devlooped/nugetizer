@@ -38,10 +38,9 @@ namespace NuGetizer
 
         public static bool GetBoolean(this ITaskItem taskItem, string metadataName, bool defaultValue = false)
         {
-            var result = false;
             var metadataValue = taskItem.GetMetadata(metadataName);
 
-            return bool.TryParse(metadataValue, out result) && result;
+            return bool.TryParse(metadataValue, out var result) ? result : defaultValue;
         }
 
         public static string GetNullableMetadata(this ITaskItem taskItem, string metadataName)

@@ -19,7 +19,9 @@ namespace NuGetizer
         [Fact]
         public void exact_duplicates_are_removed()
         {
-            var result = Builder.BuildScenario(nameof(given_duplicate_package_files), target: "Pack");
+            var result = Builder.BuildScenario(nameof(given_duplicate_package_files),
+                new { ReadmeA = "This is a readme", ReadmeB = "This is a readme" },
+                target: "Pack");
 
             Assert.Equal(TargetResultCode.Success, result.ResultCode);
         }

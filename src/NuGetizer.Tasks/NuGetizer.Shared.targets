@@ -263,7 +263,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PropertyGroup>
       <_NuspecFile>%(NuspecFile.FullPath)</_NuspecFile>
     </PropertyGroup>
-    <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(_NuspecFile)" Contents="@(_PackageContent)" 
+    <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(_NuspecFile)" Contents="@(_PackageContent)"
                    EmitPackage="$(EmitPackage)" EmitNuspec="$(EmitNuspec)"
                    TargetPath="@(PackageTargetPath->'%(FullPath)')">
       <Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />

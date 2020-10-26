@@ -171,7 +171,7 @@ static partial class Builder
 
         public TestOutputLogger Logger { get; private set; }
 
-        public string Target { get; private set; }
+        public string Target { get; internal set; }
 
         public Exception Exception => BuildResult[Target].Exception;
 

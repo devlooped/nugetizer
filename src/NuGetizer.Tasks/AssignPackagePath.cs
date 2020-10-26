@@ -46,7 +46,14 @@ namespace NuGetizer.Tasks
 
         ITaskItem EnsurePackagePath(ITaskItem file, IDictionary<string, ITaskItem> kindMap)
         {
-            var output = new TaskItem(file);
+            // Switch to full path items
+            var output = new TaskItem(
+                file.GetBoolean("IsFile", true) && file.ItemSpec.IndexOfAny(Path.GetInvalidPathChars()) == -1 && File.Exists(file.GetMetadata("FullPath")) 
+                ? file.GetMetadata("FullPath")
+                : file.ItemSpec);
+
+            // Preserve existing metadata.
+            file.CopyMetadataTo(output);
 
             // Map the pack folder to a target top-level directory.
             var packFolder = file.GetMetadata("PackFolder");
@@ -106,7 +113,7 @@ namespace NuGetizer.Tasks
             // If a packaging project is requesting the package path assignment, 
             // perform it regardless of whether there is a PackageId on the items, 
             // since they all need to be assigned at this point.
-            bool isPackaging = false;
+            var isPackaging = false;
             isPackaging = !string.IsNullOrEmpty(IsPackaging) &&
                 bool.TryParse(IsPackaging, out isPackaging) &&
                 isPackaging;
