@@ -209,7 +209,7 @@ Copyright (c) .NET Foundation. All rights reserved.
            .NETFramework, the desktop WinFX.targets are imported which don't have the fix, so we need to 
            do it "the old way" for this particular output group -->
 			<_SatelliteDllsProjectOutputGroupOutput Include="@(SatelliteDllsProjectOutputGroupOutput)" 
-                                              FinalOutputPath="'%(FullPath)')" />
+                                              FinalOutputPath="%(FullPath)" />
       
       <_InferredProjectOutput Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)');
                                      @(BuiltProjectOutputGroupKeyOutput -> '%(FinalOutputPath)');

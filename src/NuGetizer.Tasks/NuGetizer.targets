@@ -75,6 +75,16 @@ Copyright (c) .NET Foundation. All rights reserved.
     <AssignPackagePath Files="@(PackageFile)" KnownFolders="@(PackFolderKind)" IsPackaging="%(PackageFile.IsPackaging)">
       <Output TaskParameter="AssignedFiles" ItemName="_PackageContent" />
     </AssignPackagePath>
+
+    <ItemGroup>
+      <_PackageContent>
+        <MSBuildSourceProjectFile Condition="'%(_PackageContent.MSBuildSourceProjectFile)' == ''">$(MSBuildProjectFullPath)</MSBuildSourceProjectFile>
+        <MSBuildSourceProjectDirectory Condition="'%(_PackageContent.MSBuildSourceProjectDirectory)' == ''">$(MSBuildProjectDirectory)</MSBuildSourceProjectDirectory>
+      </_PackageContent>
+      <_PackageContent>
+        <MSBuildSourceProjectDirectory>$([MSBuild]::EnsureTrailingSlash('%(MSBuildSourceProjectDirectory)'))</MSBuildSourceProjectDirectory>        
+      </_PackageContent>
+    </ItemGroup>
   </Target>
 
   <Target Name="_AddPackageManifest" Condition="'$(IsPackable)' == 'true'">
@@ -133,13 +143,12 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_ReferencedPackageContent Remove="@(_PackageContentFromDependency)" />
     </ItemGroup>
 
+    <ItemGroup>
     <!-- Always annotate package contents with the original target framework and moniker -->
-    <CreateItem Include="@(_ReferencedPackageContent)" PreserveExistingMetadata="true"
-                Condition="'@(_ReferencedPackageContent)' != ''"
-                AdditionalMetadata="OriginalTargetFramework=%(_ReferencedPackageContent.TargetFramework);
-                                    OriginalTargetFrameworkMoniker=%(_ReferencedPackageContent.TargetFrameworkMoniker)">
-      <Output TaskParameter="Include" ItemName="_ReferencedPackageContentWithOriginalValues"/>
-    </CreateItem>
+      <_ReferencedPackageContentWithOriginalValues Include="@(_ReferencedPackageContent)"
+                                                   OriginalTargetFramework="%(_ReferencedPackageContent.TargetFramework)"
+                                                   OriginalTargetFrameworkMoniker="%(_ReferencedPackageContent.TargetFrameworkMoniker)" />
+    </ItemGroup>
 
     <ItemGroup Condition="'$(IsPackagingProject)' != 'true'">
       <!-- Retarget content for the currently building package, if necessary -->
