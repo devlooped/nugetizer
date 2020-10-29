@@ -17,9 +17,13 @@ Copyright (c) .NET Foundation. All rights reserved.
     <CleanHttpNuGetCacheOnPack Condition="'$(CleanHttpNuGetCacheOnPack)' == ''">true</CleanHttpNuGetCacheOnPack>
     <!-- The actual NuGet cache is only cleared for the *current* PackageId, so no need to turn off its clearing on build/pack -->
     <NuGetCache>$(UserProfile)\.nuget\packages</NuGetCache>
+    <PackDependsOn>
+      CleanPackageOutput;
+      $(PackDependsOn);
+    </PackDependsOn>
   </PropertyGroup>
 
-  <Target Name="CleanPackageOutput" BeforeTargets="Build">
+  <Target Name="CleanPackageOutput">
     <ItemGroup>
       <_ExistingPackage Include="$(PackageOutputPath)\$(PackageId)*.nupkg" />
       <_PackageToDelete Include="@(_ExistingPackage)" 
