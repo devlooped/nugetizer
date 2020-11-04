@@ -1,4 +1,4 @@
-<h1 id="nugetizer"><img src="https://github.com/kzu/nugetizer/raw/dev/img/nugetizer-32.png" alt="Icon" height="48" width="48" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">  nugetizer</h1>
+<h1 id="nugetizer"><img src="https://github.com/kzu/nugetizer/raw/dev/img/nugetizer-32.png" alt="Icon" height="32" width="32" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">  nugetizer</h1>
 
 Simple, flexible, intuitive and powerful NuGet packaging.
 
