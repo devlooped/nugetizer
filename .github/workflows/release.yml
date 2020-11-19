@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: set version
-        run: echo "::set-env name=VERSION::${GITHUB_REF#refs/*/v}"
+        run: echo "VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
         shell: bash
       - uses: actions/setup-dotnet@v1
         with:
@@ -26,10 +26,10 @@ jobs:
         with:
           dotnet-version: 3.1.x
       - run: dotnet tool update -g dotnet-vs
-      - run: echo "::set-env name=MSB::$(vs where preview --prop=InstallationPath)"
+      - run: echo "MSB=$(vs where preview --prop=InstallationPath)" >> $GITHUB_ENV
       - run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
         if: env.MSB == ''
-      - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
+      - run: echo "$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin" >> $GITHUB_PATH
       - name: build
         run: msbuild -r -p:version=$($env:VERSION)
       - name: test
