@@ -98,7 +98,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackAndroidResource)' == true">true</Pack>
       <BuildAction>AndroidResource</BuildAction>
-    </AndroidResource>    
+    </AndroidResource>
     <BundleResource>
       <DefaultPackFolder>content</DefaultPackFolder>
       <Pack Condition="'$(PackBundleResource)' == true">true</Pack>
@@ -117,12 +117,17 @@ Copyright (c) .NET Foundation. All rights reserved.
       <TargetPath />
     </InferenceCandidate>
   </ItemDefinitionGroup>
-  
+
   <!-- Extend some built-in items with metadata we use in our inference targets -->
   <ItemDefinitionGroup>
     <PackageReference>
       <Pack />
+      <PrivateAssets />
     </PackageReference>
+    <ImplicitPackageReference>
+      <Pack />
+      <PrivateAssets />
+    </ImplicitPackageReference>
     <ReferencePath>
       <Facade>false</Facade>
       <FrameworkFile>false</FrameworkFile>
@@ -158,7 +163,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <BuildOutputFrameworkSpecific>@(_BuildOutputFrameworkSpecific)</BuildOutputFrameworkSpecific>
     </PropertyGroup>
   </Target>
-  
+
   <Target Name="_SetDefaultPackageReferencePack" Condition="'$(PackFolder)' == 'build'"
           BeforeTargets="InferPrimaryOutputDependencies;InferPackageContents">
     <ItemGroup>
@@ -167,7 +172,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                         Pack="false" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
     <ItemGroup>
       <InferenceCandidate Include="@(%(PackInference.Identity))" Exclude="@(%(PackInference.Identity) -> '%(PackExclude)')"/>
@@ -191,10 +196,10 @@ Copyright (c) .NET Foundation. All rights reserved.
                                '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != 'Never'">$(PackFolder)</PackFolder>
         <!-- Otherwise they cake on whichever is the default for their item type, as defined by their PackInference item -->
         <PackFolder Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == '' or 
-                               '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == 'Never'">%(_InferenceCandidateWithTargetPath.DefaultPackFolder)</PackFolder>        
+                               '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == 'Never'">%(_InferenceCandidateWithTargetPath.DefaultPackFolder)</PackFolder>
       </_InferenceCandidateWithTargetPath>
-      
-        <!-- Items that are copied to the output directory are included from the target path -->
+
+      <!-- Items that are copied to the output directory are included from the target path -->
       <_InferredPackageFile Include="@(_InferenceCandidateWithTargetPath -> '$(_OutputFullPath)\%(TargetPath)')"
                             Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != '' and 
                                        '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != 'Never'" />
@@ -205,12 +210,12 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
 
     <ItemGroup Label="BuildOutput Inference" Condition="'$(PackBuildOutput)' == 'true'">
-			<!-- Unfortunately, even with https://github.com/Microsoft/msbuild/pull/1115, when multi-targeting 
+      <!-- Unfortunately, even with https://github.com/Microsoft/msbuild/pull/1115, when multi-targeting 
            .NETFramework, the desktop WinFX.targets are imported which don't have the fix, so we need to 
            do it "the old way" for this particular output group -->
-			<_SatelliteDllsProjectOutputGroupOutput Include="@(SatelliteDllsProjectOutputGroupOutput)" 
+      <_SatelliteDllsProjectOutputGroupOutput Include="@(SatelliteDllsProjectOutputGroupOutput)"
                                               FinalOutputPath="%(FullPath)" />
-      
+
       <_InferredProjectOutput Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)');
                                      @(BuiltProjectOutputGroupKeyOutput -> '%(FinalOutputPath)');
                                      @(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)');
@@ -263,9 +268,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
-  <Target Name="_UpdatePackageReferenceVersions" 
-          Inputs="@(PackageReference)" 
-          Outputs="|%(Identity)|" 
+  <Target Name="_UpdatePackageReferenceVersions"
+          Inputs="@(PackageReference)"
+          Outputs="|%(Identity)|"
           Condition="'$(UsingMicrosoftNETSdk)' == 'true' and '$(ManagePackageVersionsCentrally)' == 'true'"
           DependsOnTargets="RunResolvePackageDependencies"
           Returns="@(_CentrallyManagedDependency)">
@@ -277,7 +282,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </PropertyGroup>
 
     <ItemGroup Condition="'$(_CandidatePackageVersion)' == '' and '$(_CandidatePackageIsImplicit)' != 'true'">
-      <_CentrallyManagedDependency Include="@(PackageDependencies)" 
+      <_CentrallyManagedDependency Include="@(PackageDependencies)"
                                    Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').StartsWith('$(_CandidatePackageId)/')) and 
                                               $([MSBuild]::ValueOrDefault('%(ParentPackage)', '')) == ''" />
     </ItemGroup>
@@ -286,13 +291,13 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_CentrallyManagedDependency>%(_CentrallyManagedDependency.Identity)</_CentrallyManagedDependency>
       <_CentrallyManagedVersion>$(_CentrallyManagedDependency.Replace('$(_CandidatePackageId)/', ''))</_CentrallyManagedVersion>
     </PropertyGroup>
-    
+
     <ItemGroup Condition="'$(_CentrallyManagedVersion)' != ''">
       <PackageReference Update="@(PackageReference)" Version="$(_CentrallyManagedVersion)" />
     </ItemGroup>
-  
+
   </Target>
-  
+
   <Target Name="_CollectPrimaryOutputDependencies" DependsOnTargets="BuildOnlySettings;ResolveReferences" Returns="@(ImplicitPackageReference)">
     <Error Code="NG1003" Text="Centrally managed package versions is only supported when using the Microsoft.NET.Sdk."
            Condition="'$(ManagePackageVersionsCentrally)' == 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
@@ -305,13 +310,13 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_PrivateAssetsPackageReference Include="@(PackageReference -> WithMetadataValue('PrivateAssets', 'all'))"
                                       Condition="'%(PackageReference.IsImplicitlyDefined)' != 'true' and '%(PackageReference.Pack)' != 'false'"/>
     </ItemGroup>
-    <InferImplicitPackageReference Condition="'@(_PrivateAssetsPackageReference)' != '' and '@(PackageDependencies)' != ''" 
-                                   PackageReferences="@(_PrivateAssetsPackageReference)" 
+    <InferImplicitPackageReference Condition="'@(_PrivateAssetsPackageReference)' != '' and '@(PackageDependencies)' != ''"
+                                   PackageReferences="@(_PrivateAssetsPackageReference)"
                                    PackageDependencies="@(PackageDependencies)">
       <Output TaskParameter="ImplicitPackageReferences" ItemName="ImplicitPackageReference" />
     </InferImplicitPackageReference>
   </Target>
-  
+
   <Target Name="_ResolvePackageDependencies" Condition="'$(UsingMicrosoftNETSdk)' == 'true'" DependsOnTargets="RunResolvePackageDependencies" />
 
   <Target Name="InferPrimaryOutputDependencies"
@@ -319,7 +324,7 @@ Copyright (c) .NET Foundation. All rights reserved.
           Outputs="%(_PrimaryOutputRelatedFile.NuGetPackageId)"
           Returns="@(_InferredPackageFile)"
           DependsOnTargets="_ResolvePackageDependencies;_CollectPrimaryOutputDependencies">
-    
+
     <ItemGroup>
       <_NuGetPackageId Include="@(_PrimaryOutputRelatedFile -> '%(NuGetPackageId)')" Condition="'%(NuGetPackageId)' != 'NETStandard.Library'" />
     </ItemGroup>
@@ -327,12 +332,12 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_NuGetPackageId>@(_NuGetPackageId -> Distinct())</_NuGetPackageId>
     </PropertyGroup>
     <ItemGroup>
-      <_PrimaryPackageReference Include="@(PackageReference);@(ImplicitPackageReference)" Condition="'$(_NuGetPackageId)' != '' and '%(Identity)' == '$(_NuGetPackageId)'" />
+      <_PrimaryPackageReference Include="@(ImplicitPackageReference);@(PackageReference)" Condition="'$(_NuGetPackageId)' != '' and '%(Identity)' == '$(_NuGetPackageId)'" />
     </ItemGroup>
-    
+
     <PropertyGroup>
-      <_PrivateAssets>@(_PrimaryPackageReference -> '%(PrivateAssets)')</_PrivateAssets>
-      <_ShouldPack>@(_PrimaryPackageReference -> '%(Pack)')</_ShouldPack>
+      <_PrivateAssets>%(_PrimaryPackageReference.PrivateAssets)</_PrivateAssets>
+      <_ShouldPack>%(_PrimaryPackageReference.Pack)</_ShouldPack>
       <_ShouldIncludeAssetsRegex>$(_NuGetPackageId)\\.+\\$(_PrivateAssets)\\.*</_ShouldIncludeAssetsRegex>
     </PropertyGroup>
 
@@ -347,7 +352,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <!-- In this case, we only add files that have a matching path to the private assets value. 
 				 i.e. for Mono.Options, PrivateAssets=lib, we'll include the file if its full path contains 
 				 'Mono.Options\*\lib\*', meaning the file is a lib. -->
-      <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" 
+      <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)"
                             Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputRelatedFile.FullPath)', '$(_ShouldIncludeAssetsRegex)', 'RegexOptions.IgnoreCase')) == 'true'">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
@@ -376,7 +381,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                                                '$(ManagePackageVersionsCentrally)' == 'true'">
         $(InferPackageContentsDependsOn);
         _UpdatePackageReferenceVersions
-      </InferPackageContentsDependsOn>      
+      </InferPackageContentsDependsOn>
       <InferPackageContentsDependsOn>
         $(InferPackageContentsDependsOn);
         GetPackageTargetPath
