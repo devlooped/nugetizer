@@ -540,5 +540,29 @@ namespace NuGetizer
                 Extension = ".sql",
             }));
         }
+
+        [Fact]
+        public void when_direct_and_indirect_packagereference_then_packs_once()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.VisualStudio.Shell.Interop' Version='16.7.30328.74' PrivateAssets='all' />
+    <PackageReference Include='Microsoft.VisualStudio.Shell.Interop.12.0' Version='16.7.30328.74' PrivateAssets='all' />        
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "Microsoft.VisualStudio.Shell.Interop",
+                Extension = ".dll",
+            }));
+        }
     }
 }
