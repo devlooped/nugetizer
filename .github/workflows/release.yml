@@ -33,11 +33,13 @@ jobs:
         run: dotnet tool update -g dotnet-vs
       - name: 🔍 vs 16.8+
         run: echo "MSB=$(vs where --prop=InstallationPath --first -version 16.8)" >> $GITHUB_ENV
+        shell: bash
       - name: 🔽 vs community
         run: vs install community --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
         if: env.MSB == ''
       - name: ≥ msbuild
         run: echo "$(vs where --prop=InstallationPath --first -version 16.8)\MSBuild\Current\Bin" >> $GITHUB_PATH
+        shell: bash
       - name: 🙏 build
         run: msbuild -r -p:version=$($env:VERSION)
       - name: 🧪 test
