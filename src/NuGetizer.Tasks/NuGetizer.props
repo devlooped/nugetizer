@@ -136,8 +136,10 @@ Copyright (c) .NET Foundation. All rights reserved.
   </ItemGroup>
 
   <Target Name="_GetPackFolders" Returns="@(PackFolderKind)" />
-  <!-- Redefined in Common targets. See PackageOutputGroup target -->
+  <!-- Redefined in Current\Bin\Microsoft.Common.CurrentVersion.targets. See PackageOutputGroup target -->
   <Target Name="AllProjectOutputGroups" />
+  <!-- Redefined in Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets -->
+  <Target Name="RunResolvePackageDependencies" />
 
   <PropertyGroup Label="Hidden">
     <!-- Flag this project as having been "nugetized" -->

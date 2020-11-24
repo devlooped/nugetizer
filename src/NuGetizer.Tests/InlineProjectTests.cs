@@ -1,14 +1,15 @@
-﻿using Microsoft.Build.Execution;
+﻿using System.Linq;
+using Microsoft.Build.Execution;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
 {
-    public class given_an_empty_library
+    public class InlineProjectTests
     {
         ITestOutputHelper output;
 
-        public given_an_empty_library(ITestOutputHelper output) => this.output = output;
+        public InlineProjectTests(ITestOutputHelper output) => this.output = output;
 
         [Fact]
         public void when_is_packable_true_then_package_id_defaults_to_assembly_name()
@@ -334,6 +335,30 @@ namespace NuGetizer
             var metadata = result.Items[0];
 
             Assert.Equal("MyPackage", metadata.GetMetadata("Title"));
+        }
+
+        [Fact]
+        public void when_package_reference_has_metadata_then_inferred_package_references_has_same_metadata()
+        {
+            var project = @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackBuildOutput>false</PackBuildOutput>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.CodeAnalysis' Version='3.8.0' MyMetadata='Foo' PrivateAssets='all' />
+  </ItemGroup>
+</Project>";
+
+            var result = Builder.BuildProject(project, "_CollectPrimaryOutputDependencies", output: output);
+            result.AssertSuccess(output);
+
+            var metadata = result.Items.FirstOrDefault(i => i.ItemSpec == "Microsoft.CodeAnalysis.Common");
+
+            Assert.NotNull(metadata);
+            Assert.Equal("Foo", metadata.GetMetadata("MyMetadata"));
         }
     }
 }

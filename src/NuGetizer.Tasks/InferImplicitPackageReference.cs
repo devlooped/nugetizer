@@ -51,31 +51,27 @@ namespace NuGetizer.Tasks
                 }
             }
 
-            var inferred = new HashSet<PackageIdentity>();
+            var inferred = new Dictionary<PackageIdentity, ITaskItem>();
 
-            foreach (var reference in PackageReferences.Where(x =>
-                "all".Equals(x.GetMetadata("PrivateAssets"), StringComparison.OrdinalIgnoreCase) &&
-                // Unless explicitly set to Pack=false
-                (!x.TryGetBoolMetadata("Pack", out var pack) || pack != false) &&
-                // NETCore/NETStandard are implicitly defined, we never need to bring them as deps.
-                !(bool.TryParse(x.GetMetadata("IsImplicitlyDefined"), out var isImplicit) && isImplicit)))
+            foreach (var reference in PackageReferences)
             {
                 var identity = new PackageIdentity(reference.ItemSpec, reference.GetMetadata("Version"));
+                var originalMetadata = (IDictionary<string, string>)reference.CloneCustomMetadata();
                 foreach (var dependency in FindDependencies(identity, packages))
                 {
-                    inferred.Add(dependency);
+                    if (!inferred.ContainsKey(dependency))
+                    {
+                        var item = new TaskItem(dependency.Id);
+                        foreach (var metadata in originalMetadata)
+                            item.SetMetadata(metadata.Key, metadata.Value);
+
+                        item.SetMetadata("Version", dependency.Version);
+                        inferred.Add(dependency, item);
+                    }
                 }
             }
 
-            ImplicitPackageReferences = inferred
-                .Select(x => new TaskItem(
-                    x.Id,
-                    new Dictionary<string, string>
-                    {
-                        { "Version", x.Version } ,
-                        { "PrivateAssets", "all" },
-                    }))
-                .ToArray();
+            ImplicitPackageReferences = inferred.Values.ToArray();
 
             return true;
         }
