@@ -1,14 +1,18 @@
-﻿using Microsoft.Build.Execution;
+﻿using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using Microsoft.Build.Execution;
+using NuGet.Packaging;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
 {
-    public class given_an_empty_library
+    public class InlineProjectTests
     {
         ITestOutputHelper output;
 
-        public given_an_empty_library(ITestOutputHelper output) => this.output = output;
+        public InlineProjectTests(ITestOutputHelper output) => this.output = output;
 
         [Fact]
         public void when_is_packable_true_then_package_id_defaults_to_assembly_name()
@@ -334,6 +338,133 @@ namespace NuGetizer
             var metadata = result.Items[0];
 
             Assert.Equal("MyPackage", metadata.GetMetadata("Title"));
+        }
+
+        [Fact]
+        public void when_package_reference_has_metadata_then_inferred_package_references_has_same_metadata()
+        {
+            var project = @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackBuildOutput>false</PackBuildOutput>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.CodeAnalysis' Version='3.8.0' MyMetadata='Foo' PrivateAssets='all' />
+  </ItemGroup>
+</Project>";
+
+            var result = Builder.BuildProject(project, "_CollectPrimaryOutputDependencies", output: output);
+            result.AssertSuccess(output);
+
+            var metadata = result.Items.FirstOrDefault(i => i.ItemSpec == "Microsoft.CodeAnalysis.Common");
+
+            Assert.NotNull(metadata);
+            Assert.Equal("Foo", metadata.GetMetadata("MyMetadata"));
+        }
+
+        [Fact]
+        public void when_referencing_package_reference_file_then_it_requires_generate_path_property()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='ThisAssembly' Version='1.0.0' />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageFile Include='icon-128.png' PackageReference='ThisAssembly' />
+  </ItemGroup>
+</Project>", output: output);
+
+            Assert.Equal(TargetResultCode.Failure, result.ResultCode);
+
+            // Next best to checking the full string. No way I could find to 
+            // get the actually build error code.
+            Assert.Contains("GeneratePathProperty", result.ToString());
+        }
+
+        [Fact]
+        public void when_referencing_package_reference_file_then_resolves_to_package_path()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='ThisAssembly' Version='1.0.0' GeneratePathProperty='true' />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageFile Include='icon-128.png' PackageReference='ThisAssembly' />
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+
+            var icon = result.Items.FirstOrDefault(i => i.ItemSpec.EndsWith("icon-128.png"));
+
+            Assert.NotNull(icon);
+            Assert.True(File.Exists(icon.GetMetadata("FullPath")));
+        }
+
+        [Fact]
+        public void when_referencing_package_reference_file_then_can_use_inference_items()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='ThisAssembly' Version='1.0.0' GeneratePathProperty='true' />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include='icon-128.png' PackageReference='ThisAssembly' />
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+
+            var icon = result.Items.FirstOrDefault(i => i.ItemSpec.EndsWith("icon-128.png"));
+
+            Assert.NotNull(icon);
+            Assert.True(File.Exists(icon.GetMetadata("FullPath")));
+        }
+
+        [Fact]
+        public void when_pack_on_build_multitargeting_then_contains_all_targets()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <PackOnBuild>true</PackOnBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
+  </ItemGroup>
+</Project>", "Build,GetPackageTargetPath", output);
+            
+            result.AssertSuccess(output);
+
+            Assert.Single(result.Items);
+            var packagePath = result.Items[0].GetMetadata("FullPath");
+
+            Assert.True(File.Exists(packagePath));
+
+            using var package = ZipFile.OpenRead(packagePath);
+            var files = package.GetFiles().ToArray();
+
+            Assert.Contains(files, file => file.StartsWith("lib/net472"));
+            Assert.Contains(files, file => file.StartsWith("lib/netstandard2.0"));
         }
     }
 }

@@ -298,7 +298,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   </Target>
 
-  <Target Name="_CollectPrimaryOutputDependencies" DependsOnTargets="BuildOnlySettings;ResolveReferences" Returns="@(ImplicitPackageReference)">
+  <Target Name="_CollectPrimaryOutputDependencies" DependsOnTargets="BuildOnlySettings;RunResolvePackageDependencies;ResolveReferences" Returns="@(ImplicitPackageReference)">
     <Error Code="NG1003" Text="Centrally managed package versions is only supported when using the Microsoft.NET.Sdk."
            Condition="'$(ManagePackageVersionsCentrally)' == 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
     <ItemGroup>

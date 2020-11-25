@@ -152,7 +152,7 @@ static partial class Builder
         if (OpenBuildLogAttribute.IsActive)
             Process.Start(scenarioName + ".binlog");
 
-        return new TargetResult(projectOrSolution, result, target, logger);
+        return new TargetResult(projectOrSolution, result, target.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Last(), logger);
     }
 
     public class TargetResult : ITargetResult

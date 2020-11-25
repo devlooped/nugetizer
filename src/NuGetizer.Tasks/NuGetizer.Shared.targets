@@ -239,22 +239,19 @@ Copyright (c) .NET Foundation. All rights reserved.
   =================================================================================================
 	-->
   <PropertyGroup Label="Hidden">
-    <!-- If we're packing on build, just add Pack as a dependency for Build -->
+    <_IsInnerBuild Condition="'$(TargetFramework)' != '' and '$(TargetFrameworks)' != ''">true</_IsInnerBuild>
     <_ShouldPackOnBuild Condition="'$(PackOnBuild)' == 'true' And '$(IsPackable)' == 'true'">true</_ShouldPackOnBuild>
-    <BuildDependsOn Condition="'$(NoBuild)' != 'true' And '$(_ShouldPackOnBuild)' == 'true'">
-      $(BuildDependsOn);
-      Pack;
-    </BuildDependsOn>
-    <!-- If we're not packing on build, set up a dependency from Pack>Build for non-NuProj that are packable, so Build runs before Pack -->
-    <PackDependsOn Condition="'$(NoBuild)' != 'true' And '$(IsPackagingProject)' != 'true' And '$(_ShouldPackOnBuild)' != 'true' And '$(IsPackable)' == 'true'">
-      Build;
-    </PackDependsOn>
     <PackDependsOn>
       $(PackDependsOn)
       GetPackageTargetPath;
       GetPackageContents
     </PackDependsOn>
   </PropertyGroup>
+
+  <Target Name="_PackAfterBuild" AfterTargets="Build" DependsOnTargets="Pack"
+          Condition="'$(_ShouldPackOnBuild)' == 'true' And '$(_IsInnerBuild)' != 'true'" />
+  <Target Name="_BuildBeforePack" BeforeTargets="Pack" DependsOnTargets="Build"
+          Condition="'$(BuildOnPack)' != 'false' And '$(_IsInnerBuild)' != 'true' And '$(NoBuild)' != 'true' And '$(IsPackagingProject)' != 'true' And '$(_ShouldPackOnBuild)' != 'true' And '$(IsPackable)' == 'true'" />
 
   <Target Name="Pack" DependsOnTargets="$(PackDependsOn)" Returns="@(_PackageTargetPath)" Condition="'$(IsPackable)' == 'true'">
     <ItemGroup Condition="'@(NuspecFile)' == ''">

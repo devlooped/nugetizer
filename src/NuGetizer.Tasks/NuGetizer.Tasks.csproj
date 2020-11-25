@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -25,6 +25,7 @@
     <None Update="NuGetizer.MultiTargeting.targets" PackagePath="buildMultiTargeting\NuGetizer.targets" />
     <None Include="NuGetizer.PackageMetadata.targets;dotnet-nugetize.props;dotnet-nugetize.targets" PackagePath="buildMultiTargeting\%(Filename)%(Extension)" Pack="true" />
     <None Include="..\..\img\nugetizer-256.png" Link="icon.png" PackagePath="icon.png" />
+    <None Update="NuGetizer.Tasks.targets" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

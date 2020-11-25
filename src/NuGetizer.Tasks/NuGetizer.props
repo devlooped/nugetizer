@@ -50,6 +50,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 				 the automatic discovery will annotate those with Implicit instead. 
 				 This allows the duplicate item detection to either warn (Implicit) or error (Explicit). -->
       <Source>Explicit</Source>
+      <!-- Used to include files from referenced packages -->
+      <PackageReference />
+      <PackageReferencePathProperty />
+      <PackageReferencePath />
+      <!-- Populated by content inference to preserve original identity -->
+      <OriginalItemSpec />
     </PackageFile>
     <PackageReference>
       <!-- See https://github.com/NuGet/Home/wiki/PackageReference-Specification -->
@@ -136,8 +142,10 @@ Copyright (c) .NET Foundation. All rights reserved.
   </ItemGroup>
 
   <Target Name="_GetPackFolders" Returns="@(PackFolderKind)" />
-  <!-- Redefined in Common targets. See PackageOutputGroup target -->
+  <!-- Redefined in Current\Bin\Microsoft.Common.CurrentVersion.targets. See PackageOutputGroup target -->
   <Target Name="AllProjectOutputGroups" />
+  <!-- Redefined in Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets -->
+  <Target Name="RunResolvePackageDependencies" />
 
   <PropertyGroup Label="Hidden">
     <!-- Flag this project as having been "nugetized" -->

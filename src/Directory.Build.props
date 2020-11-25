@@ -30,6 +30,9 @@
     <!-- Allows source control information to always be present in ThisAssembly -->
     <EnableSourceLink>true</EnableSourceLink>
     <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
+
+    <!-- We explicitly Build separately from Pack, because otherwise tasks assembly gets locked -->
+    <BuildOnPack>false</BuildOnPack>
   </PropertyGroup>
 
   <PropertyGroup Label="CI" Condition="'$(CI)' == ''">

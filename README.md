@@ -9,8 +9,7 @@ Simple, flexible, intuitive and powerful NuGet packaging.
 [![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/stunts)
 
 [![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/nugetizer/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
-[![GH CI Status](https://github.com/kzu/nugetizer/workflows/build/badge.svg?branch=main)](https://github.com/kzu/nugetizer/actions?query=branch%3Amain+workflow%3Abuild+)
-[![AzDO CI Status](https://dev.azure.com/kzu/oss/_apis/build/status/nugetizer?branchName=main)](http://build.azdo.io/kzu/oss/44)
+[![CI Status](https://github.com/kzu/nugetizer/workflows/build/badge.svg?branch=main)](https://github.com/kzu/nugetizer/actions?query=branch%3Amain+workflow%3Abuild+)
 
 
 # Why
@@ -176,7 +175,7 @@ As usual, you can change this default behavior by using `Pack=false` metadata.
 
 ### ProjectReference
 
-Unlike SDK Pack that [considers project references as package references by default](https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#project-to-project-references), NuGetizer has an explicit contract between projects: the `GetPackageContents` target. This target is invoked when packing project references, and it returns whatever the referenced project exposes as package contents (including the inference rules above). If the project is *packable* (that is, it produces a package, denoted by the presence of a `PackageId` property), it will be packed as a dependency/package reference instead.
+Unlike SDK Pack that [considers project references as package references by default](https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#project-to-project-references), NuGetizer has an explicit contract between projects: the `GetPackageContents` target. This target is invoked when packing project references, and it returns whatever the referenced project exposes as package contents (including the inference rules above). If the project is *packable* (that is, it produces a package, denoted by the presence of a `PackageId` property or `IsPackable=true`, for compatibility with SDK Pack), it will be packed as a dependency/package reference instead.
 
 This means that by default, things Just Work: if you reference a library with no `PackageId`, it becomes part of whatever output your main project produces (analyzer, tools, plain lib). The moment you decide you want to make it a package on its own, you add the required metadata properties to that project and it automatically becomes a dependency instead.
 
@@ -262,3 +261,58 @@ Authoring, testing and iterating with your nuget packages should be easy and str
    c. Clean the NuGet HTTP cache: this avoids a subsequent restore from a test/sample project from getting an older version from there, in case you build locally the same version of a previously restored one from an HTTP source.
 
 These cleanups only apply in local builds, never in CI, and you can turn them all off by setting `EnablePackCleanup=false`.
+
+## Advanced Features
+
+This section contains miscelaneous useful features that are typically used in advanced scenarios and 
+are not necessarily mainstream.
+
+### Packing arbitrary files from referenced packages
+
+If you want to pack files from referenced packages, you can simply add `PackageReference` attribute 
+to `PackageFile`. Say we want to resuse the awesome icon from the 
+[ThisAssembly](https://nuget.org/packages/ThisAssembly) package, we can just bring it in with:
+
+```xml
+<ItemGroup>
+  <PackageFile Include="icon-128.png" PackagePath="icon.png" PackageReference="ThisAssembly" />
+</ItemGroup>
+```
+
+The project will need to reference that package too, of course:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="ThisAssembly" Version="1.0.0" GeneratePathProperty="true" Pack="false" />
+</ItemGroup>
+```
+
+Note that we had to add the `GeneratePathProperty` to the reference, so that the package-relative 
+path `icon-128.png` can be properly resolved to the package install location. Also note that in this 
+particular case, we don't want to pack the reference as a dependency (it's a build-only or development 
+dependency package). That is, this feature does not require a package dependency for the package reference 
+content we're bringing in.
+
+It even works for inferred content item types, such as `None`:
+
+```xml
+<PropertyGroup>
+  <PackNone>true</PackNone>
+</PropertyGroup>
+<ItemGroup>
+  <None Include="icon-128.png" PackageReference="ThisAssembly" />
+</ItemGroup>
+```
+
+### Skip Build during Pack
+
+If you are building explicitly prior to running `Pack` (and you're not using 
+`PackOnBuild=true`), you might want to optimize the process by skipping the 
+automatic `Build` run that happens by default when you run `Pack` by setting 
+`BuildOnPack=false`. Not building before `Pack` with `BuildOnPack=false` 
+can cause the target run to fail since output files expected by the packaging 
+might be missing (i.e. the primary output, content files, etc.).
+
+This option is useful in combination with `BuildProjectReferences=false` when 
+packing on CI, since at that point all that's run are the P2P protocol involving 
+`GetPackageContents`.
