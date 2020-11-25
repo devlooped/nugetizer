@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Microsoft.Build.Execution;
 using Xunit;
 using Xunit.Abstractions;
@@ -359,6 +360,80 @@ namespace NuGetizer
 
             Assert.NotNull(metadata);
             Assert.Equal("Foo", metadata.GetMetadata("MyMetadata"));
+        }
+
+        [Fact]
+        public void when_referencing_package_reference_file_then_it_requires_generate_path_property()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='ThisAssembly' Version='1.0.0' />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageFile Include='icon-128.png' PackageReference='ThisAssembly' />
+  </ItemGroup>
+</Project>", output: output);
+
+            Assert.Equal(TargetResultCode.Failure, result.ResultCode);
+
+            // Next best to checking the full string. No way I could find to 
+            // get the actually build error code.
+            Assert.Contains("GeneratePathProperty", result.ToString());
+        }
+
+        [Fact]
+        public void when_referencing_package_reference_file_then_resolves_to_package_path()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='ThisAssembly' Version='1.0.0' GeneratePathProperty='true' />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageFile Include='icon-128.png' PackageReference='ThisAssembly' />
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+
+            var icon = result.Items.FirstOrDefault(i => i.ItemSpec.EndsWith("icon-128.png"));
+
+            Assert.NotNull(icon);
+            Assert.True(File.Exists(icon.GetMetadata("FullPath")));
+        }
+
+        [Fact]
+        public void when_referencing_package_reference_file_then_can_use_inference_items()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <Title>MyPackage</Title>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='ThisAssembly' Version='1.0.0' GeneratePathProperty='true' />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include='icon-128.png' PackageReference='ThisAssembly' />
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+
+            var icon = result.Items.FirstOrDefault(i => i.ItemSpec.EndsWith("icon-128.png"));
+
+            Assert.NotNull(icon);
+            Assert.True(File.Exists(icon.GetMetadata("FullPath")));
         }
     }
 }

@@ -70,6 +70,40 @@ Copyright (c) .NET Foundation. All rights reserved.
       </PackageFile>
     </ItemGroup>
 
+    <ItemGroup>
+      <_FromPackageReference Include="@(PackageFile -> '%(PackageReference)')" Condition="'%(PackageReference)' != ''" />
+      <FromPackageReference Include="@(_FromPackageReference -> Distinct())">
+        <PathProperty>Pkg$([MSBuild]::ValueOrDefault('%(_FromPackageReference.Identity)', '').Replace('.', '_'))</PathProperty>
+      </FromPackageReference>
+      <FromPackageReference>
+        <PathValue>$(%(FromPackageReference.PathProperty))</PathValue>
+      </FromPackageReference>
+    </ItemGroup>
+
+    <Error Condition="'@(FromPackageReference)' != '' and '%(FromPackageReference.PathValue)' == ''"
+           Code="NG0014"
+           Text="In order to reference content from package '%(FromPackageReference.Identity)', make sure its package reference specifies GeneratePathProperty='true'." />
+
+    <ItemGroup Condition="'@(FromPackageReference)' != ''">
+      <PackageFile Condition="'%(PackageReference)' != ''">
+        <PackageReferencePathProperty>Pkg$([MSBuild]::ValueOrDefault('%(PackageReference)', '').Replace('.', '_'))</PackageReferencePathProperty>
+      </PackageFile>
+      <PackageFile Condition="'%(PackageReference)' != ''">
+        <PackageReferencePath>$(%(PackageReferencePathProperty))</PackageReferencePath>
+      </PackageFile>
+      <PackageFileFromPackageReference Include="@(PackageFile -> '%(PackageReferencePath)/%(Identity)')" Condition="'%(PackageReference)' != '' and '%(OriginalItemSpec)' == ''" />
+      <PackageFileFromPackageReference Include="@(PackageFile -> '%(PackageReferencePath)/%(OriginalItemSpec)')" Condition="'%(PackageReference)' != '' and '%(OriginalItemSpec)' != ''" />
+      <PackageFile Remove="@(PackageFile)" Condition="'%(PackageReference)' != ''" />
+      <PackageFile Include="@(PackageFileFromPackageReference)">
+        <!-- Preserve original PackageReference for reference -->
+        <OriginalPackageReference>%(PackageReference)</OriginalPackageReference>
+        <!-- Clear values to avoid re-processing item in P2P scenarios -->
+        <PackageReference />
+        <PackageReferencePathProperty />
+        <PackageReferencePath />
+      </PackageFile>
+    </ItemGroup>
+
     <!-- We batch depending on the IsPackaging metadata, which is only specified for referenced content 
 			 if the current project is building a package, to force retargeting of the referenced content. -->
     <AssignPackagePath Files="@(PackageFile)" KnownFolders="@(PackFolderKind)" IsPackaging="%(PackageFile.IsPackaging)">

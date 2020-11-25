@@ -176,7 +176,7 @@ As usual, you can change this default behavior by using `Pack=false` metadata.
 
 ### ProjectReference
 
-Unlike SDK Pack that [considers project references as package references by default](https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#project-to-project-references), NuGetizer has an explicit contract between projects: the `GetPackageContents` target. This target is invoked when packing project references, and it returns whatever the referenced project exposes as package contents (including the inference rules above). If the project is *packable* (that is, it produces a package, denoted by the presence of a `PackageId` property), it will be packed as a dependency/package reference instead.
+Unlike SDK Pack that [considers project references as package references by default](https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#project-to-project-references), NuGetizer has an explicit contract between projects: the `GetPackageContents` target. This target is invoked when packing project references, and it returns whatever the referenced project exposes as package contents (including the inference rules above). If the project is *packable* (that is, it produces a package, denoted by the presence of a `PackageId` property or `IsPackable=true`, for compatibility with SDK Pack), it will be packed as a dependency/package reference instead.
 
 This means that by default, things Just Work: if you reference a library with no `PackageId`, it becomes part of whatever output your main project produces (analyzer, tools, plain lib). The moment you decide you want to make it a package on its own, you add the required metadata properties to that project and it automatically becomes a dependency instead.
 
@@ -262,3 +262,45 @@ Authoring, testing and iterating with your nuget packages should be easy and str
    c. Clean the NuGet HTTP cache: this avoids a subsequent restore from a test/sample project from getting an older version from there, in case you build locally the same version of a previously restored one from an HTTP source.
 
 These cleanups only apply in local builds, never in CI, and you can turn them all off by setting `EnablePackCleanup=false`.
+
+## Advanced Features
+
+This section contains miscelaneous useful features that are typically used in advanced scenarios and 
+are not necessarily mainstream.
+
+### Packing arbitrary files from referenced packages
+
+If you want to pack files from referenced packages, you can simply add `PackageReference` attribute 
+to `PackageFile`. Say we want to resuse the awesome icon from the 
+[ThisAssembly](https://nuget.org/packages/ThisAssembly) package, we can just bring it in with:
+
+```xml
+<ItemGroup>
+  <PackageFile Include="icon-128.png" PackagePath="icon.png" PackageReference="ThisAssembly" />
+</ItemGroup>
+```
+
+The project will need to reference that package too, of course:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="ThisAssembly" Version="1.0.0" GeneratePathProperty="true" Pack="false" />
+</ItemGroup>
+```
+
+Note that we had to add the `GeneratePathProperty` to the reference, so that the package-relative 
+path `icon-128.png` can be properly resolved to the package install location. Also note that in this 
+particular case, we don't want to pack the reference as a dependency (it's a build-only or development 
+dependency package). That is, this feature does not require a package dependency for the package reference 
+content we're bringing in.
+
+It even works for inferred content item types, such as `None`:
+
+```xml
+<PropertyGroup>
+  <PackNone>true</PackNone>
+</PropertyGroup>
+<ItemGroup>
+  <None Include="icon-128.png" PackageReference="ThisAssembly" />
+</ItemGroup>
+```

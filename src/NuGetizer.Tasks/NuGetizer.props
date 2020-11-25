@@ -50,6 +50,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 				 the automatic discovery will annotate those with Implicit instead. 
 				 This allows the duplicate item detection to either warn (Implicit) or error (Explicit). -->
       <Source>Explicit</Source>
+      <!-- Used to include files from referenced packages -->
+      <PackageReference />
+      <PackageReferencePathProperty />
+      <PackageReferencePath />
+      <!-- Populated by content inference to preserve original identity -->
+      <OriginalItemSpec />
     </PackageFile>
     <PackageReference>
       <!-- See https://github.com/NuGet/Home/wiki/PackageReference-Specification -->
