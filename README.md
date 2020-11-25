@@ -304,3 +304,16 @@ It even works for inferred content item types, such as `None`:
   <None Include="icon-128.png" PackageReference="ThisAssembly" />
 </ItemGroup>
 ```
+
+### Skip Build during Pack
+
+If you are building explicitly prior to running `Pack` (and you're not using 
+`PackOnBuild=true`), you might want to optimize the process by skipping the 
+automatic `Build` run that happens by default when you run `Pack` by setting 
+`BuildOnPack=false`. Not building before `Pack` with `BuildOnPack=false` 
+can cause the target run to fail since output files expected by the packaging 
+might be missing (i.e. the primary output, content files, etc.).
+
+This option is useful in combination with `BuildProjectReferences=false` when 
+packing on CI, since at that point all that's run are the P2P protocol involving 
+`GetPackageContents`.

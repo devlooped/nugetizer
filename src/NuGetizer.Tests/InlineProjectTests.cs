@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Microsoft.Build.Execution;
+using NuGet.Packaging;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -434,6 +436,35 @@ namespace NuGetizer
 
             Assert.NotNull(icon);
             Assert.True(File.Exists(icon.GetMetadata("FullPath")));
+        }
+
+        [Fact]
+        public void when_pack_on_build_multitargeting_then_contains_all_targets()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <PackOnBuild>true</PackOnBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
+  </ItemGroup>
+</Project>", "Build,GetPackageTargetPath", output);
+            
+            result.AssertSuccess(output);
+
+            Assert.Single(result.Items);
+            var packagePath = result.Items[0].GetMetadata("FullPath");
+
+            Assert.True(File.Exists(packagePath));
+
+            using var package = ZipFile.OpenRead(packagePath);
+            var files = package.GetFiles().ToArray();
+
+            Assert.Contains(files, file => file.StartsWith("lib/net472"));
+            Assert.Contains(files, file => file.StartsWith("lib/netstandard2.0"));
         }
     }
 }
