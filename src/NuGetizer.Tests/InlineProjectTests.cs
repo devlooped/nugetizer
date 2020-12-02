@@ -374,7 +374,7 @@ namespace NuGetizer
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='ThisAssembly' Version='1.0.0' />
+    <PackageReference Include='ThisAssembly' Version='1.0.0' GeneratePathProperty='false' />
   </ItemGroup>
   <ItemGroup>
     <PackageFile Include='icon-128.png' PackageReference='ThisAssembly' />
