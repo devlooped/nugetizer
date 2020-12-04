@@ -16,6 +16,17 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="GetNativeManifest" />
   <Target Name="GetCopyToOutputDirectoryItems" />
 
+
+  <!--
+  ============================================================
+  GetTargetPath
+
+  When cross-targeting and the authoring project references a 
+  nugetized library, return all the determined target paths.
+  ============================================================
+  -->
+  <Target Name="GetTargetPath" Returns="@(TargetPathWithTargetPlatformMoniker)" />
+
   <!--
   ============================================================
   GetTargetPathWithTargetPlatformMoniker
@@ -27,6 +38,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     -->
   <Target Name="GetTargetPathWithTargetPlatformMoniker"
           DependsOnTargets="_ComputeTargetFrameworkItems"
+          BeforeTargets="GetTargetPath"
           Returns="@(TargetPathWithTargetPlatformMoniker)">
 
     <MSBuild Projects="@(_InnerBuildProjects)"
