@@ -43,6 +43,11 @@ Copyright (c) .NET Foundation. All rights reserved.
   </ItemGroup>
 
   <ItemDefinitionGroup>
+    <PackageReference>
+      <!-- This enables referencing arbitrary files from any package by adding PackageReference="" to a file -->
+      <GeneratePathProperty>true</GeneratePathProperty>
+    </PackageReference>
+
     <PackageFile>
       <!-- See @(PackFolderKind) below -->
       <PackFolder>None</PackFolder>
