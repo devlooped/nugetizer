@@ -152,6 +152,7 @@ Copyright (c) .NET Foundation. All rights reserved.
              BuildInParallel="$(BuildInParallel)"
              Properties="%(_NuGetizedProjectReference.SetConfiguration); 
                          %(_NuGetizedProjectReference.SetPlatform); 
+                         %(_NuGetizedProjectReference.SetTargetFramework); 
                          BuildingPackage=$(BuildingPackage); 
                          DesignTimeBuild=false"
              Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_NuGetizedProjectReference)' != ''"
@@ -232,7 +233,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
              Targets="GetTargetPathWithTargetPlatformMoniker"
              BuildInParallel="$(BuildInParallel)"
-             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
+             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); 
+                         %(_MSBuildProjectReferenceExistent.SetPlatform);
+                         %(_MSBuildProjectReferenceExistent.SetTargetFramework)"
              RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectTargetPath" />
     </MSBuild>
