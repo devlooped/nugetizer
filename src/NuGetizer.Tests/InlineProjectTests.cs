@@ -466,5 +466,34 @@ namespace NuGetizer
             Assert.Contains(files, file => file.StartsWith("lib/net472"));
             Assert.Contains(files, file => file.StartsWith("lib/netstandard2.0"));
         }
+
+        [Fact]
+        public void when_packing_transive_reference_then_packs_lib()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Scriban' Version='3.0.4' PrivateAssets='all' />
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+
+            // Ref files are not there
+            Assert.DoesNotContain(result.Items, item 
+                => item.GetMetadata("FullPath").EndsWith(Path.Combine("ref", "netstandard2.0", "System.Runtime.CompilerServices.Unsafe.dll")));
+            Assert.DoesNotContain(result.Items, item 
+                => item.GetMetadata("FullPath").EndsWith(Path.Combine("ref", "netstandard2.0", "System.Threading.Tasks.Extensions.dll")));
+
+            // Replaced by lib
+            Assert.Contains(result.Items, item 
+                => item.GetMetadata("FullPath").EndsWith(Path.Combine("lib", "netstandard2.0", "System.Runtime.CompilerServices.Unsafe.dll")));
+            Assert.Contains(result.Items, item 
+                => item.GetMetadata("FullPath").EndsWith(Path.Combine("lib", "netstandard2.0", "System.Threading.Tasks.Extensions.dll")));
+        }
     }
 }

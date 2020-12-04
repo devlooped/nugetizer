@@ -341,8 +341,22 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_ShouldIncludeAssetsRegex>$(_NuGetPackageId)\\.+\\$(_PrivateAssets)\\.*</_ShouldIncludeAssetsRegex>
     </PropertyGroup>
 
+    <ItemGroup>
+      <_PrimaryOutputRelatedFileRef Include="@(_PrimaryOutputRelatedFile)"
+                                    Condition="$([MSBuild]::ValueOrDefault('%(Directory)', '').Contains('/ref/')) or
+                                               $([MSBuild]::ValueOrDefault('%(Directory)', '').Contains('\ref\'))" />
+      <_PrimaryOutputRelatedFileLib Include="@(_PrimaryOutputRelatedFileRef -> '$([MSBuild]::ValueOrDefault('%(FullPath)', '').Replace(/ref/, /lib/).Replace(\ref\, \lib\))')">
+        <OriginalItemSpec>%(_PrimaryOutputRelatedFileRef.Identity)</OriginalItemSpec>
+      </_PrimaryOutputRelatedFileLib>
+      <_ReplacedRefRelatedFile Include="@(_PrimaryOutputRelatedFileLib)" Condition="Exists('%(FullPath)')" />
+      <_PrimaryOutputFinalFile Include="@(_ReplacedRefRelatedFile)"
+                               Condition="'%(_ReplacedRefRelatedFile.FrameworkFile)' != 'true'" />
+      <_PrimaryOutputFinalFile Include="@(_PrimaryOutputRelatedFile)" Exclude="@(_ReplacedRefRelatedFile -> '%(OriginalItemSpec)')"
+                               Condition="'%(_PrimaryOutputRelatedFile.FrameworkFile)' != 'true'" />
+    </ItemGroup>
+
     <ItemGroup Condition="'$(_ShouldPack)' != 'false' and '$(_PrivateAssets)' == 'all'">
-      <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)" Condition="'%(_PrimaryOutputRelatedFile.FrameworkFile)' != 'true'">
+      <_InferredPackageFile Include="@(_PrimaryOutputFinalFile)">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
@@ -352,8 +366,8 @@ Copyright (c) .NET Foundation. All rights reserved.
       <!-- In this case, we only add files that have a matching path to the private assets value. 
 				 i.e. for Mono.Options, PrivateAssets=lib, we'll include the file if its full path contains 
 				 'Mono.Options\*\lib\*', meaning the file is a lib. -->
-      <_InferredPackageFile Include="@(_PrimaryOutputRelatedFile)"
-                            Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputRelatedFile.FullPath)', '$(_ShouldIncludeAssetsRegex)', 'RegexOptions.IgnoreCase')) == 'true'">
+      <_InferredPackageFile Include="@(_PrimaryOutputFinalFile)"
+                            Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputFinalFile.FullPath)', '$(_ShouldIncludeAssetsRegex)', 'RegexOptions.IgnoreCase')) == 'true'">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
