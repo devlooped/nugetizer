@@ -85,5 +85,15 @@ namespace NuGetizer
             }));
         }
 
+        [Fact]
+        public void when_getting_target_path_then_includes_all_frameworks()
+        {
+            var result = Builder.BuildScenario(
+                nameof(given_a_multitargeting_library), target: "GetTargetPath", output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Equal(2, result.Items.Length);
+        }
     }
 }
