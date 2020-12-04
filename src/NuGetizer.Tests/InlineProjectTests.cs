@@ -468,6 +468,35 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_generate_package_on_build_multitargeting_then_contains_all_targets()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
+  </ItemGroup>
+</Project>", "Build,GetPackageTargetPath", output);
+
+            result.AssertSuccess(output);
+
+            Assert.Single(result.Items);
+            var packagePath = result.Items[0].GetMetadata("FullPath");
+
+            Assert.True(File.Exists(packagePath));
+
+            using var package = ZipFile.OpenRead(packagePath);
+            var files = package.GetFiles().ToArray();
+
+            Assert.Contains(files, file => file.StartsWith("lib/net472"));
+            Assert.Contains(files, file => file.StartsWith("lib/netstandard2.0"));
+        }
+
+        [Fact]
         public void when_packing_private_transive_reference_then_packs_lib()
         {
             var result = Builder.BuildProject(@"
