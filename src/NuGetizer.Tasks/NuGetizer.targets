@@ -14,8 +14,6 @@ Copyright (c) .NET Foundation. All rights reserved.
   <UsingTask TaskName="NuGetizer.Tasks.WriteItemsToFile" AssemblyFile="NuGetizer.Tasks.dll" />
 
   <Import Project="NuGetizer.props" Condition="'$(NuGetizerPropsImported)' == ''" />
-  <!-- Adds compatibility targets with Pack SDK -->
-  <Import Project="NuGetizer.Compatibility.props" />
   <Import Project="NuGetizer.Shared.targets" />
 
   <!-- We don't need to do the inference in the crosstargeting scenario, we'd infer in the inner build instead -->
