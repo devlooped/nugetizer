@@ -15,6 +15,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- Matches the SDK Pack default when set to true. -->
     <PackageId Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''">$(AssemblyName)</PackageId>
     <PackageId Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''">$(MSBuildProjectName)</PackageId>
+
+    <!-- For compatiblity with SDK Pack, we set a default description too -->
+    <Description Condition="'$(Description)' == ''">Package Description</Description>
   </PropertyGroup>
   
   <ItemDefinitionGroup>
