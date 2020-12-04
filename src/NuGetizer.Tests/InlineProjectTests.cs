@@ -468,7 +468,7 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_packing_transive_reference_then_packs_lib()
+        public void when_packing_private_transive_reference_then_packs_lib()
         {
             var result = Builder.BuildProject(@"
 <Project Sdk='Microsoft.NET.Sdk'>
@@ -495,5 +495,35 @@ namespace NuGetizer
             Assert.Contains(result.Items, item 
                 => item.GetMetadata("FullPath").EndsWith(Path.Combine("lib", "netstandard2.0", "System.Threading.Tasks.Extensions.dll")));
         }
+
+        [Fact]
+        public void when_packing_private_dependency_then_can_opt_out_of_transitive()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Scriban' Version='3.0.4' PrivateAssets='all' PackTransitive='false' />
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "System.Runtime.CompilerServices.Unsafe",
+                Extension = ".dll"
+            }));
+
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "System.Threading.Tasks.Extensions",
+                Extension = ".dll"
+            }));
+        }
+
     }
 }

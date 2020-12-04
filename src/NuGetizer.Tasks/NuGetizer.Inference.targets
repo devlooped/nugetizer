@@ -307,11 +307,11 @@ Copyright (c) .NET Foundation. All rights reserved.
                                             '%(Facade)' != 'true' and 
                                             '%(FrameworkFile)' != 'true' and 
                                             '%(Pack)' != 'false'"/>
-      <_PrivateAssetsPackageReference Include="@(PackageReference -> WithMetadataValue('PrivateAssets', 'all'))"
-                                      Condition="'%(PackageReference.IsImplicitlyDefined)' != 'true' and '%(PackageReference.Pack)' != 'false'"/>
+      <_TransitivePackageReference Include="@(PackageReference -> WithMetadataValue('PrivateAssets', 'all'))"
+                                   Condition="'%(PackageReference.IsImplicitlyDefined)' != 'true' and '%(PackageReference.Pack)' != 'false' and '%(PackageReference.PackTransitive)' != 'false'"/>
     </ItemGroup>
-    <InferImplicitPackageReference Condition="'@(_PrivateAssetsPackageReference)' != '' and '@(PackageDependencies)' != ''"
-                                   PackageReferences="@(_PrivateAssetsPackageReference)"
+    <InferImplicitPackageReference Condition="'@(_TransitivePackageReference)' != '' and '@(PackageDependencies)' != ''"
+                                   PackageReferences="@(_TransitivePackageReference)"
                                    PackageDependencies="@(PackageDependencies)">
       <Output TaskParameter="ImplicitPackageReferences" ItemName="ImplicitPackageReference" />
     </InferImplicitPackageReference>
