@@ -276,5 +276,5 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <!-- Cleanups improve the local development loop, by always ensure the fresly built packages can be restored from output -->
   <Import Project="NuGetizer.Cleanup.targets" Condition="'$(CI)' != 'true' and '$(EnablePackCleanup)' != 'false' and '$(IsPackable)' == 'true' and '$(PackageId)' != ''" />
-  <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
+  <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(NuGetizerPackageMetadataImported)' != 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
 </Project>

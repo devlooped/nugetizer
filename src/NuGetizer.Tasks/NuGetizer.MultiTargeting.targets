@@ -71,6 +71,6 @@ Copyright (c) .NET Foundation. All rights reserved.
     
   </Target>
 
-  <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
+  <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(NuGetizerPackageMetadataImported)' != 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
 
 </Project>

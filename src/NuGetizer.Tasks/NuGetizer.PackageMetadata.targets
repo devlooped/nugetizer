@@ -18,6 +18,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- For compatiblity with SDK Pack, we set a default description too -->
     <Description Condition="'$(Description)' == ''">Package Description</Description>
+
+    <NuGetizerPackageMetadataImported>true</NuGetizerPackageMetadataImported>
   </PropertyGroup>
   
   <ItemDefinitionGroup>
