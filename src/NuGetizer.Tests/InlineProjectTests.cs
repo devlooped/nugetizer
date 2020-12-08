@@ -554,5 +554,50 @@ namespace NuGetizer
             }));
         }
 
+        [Fact]
+        public void when_packing_none_with_packagereference_then_includes_it()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Newtonsoft.Json' Version='12.0.3' />
+    <None Include='lib\netstandard2.0\Newtonsoft.Json.dll' PackageReference='Newtonsoft.Json' /> 
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "lib\\netstandard2.0\\Newtonsoft.Json.dll"
+            }));
+        }
+
+        [Fact]
+        public void when_packing_none_with_packagereference_then_can_change_package_path()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Newtonsoft.Json' Version='12.0.3' />
+    <None Include='lib\netstandard2.0\Newtonsoft.Json.dll' PackageReference='Newtonsoft.Json' PackagePath='build\%(Filename)%(Extension)' /> 
+  </ItemGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "build\\Newtonsoft.Json.dll"
+            }));
+        }
     }
 }
