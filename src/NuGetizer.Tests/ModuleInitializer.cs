@@ -3,15 +3,9 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace System.Runtime.CompilerServices
-{
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public sealed class ModuleInitializerAttribute : Attribute { }
-}
-
 namespace NuGetizer.Tests
 {
-    internal static class ModuleInitializer
+    static class ModuleInitializer
     {
         static readonly string logFile = Environment.ExpandEnvironmentVariables(@"%TEMP%\NuGetizer.txt");
 

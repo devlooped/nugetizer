@@ -1,0 +1,21 @@
+<Project>
+  <!-- Extend Directory.Build.props -->
+
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);nugetize.*</DefaultItemExcludes>
+
+    <!-- We explicitly Build separately from Pack, because otherwise tasks assembly gets locked -->
+    <BuildOnPack>false</BuildOnPack>
+
+    <Nullable>disable</Nullable>
+    <SignAssembly>false</SignAssembly>
+
+    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin'));$(RestoreSources)</RestoreSources>
+  </PropertyGroup>
+
+  <Target Name="Pack" />
+  <Target Name="Test" />
+
+  <Import Project="NuGetizer.Tasks\NuGetizer.props" Condition="'$(NuGetize)' == 'true'" />
+
+</Project>

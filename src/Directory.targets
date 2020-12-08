@@ -1,0 +1,20 @@
+<Project>
+  <!-- Extend Directory.Build.targets -->
+
+  <PropertyGroup Condition="'$(NuGetize)' != 'false'">
+     <!--GeneratePackageOnBuild=false is used by VS when right-click Pack is used :)--> 
+    <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(NuGetize)' == 'true' or '$(GeneratePackageOnBuild)' != ''">false</ImportNuGetBuildTasksPackTargetsFromSdk>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets"
+          Condition="'$(IsPackable)' == 'true' AND '$(NuGetize)' == 'true'" />
+
+  <PropertyGroup>
+    <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">
+    <PackageReference Update="ThisAssembly" Version="42.42.42" />
+  </ItemGroup>
+
+</Project>

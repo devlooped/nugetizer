@@ -48,7 +48,7 @@ namespace NuGetizer.Tasks
         {
             // Switch to full path items
             var output = new TaskItem(
-                file.GetBoolean("IsFile", true) && file.ItemSpec.IndexOfAny(Path.GetInvalidPathChars()) == -1 && File.Exists(file.GetMetadata("FullPath")) 
+                file.GetBoolean("IsFile", true) && file.ItemSpec.IndexOfAny(Path.GetInvalidPathChars()) == -1 && File.Exists(file.GetMetadata("FullPath"))
                 ? file.GetMetadata("FullPath")
                 : file.ItemSpec);
 

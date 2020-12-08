@@ -24,7 +24,7 @@ namespace NuGetizer
     <ProjectReference Include='Library.csproj' PrivateAssets='all' />
   </ItemGroup>
 </Project>",
-                "GetPackageContents", output, 
+                "GetPackageContents", output,
                 files: ("Library.csproj", @"
 <Project Sdk='Microsoft.NET.Sdk'>
   <PropertyGroup>
