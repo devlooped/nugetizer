@@ -5,7 +5,7 @@ Simple, flexible, intuitive and powerful NuGet packaging.
 [![Version](https://img.shields.io/nuget/vpre/NuGetizer.svg?color=royalblue)](https://www.nuget.org/packages/NuGetizer)
 [![Downloads](https://img.shields.io/nuget/dt/NuGetizer?color=darkmagenta)](https://www.nuget.org/packages/NuGetizer)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/kzu/nugetizer/blob/main/LICENSE)
-[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/stunts)
+[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/nugetizer)
 
 [![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/nugetizer/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
 [![CI Status](https://github.com/kzu/nugetizer/workflows/build/badge.svg?branch=main)](https://github.com/kzu/nugetizer/actions?query=branch%3Amain+workflow%3Abuild+)
