@@ -296,9 +296,6 @@ content we're bringing in.
 It even works for inferred content item types, such as `None`:
 
 ```xml
-<PropertyGroup>
-  <PackNone>true</PackNone>
-</PropertyGroup>
 <ItemGroup>
   <None Include="icon-128.png" PackageReference="ThisAssembly" />
 </ItemGroup>
