@@ -40,7 +40,7 @@ namespace NuGetizer.Tasks
                 {
                     packages.GetOrAdd(parse(parent), _ => new List<PackageIdentity>())
                         .Add(identity);
-                } 
+                }
                 else
                 {
                     // In centrally managed package versions, at this point we have 

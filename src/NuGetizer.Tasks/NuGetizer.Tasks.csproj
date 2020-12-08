@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>NuGetizer</PackageId>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RootNamespace>NuGetizer</RootNamespace>
   </PropertyGroup>
@@ -12,7 +11,7 @@
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.9.20" PrivateAssets="all" />
     <PackageReference Include="NuGet.Packaging" Version="5.7.0" PrivateAssets="all" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly" Version="1.0.0-alpha" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly" Version="42.42.42-main.141" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +23,6 @@
     <None Update="NuGetizer.MultiTargeting.props" PackagePath="buildMultiTargeting\NuGetizer.props" />
     <None Update="NuGetizer.MultiTargeting.targets" PackagePath="buildMultiTargeting\NuGetizer.targets" />
     <None Include="NuGetizer.PackageMetadata.targets;dotnet-nugetize.props;dotnet-nugetize.targets" PackagePath="buildMultiTargeting\%(Filename)%(Extension)" Pack="true" />
-    <None Include="..\..\img\nugetizer-256.png" Link="icon.png" PackagePath="icon.png" />
     <None Update="NuGetizer.Tasks.targets" Pack="false" />
   </ItemGroup>
 
@@ -32,6 +30,7 @@
     <EmbeddedResource Update="Resources.resx" Generator="" />
   </ItemGroup>
   
+  <Import Project="NuGetizer.Tasks.Pack.targets" Condition="'$(GeneratePackageOnBuild)' == 'false' AND '$(NuGetize)' != 'true'"  />
   <Import Project="NuGetizer.Tasks.targets" />
 
 </Project>

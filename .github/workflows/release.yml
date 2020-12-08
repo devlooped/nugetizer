@@ -1,11 +1,14 @@
-﻿name: release
+﻿# Builds a final release version and pushes to nuget.org 
+# whenever a release is published.
+# Requires: secrets.NUGET_API_KEY
+
+name: release
 on:
   release:
     types: [published]
 
 env:
   DOTNET_NOLOGO: true
-  MSBUILDDISABLENODEREUSE: 1
   Configuration: Release
 
 jobs:
@@ -13,38 +16,41 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: 🤘 checkout
-        uses: actions/checkout@v2
-      - name: 🖉 version
-        run: echo "VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
-        shell: bash
+        uses: actions/checkout@v2          
       - name: ⚙ dotnet 5.0.x
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
-      - name: ⚙ dotnet 2.1.x
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 2.1.x
       - name: ⚙ dotnet 3.1.x
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.x
-      - name: 🔽 dotnet-vs
-        run: dotnet tool update -g dotnet-vs
-      - name: 🔍 vs 16.8+
-        run: echo "MSB=$(vs where --prop=InstallationPath --first -version 16.8)" >> $GITHUB_ENV
-        shell: bash
-      - name: 🔽 vs community
-        run: vs install community --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
-        if: env.MSB == ''
-      - name: ≥ msbuild
-        run: echo "$(vs where --prop=InstallationPath --first -version 16.8)\MSBuild\Current\Bin" >> $GITHUB_PATH
-        shell: bash
+      - name: ⚙ dotnet 2.1.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 2.1.x
+
+      - name: 🔍 msbuild
+        uses: microsoft/setup-msbuild@v1
+        with:
+          vs-version: '[16.8,)'
+
       - name: 🙏 build
-        run: msbuild -r -p:version=$($env:VERSION)
+        run: msbuild -r -m:1 -bl:build.binlog -p:Version=${GITHUB_REF#refs/*/v}
+        shell: bash
+
       - name: 🧪 test
         run: msbuild -t:test
+
       - name: 📦 pack
-        run: msbuild -t:pack -p:nobuild=true -p:version=$($env:VERSION)
-      - name: 🚀 push
-        run: dotnet nuget push bin\**\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        run: msbuild -t:pack -p:nobuild=true -m:1 -bl:pack.binlog -p:Version=${GITHUB_REF#refs/*/v}
+        shell: bash
+
+      - name: 🔼 logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          path: '*.binlog'
+
+      - name: 🚀 nuget
+        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate

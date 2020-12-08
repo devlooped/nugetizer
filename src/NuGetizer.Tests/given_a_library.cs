@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using System.ServiceModel.Configuration;
-using Microsoft.Build.Execution;
+﻿using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -22,8 +19,8 @@ namespace NuGetizer
         [Fact]
         public void when_pack_compile_then_excludes_generated_files()
         {
-            var result = Builder.BuildScenario(nameof(given_a_library), 
-                new { PackCompile = "true" }, 
+            var result = Builder.BuildScenario(nameof(given_a_library),
+                new { PackCompile = "true" },
                 target: "Build,GetPackageContents,Pack");
 
             Assert.True(result.BuildResult.HasResultsForTarget("GetPackageContents"));

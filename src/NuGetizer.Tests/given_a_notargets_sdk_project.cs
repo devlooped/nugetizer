@@ -24,7 +24,7 @@ namespace NuGetizer
     <PackageReference Include='Newtonsoft.Json' Version='12.0.3' />
     <ProjectReference Include='other.msbuildproj' />
   </ItemGroup>
-</Project>"), 
+</Project>"),
                 ("other.msbuildproj", @"
 <Project Sdk='Microsoft.Build.NoTargets/2.0.1'>
   <PropertyGroup>

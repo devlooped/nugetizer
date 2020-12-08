@@ -135,7 +135,7 @@ namespace NuGetize
             if (contentsOnly)
             {
                 ColorConsole.WriteLine($"Project {project} is not packable, rendering its contributed package contents.".Yellow());
-            
+
                 var dependencies = doc.Root.Descendants("PackageContent")
                     .Where(x =>
                         "Dependency".Equals(x.Element("PackFolder")?.Value, StringComparison.OrdinalIgnoreCase))

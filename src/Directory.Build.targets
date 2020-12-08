@@ -1,93 +1,146 @@
 <Project>
+  <!-- To extend/change the defaults, create a Directory.targets alongside this file -->
 
-  <PropertyGroup Label="Pack">
-    <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' != ''">true</IsPackable>
-    <IsPackable Condition="'$(IsPackable)' == '' and '$(PackageId)' == ''">false</IsPackable>
+  <PropertyGroup Condition="'$(IsPackable)' == ''">
+    <!-- The Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets unconditionally sets 
+        PackageId=AssemblyName if no PackageId is provided, and then defaults IsPackable=true if 
+        a PackageId is set (?!), meaning that by default everything is packable in Sdk-style 
+        projects. 
+
+        The Directory.Build.targets are imported after the user's project properties have been 
+        read, and therefore gives us a chance to inspect if an explicit PackageId was provided, 
+        before the NuGet SDK target is imported and defaults it. At this point, we can give 
+        IsPackable a more sensible default, making it false if no PackageId was provided at this 
+        point. -->
+    <IsPackable Condition="'$(PackageId)' == ''">false</IsPackable>
+    <IsPackable Condition="'$(PackageId)' != ''">true</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(NuGetize)' != 'false'">
-    <!-- GeneratePackageOnBuild=false is used by VS when right-click Pack is used :) -->
-    <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(NuGetize)' == 'true' or '$(GeneratePackageOnBuild)' != ''">false</ImportNuGetBuildTasksPackTargetsFromSdk>
+  <!-- Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultAssemblyInfo.targets does this and is imported 
+       before Directory.Build.targets, but it's not imported for .msbuildproj -->
+  <PropertyGroup Condition="'$(Version)' == ''">
+    <VersionPrefix Condition="'$(VersionPrefix)' == ''">1.0.0</VersionPrefix>
+    <Version Condition="'$(VersionSuffix)' != ''">$(VersionPrefix)-$(VersionSuffix)</Version>
+    <Version Condition="'$(Version)' == ''">$(VersionPrefix)</Version>
   </PropertyGroup>
 
-  <Target Name="EnsureProjectInformation" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />
-
-  <Target Name="SetRepositorySha" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun" AfterTargets="InitializeSourceControlInformation">
-    <PropertyGroup>
-      <RepositorySha>$(SourceRevisionId.Substring(0, 9))</RepositorySha>
-    </PropertyGroup>
-  </Target>
-  
-  <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="$(IsPackable) and '$(NuGetize)' == 'true'" />
+  <!-- Append $(PackFolder) directory to output and intermediate paths to prevent bin clashes between targets. -->
+  <PropertyGroup Condition="'$(AppendPackFolderToOutputPath)' == 'true' and '$(PackFolder)' != ''">
+    <PackFolderPath>$(PackFolder)</PackFolderPath>
+    <PackFolderPath Condition="'$(TargetFramework)' != ''">$(PackFolderPath.Replace('\$(TargetFramework)', ''))</PackFolderPath>
+    <IntermediateOutputPath>$(IntermediateOutputPath)$(PackFolderPath)\</IntermediateOutputPath>
+    <OutputPath>$(OutputPath)$(PackFolderPath)\</OutputPath>
+    <OutDir>$(OutputPath)</OutDir>
+  </PropertyGroup>
 
   <PropertyGroup>
-    <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
+    <!-- Define constant for TF like NET5, NET472, NETSTANDARD2, NETSTANDARD21 -->
+    <DefineConstants Condition="'$(TargetFramework)' != '' and '$(TargetFrameworks)' != ''">$(DefineConstants);$(TargetFramework.ToUpperInvariant().TrimEnd('0').TrimEnd('.').Replace('.', ''))</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Include="@(None);@(Content)" />
+    <!-- Consider the project out of date if any of these files changes -->
+    <UpToDateCheck Include="@(PackageFile);@(None);@(Content);@(EmbeddedResource)" />
+    <!-- We'll typically use ThisAssembly.Strings instead of the built-in resource manager codegen
+         The built-in one can be restored with: <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" -->
+    <EmbeddedResource Update="@(EmbeddedResource)"  Generator="" />
   </ItemGroup>
-  
-  <PropertyGroup Label="NuGet">
-    <HttpNuGetCache>$(LocalAppData)\NuGet\v3-cache</HttpNuGetCache>
-    <!-- By default, we clear the HTTP cache if our project is packable. This does *not* clear the cached installed packages -->
-    <ClearHttpNuGetCacheOnPack Condition="'$(ClearHttpNuGetCacheOnPack)' == ''">$(IsPackable)</ClearHttpNuGetCacheOnPack>
-    <!-- The actual NuGet cache is only cleared for the *current* PackageId, so no need to turn off its clearing on build/pack -->
-    <NuGetCache>$(UserProfile)\.nuget\packages</NuGetCache>
-  </PropertyGroup>
 
-  <Target Name="Prepare" BeforeTargets="PrepareForBuild">
-    <MakeDir Directories="$(PackageOutputPath)" Condition="'$(PackageOutputPath)' != '' And !Exists('$(PackageOutputPath)')" />
-  </Target>
-
-  <Target Name="UpdatePackageMetadata" 
-          BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageMetadata;GenerateNuspec;Pack" 
-          DependsOnTargets="InitializeSourceControlInformation"
-          Condition="$(IsPackable) And '$(RepositoryUrl)' != '' And '$(SourceRevisionId)' != ''">
-    <PropertyGroup>
-      <Description>
-        $(Description)
-
-        Built from $(RepositoryUrl)/tree/$(SourceRevisionId.Substring(0, 9))
-      </Description>
-      <!-- Update nuspec properties too -->
-      <PackageProjectUrl>$([System.Text.RegularExpressions.Regex]::Replace('$(RepositoryUrl)', '^(http.*)github\.com/(.+?)/(.*)', '$1$2.github.io/$3'))</PackageProjectUrl>
-      <PackageDescription>$(Description)</PackageDescription>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="ClearPackageOutput"
-        Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-        BeforeTargets="Build">
+  <Target Name="IsPackable" Returns="@(IsPackable)">
     <ItemGroup>
-      <_ExistingPackage Include="$(PackageOutputPath)\$(PackageId)*.nupkg" />
-      <_PackageToDelete Include="@(_ExistingPackage)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d\.\d\.\d.*'))" />
+      <IsPackable Include="$(MSBuildProjectFullPath)" IsPackable="$(IsPackable)" PackageId="$(PackageId)" />
     </ItemGroup>
-    <Delete Files="@(_PackageToDelete)" ContinueOnError="true">
-      <Output TaskParameter="DeletedFiles" ItemName="_DeletedPackages" />
-    </Delete>
-    <Message Text="Nuked existing packages: @(_DeletedPackages -> '%(Filename)%(Extension)')" Condition="'@(_DeletedPackages)' != ''" Importance="high" />
   </Target>
 
-  <!-- Clears nuget cache for the current project package id -->
-  <Target Name="ClearCachedPackageId"
-          Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack">
+  <ItemGroup>
+    <!-- Make these available via ThisAssembly.Project -->
+    <ProjectProperty Include="RepositorySha" />
+    <ProjectProperty Include="RepositoryCommit" />
+  </ItemGroup>
+
+  <!-- Make sure the source control info is available before calling source generators -->
+  <Target Name="EnsureProjectInformation" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />
+
+  <Target Name="_InitializeRepositoryProperties" 
+          DependsOnTargets="InitializeSourceControlInformation" 
+          Condition="'$(SourceControlInformationFeatureSupported)' == 'true'">
     <PropertyGroup>
-      <PackageFolder>$(NuGetCache)\$(PackageId.ToLowerInvariant())</PackageFolder>
+    </PropertyGroup>    
+  </Target>
+
+  <!-- Always append the link to the direct source tree for the current build -->
+  <Target Name="UpdatePackageMetadata"
+          BeforeTargets="PrepareForBuild;GenerateMSBuildEditorConfigFileShouldRun;GetAssemblyVersion;GetPackageMetadata;GenerateNuspec;Pack"
+          DependsOnTargets="InitializeSourceControlInformation"
+          Condition="'$(SourceControlInformationFeatureSupported)' == 'true' And
+                     '$(IsPackable)' == 'true'">
+    <PropertyGroup>
+      <Description Condition="'$(SourceRevisionId)' != ''">$(Description)
+
+Built from $(RepositoryUrl)/tree/$(SourceRevisionId.Substring(0, 9))
+      </Description>
+      <PackageDescription>$(Description)</PackageDescription>
+
+      <!-- The project must specify PublishRepositoryUrl=true in order to publish the URL, in order to prevent inadvertent leak of internal URL. -->
+      <RepositoryUrl Condition="'$(RepositoryUrl)' == '' and '$(PublishRepositoryUrl)' == 'true'">$(PrivateRepositoryUrl)</RepositoryUrl>
+      <PackageProjectUrl Condition="'$(PackageProjectUrl)' == '' and '$(PublishRepositoryUrl)' == 'true'">$(RepositoryUrl)</PackageProjectUrl>
+
+      <RepositoryCommit Condition="'$(RepositoryCommit)' == ''">$(SourceRevisionId)</RepositoryCommit>
+      <RepositorySha Condition="'$(SourceRevisionId)' != ''">$(SourceRevisionId.Substring(0, 9))</RepositorySha>
     </PropertyGroup>
-
-    <Message Text="Nuking $(PackageFolder)" Condition="Exists($(PackageFolder))" Importance="high" />
-    <Exec Command='rd "$(PackageFolder)" /q /s' Condition="Exists($(PackageFolder)) And '$(OS)' == 'Windows_NT'" />
-    <Exec Command='rm -rf "$(PackageFolder)"' Condition="Exists($(PackageFolder)) And '$(OS)' != 'Windows_NT'" />
   </Target>
 
-  <Target Name="ClearHttpNuGetCache"
-          Condition="!$(CI) And $(ClearHttpNuGetCacheOnPack) And Exists('$(HttpNuGetCache)') And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack">
-    <Message Text="Nuking $(HttpNuGetCache)" Importance="high" />
-    <Exec Command='rd "$(HttpNuGetCache)" /q /s' Condition="'$(OS)' == 'Windows_NT'" />
-    <Exec Command='rm -rf "$(HttpNuGetCache)"' Condition="'$(OS)' != 'Windows_NT'" />
-  </Target>
+  <!-- Import before UsingTask because first to declare tasks wins -->
+  <Import Project="Directory.targets" Condition="Exists('Directory.targets')"/>
+
+  <!--
+  ==============================================================
+    DumpItems Task
+    Helper task useful for quickly inspecting the full metadata
+    of arbitrary items in any target.
+
+    Properties:
+    - Items: Microsoft.Build.Framework.ITaskItem[] (Input, Required)
+    - ItemName: string (Input, Optional)
+	==============================================================
+  -->
+  <UsingTask TaskName="DumpItems" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <ItemName />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="Microsoft.Build" />
+      <Reference Include="Microsoft.CSharp" />
+      <Reference Include="System" />
+      <Reference Include="System.Core" />
+      <Using Namespace="Microsoft.Build.Framework" />
+      <Using Namespace="Microsoft.Build.Utilities" />
+      <Using Namespace="System" />
+      <Using Namespace="System.Linq" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+			  var itemName = ItemName ?? "Item";
+			  if (Items.Length == 0)
+				  Log.LogMessage(MessageImportance.High, "No {0} items received to dump.", ItemName ?? "");
+			  else
+				  Log.LogMessage(MessageImportance.High, "Dumping {0} {1} items.", Items.Length, ItemName ?? "");
+
+			  foreach (var item in Items.OrderBy(i => i.ItemSpec))
+			  {
+				  Log.LogMessage(MessageImportance.High, "{0}: {1}", itemName, item.ItemSpec);
+				  foreach (var name in item.MetadataNames.OfType<string>().OrderBy(_ => _))
+				  {
+					  try
+					  {
+						  Log.LogMessage(MessageImportance.High, "\t{0}={1}", name, item.GetMetadata(name));
+					  }
+					  catch { }
+				  }
+			  }
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
 
 </Project>

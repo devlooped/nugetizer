@@ -291,7 +291,7 @@ namespace NuGetizer.Tasks
                 // Support nugetize CLI by ignoring missing files. When creating the final .nupkg, 
                 // file existence is checked always already
                 if (!File.Exists(item.GetMetadata("FullPath")))
-                        return item.GetMetadata("FullPath");
+                    return item.GetMetadata("FullPath");
 
                 using var file = File.OpenRead(item.GetMetadata("FullPath"));
                 return string.Concat(md5.Value.ComputeHash(file).Select(x => x.ToString("x2")));

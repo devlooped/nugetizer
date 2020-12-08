@@ -452,7 +452,7 @@ namespace NuGetizer
     <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
   </ItemGroup>
 </Project>", "Build,GetPackageTargetPath", output);
-            
+
             result.AssertSuccess(output);
 
             Assert.Single(result.Items);
@@ -513,15 +513,15 @@ namespace NuGetizer
             result.AssertSuccess(output);
 
             // Ref files are not there
-            Assert.DoesNotContain(result.Items, item 
+            Assert.DoesNotContain(result.Items, item
                 => item.GetMetadata("FullPath").EndsWith(Path.Combine("ref", "netstandard2.0", "System.Runtime.CompilerServices.Unsafe.dll")));
-            Assert.DoesNotContain(result.Items, item 
+            Assert.DoesNotContain(result.Items, item
                 => item.GetMetadata("FullPath").EndsWith(Path.Combine("ref", "netstandard2.0", "System.Threading.Tasks.Extensions.dll")));
 
             // Replaced by lib
-            Assert.Contains(result.Items, item 
+            Assert.Contains(result.Items, item
                 => item.GetMetadata("FullPath").EndsWith(Path.Combine("lib", "netstandard2.0", "System.Runtime.CompilerServices.Unsafe.dll")));
-            Assert.Contains(result.Items, item 
+            Assert.Contains(result.Items, item
                 => item.GetMetadata("FullPath").EndsWith(Path.Combine("lib", "netstandard2.0", "System.Threading.Tasks.Extensions.dll")));
         }
 
