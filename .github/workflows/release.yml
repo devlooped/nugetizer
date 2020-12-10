@@ -30,21 +30,32 @@ jobs:
         with:
           dotnet-version: 2.1.x
 
-      - name: 🔍 msbuild
-        uses: microsoft/setup-msbuild@v1
-        with:
-          vs-version: '[16.8,)'
-
-      - name: 🙏 build
-        run: msbuild -r -m:1 -bl:build.binlog -p:Version=${GITHUB_REF#refs/*/v}
+      # MSBuild 16.8+
+      - name: 🔽 dotnet-vs
+        run: dotnet tool update -g dotnet-vs
+      - name: 🔍 vs 16.8+
+        run: echo "MSB=$(vs where --prop=InstallationPath --first -version '[16.8,)')" >> $GITHUB_ENV
         shell: bash
+      - name: 🔽 vs community
+        run: vs install community --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
+        if: env.MSB == ''
+      - name: ≥ msbuild
+        run: echo "$(vs where --prop=InstallationPath --first -version '[16.8,)')\MSBuild\Current\Bin" >> $GITHUB_PATH
+        shell: bash
+      # MSBuild 16.8+
+
+      - name: 🖉 version
+        run: echo "VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: 🙏 build ${{ env.VERSION }}
+        run: msbuild -r -m:1 -bl:build.binlog -p:Version=$($env:VERSION)
 
       - name: 🧪 test
         run: msbuild -t:test
 
-      - name: 📦 pack
-        run: msbuild -t:pack -p:nobuild=true -m:1 -bl:pack.binlog -p:Version=${GITHUB_REF#refs/*/v}
-        shell: bash
+      - name: 📦 pack ${{ env.VERSION }}
+        run: msbuild -t:pack -p:nobuild=true -m:1 -bl:pack.binlog -p:Version=$($env:VERSION)
 
       - name: 🔼 logs
         if: ${{ always() }}
@@ -52,5 +63,5 @@ jobs:
         with:
           path: '*.binlog'
 
-      - name: 🚀 nuget
-        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+      - name: 🚀 nuget ${{ env.VERSION }}
+        run: dotnet nuget push bin\**\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
