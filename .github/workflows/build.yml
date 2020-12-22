@@ -67,7 +67,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}
+          name: logs
           path: |
             **/*.binlog
             logs/**/*.*
