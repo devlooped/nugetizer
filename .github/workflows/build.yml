@@ -11,10 +11,6 @@ on:
 env:
   DOTNET_NOLOGO: true
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   dotnet-format:
     runs-on: ubuntu-latest
