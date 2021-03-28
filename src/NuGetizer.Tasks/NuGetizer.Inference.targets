@@ -123,6 +123,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <ItemDefinitionGroup>
     <PackageReference>
       <Pack />
+      <Pack Condition="'$(SuppressDependenciesWhenPacking)' == 'true'">false</Pack>
       <PrivateAssets />
     </PackageReference>
     <ImplicitPackageReference>

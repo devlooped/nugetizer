@@ -9,6 +9,9 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
 This file brings SDK Pack compatibility conversions so that NuGetizer works with SDK Pack 
 properties and items as much as possible, to ease migration.
 
+NOTE: this file is imported from NuGetizer.Shared.targets, so it comes *after* project 
+properties.
+
 Copyright (c) .NET Foundation. All rights reserved. 
 ***********************************************************************************************
 -->
@@ -23,12 +26,20 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackCompile Condition="'$(PackCompile)' == '' and '$(IncludeSource)' != ''">$(IncludeSource)</PackCompile>
     <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IncludeBuildOutput)' != ''">$(IncludeBuildOutput)</PackBuildOutput>
     <Description Condition="'$(Description)' == '' and '$(PackageDescription)' != ''">$(PackageDescription)</Description>
+
+    <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(SuppressDependenciesWhenPacking)' == 'true'">false</PackFrameworkReferences>
   </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(SuppressDependenciesWhenPacking)' == 'true'">
+    <PackageReference>
+      <Pack>false</Pack>
+    </PackageReference>
+  </ItemDefinitionGroup>
 
   <PropertyGroup Label="Legacy NuGetizer Compat">
     <PackFolder Condition="'$(PackFolder)' == '' and '$(BuildOutputKind)' != ''">$(BuildOutputKind)</PackFolder>
     <PackFolder Condition="'$(PackFolder)' == '' and '$(PrimaryOutputKind)' != ''">$(PrimaryOutputKind)</PackFolder>
-    
+
     <PackContent Condition="'$(PackContent)' == '' and '$(IncludeContentInPackage)' != ''">$(IncludeContentInPackage)</PackContent>
     <PackNone Condition="'$(PackNone)' == '' and '$(IncludeNoneInPackage)' != ''">$(IncludeNoneInPackage)</PackNone>
     <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IncludeOutputsInPackage)' != ''">$(IncludeOutputsInPackage)</PackBuildOutput>
