@@ -131,6 +131,62 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_SuppressDependenciesWhenPacking_then_does_not_pack()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>net472</TargetFramework>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include='WindowsBase' />
+    <PackageReference Include='Newtonsoft.Json' Version='1.0.0' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "Newtonsoft.Json"
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "WindowsBase"
+            }));
+        }
+
+        [Fact]
+        public void when_SuppressDependenciesWhenPackingFalse_then_packs()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>net472</TargetFramework>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include='WindowsBase' />
+    <PackageReference Include='Newtonsoft.Json' Version='1.0.0' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Newtonsoft.Json"
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "WindowsBase"
+            }));
+        }
+
+        [Fact]
         public void when_build_kind_then_does_not_pack_msbuild()
         {
             var result = Builder.BuildProject(@"
