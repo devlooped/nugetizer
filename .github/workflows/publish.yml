@@ -26,8 +26,12 @@ jobs:
         with:
           vs-version: '[16.8,)'
 
+      - name: \# version
+        run: echo "VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+        shell: bash
+
       - name: 🙏 build
-        run: msbuild -r -m:1 -bl:build.binlog -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)"
+        run: msbuild -r -m:1 -bl:build.binlog 
 
       - name: 🧪 test
         run: |
@@ -35,8 +39,7 @@ jobs:
           msbuild -t:test
 
       - name: 📦 pack
-        shell: bash
-        run: dotnet pack -m:1 --no-build -bl:pack.binlog -p:VersionLabel="${GITHUB_REF}.${GITHUB_RUN_NUMBER}"
+        run: dotnet pack -m:1 --no-build -bl:pack.binlog
 
       - name: 🔼 logs
         if: ${{ always() }}
@@ -45,4 +48,5 @@ jobs:
           path: '**/*.binlog'
 
       - name: 🚀 nuget
-        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        shell: bash
+        run: dotnet nuget push bin\**\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
