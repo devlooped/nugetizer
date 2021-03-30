@@ -10,6 +10,8 @@
     <Nullable>disable</Nullable>
     <SignAssembly>false</SignAssembly>
 
+    <!-- Ignore warning for: Package 'NuGet.ProjectManagement 4.2.0' was restored using '.NETFramework,Version=v4.6.1, -->
+    <NoWarn>NU1701</NoWarn>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin'));$(RestoreSources)</RestoreSources>
   </PropertyGroup>
 
