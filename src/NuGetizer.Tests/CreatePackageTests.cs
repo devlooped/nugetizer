@@ -57,9 +57,9 @@ namespace NuGetizer
             };
 
 #if RELEASE
-			// Create the actual .nupkg to ensure everything is working 
-			// fine end to end.
-			createPackage = true;
+            // Create the actual .nupkg to ensure everything is working 
+            // fine end to end.
+            createPackage = true;
 #endif
         }
 

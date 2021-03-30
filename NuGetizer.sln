@@ -23,8 +23,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{AFDBEE29-AF6A-4BC2-8960-DAFD2B2C2D2A}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\changelog.yml = .github\workflows\changelog.yml
+		.github\workflows\dotnet-file.yml = .github\workflows\dotnet-file.yml
+		.github\workflows\pages.yml = .github\workflows\pages.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+		.github\workflows\release-artifacts.yml = .github\workflows\release-artifacts.yml
+		.github\workflows\release-notes.yml = .github\workflows\release-notes.yml
 		.github\workflows\release.yml = .github\workflows\release.yml
-		.github\workflows\tag.yml = .github\workflows\tag.yml
+		.github\workflows\sponsors.ps1 = .github\workflows\sponsors.ps1
+		.github\workflows\sponsors.yml = .github\workflows\sponsors.yml
 	EndProjectSection
 EndProject
 Global
