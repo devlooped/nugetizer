@@ -52,9 +52,9 @@ All [inference rules are laid out in a single .targets](src/NuGetizer.Tasks/NuGe
 ## Package Contents Inference
 
 Package content inference provides some built-in heuristics for common scenarios so you 
-don't have to customize the project much and can instead let the rules build up the contents of your package by interpreting your existing project elements. It works by transforming various built-in 
-items into corresponding `PackageFile` items, much as if you had added them by 
-hand.
+don't have to customize the project much and can instead let the rules build up the contents 
+of your package by interpreting your existing project elements. It works by transforming various built-in 
+items into corresponding `PackageFile` items, much as if you had added them by hand.
 
 Inference can be turned off for specific items by just adding `Pack="false"` 
 item metadata. It can also be turned off by default for all items of a given type with an item definition group:
@@ -116,11 +116,17 @@ Whether items are packed by default or not is controlled by properties named aft
 |-----------------|---------------|
 | PackBuildOutput | true |
 | PackSymbols     | true if PackBuildOutput=true (*) |
-| PackFrameworkReferences | true if PackFolder=lib |
+| PackDependencies| empty (**) |
+| PackFrameworkReferences | true if PackFolder=lib, false if PackDependencies=false |
 | PackProjectReference | true |
+
+
 
 \* Back in the day, PDBs were Windows-only and fat files. Nowadays, portable PDBs 
    (the new default) are lightweight and can even be embedded. Combined with [SourceLink](https://github.com/dotnet/sourcelink), including them in the package (either standalone or embeded) provides the best experience for your users, so it's the default.
+
+\** In some scenarios, you might want to turn off packing behavior for all PackageReference and FrameworkReferences alike. Setting PackDependencies=false achieves that.
+
 
 The various supported item inference are surfaced as `<PackInference Include="Compile;Content;None;..." />` items, which are ultimately evaluated together with the metadata for the individual items. These make the package inference candidates. You can also provide an exclude expression for that evaluation so that certain items are excluded by default, even if every other item of the same type is included. For example, to pack all `Content` items, except those in the `docs` folder, you can simply update the inference item like so:
 
@@ -164,13 +170,13 @@ In addition, the resulting `PackageFile` items for these items point to the loca
 
 ### PackageReference
 
-Package references are turned into package dependencies by default (essentially converting `<PackageReference>` to `<PackageFile ... PackFolder="Dependency">`). If the package reference specifies `PrivateAssets="all"`, however, it's not added as a dependency. Instead, in that case, all the contributed files to the compilation are placed in the same `PackFolder` as the project's build output (if packable, depending on `PackBuildOutput` property).
+Package references are turned into package dependencies by default (essentially converting `<PackageReference>` to `<PackageFile ... PackFolder="Dependency">`), unless `PackDependencies` property is `false`. If the package reference specifies `PrivateAssets="all"`, however, it's not added as a dependency. Instead, in that case, all the contributed files to the compilation are placed in the same `PackFolder` as the project's build output (if packable, depending on `PackBuildOutput` property).
 
-Build-only dependencies that don't contribute assemblies to the output (i.e. analyzers or things like [GitInfo](https://github.com/kzu/GitInfo) or [ThisAssembly](https://github.com/kzu/ThisAssembly) won't cause any extra items).
+Build-only dependencies that don't contribute assemblies to the output (i.e. analyzers or things like [GitInfo](https://github.com/kzu/GitInfo) or [ThisAssembly](https://github.com/kzu/ThisAssembly) won't cause any extra items.
 
-This even works transitively, so if you use *PrivateAssets=all* on package reference *A*, which in turn has a package dependency on *B* and *B* in turn depends on *C*, all of *A*, *B* and *C* assets will be packed. You can opt out of the transitive packing with `PackTransitive=false`.
+This even works transitively, so if you use *PrivateAssets=all* on package reference *A*, which in turn has a package dependency on *B* and *B* in turn depends on *C*, all of *A*, *B* and *C* assets will be packed. You can opt out of the transitive packing with `PackTransitive=false` metadata on the `PackageReference`.
 
-As usual, you can change this default behavior by using `Pack=false` metadata. 
+As usual, you can change this default behavior by using `Pack=false` metadata.
 
 ### ProjectReference
 
@@ -287,10 +293,21 @@ The project will need to reference that package too, of course:
 ```
 
 Note that we had to add the `GeneratePathProperty` to the reference, so that the package-relative 
-path `icon-128.png` can be properly resolved to the package install location. Also note that in this 
-particular case, we don't want to pack the reference as a dependency (it's a build-only or development 
-dependency package). That is, this feature does not require a package dependency for the package reference 
-content we're bringing in.
+path `icon-128.png` can be properly resolved to the package install location. You can also set that 
+metadata for all your `PackageReference`s automatically by adding the following to your `Directory.Build.props` 
+(or .targets): 
+
+```xml
+  <ItemDefinitionGroup>
+    <PackageReference>
+      <!-- This enables referencing arbitrary files from any package by adding PackageReference="" to any packable item -->
+      <GeneratePathProperty>true</GeneratePathProperty>
+    </PackageReference>
+```
+
+Also note that in the scenario shown before, we don't want to pack the reference as a dependency (it's a build-only or development 
+dependency package). That is, this feature does not require a package *dependency* for the referenced package content 
+we're bringing in.
 
 It even works for inferred content item types, such as `None`:
 
