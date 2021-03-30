@@ -25,16 +25,10 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackContent Condition="'$(PackContent)' == '' and '$(IncludeContentInPack)' != ''">$(IncludeContentInPack)</PackContent>
     <PackCompile Condition="'$(PackCompile)' == '' and '$(IncludeSource)' != ''">$(IncludeSource)</PackCompile>
     <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IncludeBuildOutput)' != ''">$(IncludeBuildOutput)</PackBuildOutput>
+    <PackDependencies Condition="'$(PackDependencies)' == '' and '$(SuppressDependenciesWhenPacking)' == 'true'">false</PackDependencies>
+
     <Description Condition="'$(Description)' == '' and '$(PackageDescription)' != ''">$(PackageDescription)</Description>
-
-    <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(SuppressDependenciesWhenPacking)' == 'true'">false</PackFrameworkReferences>
   </PropertyGroup>
-
-  <ItemDefinitionGroup Condition="'$(SuppressDependenciesWhenPacking)' == 'true'">
-    <PackageReference>
-      <Pack>false</Pack>
-    </PackageReference>
-  </ItemDefinitionGroup>
 
   <PropertyGroup Label="Legacy NuGetizer Compat">
     <PackFolder Condition="'$(PackFolder)' == '' and '$(BuildOutputKind)' != ''">$(BuildOutputKind)</PackFolder>

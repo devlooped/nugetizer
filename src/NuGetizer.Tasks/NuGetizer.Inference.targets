@@ -24,6 +24,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(PackBuildOutput)' == 'true'">true</PackSymbols>
 
     <!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
+    <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(PackDependencies)' == 'false'">false</PackFrameworkReferences>
     <!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IsPackagingProject)' != 'true' and '$(PackFolder)' == 'lib'">true</PackFrameworkReferences>
 
@@ -123,11 +124,12 @@ Copyright (c) .NET Foundation. All rights reserved.
   <ItemDefinitionGroup>
     <PackageReference>
       <Pack />
-      <Pack Condition="'$(SuppressDependenciesWhenPacking)' == 'true'">false</Pack>
+      <Pack Condition="'$(PackDependencies)' == 'false'">false</Pack>
       <PrivateAssets />
     </PackageReference>
     <ImplicitPackageReference>
       <Pack />
+      <Pack Condition="'$(PackDependencies)' == 'false'">false</Pack>
       <PrivateAssets />
     </ImplicitPackageReference>
     <ReferencePath>
