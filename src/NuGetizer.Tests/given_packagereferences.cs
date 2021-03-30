@@ -141,7 +141,8 @@ namespace NuGetizer
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include='WindowsBase' />
+    <Reference Include='System.Numerics' />
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
     <PackageReference Include='Newtonsoft.Json' Version='1.0.0' />
   </ItemGroup>
 </Project>",
@@ -154,7 +155,7 @@ namespace NuGetizer
             }));
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                Identity = "WindowsBase"
+                Identity = "System.Numerics"
             }));
         }
 
@@ -169,7 +170,8 @@ namespace NuGetizer
     <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include='WindowsBase' />
+    <Reference Include='System.Numerics' />
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
     <PackageReference Include='Newtonsoft.Json' Version='1.0.0' />
   </ItemGroup>
 </Project>",
@@ -182,7 +184,7 @@ namespace NuGetizer
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                Identity = "WindowsBase"
+                Identity = "System.Numerics"
             }));
         }
 
