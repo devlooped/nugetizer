@@ -6,10 +6,13 @@
 
 :sparkles: Implemented enhancements:
 
+- Add PackDependencies property to opt-out of dependencies packing easily [\#73](https://github.com/devlooped/nugetizer/issues/73)
 - Add support for SuppressDependenciesWhenPacking for compatibility with SDK pack [\#67](https://github.com/devlooped/nugetizer/issues/67)
+- Add support for opting out of dependencies packing [\#74](https://github.com/devlooped/nugetizer/pull/74) (@kzu)
 
 :twisted_rightwards_arrows: Merged:
 
+- :package: Fix packing on build and release [\#72](https://github.com/devlooped/nugetizer/pull/72) (@kzu)
 - 🖆 Apply kzu/oss template via dotnet-file [\#71](https://github.com/devlooped/nugetizer/pull/71) (@kzu)
 - Minor CI and dependencies bumps [\#70](https://github.com/devlooped/nugetizer/pull/70) (@kzu)
 - 🖆 Apply kzu/oss template via dotnet-file [\#69](https://github.com/devlooped/nugetizer/pull/69) (@kzu)
@@ -64,6 +67,7 @@
 - Dev \> Main [\#33](https://github.com/devlooped/nugetizer/pull/33) (@kzu)
 - Dev \> Main [\#29](https://github.com/devlooped/nugetizer/pull/29) (@kzu)
 - Make sure the output package cleanup happens before Pack [\#25](https://github.com/devlooped/nugetizer/pull/25) (@kzu)
+- If an item provides TargetPath, preserve it as relative to the PackFolder [\#20](https://github.com/devlooped/nugetizer/pull/20) (@kzu)
 
 ## [v0.4.12](https://github.com/devlooped/nugetizer/tree/v0.4.12) (2020-11-20)
 
@@ -106,7 +110,6 @@
 
 :twisted_rightwards_arrows: Merged:
 
-- If an item provides TargetPath, preserve it as relative to the PackFolder [\#20](https://github.com/devlooped/nugetizer/pull/20) (@kzu)
 - By default, packing Compile should not include generated files [\#19](https://github.com/devlooped/nugetizer/pull/19) (@kzu)
 
 ## [v0.4.6](https://github.com/devlooped/nugetizer/tree/v0.4.6) (2020-10-20)
