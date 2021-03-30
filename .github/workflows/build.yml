@@ -41,7 +41,9 @@ jobs:
         run: msbuild -r -m:1 -bl:build.binlog -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
 
       - name: 🧪 test
-        run: msbuild -t:test
+        run: |
+          dotnet restore src\NuGetizer.Tests\Scenarios\given_a_packaging_project\a.nuproj
+          msbuild -t:test
 
       - name: 📦 pack
         run: msbuild -t:pack -p:nobuild=true -m:1 -bl:pack.binlog -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
