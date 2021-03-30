@@ -37,9 +37,9 @@
 	sha = 0683ee777d7d878d4bf013d7deea352685135a05
 [file ".github/workflows/build.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/build.yml
-	etag = 3ece28919da5fd43d3e264c775cb64b9f2f4a40dd8a02ec5a60617e203ecf97f
+	etag = 82a160cfc3042b7d277b13fe539b1f311a0afa264802d31330ac42b7beb37ae3
 	weak
-	sha = 15f020b7764fca65d6b9311576f6e7b942542a3d
+	sha = c2ad879554e326fbc80fa1bbdc2dbc22f53001e1
 [file ".github_changelog_generator"]
 	url = https://github.com/devlooped/oss/blob/main/.github_changelog_generator
 	etag = 115efcd056eaca2f1d2df510eb7632ac3558ace2734a4139b77536b8211dfe41
@@ -152,8 +152,8 @@
 	weak
 [file ".github/workflows/sponsors.yml"]
 	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsors.yml
-	sha = 1114b567a2ab2939b8569340ae20423edf66a12f
-	etag = 0142be767cd24215b54631593cfab08d711001b71ba4fc358e412f27c434a227
+	sha = 514760df24bd906b9e5d3a56deac0d18cba59a6d
+	etag = 0236ed96c1d11f69b26ac0e039e74107df5731574236e2de2a83152fee5df0a6
 	weak
 [file "Gemfile"]
 	url = https://github.com/devlooped/.github/blob/main/Gemfile
