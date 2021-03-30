@@ -35,7 +35,7 @@ jobs:
           msbuild -t:test
 
       - name: 📦 pack
-        run: msbuild -t:pack -p:nobuild=true -m:1 -bl:pack.binlog -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
+        run: dotnet pack -m:1 --no-build -bl:pack.binlog -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
 
       - name: 🔼 logs
         if: ${{ always() }}
