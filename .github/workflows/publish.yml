@@ -27,7 +27,7 @@ jobs:
           vs-version: '[16.8,)'
 
       - name: 🙏 build
-        run: msbuild -r -m:1 -bl:build.binlog -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
+        run: msbuild -r -m:1 -bl:build.binlog -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)"
 
       - name: 🧪 test
         run: |
@@ -35,7 +35,8 @@ jobs:
           msbuild -t:test
 
       - name: 📦 pack
-        run: dotnet pack -m:1 --no-build -bl:pack.binlog -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
+        shell: bash
+        run: dotnet pack -m:1 --no-build -bl:pack.binlog -p:VersionLabel="${GITHUB_REF}.${GITHUB_RUN_NUMBER}"
 
       - name: 🔼 logs
         if: ${{ always() }}
