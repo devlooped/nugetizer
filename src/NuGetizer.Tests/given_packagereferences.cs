@@ -131,6 +131,35 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_pack_dependencies_false_then_does_not_pack()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>net472</TargetFramework>
+    <PackDependencies>false</PackDependencies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include='System.Numerics' />
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
+    <PackageReference Include='Newtonsoft.Json' Version='1.0.0' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "Newtonsoft.Json"
+            }));
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "System.Numerics"
+            }));
+        }
+
+        [Fact]
         public void when_SuppressDependenciesWhenPacking_then_does_not_pack()
         {
             var result = Builder.BuildProject(@"
