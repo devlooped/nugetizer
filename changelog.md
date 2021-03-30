@@ -67,7 +67,6 @@
 - Dev \> Main [\#33](https://github.com/devlooped/nugetizer/pull/33) (@kzu)
 - Dev \> Main [\#29](https://github.com/devlooped/nugetizer/pull/29) (@kzu)
 - Make sure the output package cleanup happens before Pack [\#25](https://github.com/devlooped/nugetizer/pull/25) (@kzu)
-- If an item provides TargetPath, preserve it as relative to the PackFolder [\#20](https://github.com/devlooped/nugetizer/pull/20) (@kzu)
 
 ## [v0.4.12](https://github.com/devlooped/nugetizer/tree/v0.4.12) (2020-11-20)
 
@@ -110,6 +109,7 @@
 
 :twisted_rightwards_arrows: Merged:
 
+- If an item provides TargetPath, preserve it as relative to the PackFolder [\#20](https://github.com/devlooped/nugetizer/pull/20) (@kzu)
 - By default, packing Compile should not include generated files [\#19](https://github.com/devlooped/nugetizer/pull/19) (@kzu)
 
 ## [v0.4.6](https://github.com/devlooped/nugetizer/tree/v0.4.6) (2020-10-20)
