@@ -37,9 +37,9 @@
 	sha = 0683ee777d7d878d4bf013d7deea352685135a05
 [file ".github/workflows/build.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/build.yml
-	etag = 82a160cfc3042b7d277b13fe539b1f311a0afa264802d31330ac42b7beb37ae3
+	etag = 16edbc0d7121c2527f0e62d441bbb4ac2b1ffc7e25ccd4b3d0611c0c86716520
 	weak
-	sha = c2ad879554e326fbc80fa1bbdc2dbc22f53001e1
+	sha = 4bc9de2ce63f083c2805752a25c5997ebc102aeb
 [file ".github_changelog_generator"]
 	url = https://github.com/devlooped/oss/blob/main/.github_changelog_generator
 	etag = 115efcd056eaca2f1d2df510eb7632ac3558ace2734a4139b77536b8211dfe41
@@ -77,14 +77,14 @@
 	sha = a0f58a6d63e48ae6e55944c556d0bc94476dc8df
 [file "src/Directory.Build.props"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.props
-	etag = 16762b7a7fbdc00c1912c469962131c912856115826db7628167517eea918324
+	etag = dc86d6818b98a7426c604039a07e134d61c8c598f1ceedb9e0e481fa0f93385d
 	weak
-	sha = 7e15e3c99842c1b1e5364dbd2221047df47ff6bf
+	sha = c9924b558ddeafb2cb547a7fcbc18aa7ae292ad1
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
-	etag = af2cf67157f42ab43a0082cbf876aa4cc46e167e6e6df6c05e9aaf36ffb23cc8
+	etag = 9956aef0f3becce22fc1dc4e68dd218d5ba3c23de2b106c4ad006ad321cacc4a
 	weak
-	sha = 6edd918283051b5179f6255556d254654acc5b8c
+	sha = e7de4d0e790f9fe58f31308f95886884b6c5805f
 [file "src/kzu.snk"]
 	url = https://github.com/devlooped/oss/blob/main/src/kzu.snk
 	etag = b8d789b5b6bea017cdcc8badcea888ad78de3e34298efca922054e9fb0e7b6b9
