@@ -17,10 +17,15 @@ jobs:
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
+        with: 
+          submodules: recursive
+          fetch-depth: 0
+
       - name: ✓ ensure format
         run: |
-          dotnet tool update -g --version 5.0.* dotnet-format
-          dotnet format -f src --check -v:diag
+          dotnet tool update -g dotnet-format --version 5.0.*
+          dotnet restore
+          dotnet format --check -v:diag
 
   build:
     needs: dotnet-format
