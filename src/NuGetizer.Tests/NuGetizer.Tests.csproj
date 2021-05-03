@@ -26,7 +26,7 @@
     <PackageReference Include="xunit.runner.console" Version="2.4.1" />
     <PackageReference Include="xunit.runner.msbuild" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
-    <PackageReference Include="ThisAssembly" Version="1.0.7" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly" Version="1.0.8" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
