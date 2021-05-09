@@ -42,67 +42,67 @@ Copyright (c) .NET Foundation. All rights reserved.
     </Compile>
     <Content>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackContent)' == true">true</Pack>
+      <Pack Condition="'$(PackContent)' == 'true'">true</Pack>
       <BuildAction>Content</BuildAction>
     </Content>
     <EmbeddedResource>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackEmbeddedResource)' == true">true</Pack>
+      <Pack Condition="'$(PackEmbeddedResource)' == 'true'">true</Pack>
       <BuildAction>EmbeddedResource</BuildAction>
     </EmbeddedResource>
     <None>
       <DefaultPackFolder>none</DefaultPackFolder>
-      <Pack Condition="'$(PackNone)' == true">true</Pack>
+      <Pack Condition="'$(PackNone)' == 'true'">true</Pack>
       <BuildAction>None</BuildAction>
     </None>
     <ApplicationDefinition>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackApplicationDefinition)' == true">true</Pack>
+      <Pack Condition="'$(PackApplicationDefinition)' == 'true'">true</Pack>
       <BuildAction>ApplicationDefinition</BuildAction>
     </ApplicationDefinition>
     <Page>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackPage)' == true">true</Pack>
+      <Pack Condition="'$(PackPage)' == 'true'">true</Pack>
       <BuildAction>Page</BuildAction>
     </Page>
     <Resource>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackResource)' == true">true</Pack>
+      <Pack Condition="'$(PackResource)' == 'true'">true</Pack>
       <BuildAction>Resource</BuildAction>
     </Resource>
     <SplashScreen>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackSplashScreen)' == true">true</Pack>
+      <Pack Condition="'$(PackSplashScreen)' == 'true'">true</Pack>
       <BuildAction>SplashScreen</BuildAction>
     </SplashScreen>
     <DesignData>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackDesignData)' == true">true</Pack>
+      <Pack Condition="'$(PackDesignData)' == 'true'">true</Pack>
       <BuildAction>DesignData</BuildAction>
     </DesignData>
     <DesignDataWithDesignTimeCreatableTypes>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackDesignDataWithDesignTimeCreatableTypes)' == true">true</Pack>
+      <Pack Condition="'$(PackDesignDataWithDesignTimeCreatableTypes)' == 'true'">true</Pack>
       <BuildAction>DesignDataWithDesignTimeCreatableTypes</BuildAction>
     </DesignDataWithDesignTimeCreatableTypes>
     <CodeAnalysisDictionary>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackCodeAnalysisDictionary)' == true">true</Pack>
+      <Pack Condition="'$(PackCodeAnalysisDictionary)' == 'true'">true</Pack>
       <BuildAction>CodeAnalysisDictionary</BuildAction>
     </CodeAnalysisDictionary>
     <AndroidAsset>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackAndroidAsset)' == true">true</Pack>
+      <Pack Condition="'$(PackAndroidAsset)' == 'true'">true</Pack>
       <BuildAction>AndroidAsset</BuildAction>
     </AndroidAsset>
     <AndroidResource>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackAndroidResource)' == true">true</Pack>
+      <Pack Condition="'$(PackAndroidResource)' == 'true'">true</Pack>
       <BuildAction>AndroidResource</BuildAction>
     </AndroidResource>
     <BundleResource>
       <DefaultPackFolder>content</DefaultPackFolder>
-      <Pack Condition="'$(PackBundleResource)' == true">true</Pack>
+      <Pack Condition="'$(PackBundleResource)' == 'true'">true</Pack>
       <BuildAction>BundleResource</BuildAction>
     </BundleResource>
 
