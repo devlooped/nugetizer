@@ -48,6 +48,8 @@ Copyright (c) .NET Foundation. All rights reserved.
       <RepositoryUrl Condition="'$(RepositoryUrl)' != ''">$(RepositoryUrl)</RepositoryUrl>
       <RepositoryBranch Condition="'$(RepositoryBranch)' != ''">$(RepositoryBranch)</RepositoryBranch>
       <RepositoryCommit Condition="'$(RepositoryCommit)' != ''">$(RepositoryCommit)</RepositoryCommit>
+      <!-- This item metadata will override the RepositoryCommit in package metadata -->
+      <RepositorySha Condition="'$(UseShortSourceRevisionId)' != 'false' and '$(RepositorySha)' != ''">$(RepositorySha)</RepositorySha>
     </PackageMetadata>
   </ItemDefinitionGroup>
 
