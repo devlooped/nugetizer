@@ -48,7 +48,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       GetPackageTargetPath;
       _AddPackageManifest
     </GetPackageContentsDependsOn>
-    <GetPackageContentsDependsOn Condition="'$(PackProjectReference)' == 'true'">
+    <GetPackageContentsDependsOn Condition="'$(PackProjectReferences)' == 'true'">
       $(GetPackageContentsDependsOn);
       _GetReferencedPackageContents
     </GetPackageContentsDependsOn>

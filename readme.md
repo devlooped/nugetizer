@@ -165,7 +165,7 @@ Whether items are packed by default or not is controlled by properties named aft
 | PackSymbols     | true if PackBuildOutput=true (*) |
 | PackDependencies| empty (**) |
 | PackFrameworkReferences | true if PackFolder=lib, false if PackDependencies=false |
-| PackProjectReference | true |
+| PackProjectReferences | true |
 
 
 

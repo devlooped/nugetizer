@@ -76,5 +76,26 @@ namespace NuGetizer
                 PackFolder = "lib",
             }));
         }
+
+        [Fact]
+        public void when_include_outputs_in_package_false_then_can_include_referenced_projects_outputs()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference),
+                properties: new
+                {
+                    PackBuildOutput = "false",
+                    PackProjectReferences = "true"
+                },
+                output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "b",
+                Extension = ".dll",
+                PackFolder = "lib",
+            }));
+        }
     }
 }

@@ -25,7 +25,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <EnablePackCleanup Condition="'$(EnablePackCleanup)' == ''">true</EnablePackCleanup>
 
     <!-- Whether include referenced projects' contents in the package. -->
-    <PackProjectReference Condition="'$(PackProjectReference)' == ''">true</PackProjectReference>
+    <PackProjectReferences Condition="'$(PackProjectReferences)' == ''">true</PackProjectReferences>
 
     <!-- Whether to prompt the consumer to accept the package license before installing the package. -->
     <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''" />
