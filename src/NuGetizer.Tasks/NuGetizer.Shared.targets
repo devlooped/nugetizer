@@ -178,6 +178,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PropertyGroup Condition="'$(SourceControlInformationFeatureSupported)' == 'true'">
       <!-- The project must specify PublishRepositoryUrl=true in order to publish the URL, in order to prevent inadvertent leak of internal URL. -->
       <RepositoryUrl Condition="'$(RepositoryUrl)' == '' and '$(PublishRepositoryUrl)' == 'true'">$(PrivateRepositoryUrl)</RepositoryUrl>
+      <PackageProjectUrl Condition="'$(PackageProjectUrl)' == '' and '$(PublishRepositoryUrl)' == 'true'">$(RepositoryUrl)</PackageProjectUrl>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(SourceRevisionId)' != ''">
