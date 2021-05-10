@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
@@ -12,6 +13,9 @@ namespace NuGetizer
         [Fact]
         public void when_getting_metadata_then_adds_repository_info()
         {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_REF")))
+                Environment.SetEnvironmentVariable("GITHUB_REF", "refs/heads/main");
+
             var result = Builder.BuildProject(@"
 <Project Sdk='Microsoft.NET.Sdk'>
   <PropertyGroup>
@@ -33,6 +37,7 @@ namespace NuGetizer
             Assert.Equal("git", metadata.GetMetadata("RepositoryType"));
             Assert.Equal(ThisAssembly.Project.PrivateRepositoryUrl, metadata.GetMetadata("RepositoryUrl"));
             Assert.NotEmpty(metadata.GetMetadata("RepositoryCommit"));
+            Assert.NotEmpty(metadata.GetMetadata("RepositoryBranch"));
         }
 
         [Fact]
