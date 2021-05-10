@@ -1,5 +1,32 @@
 
 
+## [Unreleased](https://github.com/devlooped/nugetizer/tree/HEAD)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.0...HEAD)
+
+:sparkles: Implemented enhancements:
+
+- If short sha is available, use it for package metadata [\#94](https://github.com/devlooped/nugetizer/issues/94)
+
+## [v0.7.0](https://github.com/devlooped/nugetizer/tree/v0.7.0) (2021-05-10)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.6.2...v0.7.0)
+
+:sparkles: Implemented enhancements:
+
+- Automatically default PackageProjectUrl to RepositoryUrl from source control info [\#91](https://github.com/devlooped/nugetizer/issues/91)
+- Rename PackProjectReference to PackProjectReferences for consistency [\#90](https://github.com/devlooped/nugetizer/issues/90)
+- Populatate RepositoryBranch, ensure we pack it as expected [\#57](https://github.com/devlooped/nugetizer/issues/57)
+- Populate RepositoryUrl/RepositoryCommit early [\#56](https://github.com/devlooped/nugetizer/issues/56)
+
+:twisted_rightwards_arrows: Merged:
+
+- If short SHA is available, use it for package metadata [\#95](https://github.com/devlooped/nugetizer/pull/95) (@kzu)
+- Populate RepositoryBranch automatically [\#93](https://github.com/devlooped/nugetizer/pull/93) (@kzu)
+- Improve integration with source link [\#92](https://github.com/devlooped/nugetizer/pull/92) (@kzu)
+- Bump files with dotnet-file sync [\#86](https://github.com/devlooped/nugetizer/pull/86) (@kzu)
+- Bump files with dotnet-file sync [\#78](https://github.com/devlooped/nugetizer/pull/78) (@kzu)
+
 ## [v0.6.2](https://github.com/devlooped/nugetizer/tree/v0.6.2) (2021-03-30)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.6.0...v0.6.2)
