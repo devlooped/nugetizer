@@ -32,6 +32,8 @@ Copyright (c) .NET Foundation. All rights reserved.
     <RepositoryBranch Condition="'$(RepositoryBranch)' == '' and '$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">pr$(APPVEYOR_PULL_REQUEST_NUMBER)</RepositoryBranch>
     <RepositoryBranch Condition="'$(RepositoryBranch)' == '' and '$(APPVEYOR_REPO_TAG_NAME)' != ''">$(APPVEYOR_REPO_TAG_NAME)</RepositoryBranch>
     <RepositoryBranch Condition="'$(RepositoryBranch)' == '' and '$(APPVEYOR_REPO_BRANCH)' != ''">$(APPVEYOR_REPO_BRANCH)</RepositoryBranch>
+    <!-- TeamCity: https://www.jetbrains.com/help/teamcity/predefined-build-parameters.html#Branch-Related+Parameters -->
+    <RepositoryBranch Condition="'$(RepositoryBranch)' == '' and '$(TEAMCITY_BUILD_BRANCH)' != ''">$(TEAMCITY_BUILD_BRANCH)</RepositoryBranch>
     <!--TravisCI: https://docs.travis-ci.com/user/environment-variables/ -->
     <RepositoryBranch Condition="'$(RepositoryBranch)' == '' and '$(TRAVIS_PULL_REQUEST)' != '' and '$(TRAVIS_PULL_REQUEST)' != 'false'">pr$(TRAVIS_PULL_REQUEST)</RepositoryBranch>
     <RepositoryBranch Condition="'$(RepositoryBranch)' == '' and '$(TRAVIS_BRANCH)' != ''">$(TRAVIS_BRANCH)</RepositoryBranch>
