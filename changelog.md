@@ -1,19 +1,10 @@
-
-
-## [Unreleased](https://github.com/devlooped/nugetizer/tree/HEAD)
-
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.0...HEAD)
-
-:sparkles: Implemented enhancements:
-
-- If short sha is available, use it for package metadata [\#94](https://github.com/devlooped/nugetizer/issues/94)
-
 ## [v0.7.0](https://github.com/devlooped/nugetizer/tree/v0.7.0) (2021-05-10)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.6.2...v0.7.0)
 
 :sparkles: Implemented enhancements:
 
+- If short sha is available, use it for package metadata [\#94](https://github.com/devlooped/nugetizer/issues/94)
 - Automatically default PackageProjectUrl to RepositoryUrl from source control info [\#91](https://github.com/devlooped/nugetizer/issues/91)
 - Rename PackProjectReference to PackProjectReferences for consistency [\#90](https://github.com/devlooped/nugetizer/issues/90)
 - Populatate RepositoryBranch, ensure we pack it as expected [\#57](https://github.com/devlooped/nugetizer/issues/57)
