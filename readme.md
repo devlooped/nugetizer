@@ -49,6 +49,53 @@ in your package. This gives you ultimate control without having to understand an
 
 All [inference rules are laid out in a single .targets](src/NuGetizer.Tasks/NuGetizer.Inference.targets) file that's easy to inspect them to learn more, and the file is not imported at all when `EnablePackInference=false`.
 
+## dotnet-nugetize
+
+Carefully tweaking your packages until they look exactly the way you want them should not be a tedious and slow process. Even requiring your project to be built between changes can be costly and reduce the speed at which you can iterate on the packaging aspects of the project. Also, generating the final `.nupkg`, opening it in a tool and inspecting its content, is also not ideal for rapid iteration.
+
+For this reason, NuGetizer provides a dotnet global tool to make this process straightforward and quick. Installation is just like for any other dotnet tool:
+
+```
+> dotnet tool install -g dotnet-nugetize
+```
+
+After installation, you can just run `nugetize` from the project directory to quickly get a report of the package that would be generated. This is done in the fastest possible way without compromising your customizations to the build process. They way this is achieved is by a combination of a simulated [design-time build](https://github.com/dotnet/project-system/blob/master/docs/design-time-builds.md) that skips the compiler invocation and avoids the output file copying entirely, and built-in support in NuGetizer to emit the entire contents of the package as MSBuild items with full metadata, that the tool can use to render an accurate report that contains exactly the same information that would be used to emit the final `.nupkg` without actually generating it.
+
+Here's a sample output screenshot:
+
+![nugetize screenshot](img/dotnet-nugetize.png)
+
+## Inner Devloop
+
+Authoring, testing and iterating on your nuget packages should be easy and straightforward. NuGetizer makes it trivial to consume your locally-built packages from a sample test project to exercise its features, by automatically performing the following cleanups whenever you build a new version of a package:
+
+   a. Clean previous versions of the same package in the package output path
+   b. Clean NuGet cache folder for the package id (i.e. *%userprofile%\.nuget\packages\mypackage*)
+   c. Clean the NuGet HTTP cache: this avoids a subsequent restore from a consuming project from getting a cached older version, in case you build locally the same version number that was previously restored.
+
+This means that to iterate quickly, these are the only needed steps:
+
+  1. Build/Pack a new version
+  2. Run Restore/Build on the sample project
+
+
+To make the process smoother, consider the following tweaks:
+
+  * Use single `PackageOutputPath`: if you create multiple packages, it's helpful to place them all in a single output directory. This can be achieved easily by adding the property to a `Directory.Build.props` file and place it at your repository root (or your `src` folder).:
+
+    ```xml
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(MSBuildThisFileDirectory)..\bin</PackageOutputPath>
+    ```
+
+  * Use `<RestoreSources>` in your consuming/test projects: this allows you to point to that common folder and even do it selectively only if the folder exists (i.e. use local packages if you just built them, use regular feed otherwise). You can place this too in a `Directory.Build.props` for all your consuming sample/test projects to use:
+
+    ```xml
+    <RestoreSources>https://api.nuget.org/v3/index.json;$(RestoreSources)</RestoreSources>
+    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\bin\')">
+      $([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\bin'));$(RestoreSources)
+    </RestoreSources>
+    ```
+
 ## Package Contents Inference
 
 Package content inference provides some built-in heuristics for common scenarios so you 
@@ -225,48 +272,6 @@ Package: Sample.1.0.0.nupkg
 
 Finally, you can focedly turn a project reference build output into a private asset even if it defines a `PackageId` by adding `PrivateAssets=all`. This is very useful for build and analyzer packages, which typically reference the main library project too, but need its output as private, since neither can use dependencies at run-time.
 
-## dotnet-nugetize
-
-Carefully tweaking your packages until they look exactly the way you want them should not be a tedious and slow process. Even requiring your project to be built between changes can be costly and reduce the speed at which you can iterate on the packaging aspects of the project. Also, generating the final `.nupkg`, opening it in a tool and inspecting its content, is also not ideal for rapid iteration.
-
-For this reason, NuGetizer provides a dotnet global tool to make this process straightforward and quick. Installation is just like for any other dotnet tool:
-
-```
-> dotnet tool install -g dotnet-nugetize
-```
-
-After installation, you can just run `nugetize` from the project directory to quickly get a report of the package that would be generated. This is done in the fastest possible way without compromising your customizations to the build process. They way this is achieved is by a combination of a simulated [design-time build](https://github.com/dotnet/project-system/blob/master/docs/design-time-builds.md) that skips the compiler invocation and avoids the output file copying entirely, and built-in support in NuGetizer to emit the entire contents of the package as MSBuild items with full metadata, that the tool can use to render an accurate report that contains exactly the same information that would be used to actually emit the final `.nupkg` without actually emitting it.
-
-Here's a sample output screenshot:
-
-![nugetize screenshot](img/dotnet-nugetize.png)
-
-## Inner DevLoop
-
-Authoring, testing and iterating with your nuget packages should be easy and straightforward. So NuGetizer has built-in support for this process that makes it even enjoyable. The following are some notes and advise on how to make the best of it.
-
-1. Use single `PackageOutputPath`: if you create multiple packages, it's helpful to place them all in a single output directory. This can be achieved easily by adding the property to a `Directory.Build.props` file and place it at your repository root (or your `src` folder).:
-
-    ```xml
-    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(MSBuildThisFileDirectory)..\bin</PackageOutputPath>
-    ```
-
-2. Use `<RestoreSources>` in your consuming projects: this allows you to point to that common folder and even do it selectively only if the folder exists (i.e. use local packages if you built them, use regular feed otherwise). You can place this too in a `Directory.Build.props` for all your consuming/sample/test projects to use:
-
-    ```xml
-    <RestoreSources>https://api.nuget.org/v3/index.json;$(RestoreSources)</RestoreSources>
-    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\bin\')">
-      $([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\bin'));$(RestoreSources)
-    </RestoreSources>
-    ```
-
-3. NuGetizer will automatically perform the following cleanups whenever you build a new version of a package:
-   a. Clean previous versions of the same package in the package output path
-   b. Clean NuGet cache folder for the package id (i.e. *%userprofile%\.nuget\packages\mypackage*)
-   c. Clean the NuGet HTTP cache: this avoids a subsequent restore from a test/sample project from getting an older version from there, in case you build locally the same version of a previously restored one from an HTTP source.
-
-These cleanups only apply in local builds, never in CI, and you can turn them all off by setting `EnablePackCleanup=false`.
-
 ## Advanced Features
 
 This section contains miscelaneous useful features that are typically used in advanced scenarios and 
@@ -329,7 +334,6 @@ might be missing (i.e. the primary output, content files, etc.).
 This option is useful in combination with `BuildProjectReferences=false` when 
 packing on CI, since at that point all that's run are the P2P protocol involving 
 `GetPackageContents`.
-
 
 
 ## Sponsors
