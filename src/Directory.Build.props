@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Authors>kzu</Authors>
+    <Authors>Daniel Cazzulino</Authors>
     <Copyright>Copyright (C) Daniel Cazzulino and Contributors. All rights reserved.</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
