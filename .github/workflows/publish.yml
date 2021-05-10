@@ -35,9 +35,8 @@ jobs:
           msbuild -t:test
 
       - name: 📦 pack
-        run: dotnet pack -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
+        run: dotnet pack -m:1 -p:version=${GITHUB_REF#refs/*/v} -p:RepositoryBranch=${GITHUB_REF#refs/*/}
         shell: bash
 
       - name: 🚀 nuget
-        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
-        shell: bash
+        run: dotnet nuget push bin\**\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
