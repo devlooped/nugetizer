@@ -151,7 +151,11 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="AllProjectOutputGroups" />
   <!-- Redefined in Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets -->
   <Target Name="RunResolvePackageDependencies" />
-
+  <!-- Redefined either in Microsoft.Common.CurrentVersion.targets or Microsoft.SourceLink  
+       See also https://github.com/dotnet/msbuild/issues/3294
+  -->
+  <Target Name="InitializeSourceControlInformation" />
+  
   <PropertyGroup Label="Hidden">
     <!-- Flag this project as having been "nugetized" -->
     <IsNuGetized>true</IsNuGetized>
