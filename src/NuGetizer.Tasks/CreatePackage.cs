@@ -141,6 +141,9 @@ namespace NuGetizer.Tasks
             if (Manifest.TryGetMetadata("RepositoryCommit", out var repoCommit))
                 (metadata.Repository ??= new RepositoryMetadata()).Commit = repoCommit;
 
+            if (Manifest.TryGetMetadata("RepositorySha", out var repoSha))
+                (metadata.Repository ??= new RepositoryMetadata()).Commit = repoSha;
+
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("ProjectUrl")))
                 metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
 
