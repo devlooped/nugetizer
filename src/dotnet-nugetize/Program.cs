@@ -34,7 +34,7 @@ namespace NuGetize
             {
                 { "?|h|help", "Display this help.", h => help = h != null },
                 { "b|bl|binlog", "Generate binlog.", b => binlog = b != null },
-                { "d|debug", "Debug nugetizer tasks.", d => debug = d != null },
+                { "d|debug", "Debug nugetizer tasks.", d => debug = d != null, true },
                 { "q|quiet", "Don't render MSBuild output.", q => quiet = q != null },
                 { "i|items:", "MSBuild items file path containing full package contents metadata.", i => items = Path.GetFullPath(i) },
                 { "version", "Render tool version and copyright information.", v => version = v != null },
