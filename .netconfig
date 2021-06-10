@@ -37,9 +37,9 @@
 	sha = 0683ee777d7d878d4bf013d7deea352685135a05
 [file ".github/workflows/build.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/build.yml
-	etag = 980b0b303f209c5b31de5ce6cfdbd769fb5e1aa956f8926a2638f5d37e0521d3
+	etag = 91e9a208cd134bd7b71d7419800c613bc50a30e21e605607528721f2acdeab86
 	weak
-	sha = db76fb9dd72b42a870f76cdf05b6b74fa32e7751
+	sha = fc5889d5387e2d5aa7aba279b2aa12251cf08cb2
 [file ".github_changelog_generator"]
 	url = https://github.com/devlooped/oss/blob/main/.github_changelog_generator
 	etag = 115efcd056eaca2f1d2df510eb7632ac3558ace2734a4139b77536b8211dfe41
@@ -77,14 +77,14 @@
 	sha = a0f58a6d63e48ae6e55944c556d0bc94476dc8df
 [file "src/Directory.Build.props"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.props
-	etag = c582b53fd97a10eb3f326dda1672be92a8d83b760de93d6a952b2d7e12055fb6
+	etag = ae2606c157b9725ce8c707e30d9768fb0bad901ac34065d3cd75fc2bdbc5f8cf
 	weak
-	sha = 0fc6e0ebd01d48d92f995541b6277edefa747606
+	sha = 52d6c40aaa460ac48fc74c03324c6b1db7ae170d
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
-	etag = 9956aef0f3becce22fc1dc4e68dd218d5ba3c23de2b106c4ad006ad321cacc4a
+	etag = 874f20853c983e6440ed67bb571d94927f9fb4cd4438585b07df7b420c664609
 	weak
-	sha = e7de4d0e790f9fe58f31308f95886884b6c5805f
+	sha = 55c0b32601e94e1eed35028a0cad510c6bcbb265
 [file "src/kzu.snk"]
 	url = https://github.com/devlooped/oss/blob/main/src/kzu.snk
 	etag = b8d789b5b6bea017cdcc8badcea888ad78de3e34298efca922054e9fb0e7b6b9
@@ -127,8 +127,8 @@
 	weak
 [file ".github/workflows/publish.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/publish.yml
-	sha = 6bd81a32950b02166c97144a6c158e0516b04ed4
-	etag = 6dfba9878f876f2c5c6fb1c467ddfd52f0567c4ce3a77cdfdc72b704e9be86e6
+	sha = 55c0b32601e94e1eed35028a0cad510c6bcbb265
+	etag = ad8681ee3f191f796944135772b74565c470e349464e793aa664c888f7784b7a
 	weak
 [file ".github/workflows/release-artifacts.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/release-artifacts.yml
