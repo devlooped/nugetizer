@@ -13,7 +13,7 @@ env:
 
 jobs:
   publish:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
@@ -21,22 +21,14 @@ jobs:
           submodules: recursive
           fetch-depth: 0
           
-      - name: 🔍 msbuild
-        uses: microsoft/setup-msbuild@v1
-        with:
-          vs-version: '[16.8,)'
-
       - name: 🙏 build
-        run: msbuild -r -m:1
+        run: dotnet build -m:1 -p:version=${GITHUB_REF#refs/*/v}
 
       - name: 🧪 test
-        run: |
-          dotnet restore src\NuGetizer.Tests\Scenarios\given_a_packaging_project\a.nuproj
-          msbuild -t:test
+        run: dotnet test --no-build -m:1
 
       - name: 📦 pack
-        run: dotnet pack -m:1 -p:version=${GITHUB_REF#refs/*/v} -p:RepositoryBranch=${GITHUB_REF#refs/*/}
-        shell: bash
+        run: dotnet pack -m:1 -p:version=${GITHUB_REF#refs/*/v}
 
       - name: 🚀 nuget
-        run: dotnet nuget push bin\**\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
