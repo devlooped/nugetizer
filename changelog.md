@@ -75,7 +75,6 @@
 
 :twisted_rightwards_arrows: Merged:
 
-- ⭮ Apply devlooped/oss + add ♡ sponsors [\#58](https://github.com/devlooped/nugetizer/pull/58) (@kzu)
 - 🖆 Apply kzu/oss template via dotnet-file [\#47](https://github.com/devlooped/nugetizer/pull/47) (@kzu)
 - When using PackageReference metadata infer Pack=true [\#45](https://github.com/devlooped/nugetizer/pull/45) (@kzu)
 - When resolving P2P references for packaging, set target framework [\#42](https://github.com/devlooped/nugetizer/pull/42) (@kzu)
