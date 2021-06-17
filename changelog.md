@@ -31,7 +31,6 @@
 - Populate RepositoryBranch automatically [\#93](https://github.com/devlooped/nugetizer/pull/93) (@kzu)
 - Improve integration with source link [\#92](https://github.com/devlooped/nugetizer/pull/92) (@kzu)
 - Bump files with dotnet-file sync [\#86](https://github.com/devlooped/nugetizer/pull/86) (@kzu)
-- Bump files with dotnet-file sync [\#78](https://github.com/devlooped/nugetizer/pull/78) (@kzu)
 
 ## [v0.6.2](https://github.com/devlooped/nugetizer/tree/v0.6.2) (2021-03-30)
 
