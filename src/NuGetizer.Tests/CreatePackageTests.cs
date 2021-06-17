@@ -579,6 +579,7 @@ namespace NuGetizer
         public void when_creating_package_with_readme_then_has_readme_metadata()
         {
             var content = Path.GetTempFileName();
+            File.WriteAllText(content, "# Readme Sample");
             task.Contents = new[]
             {
                 new TaskItem(content, new Metadata
