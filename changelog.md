@@ -1,5 +1,18 @@
 
 
+## [v0.7.1](https://github.com/devlooped/nugetizer/tree/v0.7.1) (2021-06-17)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.0...v0.7.1)
+
+:sparkles: Implemented enhancements:
+
+- Hide --debug option from nugetize tool [\#108](https://github.com/devlooped/nugetizer/issues/108)
+- Parity: add support for PackageReadmeFile property [\#85](https://github.com/devlooped/nugetizer/issues/85)
+
+:twisted_rightwards_arrows: Merged:
+
+- Add support for PackageReadmeFile [\#111](https://github.com/devlooped/nugetizer/pull/111) (@kzu)
+
 ## [v0.7.0](https://github.com/devlooped/nugetizer/tree/v0.7.0) (2021-05-10)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.6.2...v0.7.0)
@@ -62,6 +75,7 @@
 
 :twisted_rightwards_arrows: Merged:
 
+- ⭮ Apply devlooped/oss + add ♡ sponsors [\#58](https://github.com/devlooped/nugetizer/pull/58) (@kzu)
 - 🖆 Apply kzu/oss template via dotnet-file [\#47](https://github.com/devlooped/nugetizer/pull/47) (@kzu)
 - When using PackageReference metadata infer Pack=true [\#45](https://github.com/devlooped/nugetizer/pull/45) (@kzu)
 - When resolving P2P references for packaging, set target framework [\#42](https://github.com/devlooped/nugetizer/pull/42) (@kzu)
