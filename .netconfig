@@ -42,9 +42,9 @@
 	sha = fc5889d5387e2d5aa7aba279b2aa12251cf08cb2
 [file ".github_changelog_generator"]
 	url = https://github.com/devlooped/oss/blob/main/.github_changelog_generator
-	etag = 115efcd056eaca2f1d2df510eb7632ac3558ace2734a4139b77536b8211dfe41
+	etag = ec1ed4319e9df3c2bd346ea17a0f147320f342549b6768c4ea69ba7bfcebf272
 	weak
-	sha = cf52375fd20c6df894f1518890693312d4c4c11c
+	sha = b20b309ee27f3c25544eb857d3aab1fe869d4cb6
 [file ".gitignore"]
 	url = https://github.com/devlooped/oss/blob/main/.gitignore
 	etag = 925782b685859e07040442303b411bebd1c75b4fe4e075f547e067f33f323814
