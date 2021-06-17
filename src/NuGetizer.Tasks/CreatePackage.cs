@@ -98,6 +98,9 @@ namespace NuGetizer.Tasks
             if (Manifest.TryGetMetadata("Summary", out var summary))
                 metadata.Summary = summary;
 
+            if (Manifest.TryGetMetadata("Readme", out var readme))
+                metadata.Readme = readme;
+
             if (Manifest.TryGetMetadata("Language", out var language))
                 metadata.Language = language;
 

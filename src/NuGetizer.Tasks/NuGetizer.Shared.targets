@@ -132,6 +132,7 @@ Copyright (c) .NET Foundation. All rights reserved.
         <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
         <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
         <Title Condition="'$(Title)' != ''">$(Title)</Title>
+        <Readme Condition="'$(PackageReadmeFile)' != ''">$(PackageReadmeFile)</Readme>
         <Language Condition="'$(NeutralLanguage)' != ''">$(NeutralLanguage)</Language>
         <Copyright Condition="'$(Copyright)' != ''">$(Copyright)</Copyright>
         <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == 'true'">true</RequireLicenseAcceptance>

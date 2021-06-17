@@ -576,6 +576,27 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_creating_package_with_readme_then_has_readme_metadata()
+        {
+            var content = Path.GetTempFileName();
+            task.Contents = new[]
+            {
+                new TaskItem(content, new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackagePath, @"readme.md" }
+                }),
+            };
+
+            task.Manifest.SetMetadata("Readme", "readme.md");
+
+            var manifest = ExecuteTask();
+
+            Assert.Contains(manifest.Files, file => file.Target == @"readme.md");
+            Assert.Equal("readme.md", manifest.Metadata.Readme);
+        }
+
+        [Fact]
         public void when_creating_package_with_content_file_build_action_then_adds_as_content_file()
         {
             var content = Path.GetTempFileName();
