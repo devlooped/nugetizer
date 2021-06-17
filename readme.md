@@ -277,6 +277,22 @@ Finally, you can focedly turn a project reference build output into a private as
 This section contains miscelaneous useful features that are typically used in advanced scenarios and 
 are not necessarily mainstream.
 
+### Dynamically Extending Package Contents
+
+If you need to calculate additional items to inject into the package dynamically, you can run a target 
+before `GetPackageContents`, which is the target NuGetizer uses before packing to determine what needs 
+to be included. At this point you can add arbitrary `<PackageFile ... PackagePath=... />` items laying 
+out precisely what it is you want to inject into the .nupkg. For example:
+    
+```xml
+<Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
+    <PackageFile Include="$(MSBuildProjectDirectory)\..\docs\**\*.md" PackagePath="docs\%(RelativeDir)%(Filename)%(Extension)" />
+</Target>
+```
+    
+This example will add all markdown files in a `docs` folder one level above the current project, and 
+place them all under the `docs` folder in the `.nupkg`, preserving their original folder structure.
+    
 ### Packing arbitrary files from referenced packages
 
 If you want to pack files from referenced packages, you can simply add `PackageReference` attribute 
