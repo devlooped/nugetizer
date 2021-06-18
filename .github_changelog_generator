@@ -7,3 +7,4 @@ enhancement-label=:sparkles: Implemented enhancements:
 bugs-label=:bug: Fixed bugs:
 issues-label=:hammer: Other:
 pr-label=:twisted_rightwards_arrows: Merged:
+unreleased=false
