@@ -9,7 +9,7 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
 Copyright (c) .NET Foundation. All rights reserved. 
 ***********************************************************************************************
 -->
-<Project InitialTargets="_SetPropertiesFromCapabilities" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project InitialTargets="_SetPropertiesFromCapabilities" TreatAsLocalProperty="PackFolder" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="NuGetizer.Tasks.AssignPackagePath" AssemblyFile="NuGetizer.Tasks.dll" />
   <UsingTask TaskName="NuGetizer.Tasks.WriteItemsToFile" AssemblyFile="NuGetizer.Tasks.dll" />
 
@@ -154,6 +154,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                          %(_NuGetizedProjectReference.SetPlatform); 
                          %(_NuGetizedProjectReference.SetTargetFramework); 
                          BuildingPackage=$(BuildingPackage); 
+                         PackFolder=%(_NuGetizedProjectReference.PackFolder);
                          DesignTimeBuild=false"
              Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_NuGetizedProjectReference)' != ''"
              RemoveProperties="%(_NuGetizedProjectReference.GlobalPropertiesToRemove)">
