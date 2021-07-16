@@ -1,14 +1,11 @@
-<h1 id="nugetizer"><img src="https://github.com/kzu/nugetizer/raw/main/img/nugetizer-32.png" alt="Icon" height="32" width="32" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">  nugetizer</h1>
+![Icon](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/nugetizer-32.png) nugetizer
+============
 
 Simple, flexible, intuitive and powerful NuGet packaging.
 
-[![Version](https://img.shields.io/nuget/vpre/NuGetizer.svg?color=royalblue)](https://www.nuget.org/packages/NuGetizer)
-[![Downloads](https://img.shields.io/nuget/dt/NuGetizer?color=darkmagenta)](https://www.nuget.org/packages/NuGetizer)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/kzu/nugetizer/blob/main/LICENSE)
-[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/nugetizer)
+[![Version](https://img.shields.io/nuget/vpre/NuGetizer.svg?color=royalblue)](https://www.nuget.org/packages/NuGetizer) [![Downloads](https://img.shields.io/nuget/dt/NuGetizer?color=darkmagenta)](https://www.nuget.org/packages/NuGetizer) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/kzu/nugetizer/blob/main/LICENSE) [![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/nugetizer)
 
-[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/nugetizer/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
-[![CI Status](https://github.com/kzu/nugetizer/workflows/build/badge.svg?branch=main)](https://github.com/kzu/nugetizer/actions?query=branch%3Amain+workflow%3Abuild+)
+[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/nugetizer/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json) [![CI Status](https://github.com/kzu/nugetizer/workflows/build/badge.svg?branch=main)](https://github.com/kzu/nugetizer/actions?query=branch%3Amain+workflow%3Abuild+)
 
 
 # Why
@@ -63,7 +60,7 @@ After installation, you can just run `nugetize` from the project directory to qu
 
 Here's a sample output screenshot:
 
-![nugetize screenshot](img/dotnet-nugetize.png)
+![nugetize screenshot](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/dotnet-nugetize.png)
 
 ## Inner Devloop
 
@@ -366,8 +363,6 @@ packing on CI, since at that point all that's run are the P2P protocol involving
 
 ## Sponsors
 
-<h3 style="vertical-align: text-top" id="by-clarius">
-<img src="https://raw.githubusercontent.com/devlooped/oss/main/assets/images/sponsors.svg" alt="sponsors" height="36" width="36" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">&nbsp;&nbsp;by&nbsp;<a href="https://github.com/clarius">@clarius</a>&nbsp;<img src="https://raw.githubusercontent.com/clarius/branding/main/logo/logo.svg" alt="sponsors" height="36" width="36" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">
-</h3>
+[![sponsored](https://raw.githubusercontent.com/devlooped/oss/main/assets/images/sponsors.svg)](https://github.com/sponsors/devlooped) [![clarius](https://raw.githubusercontent.com/clarius/branding/main/logo/byclarius.svg)](https://github.com/clarius)[![clarius](https://raw.githubusercontent.com/clarius/branding/main/logo/logo.svg)](https://github.com/clarius)
 
 *[get mentioned here too](https://github.com/sponsors/devlooped)!*
