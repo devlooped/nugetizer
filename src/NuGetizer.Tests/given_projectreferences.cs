@@ -217,5 +217,61 @@ namespace NuGetizer
             }));
         }
 
+        [Fact]
+        public void when_projectreference_explicit_packfolder_then_specific_folder_is_packed()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.0.4'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=lib\net5.0\SpecificFolder' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("Library.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+</Project>"));
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\net5.0\SpecificFolder\Library.dll",
+            }));
+        }
+
+        [Fact]
+        public void when_projectreference_has_packfolder_metadata_then_specific_folder_is_packed()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.0.4'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='Library.csproj' PackFolder='lib\net5.0\SpecificFolder' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("Library.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+</Project>"));
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"lib\net5.0\SpecificFolder\Library.dll",
+            }));
+        }
+
     }
 }

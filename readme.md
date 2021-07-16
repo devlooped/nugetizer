@@ -270,6 +270,18 @@ Package: Sample.1.0.0.nupkg
         sample.pdb
 ```
 
+If you need to tweak target folder of a referenced project, you can also do so 
+via the `PackFolder` attribute on the `ProjectReference` itself:
+
+```xml
+   <ProjectReference Include="..\MyDesktopLibrary\MyDesktopLibrary.csproj" 
+                     PackFolder="lib\net5.0\SpecificFolder" />
+```
+
+> NOTE: this is a convenience shortcut since you can already pass additional project 
+> properties for project references using the built-in 
+> [`AdditionalProperties` attribute](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-task?view=vs-2019#pass-properties-to-projects).
+
 Finally, you can focedly turn a project reference build output into a private asset even if it defines a `PackageId` by adding `PrivateAssets=all`. This is very useful for build and analyzer packages, which typically reference the main library project too, but need its output as private, since neither can use dependencies at run-time.
 
 ## Advanced Features
