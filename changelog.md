@@ -1,5 +1,19 @@
 
 
+## [v0.7.2](https://github.com/devlooped/nugetizer/tree/v0.7.2) (2021-07-16)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.1...v0.7.2)
+
+:sparkles: Implemented enhancements:
+
+- Allow specifying PackFolder in ProjectReference [\#124](https://github.com/devlooped/nugetizer/issues/124)
+- Include readme in package [\#127](https://github.com/devlooped/nugetizer/pull/127) (@kzu)
+- Allow specifying PackFolder in ProjectReference [\#125](https://github.com/devlooped/nugetizer/pull/125) (@kzu)
+
+:bug: Fixed bugs:
+
+- No longer able to generate separate snupkg symbol packages. [\#117](https://github.com/devlooped/nugetizer/issues/117)
+
 ## [v0.7.1](https://github.com/devlooped/nugetizer/tree/v0.7.1) (2021-06-17)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.0...v0.7.1)
@@ -102,19 +116,19 @@
 
 ## [v0.4.12](https://github.com/devlooped/nugetizer/tree/v0.4.12) (2020-11-20)
 
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.11...v0.4.12)
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.10...v0.4.12)
 
 :hammer: Other:
 
 - IsPackable default [\#26](https://github.com/devlooped/nugetizer/issues/26)
 
-## [v0.4.11](https://github.com/devlooped/nugetizer/tree/v0.4.11) (2020-10-29)
-
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.10...v0.4.11)
-
 ## [v0.4.10](https://github.com/devlooped/nugetizer/tree/v0.4.10) (2020-10-29)
 
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.9...v0.4.10)
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.11...v0.4.10)
+
+## [v0.4.11](https://github.com/devlooped/nugetizer/tree/v0.4.11) (2020-10-29)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.9...v0.4.11)
 
 :bug: Fixed bugs:
 
