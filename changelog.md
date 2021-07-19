@@ -1,5 +1,21 @@
 
 
+## [v0.7.3](https://github.com/devlooped/nugetizer/tree/v0.7.3) (2021-07-19)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.2...v0.7.3)
+
+:sparkles: Implemented enhancements:
+
+- Include readme in package [\#126](https://github.com/devlooped/nugetizer/issues/126)
+
+:bug: Fixed bugs:
+
+- When inferring content, PackInference.PackExclude isn't properly evaluated [\#128](https://github.com/devlooped/nugetizer/issues/128)
+
+:twisted_rightwards_arrows: Merged:
+
+- Properly evaluate PackInference.PackExclude [\#129](https://github.com/devlooped/nugetizer/pull/129) (@kzu)
+
 ## [v0.7.2](https://github.com/devlooped/nugetizer/tree/v0.7.2) (2021-07-16)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.1...v0.7.2)
@@ -8,11 +24,10 @@
 
 - Allow specifying PackFolder in ProjectReference [\#124](https://github.com/devlooped/nugetizer/issues/124)
 - Include readme in package [\#127](https://github.com/devlooped/nugetizer/pull/127) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
 - Allow specifying PackFolder in ProjectReference [\#125](https://github.com/devlooped/nugetizer/pull/125) (@kzu)
-
-:bug: Fixed bugs:
-
-- No longer able to generate separate snupkg symbol packages. [\#117](https://github.com/devlooped/nugetizer/issues/117)
 
 ## [v0.7.1](https://github.com/devlooped/nugetizer/tree/v0.7.1) (2021-06-17)
 
@@ -90,7 +105,6 @@
 
 - 🖆 Apply kzu/oss template via dotnet-file [\#47](https://github.com/devlooped/nugetizer/pull/47) (@kzu)
 - When using PackageReference metadata infer Pack=true [\#45](https://github.com/devlooped/nugetizer/pull/45) (@kzu)
-- When resolving P2P references for packaging, set target framework [\#42](https://github.com/devlooped/nugetizer/pull/42) (@kzu)
 - Provide a default value for package description for compatibility with SDK pack [\#41](https://github.com/devlooped/nugetizer/pull/41) (@kzu)
 - Import compatibility props for multi-targeting too [\#39](https://github.com/devlooped/nugetizer/pull/39) (@kzu)
 - Dev \> Main [\#38](https://github.com/devlooped/nugetizer/pull/38) (@kzu)
@@ -110,25 +124,26 @@
 
 :twisted_rightwards_arrows: Merged:
 
+- When resolving P2P references for packaging, set target framework [\#42](https://github.com/devlooped/nugetizer/pull/42) (@kzu)
 - Dev \> Main [\#33](https://github.com/devlooped/nugetizer/pull/33) (@kzu)
 - Dev \> Main [\#29](https://github.com/devlooped/nugetizer/pull/29) (@kzu)
 - Make sure the output package cleanup happens before Pack [\#25](https://github.com/devlooped/nugetizer/pull/25) (@kzu)
 
 ## [v0.4.12](https://github.com/devlooped/nugetizer/tree/v0.4.12) (2020-11-20)
 
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.10...v0.4.12)
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.11...v0.4.12)
 
 :hammer: Other:
 
 - IsPackable default [\#26](https://github.com/devlooped/nugetizer/issues/26)
 
-## [v0.4.10](https://github.com/devlooped/nugetizer/tree/v0.4.10) (2020-10-29)
-
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.11...v0.4.10)
-
 ## [v0.4.11](https://github.com/devlooped/nugetizer/tree/v0.4.11) (2020-10-29)
 
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.9...v0.4.11)
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.10...v0.4.11)
+
+## [v0.4.10](https://github.com/devlooped/nugetizer/tree/v0.4.10) (2020-10-29)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.9...v0.4.10)
 
 :bug: Fixed bugs:
 
