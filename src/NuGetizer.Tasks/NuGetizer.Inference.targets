@@ -11,6 +11,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="NuGetizer.Tasks.InferImplicitPackageReference" AssemblyFile="NuGetizer.Tasks.dll" />
+  <UsingTask TaskName="NuGetizer.Tasks.EvaluateWildcards" AssemblyFile="NuGetizer.Tasks.dll" />
 
   <PropertyGroup>
     <!-- The PackFolder of primary output (build, symbols, doc and satellite assemblies) set if PackBuildOutput = true -->
@@ -177,9 +178,22 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
-  <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn)" Returns="@(PackageFile)">
+  <Target Name="_CollectInferenceCandidates" Inputs="@(PackInference)" Outputs="%(PackInference.Identity)-BATCH">
+    <PropertyGroup>
+      <PackExclude>%(PackInference.PackExclude)</PackExclude>
+    </PropertyGroup>
+    <!-- If we have an exclude wildcard to evaluate, do so and keep only non-matching items -->
+    <EvaluateWildcards Condition="'$(PackExclude)' != ''" Items="@(%(PackInference.Identity))" Wildcards="$(PackExclude)">
+      <Output TaskParameter="NonMatchingItems" ItemName="InferenceCandidate" />
+    </EvaluateWildcards>
+    <!-- Otherwise, just include all items as candidates -->
+    <ItemGroup Condition="'$(PackExclude)' == ''">
+      <InferenceCandidate Include="@(%(PackInference.Identity))" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn);_CollectInferenceCandidates" Returns="@(PackageFile)">
     <ItemGroup>
-      <InferenceCandidate Include="@(%(PackInference.Identity))" Exclude="@(%(PackInference.Identity) -> '%(PackExclude)')"/>
       <InferenceCandidate>
         <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(PackFolder)' != '' or '%(PackageReference)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
       </InferenceCandidate>

@@ -542,6 +542,36 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_updating_inference_then_can_exclude_by_wildcard()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackNone>true</PackNone>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackInference Update='Content' PackExclude='**/*grpc*.*' />
+    <Content Include='C:\Users\myuser\.nuget\packages\grpc.core\2.38.1\runtimes\win-x86\native\grpc_csharp_ext.x86.dll' />
+    <Content Include='C:\Users\danie\.nuget\packages\grpc.core\2.38.1\build\net45\..\..\runtimes\win-x86\native\grpc_csharp_ext.x86.dll' />
+    <Content Include='.\..\..\runtimes\win-x86\native\grpc_csharp_ext.x86.dll' />
+
+    <PackInference Update='None' PackExclude='**\*grpc*.*' />
+    <None Include='C:\Users\myuser\.nuget\packages\grpc.core\2.38.1\runtimes\win-x86\native\grpc_csharp_ext.x86.dll' />
+    <None Include='C:/Users/myuser/.nuget/packages/grpc.core/2.38.1/runtimes/win-x86/native/grpc_csharp_ext.x86.dll' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Filename = "grpc_csharp_ext.x86",
+            }));
+        }
+
+        [Fact]
         public void when_direct_and_indirect_packagereference_then_packs_once()
         {
             var result = Builder.BuildProject(@"
