@@ -19,7 +19,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <PropertyGroup Label="SDK Pack Compat">
     <PackOnBuild Condition="'$(GeneratePackageOnBuild)' == 'true'">true</PackOnBuild>
-    <PackFolder Condition="'$(IsTool)' == 'true'">tool</PackFolder>
+    <PackFolder Condition="'$(IsTool)' == 'true' or '$(PackAsTool)' == 'true'">tool</PackFolder>
     <PackFolder Condition="'$(BuildOutputTargetFolder)' != ''">$(BuildOutputTargetFolder)</PackFolder>
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(IncludeSymbols)' != ''">$(IncludeSymbols)</PackSymbols>
     <PackContent Condition="'$(PackContent)' == '' and '$(IncludeContentInPack)' != ''">$(IncludeContentInPack)</PackContent>
