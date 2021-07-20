@@ -136,6 +136,9 @@ namespace NuGetize
                     if (project.EndsWith(".sln") && !deleteSlnTargets)
                         ColorConsole.WriteLine($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.".Yellow());
 
+                    if (binlog)
+                        TryOpenBinlog();
+
                     return -1;
                 }
 
@@ -147,6 +150,9 @@ namespace NuGetize
                         // The error might have been caused by us not being able to write our slnTargets
                         if (project.EndsWith(".sln") && !deleteSlnTargets)
                             ColorConsole.WriteLine($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.".Yellow());
+
+                        if (binlog)
+                            TryOpenBinlog();
 
                         return -1;
                     }
@@ -170,7 +176,10 @@ namespace NuGetize
 
             if (contentsOnly)
             {
-                ColorConsole.WriteLine($"Project {project} is not packable, rendering its contributed package contents.".Yellow());
+                if (project.EndsWith(".sln"))
+                    ColorConsole.WriteLine($"Solution {Path.GetFileName(project)} contains only non-packable project(s), rendering contributed package contents.".Yellow());
+                else
+                    ColorConsole.WriteLine($"Project {Path.GetFileName(project)} is not packable, rendering its contributed package contents.".Yellow());
 
                 var dependencies = doc.Root.Descendants("PackageContent")
                     .Where(x =>
@@ -290,18 +299,7 @@ namespace NuGetize
                 ColorConsole.WriteLine("> ", file.Yellow());
 
             if (binlog)
-            {
-                // Attempt to open binlog automatically if msbuildlog.com is installed
-                try
-                {
-                    Process.Start(new ProcessStartInfo(Directory.GetCurrentDirectory() + "\\msbuild.binlog")
-                    {
-                        UseShellExecute = true,
-                        WindowStyle = ProcessWindowStyle.Maximized
-                    });
-                }
-                catch { }
-            }
+                TryOpenBinlog();
 
             return 0;
         }
@@ -361,6 +359,21 @@ namespace NuGetize
             }
 
             return index;
+        }
+
+        static void TryOpenBinlog()
+        {
+            // Attempt to open binlog automatically if msbuildlog.com is installed
+            try
+            {
+                var process = Process.Start(new ProcessStartInfo(Directory.GetCurrentDirectory() + "\\msbuild.binlog")
+                {
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Maximized
+                });
+                process.WaitForInputIdle();
+            }
+            catch { }
         }
 
         bool Execute(string program, string arguments)
