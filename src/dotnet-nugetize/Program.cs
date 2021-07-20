@@ -42,6 +42,7 @@ namespace NuGetize
             .Add("  [msbuild args]             Examples: ")
             .Add("                             - Automatically restore: -r")
             .Add("                             - Set normal MSBuild verbosity: -v:n")
+            .Add("                             - Set minimal MSBuild verbosity: -v:m")
             .Add("                             - Build configuration: -p:Configuration=Release");
 
             extra = options.Parse(args);
@@ -116,18 +117,53 @@ namespace NuGetize
             if (File.Exists(file))
                 File.Delete(file);
 
-            // Optimize the "build" so that it doesn't actually do a full compile if possible.
+            var slnTargets = $"after.{Path.GetFileName(project)}.targets";
+            var deleteSlnTargets = false;
             var contentsOnly = false;
-            if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents;Pack\""))
-                return -1;
+
+            try
+            {
+                if (project.EndsWith(".sln") && !File.Exists(slnTargets))
+                {
+                    File.WriteAllText(slnTargets, EmbeddedResource.GetContent("after.sln.targets"), Encoding.UTF8);
+                    deleteSlnTargets = true;
+                }
+
+                // Optimize the "build" so that it doesn't actually do a full compile if possible.
+                if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents;Pack\""))
+                {
+                    // The error might have been caused by us not being able to write our slnTargets
+                    if (project.EndsWith(".sln") && !deleteSlnTargets)
+                        ColorConsole.WriteLine($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.".Yellow());
+
+                    return -1;
+                }
+
+                if (!File.Exists(file))
+                {
+                    // Re-run requesting contents only.
+                    if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize-contents=true -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents\""))
+                    {
+                        // The error might have been caused by us not being able to write our slnTargets
+                        if (project.EndsWith(".sln") && !deleteSlnTargets)
+                            ColorConsole.WriteLine($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.".Yellow());
+
+                        return -1;
+                    }
+
+                    contentsOnly = true;
+                }
+            }
+            finally
+            {
+                if (File.Exists(slnTargets) && deleteSlnTargets)
+                    File.Delete(slnTargets);
+            }
 
             if (!File.Exists(file))
             {
-                // Re-run requesting contents only.
-                if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize-contents=true -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents\""))
-                    return -1;
-
-                contentsOnly = true;
+                ColorConsole.WriteLine("Failed to discover nugetized content.".Red());
+                return -1;
             }
 
             var doc = XDocument.Load(file);
