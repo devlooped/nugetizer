@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="RemoveNonNuGetized" BeforeTargets="GetPackageContents">
+    <MSBuild Properties="BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" 
+             BuildInParallel="True" 
+             SkipNonexistentProjects="%(ProjectReference.SkipNonexistentProjects)" 
+             Targets="GetTargetPath" 
+             Projects="@(ProjectReference)">
+      <Output TaskParameter="TargetOutputs" ItemName="ReferencedProjectTargetPath" />
+    </MSBuild>
+    <ItemGroup>
+      <NuGetizedTargetPath Include="@(ReferencedProjectTargetPath -> WithMetadataValue('IsNuGetized', 'true'))" />
+      <NonNuGetizedTargetPath Include="@(ReferencedProjectTargetPath)" Exclude="@(NuGetizedTargetPath)" />
+      <ProjectReference Remove="@(NonNuGetizedTargetPath -> '%(MSBuildSourceProjectFile)')" />
+    </ItemGroup>
+  </Target>
+</Project>
