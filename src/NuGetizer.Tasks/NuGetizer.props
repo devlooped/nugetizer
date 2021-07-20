@@ -108,6 +108,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </PackFolderKind>
     <PackFolderKind Include="Tool;Tools">
       <PackageFolder>tools</PackageFolder>
+      <FrameworkSpecific>true</FrameworkSpecific>
     </PackFolderKind>
     <PackFolderKind Include="Native">
       <PackageFolder>native</PackageFolder>

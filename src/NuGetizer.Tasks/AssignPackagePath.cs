@@ -208,14 +208,26 @@ namespace NuGetizer.Tasks
             // If we have no known package folder, files go to their RelativeDir location.
             // This allows custom packaging paths such as "workbooks", "docs" or whatever, which aren't prohibited by 
             // the format.
-            packagePath = string.IsNullOrEmpty(packageFolder) ?
+            if (string.IsNullOrEmpty(packageFolder))
+            {
                 // File goes to the determined target path (or the root of the package), such as a readme.txt
-                targetPath :
-                frameworkSpecific ?
-                    // Otherwise, it goes to a framework-specific folder.
-                    Path.Combine(new[] { packageFolder, targetFramework }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray()) :
-                    // Except if frameworkSpecific is false, such as for build, tools, runtimes
-                    Path.Combine(new[] { packageFolder }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
+                packagePath = targetPath;
+            }
+            else
+            {
+                if (frameworkSpecific)
+                {
+                    // For (framework-specific) tools, we need to append 'any' at the end
+                    if (packageFolder == PackagingConstants.Folders.Tools)
+                        packagePath = Path.Combine(new[] { packageFolder, targetFramework, "any" }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
+                    else
+                        packagePath = Path.Combine(new[] { packageFolder, targetFramework }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
+                }
+                else
+                {
+                    packagePath = Path.Combine(new[] { packageFolder }.Concat(targetPath.Split(Path.DirectorySeparatorChar)).ToArray());
+                }
+            }
 
             output.SetMetadata(MetadataName.PackagePath, packagePath);
 
