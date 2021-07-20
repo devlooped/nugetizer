@@ -29,7 +29,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\netstandard2.0\Library.props",
+                PackagePath = @"build/netstandard2.0/Library.props",
             }));
         }
 
@@ -74,7 +74,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\netstandard2.0\Library.props",
+                PackagePath = @"build/netstandard2.0/Library.props",
             }));
         }
 
@@ -97,7 +97,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\netstandard2.0\Library.props",
+                PackagePath = @"build/netstandard2.0/Library.props",
             }));
         }
 
@@ -268,7 +268,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\cs\\netstandard2.0\\Foo.cs"
+                PackagePath = "contentFiles/cs/netstandard2.0/Foo.cs"
             }));
         }
 
@@ -290,7 +290,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\any\\any\\Readme.txt"
+                PackagePath = "contentFiles/any/any/Readme.txt"
             }));
         }
 
@@ -312,7 +312,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\vb\\any\\Foo.vb"
+                PackagePath = "contentFiles/vb/any/Foo.vb"
             }));
         }
 
@@ -457,11 +457,11 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\cs\\netstandard2.0\\Foo.cs"
+                PackagePath = "contentFiles/cs/netstandard2.0/Foo.cs"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\cs\\netstandard2.0\\Bar.cs"
+                PackagePath = "contentFiles/cs/netstandard2.0/Bar.cs"
             }));
         }
 
@@ -484,11 +484,11 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\cs\\net472\\Foo.cs"
+                PackagePath = "contentFiles/cs/net472/Foo.cs"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\cs\\net472\\Bar.cs"
+                PackagePath = "contentFiles/cs/net472/Bar.cs"
             }));
         }
 
@@ -523,14 +523,14 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\any\\any\\Main.sql",
+                PackagePath = "contentFiles/any/any/Main.sql",
                 BuildAction = "Data",
                 Flatten = true,
                 CopyToOutput = true,
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "contentFiles\\any\\any\\Backup.sql",
+                PackagePath = "contentFiles/any/any/Backup.sql",
                 BuildAction = "EmbeddedResource",
                 CopyToOutput = false,
             }));

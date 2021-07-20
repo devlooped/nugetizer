@@ -36,7 +36,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"analyzers\cs\Library.dll",
+                PackagePath = @"analyzers/cs/Library.dll",
             }));
         }
 
@@ -48,7 +48,7 @@ namespace NuGetizer
   <PropertyGroup>
     <PackageId>Analyzer</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackFolder>analyzers\cs</PackFolder>
+    <PackFolder>analyzers/cs</PackFolder>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include='Library.csproj' PrivateAssets='all' />
@@ -67,7 +67,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"analyzers\cs\Library.dll",
+                PackagePath = @"analyzers/cs/Library.dll",
             }));
         }
 
@@ -89,23 +89,23 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Prism.dll",
+                PackagePath = @"lib/netstandard2.0/Prism.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Prism.Forms.dll",
+                PackagePath = @"lib/netstandard2.0/Prism.Forms.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Core.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Core.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Platform.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Platform.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Xaml.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Xaml.dll",
             }));
         }
 
@@ -127,23 +127,23 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Prism.dll",
+                PackagePath = @"lib/netstandard2.0/Prism.dll",
             }));
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Prism.Forms.dll",
+                PackagePath = @"lib/netstandard2.0/Prism.Forms.dll",
             }));
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Core.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Core.dll",
             }));
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Platform.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Platform.dll",
             }));
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Xaml.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Xaml.dll",
             }));
         }
 
@@ -165,7 +165,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Newtonsoft.Json.dll",
+                PackagePath = @"lib/netstandard2.0/Newtonsoft.Json.dll",
             }));
         }
 
@@ -227,7 +227,7 @@ namespace NuGetizer
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=lib\net5.0\SpecificFolder' />
+    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=lib/net5.0/SpecificFolder' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output,
@@ -241,7 +241,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net5.0\SpecificFolder\Library.dll",
+                PackagePath = @"lib/net5.0/SpecificFolder/Library.dll",
             }));
         }
 
@@ -255,7 +255,7 @@ namespace NuGetizer
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include='Library.csproj' PackFolder='lib\net5.0\SpecificFolder' />
+    <ProjectReference Include='Library.csproj' PackFolder='lib/net5.0/SpecificFolder' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output,
@@ -269,7 +269,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net5.0\SpecificFolder\Library.dll",
+                PackagePath = @"lib/net5.0/SpecificFolder/Library.dll",
             }));
         }
 

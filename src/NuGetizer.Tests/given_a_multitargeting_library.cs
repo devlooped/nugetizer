@@ -22,12 +22,12 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "lib\\netstandard2.0\\library.dll",
+                PackagePath = "lib/netstandard2.0/library.dll",
             }));
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "lib\\net472\\library.dll",
+                PackagePath = "lib/net472/library.dll",
             }));
         }
 

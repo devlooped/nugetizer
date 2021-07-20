@@ -22,7 +22,7 @@ namespace NuGetizer
 
             result.AssertSuccess(output);
 
-            Assert.Contains(result.Items, i => i.GetMetadata("PackagePath") == "lib\\net45\\es-AR\\library.resources.dll");
+            Assert.Contains(result.Items, i => i.GetMetadata("PackagePath") == "lib/net45/es-AR/library.resources.dll");
         }
     }
 }

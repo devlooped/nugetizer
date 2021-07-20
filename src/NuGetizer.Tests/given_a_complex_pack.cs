@@ -42,19 +42,19 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\a.dll",
+                PackagePath = @"lib/net472/a.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\a.xml",
+                PackagePath = @"lib/net472/a.xml",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\e.dll",
+                PackagePath = @"lib/net472/e.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\e.xml",
+                PackagePath = @"lib/net472/e.xml",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
@@ -78,19 +78,19 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\b.dll",
+                PackagePath = @"lib/net472/b.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\b.xml",
+                PackagePath = @"lib/net472/b.xml",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\d.dll",
+                PackagePath = @"lib/net472/d.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\d.xml",
+                PackagePath = @"lib/net472/d.xml",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
@@ -114,11 +114,11 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net45\c.dll",
+                PackagePath = @"lib/net45/c.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net45\c.xml",
+                PackagePath = @"lib/net45/c.xml",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {

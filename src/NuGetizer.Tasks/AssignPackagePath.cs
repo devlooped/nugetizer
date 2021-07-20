@@ -76,7 +76,7 @@ namespace NuGetizer.Tasks
             if (bool.TryParse(file.GetMetadata(MetadataName.FrameworkSpecific), out var frameworkSpecificOverride))
                 frameworkSpecific = frameworkSpecificOverride;
 
-            output.SetMetadata(MetadataName.PackageFolder, packageFolder);
+            output.SetMetadata(MetadataName.PackageFolder, packageFolder.Replace('\\', '/'));
 
             // NOTE: a declared TargetFramework metadata trumps TargetFrameworkMoniker, 
             // which is defaulted to that of the project being built.
@@ -94,19 +94,22 @@ namespace NuGetizer.Tasks
             {
                 // If PackagePath ends in directory separator, we assume 
                 // the file/path needs to be appended too.
-                if (packagePath.EndsWith("\\"))
+                if (packagePath.EndsWith("\\") || packagePath.EndsWith("/"))
                 {
                     if (file.TryGetMetadata("Link", out var link))
                         packagePath = Path.Combine(packagePath, link);
+                    else if (Path.IsPathRooted(file.GetMetadata("RelativeDir")))
+                        // If the relative dir is absolute, we can just append the filename+extension instead
+                        packagePath = Path.Combine(packagePath, file.GetMetadata("FileName") + file.GetMetadata("Extension"));
                     else
                         packagePath = Path.Combine(packagePath,
                             file.GetMetadata("RelativeDir"),
                             file.GetMetadata("FileName") +
                             file.GetMetadata("Extension"));
-
-                    output.SetMetadata("PackagePath", packagePath);
                 }
 
+                // Always normalize our output
+                output.SetMetadata("PackagePath", packagePath.Replace('\\', '/'));
                 return output;
             }
 
@@ -203,7 +206,7 @@ namespace NuGetizer.Tasks
             }
 
             // At this point we have the correct calculated target path, so persist it for inspection if necessary.
-            output.SetMetadata("TargetPath", targetPath);
+            output.SetMetadata("TargetPath", targetPath.Replace('\\', '/'));
 
             // If we have no known package folder, files go to their RelativeDir location.
             // This allows custom packaging paths such as "workbooks", "docs" or whatever, which aren't prohibited by 
@@ -229,7 +232,7 @@ namespace NuGetizer.Tasks
                 }
             }
 
-            output.SetMetadata(MetadataName.PackagePath, packagePath);
+            output.SetMetadata(MetadataName.PackagePath, packagePath.Replace('\\', '/'));
 
             return output;
         }

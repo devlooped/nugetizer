@@ -26,7 +26,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                TargetPath = @"Resources\drawable-hdpi\Icon.png",
+                TargetPath = @"Resources/drawable-hdpi/Icon.png",
             }));
         }
 
@@ -42,7 +42,7 @@ namespace NuGetizer
 
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {
-                TargetPath = @"Resources\drawable-hdpi\Icon.png",
+                TargetPath = @"Resources/drawable-hdpi/Icon.png",
             }));
         }
 
@@ -88,7 +88,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"docs\Readme.txt",
+                PackagePath = @"docs/Readme.txt",
             }));
         }
 
@@ -106,19 +106,19 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\any\any\quickstart\any-any.txt",
+                PackagePath = @"contentFiles/any/any/quickstart/any-any.txt",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\cs\any\quickstart\cs-any.txt",
+                PackagePath = @"contentFiles/cs/any/quickstart/cs-any.txt",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\fs\monoandroid51\quickstart\fs-tfm.txt",
+                PackagePath = @"contentFiles/fs/monoandroid51/quickstart/fs-tfm.txt",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\any\any\quickstart\any-non-tfm.txt",
+                PackagePath = @"contentFiles/any/any/quickstart/any-non-tfm.txt",
             }));
         }
 
@@ -134,7 +134,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\any\monoandroid51\Resources\drawable-hdpi\Icon.png",
+                PackagePath = @"contentFiles/any/monoandroid51/Resources/drawable-hdpi/Icon.png",
             }));
         }
 
@@ -162,7 +162,7 @@ namespace NuGetizer
             var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
             {
                 PackageId = "ContentPackage",
-                // Includes "contentFiles\cs\monoandroid\content.cs" which fails
+                // Includes "contentFiles/cs/monoandroid/content.cs" which fails
                 IncludeContentWithReservedRelativeDir = "true"
             });
 
@@ -198,7 +198,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\monoandroid51\content-copy-with-include-true.txt",
+                PackagePath = @"lib/monoandroid51/content-copy-with-include-true.txt",
             }));
         }
 
@@ -214,7 +214,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\content-copy-with-kind.txt",
+                PackagePath = @"build/content-copy-with-kind.txt",
             }));
         }
 
@@ -231,7 +231,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\monoandroid51\content-copy.txt",
+                PackagePath = @"lib/monoandroid51/content-copy.txt",
             }));
         }
 
@@ -263,7 +263,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\any\monoandroid51\content-with-include-true.txt",
+                PackagePath = @"contentFiles/any/monoandroid51/content-with-include-true.txt",
             }));
         }
 
@@ -280,7 +280,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\any\monoandroid51\content-with-include-true.txt",
+                PackagePath = @"contentFiles/any/monoandroid51/content-with-include-true.txt",
             }));
         }
 
@@ -296,7 +296,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\content-with-kind.txt",
+                PackagePath = @"build/content-with-kind.txt",
             }));
         }
 
@@ -313,7 +313,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\any\monoandroid51\content.txt",
+                PackagePath = @"contentFiles/any/monoandroid51/content.txt",
             }));
         }
 
@@ -329,7 +329,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\monoandroid51\relative\content-copy.txt",
+                PackagePath = @"lib/monoandroid51/relative/content-copy.txt",
             }));
         }
 
@@ -345,7 +345,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\relative\content-copy-with-kind.txt",
+                PackagePath = @"build/relative/content-copy-with-kind.txt",
             }));
         }
 
@@ -362,7 +362,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\content-with-packagepath.txt",
+                PackagePath = @"build/content-with-packagepath.txt",
             }));
         }
 
@@ -379,7 +379,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\any\monoandroid51\relative\docs\content-with-targetpath.txt",
+                PackagePath = @"contentFiles/any/monoandroid51/relative/docs/content-with-targetpath.txt",
             }));
         }
 
@@ -399,7 +399,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\cs\monoandroid\none.cs",
+                PackagePath = @"contentFiles/cs/monoandroid/none.cs",
             }));
         }
 
@@ -447,7 +447,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\monoandroid51\none-copy-with-include-true.txt",
+                PackagePath = @"lib/monoandroid51/none-copy-with-include-true.txt",
             }));
         }
 
@@ -463,7 +463,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\none-copy-with-kind.txt",
+                PackagePath = @"build/none-copy-with-kind.txt",
             }));
         }
 
@@ -480,7 +480,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\monoandroid51\none-copy.txt",
+                PackagePath = @"lib/monoandroid51/none-copy.txt",
             }));
         }
 
@@ -545,7 +545,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\none-with-kind.txt",
+                PackagePath = @"build/none-with-kind.txt",
             }));
         }
 
@@ -596,7 +596,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\monoandroid51\relative\none-copy.txt",
+                PackagePath = @"lib/monoandroid51/relative/none-copy.txt",
             }));
         }
 
@@ -612,7 +612,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\relative\none-copy-with-kind.txt",
+                PackagePath = @"build/relative/none-copy-with-kind.txt",
             }));
         }
 
@@ -628,7 +628,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\none-with-packagepath.txt",
+                PackagePath = @"build/none-with-packagepath.txt",
             }));
         }
 
@@ -645,7 +645,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build\none-with-packagepath.txt",
+                PackagePath = @"build/none-with-packagepath.txt",
             }));
         }
 
