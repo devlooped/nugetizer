@@ -23,15 +23,15 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\Forms.dll"
+                PackagePath = @"lib/net472/Forms.dll"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\xamarinios10\Forms.dll"
+                PackagePath = @"lib/xamarinios10/Forms.dll"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\monoandroid90\Forms.dll"
+                PackagePath = @"lib/monoandroid90/Forms.dll"
             }));
         }
 
@@ -44,15 +44,15 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net472\Common.dll"
+                PackagePath = @"lib/net472/Common.dll"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\xamarinios10\Common.dll"
+                PackagePath = @"lib/xamarinios10/Common.dll"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\monoandroid90\Common.dll"
+                PackagePath = @"lib/monoandroid90/Common.dll"
             }));
         }
 
@@ -65,15 +65,15 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\cs\monoandroid90\quickstart\sample.cs"
+                PackagePath = @"contentFiles/cs/monoandroid90/quickstart/sample.cs"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\vb\monoandroid90\quickstart\sample.vb"
+                PackagePath = @"contentFiles/vb/monoandroid90/quickstart/sample.vb"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"contentFiles\fs\monoandroid90\quickstart\sample.fs"
+                PackagePath = @"contentFiles/fs/monoandroid90/quickstart/sample.fs"
             }));
         }
 
@@ -86,11 +86,11 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"docs\gettingstarted.html"
+                PackagePath = @"docs/gettingstarted.html"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"docs\overview\index.html"
+                PackagePath = @"docs/overview/index.html"
             }));
         }
 

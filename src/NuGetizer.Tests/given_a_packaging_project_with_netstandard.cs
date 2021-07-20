@@ -26,7 +26,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard1.6\b.dll",
+                PackagePath = @"lib/netstandard1.6/b.dll",
             }));
         }
 
@@ -45,11 +45,11 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\net45\b.dll",
+                PackagePath = @"lib/net45/b.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard1.6\b.dll",
+                PackagePath = @"lib/netstandard1.6/b.dll",
             }));
         }
 

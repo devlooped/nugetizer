@@ -573,7 +573,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "lib\\netstandard2.0\\Newtonsoft.Json.dll"
+                PackagePath = "lib/netstandard2.0/Newtonsoft.Json.dll"
             }));
         }
 
@@ -596,7 +596,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "build\\Newtonsoft.Json.dll"
+                PackagePath = "build/Newtonsoft.Json.dll"
             }));
         }
     }

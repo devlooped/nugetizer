@@ -28,7 +28,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Newtonsoft.Json.dll",
+                PackagePath = @"lib/netstandard2.0/Newtonsoft.Json.dll",
             }));
         }
 
@@ -50,23 +50,23 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Prism.dll",
+                PackagePath = @"lib/netstandard2.0/Prism.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Prism.Forms.dll",
+                PackagePath = @"lib/netstandard2.0/Prism.Forms.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Core.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Core.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Platform.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Platform.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib\netstandard2.0\Xamarin.Forms.Xaml.dll",
+                PackagePath = @"lib/netstandard2.0/Xamarin.Forms.Xaml.dll",
             }));
         }
 
@@ -335,7 +335,7 @@ namespace NuGetizer
             {
                 NuGetPackageId = "Newtonsoft.Json",
                 NuGetPackageVersion = "12.0.3",
-                PackagePath = @"lib\netstandard2.0\Newtonsoft.Json.dll",
+                PackagePath = @"lib/netstandard2.0/Newtonsoft.Json.dll",
             }));
             Assert.DoesNotContain(result.Items, item => item.Matches(new
             {

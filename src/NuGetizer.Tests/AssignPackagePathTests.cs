@@ -63,7 +63,7 @@ namespace NuGetizer
                 {
                     new TaskItem("library.dll", new Metadata
                     {
-                        { "PackagePath", "workbooks\\library.dll" },
+                        { "PackagePath", "workbooks/library.dll" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" }
                     })
                 }
@@ -72,7 +72,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = "workbooks\\library.dll",
+                PackagePath = "workbooks/library.dll",
                 TargetFramework = ""
             }));
         }
@@ -88,7 +88,7 @@ namespace NuGetizer
                 {
                     new TaskItem("library.dll", new Metadata
                     {
-                        { "PackagePath", "workbooks\\library.dll" },
+                        { "PackagePath", "workbooks/library.dll" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
                         { "FrameworkSpecific", "true" }
                     })
@@ -98,7 +98,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = "workbooks\\library.dll",
+                PackagePath = "workbooks/library.dll",
                 TargetFramework = "net45"
             }));
         }
@@ -172,7 +172,7 @@ namespace NuGetizer
             };
 
             Assert.True(task.Execute());
-            Assert.Equal(@"lib\net45\library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+            Assert.Equal(@"lib/net45/library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
         }
 
         [Fact]
@@ -244,7 +244,7 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = "lib",
-                PackagePath = "lib\\library.dll",
+                PackagePath = "lib/library.dll",
                 TargetFramework = ""
             }));
         }
@@ -285,9 +285,9 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem(@"..\..\readme.txt", new Metadata
+                    new TaskItem(@"../../readme.txt", new Metadata
                     {
-                        { "Link", @"docs\readme.txt" },
+                        { "Link", @"docs/readme.txt" },
                         { "PackageId", "A" },
                         { "PackFolder", "content" },
                         { "TargetFramework", "any" },
@@ -299,8 +299,8 @@ namespace NuGetizer
 
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                TargetPath = @"docs\readme.txt",
-                PackagePath = @"contentFiles\any\any\docs\readme.txt",
+                TargetPath = @"docs/readme.txt",
+                PackagePath = @"contentFiles/any/any/docs/readme.txt",
             }));
         }
 
@@ -313,9 +313,9 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem(@"..\..\readme.txt", new Metadata
+                    new TaskItem(@"../../readme.txt", new Metadata
                     {
-                        { "Link", @"docs\readme.txt" },
+                        { "Link", @"docs/readme.txt" },
                         { "PackageId", "A" },
                         { "PackFolder", "none" },
                         { "TargetFramework", "any" },
@@ -327,8 +327,8 @@ namespace NuGetizer
 
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                TargetPath = @"docs\readme.txt",
-                PackagePath = @"docs\readme.txt",
+                TargetPath = @"docs/readme.txt",
+                PackagePath = @"docs/readme.txt",
             }));
         }
 
@@ -345,7 +345,13 @@ namespace NuGetizer
                     {
                         { "PackageId", "A" },
                         { "PackFolder", "none" },
-                        { "PackagePath", @"build\" },
+                        { "PackagePath", @"build/" },
+                    }),
+                    new TaskItem(@"readme.txt", new Metadata
+                    {
+                        { "PackageId", "A" },
+                        { "PackFolder", "none" },
+                        { "PackagePath", @"docs/quickstart/" },
                     })
                 }
             };
@@ -353,7 +359,11 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"build\readme.txt",
+                PackagePath = @"build/readme.txt",
+            }));
+            Assert.Contains(task.AssignedFiles, item => item.Matches(new
+            {
+                PackagePath = @"docs/quickstart/readme.txt",
             }));
         }
 
@@ -366,11 +376,11 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem(@"quickstarts\readme.txt", new Metadata
+                    new TaskItem(@"quickstarts/readme.txt", new Metadata
                     {
                         { "PackageId", "A" },
                         { "PackFolder", "none" },
-                        { "PackagePath", @"docs\" },
+                        { "PackagePath", @"docs/" },
                     })
                 }
             };
@@ -378,7 +388,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"docs\quickstarts\readme.txt",
+                PackagePath = @"docs/quickstarts/readme.txt",
             }));
         }
 
@@ -391,12 +401,12 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem(@"..\..\foo\bar\readme.txt", new Metadata
+                    new TaskItem(@"../../foo/bar/readme.txt", new Metadata
                     {
                         { "PackageId", "A" },
                         { "PackFolder", "none" },
-                        { "Link", @"quickstarts\readme.txt" },
-                        { "PackagePath", @"docs\" },
+                        { "Link", @"quickstarts/readme.txt" },
+                        { "PackagePath", @"docs/" },
                     })
                 }
             };
@@ -404,7 +414,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"docs\quickstarts\readme.txt",
+                PackagePath = @"docs/quickstarts/readme.txt",
             }));
         }
 
@@ -433,7 +443,7 @@ namespace NuGetizer
             {
                 CodeLanguage = "any",
                 TargetFramework = "any",
-                PackagePath = @"contentFiles\any\any\readme.txt"
+                PackagePath = @"contentFiles/any/any/readme.txt"
             }));
         }
 
@@ -467,7 +477,7 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = "lib",
-                PackagePath = $"lib\\{ expectedTargetFramework}\\library.dll",
+                PackagePath = $"lib/{ expectedTargetFramework}/library.dll",
                 TargetFramework = expectedTargetFramework,
             }));
         }
@@ -476,7 +486,9 @@ namespace NuGetizer
             // Skip unmapped kinds (i.e. None, Dependency, etc.)
             .Where(kind => !string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) &&
                 // Skip contentFiles from this test since they get a special map that includes the codelang
-                kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles")
+                kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles" &&
+                // Skip tools from this test since they get a special map that includes 'any' at the end
+                kind.GetMetadata(MetadataName.PackageFolder) != "tools")
             .Select(kind => new object[] { kind.ItemSpec, kind.GetMetadata(MetadataName.PackageFolder), kind.GetMetadata(MetadataName.FrameworkSpecific) });
 
         [MemberData(nameof(GetMappedKnownKinds))]
@@ -505,7 +517,7 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = mappedPackageFolder,
-                PackagePath = $"{mappedPackageFolder}{(isFrameworkSpecific ? "\\net45" : "")}\\library.dll",
+                PackagePath = $"{mappedPackageFolder}{(isFrameworkSpecific ? "/net45" : "")}/library.dll",
             }));
         }
 
@@ -555,7 +567,7 @@ namespace NuGetizer
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
                         { "PackFolder", "none" },
-                        { "PackagePath", "docs\\readme.txt" }
+                        { "PackagePath", "docs/readme.txt" }
                     })
                 }
             };
@@ -564,14 +576,14 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = "",
-                PackagePath = "docs\\readme.txt"
+                PackagePath = "docs/readme.txt"
             }));
         }
 
-        [InlineData("", "vb", "contentFiles\\vb\\any\\")]
-        [InlineData("", "", "contentFiles\\any\\any\\")]
-        [InlineData(".NETFramework,Version=v4.5", "cs", "contentFiles\\cs\\net45\\")]
-        [InlineData(".NETFramework,Version=v4.5", "", "contentFiles\\any\\net45\\")]
+        [InlineData("", "vb", "contentFiles/vb/any/")]
+        [InlineData("", "", "contentFiles/any/any/")]
+        [InlineData(".NETFramework,Version=v4.5", "cs", "contentFiles/cs/net45/")]
+        [InlineData(".NETFramework,Version=v4.5", "", "contentFiles/any/net45/")]
         [Theory]
         public void when_assigning_content_file_then_applies_tfm_and_language(string tfm, string lang, string expectedPath)
         {
@@ -606,11 +618,11 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem(@"contentFiles\cs\monodroid\content.cs", new Metadata
+                    new TaskItem(@"contentFiles/cs/monodroid/content.cs", new Metadata
                     {
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
-                        { "TargetPath", @"contentFiles\cs\monodroid\content.cs" },
+                        { "TargetPath", @"contentFiles/cs/monodroid/content.cs" },
                         { "PackFolder", "content" },
                     })
                 }
@@ -661,7 +673,7 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem(@"content\docs\readme.txt", new Metadata
+                    new TaskItem(@"content/docs/readme.txt", new Metadata
                     {
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -674,7 +686,7 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = "",
-                PackagePath = @"content\docs\readme.txt",
+                PackagePath = @"content/docs/readme.txt",
             }));
         }
 
@@ -692,7 +704,7 @@ namespace NuGetizer
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
                         { "PackFolder", "none" },
-                        { "TargetPath", "workbook\\library.dll"}
+                        { "TargetPath", "workbook/library.dll"}
                     })
                 }
             };
@@ -701,7 +713,7 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = "",
-                PackagePath = @"workbook\library.dll",
+                PackagePath = @"workbook/library.dll",
             }));
         }
 
@@ -752,12 +764,12 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = inferredPackageFolder,
-                PackagePath = $"{inferredPackageFolder}\\library.dll",
+                PackagePath = $"{inferredPackageFolder}/library.dll",
             }));
         }
 
         [Fact]
-        public void when_file_has_relative_target_path_without_tfm_then_package_path_has_relative_path()
+        public void when_file_has_relative_target_path_without_non_framework_specific_then_package_path_has_relative_path()
         {
             var task = new AssignPackagePath
             {
@@ -765,11 +777,13 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem("sdk\\bin\\tool.exe", new Metadata
+                    new TaskItem("sdk/bin/tool.exe", new Metadata
                     {
                         { "PackageId", "A" },
+                        { "TargetFrameworkMoniker", ".NET,Version=v5.0" },
                         { "PackFolder", "tool" },
-                        { "TargetPath", "sdk\\bin\\tool.exe"}
+                        { "FrameworkSpecific", "false" },
+                        { "TargetPath", "sdk/bin/tool.exe"}
                     })
                 }
             };
@@ -777,7 +791,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"tools\sdk\bin\tool.exe",
+                PackagePath = @"tools/sdk/bin/tool.exe",
             }));
         }
 
@@ -790,13 +804,13 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem("sdk\\bin\\tool.exe", new Metadata
+                    new TaskItem("sdk/bin/tool.exe", new Metadata
                     {
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
                         { "PackFolder", "tool" },
                         { "FrameworkSpecific", "true" },
-                        { "TargetPath", "sdk\\bin\\tool.exe"}
+                        { "TargetPath", "sdk/bin/tool.exe"}
                     })
                 }
             };
@@ -804,7 +818,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"tools\net45\sdk\bin\tool.exe",
+                PackagePath = @"tools/net45/any/sdk/bin/tool.exe",
             }));
         }
 
@@ -830,7 +844,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"lib\console.exe",
+                PackagePath = @"lib/console.exe",
             }));
         }
 
@@ -843,14 +857,14 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem("tools\\foo.exe", new Metadata
+                    new TaskItem("tools/foo.exe", new Metadata
                     {
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
                         { "PackFolder", "tools" },
                         { "FrameworkSpecific", "false" },
                     }),
-                    new TaskItem("docs\\index.html", new Metadata
+                    new TaskItem("docs/index.html", new Metadata
                     {
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -862,12 +876,12 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"tools\foo.exe",
+                PackagePath = @"tools/foo.exe",
                 TargetFramework = "",
             }));
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"docs\index.html",
+                PackagePath = @"docs/index.html",
                 TargetFramework = "",
             }));
         }
@@ -881,7 +895,7 @@ namespace NuGetizer
                 KnownFolders = Kinds,
                 Files = new ITaskItem[]
                 {
-                    new TaskItem("tools\\foo.exe", new Metadata
+                    new TaskItem("tools/foo.exe", new Metadata
                     {
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
@@ -893,7 +907,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"tools\net45\any\foo.exe",
+                PackagePath = @"tools/net45/any/foo.exe",
                 TargetFramework = "net45",
             }));
         }

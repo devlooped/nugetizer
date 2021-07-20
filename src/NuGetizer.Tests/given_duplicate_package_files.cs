@@ -35,22 +35,22 @@ namespace NuGetizer
             Assert.Contains(result.Items, item => item.Matches(new
             {
                 PackFolder = PackFolderKind.None,
-                PackagePath = @"content\a\1\content.txt"
+                PackagePath = @"content/a/1/content.txt"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
                 PackFolder = PackFolderKind.None,
-                PackagePath = @"content\a\2\content.txt"
+                PackagePath = @"content/a/2/content.txt"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
                 PackFolder = PackFolderKind.None,
-                PackagePath = @"content\b\1\content.txt"
+                PackagePath = @"content/b/1/content.txt"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
                 PackFolder = PackFolderKind.None,
-                PackagePath = @"content\b\2\content.txt"
+                PackagePath = @"content/b/2/content.txt"
             }));
 
             result = Builder.BuildScenario(nameof(given_duplicate_package_files), target: "Pack");
