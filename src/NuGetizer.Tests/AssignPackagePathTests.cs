@@ -848,6 +848,13 @@ namespace NuGetizer
                         { "PackageId", "A" },
                         { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
                         { "PackFolder", "tools" },
+                        { "FrameworkSpecific", "false" },
+                    }),
+                    new TaskItem("docs\\index.html", new Metadata
+                    {
+                        { "PackageId", "A" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "PackFolder", "none" },
                     })
                 }
             };
@@ -857,6 +864,37 @@ namespace NuGetizer
             {
                 PackagePath = @"tools\foo.exe",
                 TargetFramework = "",
+            }));
+            Assert.Contains(task.AssignedFiles, item => item.Matches(new
+            {
+                PackagePath = @"docs\index.html",
+                TargetFramework = "",
+            }));
+        }
+
+        [Fact]
+        public void when_packing_tool_then_it_is_framework_specific_and_any()
+        {
+            var task = new AssignPackagePath
+            {
+                BuildEngine = engine,
+                KnownFolders = Kinds,
+                Files = new ITaskItem[]
+                {
+                    new TaskItem("tools\\foo.exe", new Metadata
+                    {
+                        { "PackageId", "A" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "PackFolder", "tools" },
+                    }),
+                }
+            };
+
+            Assert.True(task.Execute());
+            Assert.Contains(task.AssignedFiles, item => item.Matches(new
+            {
+                PackagePath = @"tools\net45\any\foo.exe",
+                TargetFramework = "net45",
             }));
         }
     }
