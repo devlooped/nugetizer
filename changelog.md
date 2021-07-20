@@ -1,5 +1,13 @@
 
 
+## [v0.7.4](https://github.com/devlooped/nugetizer/tree/v0.7.4) (2021-07-20)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.3...v0.7.4)
+
+:twisted_rightwards_arrows: Merged:
+
+- Skip non-nugetized projects when nugetizer runs for solution [\#130](https://github.com/devlooped/nugetizer/pull/130) (@kzu)
+
 ## [v0.7.3](https://github.com/devlooped/nugetizer/tree/v0.7.3) (2021-07-19)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.2...v0.7.3)
@@ -23,7 +31,6 @@
 :sparkles: Implemented enhancements:
 
 - Allow specifying PackFolder in ProjectReference [\#124](https://github.com/devlooped/nugetizer/issues/124)
-- Include readme in package [\#127](https://github.com/devlooped/nugetizer/pull/127) (@kzu)
 
 :twisted_rightwards_arrows: Merged:
 
@@ -53,11 +60,11 @@
 - Rename PackProjectReference to PackProjectReferences for consistency [\#90](https://github.com/devlooped/nugetizer/issues/90)
 - Populatate RepositoryBranch, ensure we pack it as expected [\#57](https://github.com/devlooped/nugetizer/issues/57)
 - Populate RepositoryUrl/RepositoryCommit early [\#56](https://github.com/devlooped/nugetizer/issues/56)
+- Include readme in package [\#127](https://github.com/devlooped/nugetizer/pull/127) (@kzu)
 
 :twisted_rightwards_arrows: Merged:
 
 - If short SHA is available, use it for package metadata [\#95](https://github.com/devlooped/nugetizer/pull/95) (@kzu)
-- Populate RepositoryBranch automatically [\#93](https://github.com/devlooped/nugetizer/pull/93) (@kzu)
 - Improve integration with source link [\#92](https://github.com/devlooped/nugetizer/pull/92) (@kzu)
 - Bump files with dotnet-file sync [\#86](https://github.com/devlooped/nugetizer/pull/86) (@kzu)
 
@@ -73,6 +80,7 @@
 
 :twisted_rightwards_arrows: Merged:
 
+- Populate RepositoryBranch automatically [\#93](https://github.com/devlooped/nugetizer/pull/93) (@kzu)
 - :package: Fix packing on build and release [\#72](https://github.com/devlooped/nugetizer/pull/72) (@kzu)
 - 🖆 Apply kzu/oss template via dotnet-file [\#71](https://github.com/devlooped/nugetizer/pull/71) (@kzu)
 - Minor CI and dependencies bumps [\#70](https://github.com/devlooped/nugetizer/pull/70) (@kzu)
@@ -105,6 +113,7 @@
 
 - 🖆 Apply kzu/oss template via dotnet-file [\#47](https://github.com/devlooped/nugetizer/pull/47) (@kzu)
 - When using PackageReference metadata infer Pack=true [\#45](https://github.com/devlooped/nugetizer/pull/45) (@kzu)
+- When resolving P2P references for packaging, set target framework [\#42](https://github.com/devlooped/nugetizer/pull/42) (@kzu)
 - Provide a default value for package description for compatibility with SDK pack [\#41](https://github.com/devlooped/nugetizer/pull/41) (@kzu)
 - Import compatibility props for multi-targeting too [\#39](https://github.com/devlooped/nugetizer/pull/39) (@kzu)
 - Dev \> Main [\#38](https://github.com/devlooped/nugetizer/pull/38) (@kzu)
@@ -124,7 +133,6 @@
 
 :twisted_rightwards_arrows: Merged:
 
-- When resolving P2P references for packaging, set target framework [\#42](https://github.com/devlooped/nugetizer/pull/42) (@kzu)
 - Dev \> Main [\#33](https://github.com/devlooped/nugetizer/pull/33) (@kzu)
 - Dev \> Main [\#29](https://github.com/devlooped/nugetizer/pull/29) (@kzu)
 - Make sure the output package cleanup happens before Pack [\#25](https://github.com/devlooped/nugetizer/pull/25) (@kzu)
