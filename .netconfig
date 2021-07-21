@@ -97,9 +97,9 @@
 	sha = 6f1ed274e1e168da487affb88d69774fc2f926c3
 [file "assets/css/style.scss"]
 	url = https://github.com/devlooped/oss/blob/main/assets/css/style.scss
-	etag = 2c86a074a6c8c2f6af806908a57215439fad563830b4af8fbed1a3aabaede0cf
+	etag = f710d8919abfd5a8d00050b74ba7d0bb05c6d02e40842a3012eb96555c208504
 	weak
-	sha = b5583942b012f42f5ac2d06200427070cc18c250
+	sha = 9db26e2710b084d219d6355339d822f159bf5780
 [file "assets/images/sponsors.png"]
 	url = https://github.com/devlooped/oss/blob/main/assets/images/sponsors.png
 	etag = f152d1038eb04cb1596a13377b032f18f2402c969130601384fb377ce5ddefbd
