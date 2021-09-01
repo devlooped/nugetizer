@@ -5,6 +5,10 @@
     <DefineConstants>CI;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   
+  <PropertyGroup Condition="'$(IsPackable)' == '' and '$(PackAsTool)' == 'true'">
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(IsPackable)' == ''">
     <!-- The Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets unconditionally sets 
         PackageId=AssemblyName if no PackageId is provided, and then defaults IsPackable=true if 
