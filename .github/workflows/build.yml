@@ -17,6 +17,10 @@ on:
 env:
   DOTNET_NOLOGO: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   dotnet-format:
     runs-on: ubuntu-latest
@@ -34,8 +38,12 @@ jobs:
           dotnet format --check -v:diag
 
   build:
+    name: build-${{ matrix.os }}
     needs: dotnet-format
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
@@ -43,28 +51,53 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: 🔍 msbuild
-        uses: microsoft/setup-msbuild@v1
-        with:
-          vs-version: '[16.8,)'
-
       - name: 🙏 build
-        run: msbuild -r -m:1
+        run: dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+
+      - name: ⚙ GNU grep
+        if: matrix.os == 'macOS-latest'
+        run: |
+          brew install grep
+          echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> .bash_profile
 
       - name: 🧪 test
+        shell: bash --noprofile --norc {0}
+        env:
+          LC_ALL: en_US.utf8
         run: |
-          dotnet restore src\NuGetizer.Tests\Scenarios\given_a_packaging_project\a.nuproj
-          msbuild -t:test
+          [ -f .bash_profile ] && source .bash_profile
+          counter=0
+          exitcode=0
+          reset="\e[0m"
+          warn="\e[0;33m"
+          while [ $counter -lt 6 ]
+          do
+              if [ $filter ]
+              then
+                  echo -e "${warn}Retry $counter for $filter ${reset}"
+              fi
+              # run test and forward output also to a file in addition to stdout (tee command)
+              dotnet test --no-build -m:1 --blame-hang --blame-hang-timeout 5m --filter=$filter | tee ./output.log
+              # capture dotnet test exit status, different from tee
+              exitcode=${PIPESTATUS[0]}
+              if [ $exitcode == 0 ]
+              then
+                  exit 0
+              fi
+              # cat output, get failed test names, join as DisplayName=TEST with |, remove trailing |.
+              filter=$(cat ./output.log | grep -o -P '(?<=\sFailed\s)\w*' | awk 'BEGIN { ORS="|" } { print("DisplayName=" $0) }' | grep -o -P '.*(?=\|$)')
+              ((counter++))
+          done
+          exit $exitcode
 
       - name: 📦 pack
-        shell: bash
         run: dotnet pack -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
 
       # Only push CI package to sleet feed if building on ubuntu (fastest)
       - name: 🚀 sleet
         env:
           SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
-        if: env.SLEET_CONNECTION != ''
+        if: matrix.os == 'ubuntu-latest' && env.SLEET_CONNECTION != ''
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
