@@ -68,6 +68,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <RequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == 'true'">true</RequireLicenseAcceptance>
       <LicenseUrl Condition="'$(PackageLicenseUrl)' != ''">$(PackageLicenseUrl)</LicenseUrl>
       <LicenseExpression Condition="'$(PackageLicenseExpression)' != ''">$(PackageLicenseExpression)</LicenseExpression>
+      <LicenseFile Condition="'$(PackageLicenseFile)' != ''">$(PackageLicenseFile)</LicenseFile>
       <Icon Condition="'$(PackageIcon)' != ''">$(PackageIcon)</Icon>
       <IconUrl Condition="'$(PackageIconUrl)' != ''">$(PackageIconUrl)</IconUrl>
       <Tags Condition="'$(PackageTags)' != ''">$(PackageTags)</Tags>
