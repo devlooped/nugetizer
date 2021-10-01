@@ -178,6 +178,31 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_creating_package_has_license_file_then_manifest_has_license()
+        {
+            var content = Path.GetTempFileName();
+            task.Contents = new[]
+            {
+                new TaskItem(content, new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.None },
+                    { MetadataName.PackagePath, "license.txt" }
+                }),
+            };
+
+            task.Manifest.SetMetadata("LicenseUrl", "");
+            task.Manifest.SetMetadata("LicenseFile", "license.txt");
+
+            var metadata = ExecuteTask().Metadata;
+
+            Assert.Equal("license.txt", metadata.LicenseMetadata.License);
+            Assert.Equal(LicenseType.File, metadata.LicenseMetadata.Type);
+            Assert.Null(metadata.LicenseMetadata.LicenseExpression);
+            Assert.Null(metadata.LicenseMetadata.WarningsAndErrors);
+        }
+
+        [Fact]
         public void when_creating_package_with_simple_dependency_then_contains_dependency_group()
         {
             task.Contents = new[]

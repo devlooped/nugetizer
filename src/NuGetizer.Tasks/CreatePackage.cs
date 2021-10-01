@@ -129,6 +129,15 @@ namespace NuGetizer.Tasks
                     null, LicenseMetadata.CurrentVersion);
             }
 
+            if (Manifest.TryGetMetadata("LicenseFile", out var file))
+            {
+                metadata.LicenseMetadata = new LicenseMetadata(
+                    LicenseType.File,
+                    file,
+                    null,
+                    null, LicenseMetadata.CurrentVersion);
+            }
+
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("ProjectUrl")))
                 metadata.SetProjectUrl(Manifest.GetMetadata("ProjectUrl"));
 
