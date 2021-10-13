@@ -181,6 +181,7 @@
 - Improvements on transitive package content with relative paths [\#24](https://github.com/devlooped/nugetizer/pull/24) (@kzu)
 - Minor improvements to dotnet-nugetize [\#23](https://github.com/devlooped/nugetizer/pull/23) (@kzu)
 - TargetPath and Compile pack improvements [\#21](https://github.com/devlooped/nugetizer/pull/21) (@kzu)
+- If an item provides TargetPath, preserve it as relative to the PackFolder [\#20](https://github.com/devlooped/nugetizer/pull/20) (@kzu)
 - Inner devloop improvements [\#18](https://github.com/devlooped/nugetizer/pull/18) (@kzu)
 
 ## [v0.4.9](https://github.com/devlooped/nugetizer/tree/v0.4.9) (2020-10-26)
@@ -197,7 +198,6 @@
 
 :twisted_rightwards_arrows: Merged:
 
-- If an item provides TargetPath, preserve it as relative to the PackFolder [\#20](https://github.com/devlooped/nugetizer/pull/20) (@kzu)
 - By default, packing Compile should not include generated files [\#19](https://github.com/devlooped/nugetizer/pull/19) (@kzu)
 
 ## [v0.4.6](https://github.com/devlooped/nugetizer/tree/v0.4.6) (2020-10-20)
