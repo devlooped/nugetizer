@@ -1,5 +1,24 @@
 
 
+## [v0.7.5](https://github.com/devlooped/nugetizer/tree/v0.7.5) (2021-10-13)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.4...v0.7.5)
+
+:sparkles: Implemented enhancements:
+
+- Normalize all paths for consistency, use SDK Pack format [\#135](https://github.com/devlooped/nugetizer/issues/135)
+- PackAsTool from SDK Pack should cause PackFolder=tool [\#131](https://github.com/devlooped/nugetizer/issues/131)
+
+:bug: Fixed bugs:
+
+- SDK Pack always packs tools as framework-specific [\#132](https://github.com/devlooped/nugetizer/issues/132)
+- dotnet.exe nugetize My.sln errors if one project doesn't PackageReference Nugetizer [\#107](https://github.com/devlooped/nugetizer/issues/107)
+- Fixes using of license file. [\#150](https://github.com/devlooped/nugetizer/pull/150) (@denjmpr)
+
+:twisted_rightwards_arrows: Merged:
+
+- Minor improvements and improved compatibility with SDK pack  [\#137](https://github.com/devlooped/nugetizer/pull/137) (@kzu)
+
 ## [v0.7.4](https://github.com/devlooped/nugetizer/tree/v0.7.4) (2021-07-20)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.3...v0.7.4)
@@ -31,6 +50,7 @@
 :sparkles: Implemented enhancements:
 
 - Allow specifying PackFolder in ProjectReference [\#124](https://github.com/devlooped/nugetizer/issues/124)
+- Include readme in package [\#127](https://github.com/devlooped/nugetizer/pull/127) (@kzu)
 
 :twisted_rightwards_arrows: Merged:
 
@@ -76,7 +96,6 @@
 
 - Add PackDependencies property to opt-out of dependencies packing easily [\#73](https://github.com/devlooped/nugetizer/issues/73)
 - Add support for SuppressDependenciesWhenPacking for compatibility with SDK pack [\#67](https://github.com/devlooped/nugetizer/issues/67)
-- Include readme in package [\#127](https://github.com/devlooped/nugetizer/pull/127) (@kzu)
 - Add support for opting out of dependencies packing [\#74](https://github.com/devlooped/nugetizer/pull/74) (@kzu)
 
 :twisted_rightwards_arrows: Merged:
