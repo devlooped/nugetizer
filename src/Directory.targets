@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">
-    <PackageReference Update="ThisAssembly" Version="1.0.8" />
+    <PackageReference Update="ThisAssembly" Version="1.0.9" />
   </ItemGroup>
 
 </Project>
