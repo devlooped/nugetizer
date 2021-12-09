@@ -208,13 +208,13 @@ When copying items to the output directory, you're implicitly saying that those 
 
 Given this common scenario, NuGetizer changes the default `PackFolder` metadata for packable items (i.e. those with explicit `Pack=true` metadata or defaulted to *true*, such as `Content` items) to match the `PackFolder` property defined for the project's built output, whenever `CopyToOutputDirectory` is not empty or *Never*.
 
-Like other default inference behaviors, you can always opt out of it by specifying an explicit *PackFolder` item metadata.
+Like other default inference behaviors, you can always opt out of it by specifying an explicit `PackFolder` item metadata.
 
 In addition, the resulting `PackageFile` items for these items point to the location in the project's output folder, rather than the source location. This makes it easier to have custom behavior that might modify the item after copying to the output directory.
 
 ### PackageReference
 
-Package references are turned into package dependencies by default (essentially converting `<PackageReference>` to `<PackageFile ... PackFolder="Dependency">`), unless `PackDependencies` property is `false`. If the package reference specifies `PrivateAssets="all"`, however, it's not added as a dependency. Instead, in that case, all the contributed files to the compilation are placed in the same `PackFolder` as the project's build output (if packable, depending on `PackBuildOutput` property).
+Package references are turned into package dependencies by default (essentially converting `<PackageReference>` to `<PackageFile ... PackFolder="Dependency">`), unless `PackDependencies` property is `false`. If the package reference specifies `PrivateAssets="all"`, however, it's not added as a dependency. Instead, in that case, all the files contributed to the compilation are placed in the same `PackFolder` as the project's build output (if packable, depending on `PackBuildOutput` property).
 
 Build-only dependencies that don't contribute assemblies to the output (i.e. analyzers or things like [GitInfo](https://github.com/kzu/GitInfo) or [ThisAssembly](https://github.com/kzu/ThisAssembly) won't cause any extra items.
 
@@ -283,7 +283,7 @@ Finally, you can focedly turn a project reference build output into a private as
 
 ## Advanced Features
 
-This section contains miscelaneous useful features that are typically used in advanced scenarios and 
+This section contains miscellaneous useful features that are typically used in advanced scenarios and 
 are not necessarily mainstream.
 
 ### Dynamically Extending Package Contents
@@ -305,7 +305,7 @@ place them all under the `docs` folder in the `.nupkg`, preserving their origina
 ### Packing arbitrary files from referenced packages
 
 If you want to pack files from referenced packages, you can simply add `PackageReference` attribute 
-to `PackageFile`. Say we want to resuse the awesome icon from the 
+to `PackageFile`. Say we want to reuse the awesome icon from the 
 [ThisAssembly](https://nuget.org/packages/ThisAssembly) package, we can just bring it in with:
 
 ```xml
