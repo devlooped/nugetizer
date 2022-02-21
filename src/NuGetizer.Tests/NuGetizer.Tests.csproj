@@ -18,7 +18,7 @@
     <PackageReference Include="MSBuild.StructuredLogger" Version="2.1.545" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
-    <PackageReference Include="NuGet.Packaging" Version="5.11.0" />
+    <PackageReference Include="NuGet.Packaging" Version="6.1.0" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.11.0" />
