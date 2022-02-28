@@ -16,7 +16,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- We clean the HTTP cache by default. This does *not* clear the cached installed packages -->
     <CleanHttpNuGetCacheOnPack Condition="'$(CleanHttpNuGetCacheOnPack)' == ''">true</CleanHttpNuGetCacheOnPack>
     <!-- The actual NuGet cache is only cleared for the *current* PackageId, so no need to turn off its clearing on build/pack -->
-    <NuGetCache>$(UserProfile)\.nuget\packages</NuGetCache>
+    <NuGetCache Condition="'$(NuGetCache)' == ''">$(UserProfile)\.nuget\packages</NuGetCache>
     <PackDependsOn>
       CleanPackageOutput;
       $(PackDependsOn);
