@@ -55,4 +55,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <Exec Command='rm -rf "$(HttpNuGetCache)"' Condition="'$(OS)' != 'Windows_NT'" />
   </Target>
 
+  <!-- Remove packages when clean -->
+  <Target Name="IncrementalCleanPackageOutput"
+          DependsOnTargets="CleanPackageOutput"
+          BeforeTargets="BeforeClean" />
+
 </Project>
