@@ -27,7 +27,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ItemGroup>
       <_ExistingPackage Include="$(PackageOutputPath)\$(PackageId)*.nupkg" />
       <_PackageToDelete Include="@(_ExistingPackage)" 
-                        Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d\.\d\.\d.*'))" />
+                        Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d+\.\d+\.\d+.*'))" />
     </ItemGroup>
     <Delete Files="@(_PackageToDelete)" ContinueOnError="true">
       <Output TaskParameter="DeletedFiles" ItemName="_CleanedPackages" />
