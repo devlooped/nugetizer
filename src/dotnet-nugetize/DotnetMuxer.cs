@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-internal static class DotnetMuxer
+static class DotnetMuxer
 {
     public static FileInfo Path { get; }
 
