@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <DefaultItemExcludes>$(DefaultItemExcludes);Scenarios\**\*</DefaultItemExcludes>
   </PropertyGroup>
   
@@ -32,10 +32,7 @@
   <ItemGroup>
     <None Include="Scenarios\**\*.*" Exclude="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\NuGetizer.Tasks\bin\$(Configuration)\*.*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
-    <Compile Remove="ModuleInitializerAttribute.cs" Condition="'$(TargetFramework)' == 'net5.0'" />
-    <!--<Compile Remove="ModuleInitializer.cs" Condition="'$(TargetFramework)' == 'net5.0'" />-->
-  </ItemGroup>
-  
+    <Compile Remove="ModuleInitializerAttribute.cs" Condition="'$(TargetFramework)' == 'net6.0'" />  </ItemGroup>  
   <ItemGroup>
     <EmbeddedResource Include="..\NuGetizer.Tasks\Resources.resx" Link="Resources.resx" />
   </ItemGroup>
@@ -44,7 +41,12 @@
     <ProjectProperty Include="NuGetRestoreTargets" />
     <ProjectProperty Include="NuGetTargets" />
     <ProjectProperty Include="MSBuildBinPath" />
+    <ProjectProperty Include="MSBuildToolsPath" />
+    <ProjectProperty Include="MSBuildToolsPath32" />
+    <ProjectProperty Include="MSBuildToolsPath64" />
     <ProjectProperty Include="PrivateRepositoryUrl" />
+    <ProjectProperty Include="MSBuildProjectDirectory" />
+    <ProjectProperty Include="OutputPath" />
   </ItemGroup>
 
   <Target Name="EnsureProjectInformation" BeforeTargets="InjectThisAssemblyProject;GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />

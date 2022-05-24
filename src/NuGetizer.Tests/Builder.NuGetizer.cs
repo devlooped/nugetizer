@@ -40,7 +40,7 @@ static partial class Builder
         LoggerVerbosity? verbosity = null,
         params (string name, string contents)[] files)
     {
-        using var sha = new SHA1Managed();
+        using var sha = SHA1.Create();
 
         // Combination of last write time for the test assembly + contents of the projects.
         var hash = Base62.Encode(Math.Abs(BitConverter.ToInt64(
@@ -83,7 +83,7 @@ static partial class Builder
         ITestOutputHelper output = null,
         LoggerVerbosity? verbosity = null)
     {
-        var scenarioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scenarios", scenarioName);
+        var scenarioDir = Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, ThisAssembly.Project.OutputPath, "Scenarios", scenarioName);
         if (projectName != null && !Path.HasExtension(projectName))
             projectName = projectName + ".csproj";
 

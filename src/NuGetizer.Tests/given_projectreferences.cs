@@ -1,5 +1,4 @@
-﻿using Microsoft.Build.Execution;
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
@@ -221,13 +220,13 @@ namespace NuGetizer
         public void when_projectreference_explicit_packfolder_then_specific_folder_is_packed()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.0.4'>
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=lib/net5.0/SpecificFolder' />
+    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=lib/net6.0/SpecificFolder' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output,
@@ -241,7 +240,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib/net5.0/SpecificFolder/Library.dll",
+                PackagePath = @"lib/net6.0/SpecificFolder/Library.dll",
             }));
         }
 
@@ -249,13 +248,13 @@ namespace NuGetizer
         public void when_projectreference_has_packfolder_metadata_then_specific_folder_is_packed()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.0.4'>
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include='Library.csproj' PackFolder='lib/net5.0/SpecificFolder' />
+    <ProjectReference Include='Library.csproj' PackFolder='lib/net6.0/SpecificFolder' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output,
@@ -269,7 +268,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib/net5.0/SpecificFolder/Library.dll",
+                PackagePath = @"lib/net6.0/SpecificFolder/Library.dll",
             }));
         }
 
