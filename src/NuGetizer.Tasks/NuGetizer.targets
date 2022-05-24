@@ -126,7 +126,7 @@ Copyright (c) .NET Foundation. All rights reserved.
         <PackFolder>Metadata</PackFolder>
         <PackageId>$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
-        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
       </PackageFile>
     </ItemGroup>
   </Target>
