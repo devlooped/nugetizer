@@ -142,7 +142,7 @@ namespace NuGetizer
   </PropertyGroup>
   <ItemGroup>
     <Reference Include='System.Numerics' />
-    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
     <PackageReference Include='Newtonsoft.Json' Version='1.0.0' />
   </ItemGroup>
 </Project>",
@@ -171,7 +171,7 @@ namespace NuGetizer
   </PropertyGroup>
   <ItemGroup>
     <Reference Include='System.Numerics' />
-    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
     <PackageReference Include='Newtonsoft.Json' Version='1.0.0' />
   </ItemGroup>
 </Project>",
@@ -200,7 +200,7 @@ namespace NuGetizer
   </PropertyGroup>
   <ItemGroup>
     <Reference Include='System.Numerics' />
-    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
     <PackageReference Include='Newtonsoft.Json' Version='1.0.0' />
   </ItemGroup>
 </Project>",

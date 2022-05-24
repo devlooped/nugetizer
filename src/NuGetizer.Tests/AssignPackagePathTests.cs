@@ -89,7 +89,7 @@ namespace NuGetizer
                     new TaskItem("library.dll", new Metadata
                     {
                         { "PackagePath", "workbooks/library.dll" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
                         { "FrameworkSpecific", "true" }
                     })
                 }
@@ -99,7 +99,7 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackagePath = "workbooks/library.dll",
-                TargetFramework = "net45"
+                TargetFramework = "net472"
             }));
         }
 
@@ -165,14 +165,14 @@ namespace NuGetizer
                 {
                     new TaskItem("library.dll", new Metadata
                     {
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "lib" }
                     })
                 }
             };
 
             Assert.True(task.Execute());
-            Assert.Equal(@"lib/net45/library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+            Assert.Equal(@"lib/net472/library.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
         }
 
         [Fact]
@@ -186,7 +186,7 @@ namespace NuGetizer
                 {
                     new TaskItem("library.dll", new Metadata
                     {
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "lib" }
                     })
                 }
@@ -195,7 +195,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                TargetFramework = "net45"
+                TargetFramework = "net472"
             }));
         }
 
@@ -449,7 +449,7 @@ namespace NuGetizer
 
         // TODO: these all end up in all lowercase, but MonoAndroid, Xamarin.iOS are usually properly 
         // cased in nupkgs out in the wild (i.e. Rx)
-        [InlineData(".NETFramework,Version=v4.5", "net45")]
+        [InlineData(".NETFramework,Version=v4.7.2", "net472")]
         [InlineData(".NETPortable,Version=v5.0", "portable50")]
         [InlineData("Xamarin.iOS,Version=v1.0", "xamarinios10")]
         // TODO: should somehow we allow targetting monoandroid without the version suffix?
@@ -504,7 +504,7 @@ namespace NuGetizer
                     new TaskItem("library.dll", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", packageFileKind }
                     })
                 }
@@ -517,7 +517,7 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = mappedPackageFolder,
-                PackagePath = $"{mappedPackageFolder}{(isFrameworkSpecific ? "/net45" : "")}/library.dll",
+                PackagePath = $"{mappedPackageFolder}{(isFrameworkSpecific ? "/net472" : "")}/library.dll",
             }));
         }
 
@@ -582,8 +582,8 @@ namespace NuGetizer
 
         [InlineData("", "vb", "contentFiles/vb/any/")]
         [InlineData("", "", "contentFiles/any/any/")]
-        [InlineData(".NETFramework,Version=v4.5", "cs", "contentFiles/cs/net45/")]
-        [InlineData(".NETFramework,Version=v4.5", "", "contentFiles/any/net45/")]
+        [InlineData(".NETFramework,Version=v4.7.2", "cs", "contentFiles/cs/net472/")]
+        [InlineData(".NETFramework,Version=v4.7.2", "", "contentFiles/any/net472/")]
         [Theory]
         public void when_assigning_content_file_then_applies_tfm_and_language(string tfm, string lang, string expectedPath)
         {
@@ -729,14 +729,14 @@ namespace NuGetizer
                     new TaskItem("library.dll", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "none" }
                     })
                 }
             };
 
             Assert.True(task.Execute());
-            Assert.NotEqual("net45", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath).Split(Path.DirectorySeparatorChar)[0]);
+            Assert.NotEqual("net472", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath).Split(Path.DirectorySeparatorChar)[0]);
         }
 
         [InlineData("Build", "build")]
@@ -807,7 +807,7 @@ namespace NuGetizer
                     new TaskItem("sdk/bin/tool.exe", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "tool" },
                         { "FrameworkSpecific", "true" },
                         { "TargetPath", "sdk/bin/tool.exe"}
@@ -818,7 +818,7 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"tools/net45/any/sdk/bin/tool.exe",
+                PackagePath = @"tools/net472/any/sdk/bin/tool.exe",
             }));
         }
 
@@ -898,7 +898,7 @@ namespace NuGetizer
                     new TaskItem("tools/foo.exe", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "tools" },
                     }),
                 }
@@ -907,8 +907,8 @@ namespace NuGetizer
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
-                PackagePath = @"tools/net45/any/foo.exe",
-                TargetFramework = "net45",
+                PackagePath = @"tools/net472/any/foo.exe",
+                TargetFramework = "net472",
             }));
         }
     }

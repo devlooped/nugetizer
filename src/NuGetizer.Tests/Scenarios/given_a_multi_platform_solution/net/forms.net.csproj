@@ -7,6 +7,9 @@
     <DocumentationFile />
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\common\common.csproj" />
   </ItemGroup>
 </Project>

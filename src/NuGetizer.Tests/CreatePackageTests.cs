@@ -78,7 +78,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, "package" },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -101,7 +101,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -140,7 +140,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -162,7 +162,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -213,7 +213,7 @@ namespace NuGetizer
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
-					{ MetadataName.TargetFramework, "net45" }
+					{ MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -221,7 +221,7 @@ namespace NuGetizer
 
             Assert.NotNull(manifest);
             Assert.Single(manifest.Metadata.DependencyGroups);
-            Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
+            Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.7.2"), manifest.Metadata.DependencyGroups.First().TargetFramework);
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 
@@ -240,7 +240,7 @@ namespace NuGetizer
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
-					{ MetadataName.TargetFramework, "net45" },
+					{ MetadataName.TargetFramework, "net472" },
                     { MetadataName.IncludeAssets, "all" }
                 }),
             };
@@ -266,7 +266,7 @@ namespace NuGetizer
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
-					{ MetadataName.TargetFramework, "net45" },
+					{ MetadataName.TargetFramework, "net472" },
                     { MetadataName.ExcludeAssets, "all" }
                 }),
             };
@@ -292,7 +292,7 @@ namespace NuGetizer
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
-					{ MetadataName.TargetFramework, "net45" }
+					{ MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -316,7 +316,7 @@ namespace NuGetizer
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
-					{ MetadataName.TargetFramework, "net45" }
+					{ MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -339,7 +339,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" },
+                    { MetadataName.TargetFramework, "net472" },
                     { MetadataName.FrameworkSpecific, "false" },
                 }),
                 new TaskItem("Microsoft.Build", new Metadata
@@ -347,7 +347,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "15.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -361,7 +361,7 @@ namespace NuGetizer
                 manifest.Metadata.DependencyGroups.First().TargetFramework == NuGetFramework.AnyFramework ||
                 manifest.Metadata.DependencyGroups.First().TargetFramework == NuGetFramework.UnsupportedFramework);
 
-            Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
+            Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.7.2"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
 
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
@@ -389,7 +389,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "15.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -401,7 +401,7 @@ namespace NuGetizer
                 manifest.Metadata.DependencyGroups.First().TargetFramework == NuGetFramework.AnyFramework ||
                 manifest.Metadata.DependencyGroups.First().TargetFramework == NuGetFramework.UnsupportedFramework);
 
-            Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
+            Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.7.2"), manifest.Metadata.DependencyGroups.Last().TargetFramework);
 
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
@@ -428,7 +428,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "*" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
                 new TaskItem("_._", new Metadata
                 {
@@ -485,9 +485,9 @@ namespace NuGetizer
                 new TaskItem(Path.GetTempFileName(), new Metadata
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-                    { MetadataName.PackagePath, "lib\\net45\\library.dll" },
+                    { MetadataName.PackagePath, "lib\\net472\\library.dll" },
                     { MetadataName.PackFolder, PackFolderKind.Lib },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 })
             };
 
@@ -497,7 +497,7 @@ namespace NuGetizer
             {
                 "net35",
                 "net40",
-                "net45"
+                "net472"
             };
 
             Assert.NotNull(manifest);
@@ -523,7 +523,7 @@ namespace NuGetizer
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.PrivateAssets, "all" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
-					{ MetadataName.TargetFramework, "net45" }
+					{ MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -543,7 +543,7 @@ namespace NuGetizer
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
 					// NOTE: AssignPackagePath takes care of converting TFM > short name
-					{ MetadataName.TargetFramework, "net45" }
+					{ MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -551,7 +551,7 @@ namespace NuGetizer
 
             Assert.NotNull(manifest);
             Assert.Single(manifest.Metadata.DependencyGroups);
-            Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.5"), manifest.Metadata.DependencyGroups.First().TargetFramework);
+            Assert.Equal(NuGetFramework.Parse(".NETFramework,Version=v4.7.2"), manifest.Metadata.DependencyGroups.First().TargetFramework);
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
 
@@ -724,7 +724,7 @@ namespace NuGetizer
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET45 }
+                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET472 }
                 }),
                 new TaskItem("System.Xml", new Metadata
                 {
@@ -739,7 +739,7 @@ namespace NuGetizer
             Assert.Equal(manifest.Metadata.FrameworkReferences,
                 new[]
                 {
-                    new FrameworkAssemblyReference("System.Xml", new [] { NuGetFramework.Parse(TargetFrameworks.NET45) }),
+                    new FrameworkAssemblyReference("System.Xml", new [] { NuGetFramework.Parse(TargetFrameworks.NET472) }),
                     new FrameworkAssemblyReference("System.Xml", new [] { NuGetFramework.Parse(TargetFrameworks.PCL78) }),
                 },
                 FrameworkAssemblyReferenceComparer.Default);
@@ -756,13 +756,13 @@ namespace NuGetizer
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET45 }
+                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET472 }
                 }),
                 new TaskItem("System.Xml", new Metadata
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET45 }
+                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET472 }
                 }),
                 new TaskItem("System.Xml", new Metadata
                 {
@@ -783,7 +783,7 @@ namespace NuGetizer
             Assert.Equal(manifest.Metadata.FrameworkReferences,
                 new[]
                 {
-                    new FrameworkAssemblyReference("System.Xml", new [] { NuGetFramework.Parse(TargetFrameworks.NET45) }),
+                    new FrameworkAssemblyReference("System.Xml", new [] { NuGetFramework.Parse(TargetFrameworks.NET472) }),
                     new FrameworkAssemblyReference("System.Xml", new [] { NuGetFramework.Parse(TargetFrameworks.PCL78) }),
                 },
                 FrameworkAssemblyReferenceComparer.Default);
@@ -812,7 +812,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -842,7 +842,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -872,7 +872,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 
@@ -907,7 +907,7 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.Dependency },
                     { MetadataName.Version, "8.0.0" },
-                    { MetadataName.TargetFramework, "net45" }
+                    { MetadataName.TargetFramework, "net472" }
                 }),
             };
 

@@ -6,6 +6,9 @@
     <PackageVersion>2.0.0</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+  </ItemGroup>
+  <ItemGroup>
 		<ProjectReference Include="c.csproj" />
 		<ProjectReference Include="d.csproj" />
 	</ItemGroup>

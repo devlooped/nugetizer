@@ -235,6 +235,9 @@ namespace NuGetizer
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
+  </ItemGroup>
 </Project>"));
 
             result.AssertSuccess(output);
@@ -263,6 +266,9 @@ namespace NuGetizer
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
+  </ItemGroup>
 </Project>"));
 
             result.AssertSuccess(output);

@@ -114,11 +114,11 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib/net45/c.dll",
+                PackagePath = @"lib/net472/c.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib/net45/c.xml",
+                PackagePath = @"lib/net472/c.xml",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
@@ -203,11 +203,11 @@ namespace NuGetizer
 
             var manifest = result.Items[0].GetManifest();
 
-            Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\c.dll");
-            Assert.Contains(manifest.Files, file => file.Target == @"lib\net45\c.xml");
+            Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\c.dll");
+            Assert.Contains(manifest.Files, file => file.Target == @"lib\net472\c.xml");
 
             Assert.Contains(manifest.Metadata.DependencyGroups, group =>
-                group.TargetFramework.Equals(NuGetFramework.Parse("net45")) &&
+                group.TargetFramework.Equals(NuGetFramework.Parse("net472")) &&
                 group.Packages.Any(dep => dep.Id == "Foo" && dep.VersionRange.OriginalString == "1.0.0"));
         }
 

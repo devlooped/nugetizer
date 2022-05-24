@@ -1,12 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <ReadmeB Condition="'$(ReadmeB)' == ''">This is a readme</ReadmeB>
   </PropertyGroup>
-	<ItemGroup>
-		<Content Include="content\web\**\*.*" CopyToOutputDirectory="PreserveNewest" />
-		<PackageFile Include="content\content.txt" PackagePath="content\content.txt" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="content\web\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+    <PackageFile Include="content\content.txt" PackagePath="content\content.txt" />
     <PackageFile Include="content\content.txt" PackagePath="content\b\1\content.txt" />
     <PackageFile Include="content\content.txt" PackagePath="content\b\2\content.txt" />
   </ItemGroup>
@@ -15,7 +18,7 @@
     <ItemGroup>
       <PackageFile Include="$(OutputPath)\Readme.txt">
         <PackagePath>Readme.txt</PackagePath>
-      </PackageFile> 
+      </PackageFile>
     </ItemGroup>
   </Target>
 </Project>
