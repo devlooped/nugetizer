@@ -16,42 +16,25 @@ on:
 
 env:
   DOTNET_NOLOGO: true
+  Configuration: Release
 
 defaults:
   run:
     shell: bash
 
 jobs:
-  dotnet-format:
-    runs-on: ubuntu-latest
+  build:
+    name: build-windows-latest
+    runs-on: windows-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
         with: 
           submodules: recursive
           fetch-depth: 0
-
-      - name: ⚙ dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0.x'
 
       - name: ✓ ensure format
         run: dotnet format --verify-no-changes -v:diag --exclude ~/.nuget
-
-  build:
-    name: build-${{ matrix.os }}
-    needs: dotnet-format
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest]
-    steps:
-      - name: 🤘 checkout
-        uses: actions/checkout@v2
-        with: 
-          submodules: recursive
-          fetch-depth: 0
 
       - name: ⚙ dotnet
         uses: actions/setup-dotnet@v1
@@ -59,10 +42,15 @@ jobs:
         with:
           dotnet-version: '6.0.x'
 
+      - name: ⚙ msbuild
+        uses: microsoft/setup-msbuild@v1.1
+
       - name: 🙏 build
+        shell: pwsh
+        working-directory: src/NuGetizer.Tests
         run: |
-          dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
-          dotnet restore src/NuGetizer.Tests/Scenarios/given_a_packaging_project/a.nuproj
+          msbuild -m:1 -p:VersionLabel="$env:GITHUB_REF.$env:GITHUB_RUN_NUMBER"
+          dotnet restore Scenarios/given_a_packaging_project/a.nuproj
 
       - name: ⚙ GNU grep
         if: matrix.os == 'macOS-latest'
