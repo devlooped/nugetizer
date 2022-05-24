@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <NuGetize>false</NuGetize>
 
@@ -28,7 +28,6 @@
   
   <ItemGroup>
     <None Update="NuGetize.Build.targets" CopyToOutputDirectory="PreserveNewest" />
-    <Compile Remove="Range.cs" Condition="'$(TargetFramework)' != 'netcoreapp2.1'" />
     <None Remove="after.sln.targets" />
     <EmbeddedResource Include="after.sln.targets" CopyToOutputDirectory="PreserveNewest" />
     <ProjectProperty Include="Version" />
