@@ -231,6 +231,9 @@ namespace NuGetizer
   <ItemGroup>
     <Reference Include='PresentationFramework' />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
+  </ItemGroup>
 </Project>", output: output);
 
             result.AssertSuccess(output);
@@ -253,6 +256,9 @@ namespace NuGetizer
   </PropertyGroup>
   <ItemGroup>
     <Reference Include='PresentationFramework' />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
   </ItemGroup>
 </Project>", output: output);
 
@@ -449,7 +455,7 @@ namespace NuGetizer
     <PackOnBuild>true</PackOnBuild>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.0' />
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
   </ItemGroup>
 </Project>", "Build,GetPackageTargetPath", output);
 

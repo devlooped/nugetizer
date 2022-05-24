@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
   <PropertyGroup>
-		<AssemblyName>Forms</AssemblyName>
+    <AssemblyName>Forms</AssemblyName>
     <TargetFramework>MonoAndroid90</TargetFramework>
     <DisableStandardFrameworkResolution>true</DisableStandardFrameworkResolution>
     <PackSymbols>false</PackSymbols>
-		<DocumentationFile />
-	</PropertyGroup>
-	<ItemGroup>
-		<Content Include="quickstart\**\*.*">
-			<CodeLanguage>$([System.String]::new('%(Extension)').TrimStart('.'))</CodeLanguage>
-			<BuildAction>None</BuildAction>
-		</Content>
-		<ProjectReference Include="..\common\common.csproj" />
-	</ItemGroup>
+    <DocumentationFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="quickstart\**\*.*">
+      <CodeLanguage>$([System.String]::new('%(Extension)').TrimStart('.'))</CodeLanguage>
+      <BuildAction>None</BuildAction>
+    </Content>
+    <ProjectReference Include="..\common\common.csproj" />
+  </ItemGroup>
 </Project>

@@ -129,11 +129,11 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib/net45/c.dll",
+                PackagePath = @"lib/net472/c.dll",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"lib/net45/c.xml",
+                PackagePath = @"lib/net472/c.xml",
             }));
         }
 

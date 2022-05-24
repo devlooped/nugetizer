@@ -581,6 +581,7 @@ namespace NuGetizer
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
     <PackageReference Include='Microsoft.VisualStudio.Shell.Interop' Version='16.7.30328.74' PrivateAssets='all' />
     <PackageReference Include='Microsoft.VisualStudio.Shell.Interop.12.0' Version='16.7.30328.74' PrivateAssets='all' />        
   </ItemGroup>

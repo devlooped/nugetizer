@@ -1,12 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
   <PropertyGroup>
-		<TargetFramework>net46</TargetFramework>
-		<PackageId>a.package</PackageId>
-		<PackageVersion>1.0.0</PackageVersion>
-	</PropertyGroup>
-	<ItemGroup>
+    <TargetFramework>net46</TargetFramework>
+    <PackageId>a.package</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="b\b.csproj" Pack="$(IncludeInPackage)" />
-		<ProjectReference Include="c.csproj" />
-	</ItemGroup>
+    <ProjectReference Include="c.csproj" />
+  </ItemGroup>
 </Project>

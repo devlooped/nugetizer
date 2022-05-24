@@ -24,7 +24,7 @@ namespace NuGetizer
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.0.0' PrivateAssets='all' />
+    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.1.1' PrivateAssets='all' />
   </ItemGroup>
 </Project>",
             "GetPackageMetadata", output);
@@ -51,7 +51,7 @@ namespace NuGetizer
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.0.0' PrivateAssets='all' />
+    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.1.1' PrivateAssets='all' />
   </ItemGroup>
 </Project>",
             "GetPackageMetadata", output);
@@ -76,7 +76,7 @@ namespace NuGetizer
     <PackageProjectUrl>foo.com</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.0.0' PrivateAssets='all' />
+    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.1.1' PrivateAssets='all' />
   </ItemGroup>
 </Project>",
             "GetPackageMetadata", output);
@@ -99,7 +99,7 @@ namespace NuGetizer
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.0.0' PrivateAssets='all' />
+    <PackageReference Include='Microsoft.SourceLink.GitHub' Version='1.1.1' PrivateAssets='all' />
   </ItemGroup>
 </Project>",
             "GetPackageMetadata", output);
