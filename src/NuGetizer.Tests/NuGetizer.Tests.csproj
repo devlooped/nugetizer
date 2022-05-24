@@ -12,8 +12,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Build" Version="16.11.0" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.10.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build" Version="17.2.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.2.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.4.1" />
     <PackageReference Include="MSBuild.StructuredLogger" Version="2.1.545" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
