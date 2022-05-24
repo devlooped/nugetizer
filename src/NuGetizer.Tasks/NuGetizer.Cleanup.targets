@@ -16,7 +16,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- We clean the HTTP cache by default. This does *not* clear the cached installed packages -->
     <CleanHttpNuGetCacheOnPack Condition="'$(CleanHttpNuGetCacheOnPack)' == ''">true</CleanHttpNuGetCacheOnPack>
     <!-- The actual NuGet cache is only cleared for the *current* PackageId, so no need to turn off its clearing on build/pack -->
-    <NuGetCache>$(UserProfile)\.nuget\packages</NuGetCache>
+    <NuGetCache Condition="'$(NuGetCache)' == ''">$(UserProfile)\.nuget\packages</NuGetCache>
     <PackDependsOn>
       CleanPackageOutput;
       $(PackDependsOn);
@@ -27,7 +27,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ItemGroup>
       <_ExistingPackage Include="$(PackageOutputPath)\$(PackageId)*.nupkg" />
       <_PackageToDelete Include="@(_ExistingPackage)" 
-                        Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d\.\d\.\d.*'))" />
+                        Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d+\.\d+\.\d+.*'))" />
     </ItemGroup>
     <Delete Files="@(_PackageToDelete)" ContinueOnError="true">
       <Output TaskParameter="DeletedFiles" ItemName="_CleanedPackages" />
@@ -54,5 +54,10 @@ Copyright (c) .NET Foundation. All rights reserved.
     <Exec Command='rd "$(HttpNuGetCache)" /q /s' Condition="'$(OS)' == 'Windows_NT'" />
     <Exec Command='rm -rf "$(HttpNuGetCache)"' Condition="'$(OS)' != 'Windows_NT'" />
   </Target>
+
+  <!-- Remove packages when clean -->
+  <Target Name="IncrementalCleanPackageOutput"
+          DependsOnTargets="CleanPackageOutput"
+          BeforeTargets="BeforeClean" />
 
 </Project>
