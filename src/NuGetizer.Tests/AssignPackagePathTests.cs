@@ -477,7 +477,7 @@ namespace NuGetizer
             Assert.Contains(task.AssignedFiles, item => item.Matches(new
             {
                 PackageFolder = "lib",
-                PackagePath = $"lib/{ expectedTargetFramework}/library.dll",
+                PackagePath = $"lib/{expectedTargetFramework}/library.dll",
                 TargetFramework = expectedTargetFramework,
             }));
         }
