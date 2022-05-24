@@ -45,7 +45,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macOS-latest]
+        os: [windows-latest]
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
@@ -60,7 +60,9 @@ jobs:
           dotnet-version: '6.0.x'
 
       - name: 🙏 build
-        run: dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: |
+          dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+          dotnet restore src/NuGetizer.Tests/Scenarios/given_a_packaging_project/a.nuproj
 
       - name: ⚙ GNU grep
         if: matrix.os == 'macOS-latest'
@@ -78,7 +80,7 @@ jobs:
       - name: 🚀 sleet
         env:
           SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
-        if: matrix.os == 'ubuntu-latest' && env.SLEET_CONNECTION != ''
+        if: env.SLEET_CONNECTION != ''
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"

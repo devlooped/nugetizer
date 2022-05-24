@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" TreatAsLocalProperty="NuGetize">
-
+  
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+    <TargetFramework Condition="'$(BuildingInsideVisualStudio)' == 'true'">net6.0</TargetFramework>
+    <TargetFrameworks Condition="'$(BuildingInsideVisualStudio)' != 'true'">netcoreapp3.1;net6.0</TargetFrameworks>
+    
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <NuGetize>false</NuGetize>
 

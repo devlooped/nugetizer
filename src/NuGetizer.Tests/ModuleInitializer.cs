@@ -18,6 +18,7 @@ namespace NuGetizer.Tests
 
             var binPath = ThisAssembly.Project.MSBuildBinPath;
             Microsoft.Build.Locator.MSBuildLocator.RegisterMSBuildPath(binPath);
+
             // Set environment variables so SDKs can be resolved. 
             Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", Path.Combine(binPath, "MSBuild.exe"), EnvironmentVariableTarget.Process);
         }
@@ -33,6 +34,15 @@ namespace NuGetizer.Tests
             {
                 File.AppendAllText(logFile, $"Found {file}\r\n");
                 return Assembly.LoadFrom(file);
+            }
+            else
+            {
+                file = Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, ThisAssembly.Project.OutputPath, name + ".dll");
+                if (File.Exists(file))
+                {
+                    File.AppendAllText(logFile, $"Found {file}\r\n");
+                    return Assembly.LoadFrom(file);
+                }
             }
 
             return null;
