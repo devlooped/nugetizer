@@ -54,11 +54,11 @@ namespace NuGetizer
 
         public static string GetContentFileInclude(this ITaskItem taskItem)
         {
-            const string contentFilesFolder = @"contentFiles\";
             var include = taskItem.GetMetadata(MetadataName.PackagePath);
-            if (include.StartsWith(contentFilesFolder))
-                return include.Substring(contentFilesFolder.Length);
-            return include;
+            if (include.StartsWith("contentFiles"))
+                include = include.Substring(12);
+
+            return include.TrimStart('/', '\\');
         }
 
         public static Manifest GetManifest(this IPackageCoreReader packageReader)
