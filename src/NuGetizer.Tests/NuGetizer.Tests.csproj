@@ -15,17 +15,20 @@
     <PackageReference Include="Microsoft.Build" Version="17.2.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.2.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.4.1" />
-    <PackageReference Include="MSBuild.StructuredLogger" Version="2.1.545" />
+    <PackageReference Include="MSBuild.StructuredLogger" Version="2.1.669" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     <PackageReference Include="NuGet.Packaging" Version="5.11.0" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.2.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.console" Version="2.4.1" />
     <PackageReference Include="xunit.runner.msbuild" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="ThisAssembly" Version="1.0.9" PrivateAssets="all" />
   </ItemGroup>
   
