@@ -1,4 +1,22 @@
+# Changelog
 
+## [v0.7.6](https://github.com/devlooped/nugetizer/tree/v0.7.6) (2022-05-26)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.5...v0.7.6)
+
+:bug: Fixed bugs:
+
+- Packing with Microsoft.Build.NoTargets doesn't put dependency under proper target framework group when reference other Microsoft.Build.NoTargets project [\#155](https://github.com/devlooped/nugetizer/issues/155)
+- Cannot use PackageRequireLicenseAcceptance = true with Microsoft.Build.NoTargets sdk [\#149](https://github.com/devlooped/nugetizer/issues/149)
+- Do BuildAction and CopyToOutput work? [\#143](https://github.com/devlooped/nugetizer/issues/143)
+
+:twisted_rightwards_arrows: Merged:
+
+- Bump test dependencies [\#177](https://github.com/devlooped/nugetizer/pull/177) (@kzu)
+- Allow specifying that packaging projects are framework specific [\#176](https://github.com/devlooped/nugetizer/pull/176) (@kzu)
+- Fix contentFiles relative path in manifest [\#175](https://github.com/devlooped/nugetizer/pull/175) (@kzu)
+- A few fixes for cleanup targets [\#166](https://github.com/devlooped/nugetizer/pull/166) (@gpwen)
+- Fixed a few typos in the readme [\#161](https://github.com/devlooped/nugetizer/pull/161) (@AntonC9018)
 
 ## [v0.7.5](https://github.com/devlooped/nugetizer/tree/v0.7.5) (2021-10-13)
 
@@ -158,19 +176,19 @@
 
 ## [v0.4.12](https://github.com/devlooped/nugetizer/tree/v0.4.12) (2020-11-20)
 
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.11...v0.4.12)
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.10...v0.4.12)
 
 :hammer: Other:
 
 - IsPackable default [\#26](https://github.com/devlooped/nugetizer/issues/26)
 
-## [v0.4.11](https://github.com/devlooped/nugetizer/tree/v0.4.11) (2020-10-29)
-
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.10...v0.4.11)
-
 ## [v0.4.10](https://github.com/devlooped/nugetizer/tree/v0.4.10) (2020-10-29)
 
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.9...v0.4.10)
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.11...v0.4.10)
+
+## [v0.4.11](https://github.com/devlooped/nugetizer/tree/v0.4.11) (2020-10-29)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.4.9...v0.4.11)
 
 :bug: Fixed bugs:
 
@@ -181,7 +199,6 @@
 - Improvements on transitive package content with relative paths [\#24](https://github.com/devlooped/nugetizer/pull/24) (@kzu)
 - Minor improvements to dotnet-nugetize [\#23](https://github.com/devlooped/nugetizer/pull/23) (@kzu)
 - TargetPath and Compile pack improvements [\#21](https://github.com/devlooped/nugetizer/pull/21) (@kzu)
-- If an item provides TargetPath, preserve it as relative to the PackFolder [\#20](https://github.com/devlooped/nugetizer/pull/20) (@kzu)
 - Inner devloop improvements [\#18](https://github.com/devlooped/nugetizer/pull/18) (@kzu)
 
 ## [v0.4.9](https://github.com/devlooped/nugetizer/tree/v0.4.9) (2020-10-26)
@@ -198,6 +215,7 @@
 
 :twisted_rightwards_arrows: Merged:
 
+- If an item provides TargetPath, preserve it as relative to the PackFolder [\#20](https://github.com/devlooped/nugetizer/pull/20) (@kzu)
 - By default, packing Compile should not include generated files [\#19](https://github.com/devlooped/nugetizer/pull/19) (@kzu)
 
 ## [v0.4.6](https://github.com/devlooped/nugetizer/tree/v0.4.6) (2020-10-20)
