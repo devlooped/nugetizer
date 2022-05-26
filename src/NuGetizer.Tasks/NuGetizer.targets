@@ -153,8 +153,8 @@ Copyright (c) .NET Foundation. All rights reserved.
              Properties="%(_NuGetizedProjectReference.SetConfiguration); 
                          %(_NuGetizedProjectReference.SetPlatform); 
                          %(_NuGetizedProjectReference.SetTargetFramework); 
+                         %(_NuGetizedProjectReference.SetPackFolder);
                          BuildingPackage=$(BuildingPackage); 
-                         PackFolder=%(_NuGetizedProjectReference.PackFolder);
                          DesignTimeBuild=false"
              Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_NuGetizedProjectReference)' != ''"
              RemoveProperties="%(_NuGetizedProjectReference.GlobalPropertiesToRemove)">
@@ -259,6 +259,8 @@ Copyright (c) .NET Foundation. All rights reserved.
              to whether there is a PackageId property.
              Also, passing our own PackFolder causes it to be the overriden default for the referenced project. -->
         <AdditionalProperties Condition="'$(_PrivateAssets)' == 'all'">IsPackable=false;PackFolder=$(PackFolder)</AdditionalProperties>
+        <SetPackFolder Condition="'%(PackFolder)' != ''">PackFolder=%(PackFolder)</SetPackFolder>
+        <SetPackFolder Condition="'%(PackFolder)' == '' and '$(_PrivateAssets)' == 'all' and '$(PackFolder)' != ''">PackFolder=$(PackFolder)</SetPackFolder>
       </_NuGetizedProjectReference>
     </ItemGroup>
 
