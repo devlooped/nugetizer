@@ -43,6 +43,10 @@ Copyright (c) .NET Foundation. All rights reserved.
   </ItemGroup>
 
   <ItemDefinitionGroup>
+    <_MSBuildProjectReferenceExistent>
+      <!-- Allows referencing this metadata value even if not defined anywhere -->
+      <PackFolder />
+    </_MSBuildProjectReferenceExistent>
     <PackageReference>
       <!-- This enables referencing arbitrary files from any package by adding PackageReference="" to a file -->
       <GeneratePathProperty>true</GeneratePathProperty>
