@@ -169,7 +169,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </PropertyGroup>
   </Target>
 
-  <Target Name="_SetDefaultPackageReferencePack" Condition="'$(PackFolder)' == 'build'"
+  <Target Name="_SetDefaultPackageReferencePack" Condition="'$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive'"
           BeforeTargets="InferPrimaryOutputDependencies;InferPackageContents">
     <ItemGroup>
       <PackageReference Update="@(PackageReference)"

@@ -82,29 +82,32 @@ Copyright (c) .NET Foundation. All rights reserved.
   <ItemGroup>
     <PackFolderKind Include="Content;ContentFiles">
       <!-- 
-					Plain "content" is deprecated as of NuGet v3+
-					See https://docs.nuget.org/ndocs/schema/nuspec#using-the-contentfiles-element-for-content-files
-					Additional optional metadata for ContentFiles:
-						* CodeLanguage: any (default), cs, fs, vb 
-						* BuildAction: Compile (default), None, EmbeddedResource
-						* CopyToOutput: false (default) / true 
-						* Flatten: false (default) / true 
-			-->
+        Plain "content" is deprecated as of NuGet v3+
+        See https://docs.nuget.org/ndocs/schema/nuspec#using-the-contentfiles-element-for-content-files
+        Additional optional metadata for ContentFiles:
+          * CodeLanguage: any (default), cs, fs, vb 
+          * BuildAction: Compile (default), None, EmbeddedResource
+          * CopyToOutput: false (default) / true 
+          * Flatten: false (default) / true 
+      -->
       <PackageFolder>contentFiles</PackageFolder>
       <FrameworkSpecific>true</FrameworkSpecific>
     </PackFolderKind>
     <PackFolderKind Include="None" />
     <!-- 
-				NOTE: these aren't strictly necessary since we turn any custom 
-				PackageFolder metadata into a PackageFolder by making the first char lowercase
-				We also add singular form of the built-in plural form folders where it makes sense.
-		-->
+      NOTE: these aren't strictly necessary since we turn any custom 
+      PackageFolder metadata into a PackageFolder by making the first char lowercase
+      We also add singular form of the built-in plural form folders where it makes sense.
+    -->
     <PackFolderKind Include="Lib">
       <PackageFolder>lib</PackageFolder>
       <FrameworkSpecific>true</FrameworkSpecific>
     </PackFolderKind>
     <PackFolderKind Include="Build">
       <PackageFolder>build</PackageFolder>
+    </PackFolderKind>
+    <PackFolderKind Include="BuildTransitive">
+      <PackageFolder>buildTransitive</PackageFolder>
     </PackFolderKind>
     <PackFolderKind Include="Tool;Tools">
       <PackageFolder>tools</PackageFolder>
@@ -127,7 +130,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </PackFolderKind>
 
     <!-- For unknown PackageFolder we apply the heuristics of turning the metadata value into pascalCase 
-             and using that as the package folder (i.e. 'Workbooks' -> 'workbooks') -->
+         and using that as the package folder (i.e. 'Workbooks' -> 'workbooks') -->
 
     <!-- Finally, specially treated items that we include here for completeness and documentation -->
 
