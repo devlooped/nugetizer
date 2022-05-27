@@ -524,7 +524,7 @@ namespace NuGetizer
         public static IEnumerable<object[]> GetUnmappedKnownKinds => Kinds
             .Where(kind => string.IsNullOrEmpty(kind.GetMetadata(MetadataName.PackageFolder)) &&
                 kind.GetMetadata(MetadataName.PackageFolder) != "contentFiles" &&
-                kind.ItemSpec != PackFolderKind.None)
+                kind.ItemSpec != PackFolderKind.None && kind.ItemSpec != PackFolderKind.Ignore)
             .Select(kind => new object[] { kind.ItemSpec });
 
         [MemberData(nameof(GetUnmappedKnownKinds))]

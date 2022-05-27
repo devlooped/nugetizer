@@ -24,6 +24,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
 
     <PackBuildOutput>false</PackBuildOutput>
+    <PackFolder>Ignore</PackFolder>
     <BuildOutputFrameworkSpecific>false</BuildOutputFrameworkSpecific>
   </PropertyGroup>
 

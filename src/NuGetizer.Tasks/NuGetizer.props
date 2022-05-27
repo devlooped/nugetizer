@@ -84,6 +84,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <!-- Default mapping between %(PackageFile.PackageFolder) metadata and package folders inside .nupkg -->
   <ItemGroup>
+    <!-- Used in authoring projects -->
+    <PackFolderKind Include="Ignore" />
     <PackFolderKind Include="Content;ContentFiles">
       <!-- 
         Plain "content" is deprecated as of NuGet v3+

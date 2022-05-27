@@ -9,7 +9,7 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
 Copyright (c) .NET Foundation. All rights reserved. 
 ***********************************************************************************************
 -->
-<Project InitialTargets="_SetPropertiesFromCapabilities" TreatAsLocalProperty="PackFolder" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project InitialTargets="_SetPropertiesFromCapabilities;_SetBuildOutputFrameworkSpecific" TreatAsLocalProperty="PackFolder" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="NuGetizer.Tasks.AssignPackagePath" AssemblyFile="NuGetizer.Tasks.dll" />
   <UsingTask TaskName="NuGetizer.Tasks.WriteItemsToFile" AssemblyFile="NuGetizer.Tasks.dll" />
 
@@ -64,7 +64,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <PackageFile>
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <Platform Condition="'%(PackageFile.Platform)' == ''">$(Platform)</Platform>
-        <TargetFrameworkMoniker Condition="'%(PackageFile.TargetFrameworkMoniker)' == '' and '$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <TargetFrameworkMoniker Condition="'%(PackageFile.TargetFrameworkMoniker)' == '' and ('$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true')">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
       </PackageFile>
     </ItemGroup>
 
@@ -167,7 +167,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                                                '%(_ReferencedPackageContent.PackFolder)' == 'Metadata'">
         <!-- For consistency, annotate like the rest -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
-        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'  or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
         <PackFolder>Dependency</PackFolder>
       </_ReferencedPackageDependency>
       <!-- Remove the referenced package actual contents if it provides a manifest, since it will be a dependency in that case. -->
@@ -184,28 +184,30 @@ Copyright (c) .NET Foundation. All rights reserved.
                                                    OriginalTargetFrameworkMoniker="%(_ReferencedPackageContent.TargetFrameworkMoniker)" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(IsPackagingProject)' != 'true'">
-      <!-- Retarget content for the currently building package, if necessary -->
+    <!-- We don't retarget referenced content for packaging projects that aren't framework specific, and
+         never retarget content that already has a PackageId. -->
+    <ItemGroup Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">
       <_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
+        <!-- Assign current package id if appropriate -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
         <!-- Only do this for assets that come from project references that don't build nugets (PackageId=='' above) -->
         <TargetFramework></TargetFramework>
         <!-- NOTE: we're always overwriting the TFM for framework-specific items in this case 
-             since this item will end up making up the contents of this package project in its 
-             current TFM configuration. 
-             TBD: we might want to preserve it anyways and adjust later (i.e. net45 project 
-             references netstandard1.6 project)
-             TODO: take into account cross-targeting.
-				-->
+          since this item will end up making up the contents of this package project in its 
+          current TFM configuration. 
+          TBD: we might want to preserve it anyways and adjust later (i.e. net45 project 
+          references netstandard1.6 project)
+          TODO: take into account cross-targeting.
+		-->
         <TargetFrameworkMoniker Condition="'%(_ReferencedPackageContentWithOriginalValues.FrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
       </_ReferencedPackageContentWithOriginalValues>
     </ItemGroup>
-    
+
     <!-- Otherwise, assign target paths based on the original TFM -->
-    <ItemGroup Condition="'$(IsPackagingProject)' == 'true'">
-      <!-- Retarget content for the currently building package, if necessary -->
+    <ItemGroup Condition="'$(IsPackagingProject)' == 'true' and '$(BuildOutputFrameworkSpecific)' != 'true'">
       <_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
+        <!-- Assign current package id if appropriate -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
         <!-- Only do this for framework-specifc assets that come from project references that don't build nugets (PackageId=='' above) -->
@@ -256,11 +258,12 @@ Copyright (c) .NET Foundation. All rights reserved.
         <!-- By flagging PrivateAssets=all nugetized references as IsPackable=false, we cause its assets to be 
              packed together with the build output, instead of referenced as a dependency.
              This works because default value for IsPackable checks for '' before defaulting 
-             to whether there is a PackageId property.
-             Also, passing our own PackFolder causes it to be the overriden default for the referenced project. -->
-        <AdditionalProperties Condition="'$(_PrivateAssets)' == 'all'">IsPackable=false;PackFolder=$(PackFolder)</AdditionalProperties>
+             to whether there is a PackageId property. -->
+        <AdditionalProperties Condition="'$(_PrivateAssets)' == 'all'">IsPackable=false;%(_MSBuildProjectReferenceExistent.AdditionalProperties)</AdditionalProperties>
+        <!-- If the project reference itself declares a PackFolder, use that instead of the calling project's -->
         <SetPackFolder Condition="'%(PackFolder)' != ''">PackFolder=%(PackFolder)</SetPackFolder>
-        <SetPackFolder Condition="'%(PackFolder)' == '' and '$(_PrivateAssets)' == 'all' and '$(PackFolder)' != ''">PackFolder=$(PackFolder)</SetPackFolder>
+        <!-- Otherwise, set both PackFolder and BuildOutputFrameworkSpecific so it will match the caller's -->
+        <SetPackFolder Condition="'%(PackFolder)' == '' and '$(_PrivateAssets)' == 'all' and '$(PackFolder)' != '' and '$(PackFolder)' != 'Ignore'">PackFolder=$(PackFolder);BuildOutputFrameworkSpecific=$(BuildOutputFrameworkSpecific)</SetPackFolder>
       </_NuGetizedProjectReference>
     </ItemGroup>
 
@@ -277,6 +280,17 @@ Copyright (c) .NET Foundation. All rights reserved.
         _SplitProjectReferencesByFileExistence;
         _SplitProjectReferencesByIsNuGetized
       </_GetReferencedPackageContentsDependsOn>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_SetBuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''">
+    <!-- Determine whether primary output is framework specific  -->
+    <ItemGroup>
+      <_BuildOutputFrameworkSpecific Include="@(PackFolderKind -> '%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(PackFolder)'" />
+    </ItemGroup>
+    <PropertyGroup>
+      <BuildOutputFrameworkSpecific>@(_BuildOutputFrameworkSpecific)</BuildOutputFrameworkSpecific>
+      <BuildOutputFrameworkSpecific Condition="'$(BuildOutputFrameworkSpecific)' == ''">false</BuildOutputFrameworkSpecific>
     </PropertyGroup>
   </Target>
 

@@ -183,12 +183,16 @@ static partial class Builder
         {
             if (!BuildResult.ResultsByTarget.ContainsKey(Target))
             {
-                output.WriteLine(this.ToString());
+                output.WriteLine(ToString());
                 Assert.False(true, "Build results do not contain output for target " + Target);
             }
 
             if (ResultCode != TargetResultCode.Success)
-                output.WriteLine(this.ToString());
+            {
+                output.WriteLine(ProjectOrSolutionFile);
+                output.WriteLine("Target: " + Target);
+                output.WriteLine(ToString());
+            }
 
             Assert.Equal(TargetResultCode.Success, ResultCode);
         }
