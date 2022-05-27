@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
   <PropertyGroup>
-		<TargetFramework>net46</TargetFramework>
-		<DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+    <TargetFramework>net46</TargetFramework>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
     <EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\d.csproj" />
+  <ItemGroup>
+    <ProjectReference Include="..\d.csproj" />
     <PackageFile Include="@(None)" PackagePath="docs\%(RelativeDir)%(Filename)%(Extension)" />
     <PackageFile Include="as-is.txt" PackFolder="None" IsFile="false" Condition="'$(AddAsIs)' == 'true'" />
   </ItemGroup>

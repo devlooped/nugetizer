@@ -140,8 +140,10 @@ namespace NuGetizer.Tasks
             }
 
             // If the kind is known but it isn't mapped to a folder inside the package, we're done.
-            // Special-case None kind since that means 'leave it wherever it lands' ;)
-            if (string.IsNullOrEmpty(packageFolder) && !packFolder.Equals(PackFolderKind.None, StringComparison.OrdinalIgnoreCase))
+            // Special-case None/Ignore kinds since those means 'leave it wherever it lands' ;)
+            if (string.IsNullOrEmpty(packageFolder) &&
+                !packFolder.Equals(PackFolderKind.None, StringComparison.OrdinalIgnoreCase) &&
+                !packFolder.Equals(PackFolderKind.Ignore, StringComparison.OrdinalIgnoreCase))
                 return output;
 
             // Special case for contentFiles, since they can also provide a codeLanguage metadata

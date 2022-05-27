@@ -119,6 +119,9 @@ Copyright (c) .NET Foundation. All rights reserved.
       <ShouldPack />
       <TargetPath />
     </InferenceCandidate>
+    <_InferredPackageFile>
+      <FrameworkSpecific />
+    </_InferredPackageFile>
   </ItemDefinitionGroup>
 
   <!-- Extend some built-in items with metadata we use in our inference targets -->
@@ -153,21 +156,10 @@ Copyright (c) .NET Foundation. All rights reserved.
   <PropertyGroup>
     <GetPackageContentsDependsOn>
       $(GetPackageContentsDependsOn);
-      _SetBuildOutputFrameworkSpecific;
       _SetDefaultPackageReferencePack;
       InferPackageContents
     </GetPackageContentsDependsOn>
   </PropertyGroup>
-
-  <Target Name="_SetBuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''" Returns="$(BuildOutputFrameworkSpecific)">
-    <!-- Determine whether primary output is framework specific  -->
-    <ItemGroup>
-      <_BuildOutputFrameworkSpecific Include="@(PackFolderKind -> '%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(PackFolder)'" />
-    </ItemGroup>
-    <PropertyGroup>
-      <BuildOutputFrameworkSpecific>@(_BuildOutputFrameworkSpecific)</BuildOutputFrameworkSpecific>
-    </PropertyGroup>
-  </Target>
 
   <Target Name="_SetDefaultPackageReferencePack" Condition="'$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive'"
           BeforeTargets="InferPrimaryOutputDependencies;InferPackageContents">
@@ -212,7 +204,7 @@ Copyright (c) .NET Foundation. All rights reserved.
         <!-- Items that are copied to the output directory adopt the kind of the build output -->
         <PackFolder Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != '' or 
                                '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' != 'Never'">$(PackFolder)</PackFolder>
-        <!-- Otherwise they cake on whichever is the default for their item type, as defined by their PackInference item -->
+        <!-- Otherwise they take on whichever is the default for their item type, as defined by their PackInference item -->
         <PackFolder Condition="'%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == '' or 
                                '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == 'Never'">%(_InferenceCandidateWithTargetPath.DefaultPackFolder)</PackFolder>
       </_InferenceCandidateWithTargetPath>
@@ -261,8 +253,8 @@ Copyright (c) .NET Foundation. All rights reserved.
       </_InferredPackageFile>
 
       <!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
-			     it also includes mscorlib which we don't need
-			     TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
+           it also includes mscorlib which we don't need
+           TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
       <_InferredPackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
                             Condition="'$(PackFrameworkReferences)' == 'true' and 
                                        '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}' and 
@@ -272,16 +264,14 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
 
     <ItemGroup>
-      <!-- 
-				PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
-				NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
-				current project.
-			-->
+      <!-- PackageId metadata on all PackageFile items means we can tell appart which ones came from which dependencies 
+           NOTE: if PackageId is empty, we won't generate a manifest and it means the files need to be packed with the
+           current project. -->
       <PackageFile Include="@(_InferredPackageFile)">
         <Source>Implicit</Source>
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
-        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
       </PackageFile>
     </ItemGroup>
   </Target>

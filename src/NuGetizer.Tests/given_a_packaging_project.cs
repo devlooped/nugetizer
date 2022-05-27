@@ -172,5 +172,152 @@ namespace NuGetizer
 
             result.AssertSuccess(output);
         }
+
+        [Fact]
+        public void when_framework_specific_then_retargets_direct_and_referenced_content()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackFolder>build</PackFolder>
+    <BuildOutputFrameworkSpecific>true</BuildOutputFrameworkSpecific>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='Tasks.csproj' PrivateAssets='all' />
+    <!-- NOTE: for other stuff, we can put it in the same folders as the build output by 
+         specifying PackFolder and FrameworkSpecific to match the project's. -->
+    <None Include='readme.md' PackFolder='$(PackFolder)' FrameworkSpecific='$(BuildOutputFrameworkSpecific)' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: new[]
+                {
+                    ("Tasks.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.Build.Tasks.Core' Version='16.6.0' />
+  </ItemGroup>
+</Project>"),
+                    ("readme.md", "# readme")
+                });
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"build/net6.0/readme.md",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"build/net6.0/Tasks.dll",
+            }));
+        }
+
+        [Fact]
+        public void when_referenced_project_has_packfolder_then_preserves_it()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='Transitive.csproj' />
+    <ProjectReference Include='Build.csproj' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: new[]
+                {
+                    ("Transitive.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackFolder>buildTransitive</PackFolder>
+  </PropertyGroup>
+</Project>"),
+                    ("Build.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackFolder>build</PackFolder>
+  </PropertyGroup>
+</Project>"),
+                });
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"buildTransitive/Transitive.dll",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"build/Build.dll",
+            }));
+        }
+
+
+        [Fact]
+        public void when_project_reference_packfolder_additional_properties_then_overrides_project_pack_folder()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=tools/net6.0' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("Library.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackFolder>lib</PackFolder>
+  </PropertyGroup>
+</Project>"));
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"tools/net6.0/Library.dll",
+            }));
+        }
+
+        [Fact]
+        public void when_project_reference_packfolder_then_overrides_project_pack_folder()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='Library.csproj' PackFolder='tools/net6.0' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("Library.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackFolder>lib</PackFolder>
+  </PropertyGroup>
+</Project>"));
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"tools/net6.0/Library.dll",
+            }));
+        }
     }
 }

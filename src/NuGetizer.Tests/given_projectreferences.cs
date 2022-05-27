@@ -169,7 +169,7 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_build_kind_then_does_not_pack_msbuild()
+        public void when_build_pack_folder_then_does_not_pack_msbuild()
         {
             var result = Builder.BuildProject(@"
 <Project Sdk='Microsoft.NET.Sdk'>
@@ -193,7 +193,7 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_build_kind_and_explicit_pack_then_packs_msbuild()
+        public void when_build_pack_folder_and_explicit_pack_then_packs_msbuild()
         {
             var result = Builder.BuildProject(@"
 <Project Sdk='Microsoft.NET.Sdk'>
@@ -215,68 +215,5 @@ namespace NuGetizer
                 PackFolder = PackFolderKind.Dependency,
             }));
         }
-
-        [Fact]
-        public void when_projectreference_explicit_packfolder_then_specific_folder_is_packed()
-        {
-            var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
-  <PropertyGroup>
-    <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=lib/net6.0/SpecificFolder' />
-  </ItemGroup>
-</Project>",
-                "GetPackageContents", output,
-                files: ("Library.csproj", @"
-<Project Sdk='Microsoft.NET.Sdk'>
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
-  </ItemGroup>
-</Project>"));
-
-            result.AssertSuccess(output);
-            Assert.Contains(result.Items, item => item.Matches(new
-            {
-                PackagePath = @"lib/net6.0/SpecificFolder/Library.dll",
-            }));
-        }
-
-        [Fact]
-        public void when_projectreference_has_packfolder_metadata_then_specific_folder_is_packed()
-        {
-            var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
-  <PropertyGroup>
-    <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include='Library.csproj' PackFolder='lib/net6.0/SpecificFolder' />
-  </ItemGroup>
-</Project>",
-                "GetPackageContents", output,
-                files: ("Library.csproj", @"
-<Project Sdk='Microsoft.NET.Sdk'>
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include='Microsoft.NETFramework.ReferenceAssemblies' Version='1.0.2' />
-  </ItemGroup>
-</Project>"));
-
-            result.AssertSuccess(output);
-            Assert.Contains(result.Items, item => item.Matches(new
-            {
-                PackagePath = @"lib/net6.0/SpecificFolder/Library.dll",
-            }));
-        }
-
     }
 }
