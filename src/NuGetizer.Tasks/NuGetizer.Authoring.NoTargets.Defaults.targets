@@ -1,6 +1,6 @@
 ﻿<!--
 ***********************************************************************************************
-NuGetizer.Authoring.NoTargets.props
+NuGetizer.Authoring.NoTargets.Defaults.targets
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
@@ -11,12 +11,6 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <CustomAfterNoTargets>$(MSBuildThisFileDirectory)NuGetizer.Authoring.NoTargets.targets</CustomAfterNoTargets>
-    
-    <!-- If the NoTargets project happens to be named .csproj or .vbproj, we'd need to re-set the DefaultLanguageSourceExtension -->
-    <CustomAfterMicrosoftCSharpTargets>$(MSBuildThisFileDirectory)NuGetizer.Authoring.NoTargets.Defaults.targets</CustomAfterMicrosoftCSharpTargets>
-    <CustomAfterMicrosoftVisualBasicTargets>$(MSBuildThisFileDirectory)NuGetizer.Authoring.NoTargets.Defaults.targets</CustomAfterMicrosoftVisualBasicTargets>
-
     <!-- This enables the default items inference to work properly for Content/None items -->
     <DefaultLanguageSourceExtension>.__</DefaultLanguageSourceExtension>
   </PropertyGroup>

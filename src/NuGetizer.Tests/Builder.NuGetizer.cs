@@ -27,11 +27,17 @@ static partial class Builder
         LoggerVerbosity? verbosity = null,
         params (string name, string contents)[] files)
     {
+        var projectFile = projectContent.Contains("Microsoft.Build.NoTargets") ?
+            "scenario.msbuildproj" : "scenario.csproj";
+
         return BuildProjects(
             target: target,
             output: output,
             verbosity: verbosity,
-            files: new[] { ("scenario.csproj", projectContent) }.Concat(files).ToArray());
+            files: new[]
+            {
+                (projectFile, projectContent)
+            }.Concat(files).ToArray());
     }
 
     public static TargetResult BuildProjects(
