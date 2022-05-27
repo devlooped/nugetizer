@@ -28,7 +28,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(PackDependencies)' == 'false'">false</PackFrameworkReferences>
     <!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IsPackagingProject)' != 'true' and '$(PackFolder)' == 'lib'">true</PackFrameworkReferences>
-
+    <!-- When PackFolder is build/buildTransitive, we default to packing None since it's most intuitive in that case -->
+    <PackNone Condition="'$(PackNone)' == '' and ('$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive')">true</PackNone>
+    
     <_OutputFullPath Condition="$([System.IO.Path]::IsPathRooted($(OutputPath)))">$(OutputPath)</_OutputFullPath>
     <_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(OutputPath)</_OutputFullPath>
   </PropertyGroup>
@@ -173,7 +175,14 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="_CollectInferenceCandidates" Inputs="@(PackInference)" Outputs="%(PackInference.Identity)-BATCH">
     <PropertyGroup>
       <PackExclude>%(PackInference.PackExclude)</PackExclude>
+      <PackInferenceIdentity>%(PackInference.Identity)</PackInferenceIdentity>
     </PropertyGroup>
+
+    <ItemGroup Condition="'$(PackInferenceIdentity)' == 'None' and ('$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive')">
+      <None Update="@(None)" Condition="'%(None.PackFolder)' == ''" PackFolder="$(PackFolder)" />
+      <None Update="@(None)" Condition="'%(None.FrameworkSpecific)' == ''" FrameworkSpecific="$(BuildFrameworkSpecific)" />
+    </ItemGroup>
+    
     <!-- If we have an exclude wildcard to evaluate, do so and keep only non-matching items -->
     <EvaluateWildcards Condition="'$(PackExclude)' != ''" Items="@(%(PackInference.Identity))" Wildcards="$(PackExclude)">
       <Output TaskParameter="NonMatchingItems" ItemName="InferenceCandidate" />

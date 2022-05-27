@@ -319,5 +319,27 @@ namespace NuGetizer
                 PackagePath = @"tools/net6.0/Library.dll",
             }));
         }
+
+        [Fact]
+        public void when_pack_folder_build_then_none_packs_as_build()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackFolder>build</PackFolder>
+    <EnableDefaultItems>true</EnableDefaultItems>
+  </PropertyGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("Packer.targets", @"<Project />"));
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"build/Packer.targets",
+            }));
+        }
     }
 }
