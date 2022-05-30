@@ -329,6 +329,7 @@ namespace NuGetizer
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
     <PackFolder>build</PackFolder>
+    <!-- Only needed since for scenarios we set this to false. -->
     <EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
 </Project>",
@@ -339,6 +340,132 @@ namespace NuGetizer
             Assert.Contains(result.Items, item => item.Matches(new
             {
                 PackagePath = @"build/Packer.targets",
+            }));
+        }
+
+        [Fact]
+        public void when_readme_found_but_pack_readme_false_then_does_not_add_it()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Only needed since for scenarios we set this to false. -->
+    <EnableDefaultItems>true</EnableDefaultItems>
+    <PackReadme>false</PackReadme>
+  </PropertyGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("readme.md", @"# readme"));
+
+            result.AssertSuccess(output);
+
+            // Assert the readme file is not added to the package
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"readme.md",
+            }));
+
+            // Assert the package metadata is not present
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "Packer",
+                Readme = "readme.md",
+            }));
+        }
+
+        [Fact]
+        public void when_readme_found_but_project_not_packable_then_does_not_add_content()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Only needed since for scenarios we set this to false. -->
+    <EnableDefaultItems>true</EnableDefaultItems>
+  </PropertyGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("readme.md", @"# readme"));
+
+            result.AssertSuccess(output);
+
+            // Assert the readme file is not added to the package
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"readme.md",
+            }));
+
+            // Assert the package metadata is not present
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "Packer",
+                Readme = "readme.md",
+            }));
+        }
+
+        [Fact]
+        public void when_readme_found_then_adds_metadata_and_content()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Only needed since for scenarios we set this to false. -->
+    <EnableDefaultItems>true</EnableDefaultItems>
+  </PropertyGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("readme.md", @"# readme"));
+
+            result.AssertSuccess(output);
+
+            // Assert the readme file is added to the package
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"readme.md",
+            }));
+
+            // Assert the package metadata is present too
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Packer",
+                Readme = "readme.md",
+            }));
+        }
+
+        [Fact]
+        public void when_readme_custom_extension_specified_then_adds_metadata_and_content()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Only needed since for scenarios we set this to false. -->
+    <EnableDefaultItems>true</EnableDefaultItems>
+    <PackageReadmeFile>readme.txt</PackageReadmeFile>
+  </PropertyGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("readme.txt", @"readme"));
+
+            result.AssertSuccess(output);
+
+            // Assert the readme file is added to the package
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"readme.txt",
+            }));
+
+            // Assert the package metadata is present too
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Packer",
+                Readme = "readme.txt",
             }));
         }
     }

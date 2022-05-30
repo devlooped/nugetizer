@@ -100,6 +100,14 @@ don't have to customize the project much and can instead let the rules build up 
 of your package by interpreting your existing project elements. It works by transforming various built-in 
 items into corresponding `PackageFile` items, much as if you had added them by hand.
 
+For example, if you create a `readme.md` file alongside the project, it will (by default) be 
+automatically included in the package and set as the `Readme` metadata. Likewise, if you provide 
+the `$(PackageReadmeFile)` property pointing to a different filename (say, `readme.txt`), it will 
+also be automatically added to the package, without you having to add an explicit `PackageFile` or 
+update the item with `<None Update='readme.txt' Pack='true' />` so it packs properly. 
+
+> NOTE: package readme inference can be turned off with the `PackReadme=false` project property.
+
 Inference can be turned off for specific items by just adding `Pack="false"` 
 item metadata. It can also be turned off by default for all items of a given type with an item definition group:
 
@@ -159,6 +167,7 @@ Whether items are packed by default or not is controlled by properties named aft
 | Property        | Default Value |
 |-----------------|---------------|
 | PackBuildOutput | true |
+| PackReadme      | true |
 | PackSymbols     | true if PackBuildOutput=true (*) |
 | PackDependencies| empty (**) |
 | PackFrameworkReferences | true if PackFolder=lib, false if PackDependencies=false |
