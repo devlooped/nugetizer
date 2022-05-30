@@ -17,6 +17,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- The PackFolder of primary output (build, symbols, doc and satellite assemblies) set if PackBuildOutput = true -->
     <PackFolder Condition="'$(PackFolder)' == ''">lib</PackFolder>
 
+    <!-- Whether to automatically include a None item named `readme.md` -->
+    <PackReadme Condition="'$(PackReadme)' == ''">true</PackReadme>
+
     <!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
     <PackContent Condition="'$(PackContent)' == ''">true</PackContent>
     <!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
@@ -30,9 +33,19 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IsPackagingProject)' != 'true' and '$(PackFolder)' == 'lib'">true</PackFrameworkReferences>
     <!-- When PackFolder is build/buildTransitive, we default to packing None since it's most intuitive in that case -->
     <PackNone Condition="'$(PackNone)' == '' and ('$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive')">true</PackNone>
-    
+
     <_OutputFullPath Condition="$([System.IO.Path]::IsPathRooted($(OutputPath)))">$(OutputPath)</_OutputFullPath>
     <_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(OutputPath)</_OutputFullPath>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package Readme" Condition="'$(PackReadme)' == 'true' and '$(IsPackable)' == 'true'">
+    <PackageReadmeFilename>readme</PackageReadmeFilename>
+    <PackageReadmeExtension>.md</PackageReadmeExtension>
+
+    <PackageReadmeFilename Condition="'$(PackageReadmeFile)' != ''">$([System.IO.Path]::GetFilenameWithoutExtension('$(PackageReadmeFile)'))</PackageReadmeFilename>
+    <PackageReadmeExtension Condition="'$(PackageReadmeFile)' != ''">$([System.IO.Path]::GetExtension('$(PackageReadmeFile)'))</PackageReadmeExtension>
+
+    <PackageReadmeFile Condition="'$(PackageReadmeFile)' == '' and Exists('$(MSBuildProjectDirectory)\$(PackageReadmeFilename)$(PackageReadmeExtension)')">$(PackageReadmeFilename)$(PackageReadmeExtension)</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemDefinitionGroup Label="Inference Defaults">
@@ -182,7 +195,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <None Update="@(None)" Condition="'%(None.PackFolder)' == ''" PackFolder="$(PackFolder)" />
       <None Update="@(None)" Condition="'%(None.FrameworkSpecific)' == ''" FrameworkSpecific="$(BuildFrameworkSpecific)" />
     </ItemGroup>
-    
+
     <!-- If we have an exclude wildcard to evaluate, do so and keep only non-matching items -->
     <EvaluateWildcards Condition="'$(PackExclude)' != ''" Items="@(%(PackInference.Identity))" Wildcards="$(PackExclude)">
       <Output TaskParameter="NonMatchingItems" ItemName="InferenceCandidate" />
@@ -194,6 +207,14 @@ Copyright (c) .NET Foundation. All rights reserved.
   </Target>
 
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn);_CollectInferenceCandidates" Returns="@(PackageFile)">
+
+    <!-- Even if all these conditions are false, the user can still explicitly pack the file, of course -->
+    <ItemGroup Label="Readme" Condition="'$(PackReadme)' == 'true' and '$(PackageReadmeFile)' != '' and '$(IsPackable)' == 'true'">
+      <InferenceCandidate Include="@(None -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))"
+                          PackagePath="%(Filename)%(Extension)"
+                          Condition="'%(Extension)' == '$(PackageReadmeExtension)'" />
+    </ItemGroup>
+
     <ItemGroup>
       <InferenceCandidate>
         <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(PackFolder)' != '' or '%(PackageReference)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
