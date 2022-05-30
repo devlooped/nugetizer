@@ -272,7 +272,7 @@ via the `PackFolder` attribute on the `ProjectReference` itself:
 
 ```xml
    <ProjectReference Include="..\MyDesktopLibrary\MyDesktopLibrary.csproj" 
-                     PackFolder="lib\net5.0\SpecificFolder" />
+                     PackFolder="lib\net6.0\SpecificFolder" />
 ```
 
 > NOTE: this is a convenience shortcut since you can already pass additional project 
@@ -280,6 +280,109 @@ via the `PackFolder` attribute on the `ProjectReference` itself:
 > [`AdditionalProperties` attribute](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-task?view=vs-2019#pass-properties-to-projects).
 
 Finally, you can focedly turn a project reference build output into a private asset even if it defines a `PackageId` by adding `PrivateAssets=all`. This is very useful for build and analyzer packages, which typically reference the main library project too, but need its output as private, since neither can use dependencies at run-time.
+
+## Packaging Projects
+
+Typically, when creating a package involves more than one project (i.e. main library, some 
+build tasks + targets, some other runtime tools), you will want to create a separate packaging 
+project that is *not* a typical class library. For that purpose, you can create an `.msbuildproj` 
+which has built-in support in Visual Studio. It can use the `Microsoft.Build.NoTargets` SDK as follows:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.Build.NoTargets/3.5.0">
+  <PropertyGroup>
+    <PackageId>MyPackage</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>
+```
+
+> NOTE: the requirement of a `TargetFramework` comes from the underlying SDK and the .NET SDK 
+targets themselves, but this kind of project will not build any output. Running the `nugetize` 
+on this project (after a `dotnet restore`) would render:
+
+![nugetize authoring screenshot](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/nugetize-authoring-1.png)
+
+If you add a project reference to a build tasks project like the following:
+
+```xml
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackFolder>buildTransitive</PackFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.Build.Tasks.Core' Version='16.6.0' />
+  </ItemGroup>
+</Project>
+```
+
+> NOTE: this project would contain MSBuild tasks, and likely a [PackageId].targets alongside so that 
+it's automatically imported in consuming projects. 
+
+The packaging project would now look as follows:
+
+```xml
+<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>MyPackage</PackageId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='..\Tasks\Tasks.csproj' />
+  </ItemGroup>
+</Project>
+```
+
+And `nugetize` would show the following package structure:
+
+![nugetize authoring screenshot](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/nugetize-authoring-2.png)
+
+Note that the targets file was automatically added to the package as expected. Packaging projects 
+can reference other packaging projects in turn for complex packing scenarios too.
+
+If the packaging project references both a build-targeting project (such as the one above) and 
+also a regular library project, the package contents becomes the aggregation of the contents 
+contributed by each referenced project automatically. For example, if you add a project reference 
+from the packaging project to the following class library project:
+
+```xml
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='System.Text.Json' Version='6.0.0' />
+  </ItemGroup>
+</Project>
+```
+
+The content would now be:
+
+![nugetize authoring screenshot](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/nugetize-authoring-3.png)
+
+You can also add a reference to a CLI *tools* program like the following:
+
+```xml
+
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackFolder>tools</PackFolder>
+    <!-- We don't need this particular tool in a framework-specific subfolder under /tools -->
+    <BuildOutputFrameworkSpecific>false</BuildOutputFrameworkSpecific>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='System.CommandLine' Version='2.0.0-beta3.22114.1' PrivateAssets='all' />
+  </ItemGroup>
+</Project>
+```
+
+![nugetize authoring screenshot](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/nugetize-authoring-4.png)
+
+As you can see, it's quite trivial to build fairly complex packages using very intuitive defaults and 
+content inference. 
 
 ## Advanced Features
 
