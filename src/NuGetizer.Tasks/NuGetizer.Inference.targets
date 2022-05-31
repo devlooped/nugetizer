@@ -22,8 +22,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
     <PackContent Condition="'$(PackContent)' == ''">true</PackContent>
+    
     <!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
-    <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IsPackagingProject)' != 'true'">true</PackBuildOutput>
+    <!-- When packing as a tool (SDK compatibility mode), primary output should not be packed by us, since the SDK PackTool target will already collect the output of /publish instead. -->
+    <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IsPackagingProject)' != 'true' and '$(PackAsTool)' != 'true'">true</PackBuildOutput>
+        
     <!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(PackBuildOutput)' == 'true'">true</PackSymbols>
 
@@ -206,6 +209,34 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
+  <Target Name="InferToolContents" BeforeTargets="_CollectInferenceCandidates"
+          Condition="'$(UsingMicrosoftNETSdk)' == 'true' and '$(PackAsTool)' == 'true'"
+          DependsOnTargets="PackTool">
+
+    <PropertyGroup>
+      <!-- When packing as SDK pack, primary output should not be packed by us, since the SDK PackTool will 
+           already collect the output of /publish instead. -->
+      <PackBuildOutput>false</PackBuildOutput>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <!-- Ensure we have a full relative path including file name as PackagePath -->
+      <TfmSpecificPackageFile>
+        <PackageFile>%(Filename)%(Extension)</PackageFile>
+      </TfmSpecificPackageFile>
+      <TfmSpecificPackageFile>
+        <PackagePathHasFilename>false</PackagePathHasFilename>
+        <PackagePathHasFilename Condition="$([MSBuild]::ValueOrDefault('%(PackagePath)', '').EndsWith('%(PackageFile)'))"></PackagePathHasFilename>
+      </TfmSpecificPackageFile>
+      <TfmSpecificPackageFile Condition="'%(PackagePathHasFilename)' == 'false'">
+        <PackagePath>$([MSBuild]::ValueOrDefault('%(PackagePath)', '').TrimEnd('/'))/%(PackageFile)</PackagePath>
+      </TfmSpecificPackageFile>
+      <None Include="@(TfmSpecificPackageFile)" />
+
+    </ItemGroup>
+
+  </Target>
+
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn);_CollectInferenceCandidates" Returns="@(PackageFile)">
 
     <!-- Even if all these conditions are false, the user can still explicitly pack the file, of course -->
@@ -275,7 +306,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ItemGroup Label="References Inference">
       <_InferredPackageFile Include="@(PackageReference)"
-                            Condition="'%(PackageReference.Identity)' != 'NuGetizer' and
+                            Condition="'$(PackAsTool)' != 'true' and
+                                       '%(PackageReference.Identity)' != 'NuGetizer' and
                                        '%(PackageReference.Identity)' != 'NETStandard.Library' and 
                                        '%(PackageReference.PrivateAssets)' != 'all' and
                                        '%(PackageReference.Pack)' != 'false'">
@@ -286,7 +318,8 @@ Copyright (c) .NET Foundation. All rights reserved.
            it also includes mscorlib which we don't need
            TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
       <_InferredPackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
-                            Condition="'$(PackFrameworkReferences)' == 'true' and 
+                            Condition="'$(PackAsTool)' != 'true' and
+                                       '$(PackFrameworkReferences)' == 'true' and 
                                        '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}' and 
                                        '%(ReferencePath.Pack)' != 'false'">
         <PackFolder>FrameworkReference</PackFolder>

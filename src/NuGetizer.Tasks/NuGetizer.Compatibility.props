@@ -19,7 +19,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <PropertyGroup Label="SDK Pack Compat">
     <PackOnBuild Condition="'$(GeneratePackageOnBuild)' == 'true'">true</PackOnBuild>
-    <PackFolder Condition="'$(IsTool)' == 'true' or '$(PackAsTool)' == 'true'">tool</PackFolder>
+    <GeneratePackageOnBuild Condition="'$(GeneratePackageOnBuild)' == '' and '$(PackOnBuild)' == 'true'">true</GeneratePackageOnBuild>
+    
+    <PackFolder Condition="'$(PackFolder)' == '' and ('$(IsTool)' == 'true' or '$(PackAsTool)' == 'true')">tools</PackFolder>
     <PackFolder Condition="'$(BuildOutputTargetFolder)' != ''">$(BuildOutputTargetFolder)</PackFolder>
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(IncludeSymbols)' != ''">$(IncludeSymbols)</PackSymbols>
     <PackContent Condition="'$(PackContent)' == '' and '$(IncludeContentInPack)' != ''">$(IncludeContentInPack)</PackContent>
@@ -31,6 +33,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   </PropertyGroup>
 
   <PropertyGroup Label="Legacy NuGetizer Compat">
+    <PackFolder Condition="'$(PackFolder)' == 'tool'">tools</PackFolder>
     <PackFolder Condition="'$(PackFolder)' == '' and '$(BuildOutputKind)' != ''">$(BuildOutputKind)</PackFolder>
     <PackFolder Condition="'$(PackFolder)' == '' and '$(PrimaryOutputKind)' != ''">$(PrimaryOutputKind)</PackFolder>
 
