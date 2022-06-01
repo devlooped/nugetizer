@@ -11,9 +11,13 @@ env:
   DOTNET_NOLOGO: true
   Configuration: Release
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
@@ -21,19 +25,15 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: ⚙ dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0.x'
+      - name: ⚙ msbuild
+        uses: microsoft/setup-msbuild@v1.1
 
       - name: 🙏 build
-        run: dotnet build -m:1 -p:version=${GITHUB_REF#refs/*/v}
-
-      - name: ⚙ GNU grep
-        if: matrix.os == 'macOS-latest'
+        shell: pwsh
+        working-directory: src/NuGetizer.Tests
         run: |
-          brew install grep
-          echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> .bash_profile
+          msbuild -m:1 -p:VersionLabel="$env:GITHUB_REF.$env:GITHUB_RUN_NUMBER"
+          dotnet restore Scenarios/given_a_packaging_project/a.nuproj
 
       - name: 🧪 test
         uses: ./.github/workflows/test
