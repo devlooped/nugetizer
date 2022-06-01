@@ -1,5 +1,30 @@
 # Changelog
 
+## [v0.8.0](https://github.com/devlooped/nugetizer/tree/v0.8.0) (2022-05-31)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.6...v0.8.0)
+
+:sparkles: Implemented enhancements:
+
+- Improve readme.md content inclusion inference [\#185](https://github.com/devlooped/nugetizer/issues/185)
+- Make it easier to create build packages by improving inference heuristics [\#184](https://github.com/devlooped/nugetizer/issues/184)
+- Allow packaging projects to be framework-specific [\#182](https://github.com/devlooped/nugetizer/issues/182)
+- Add support for PackFolder=buildTransitive [\#179](https://github.com/devlooped/nugetizer/issues/179)
+
+:bug: Fixed bugs:
+
+- Packaging project generates package improperly [\#139](https://github.com/devlooped/nugetizer/issues/139)
+- SDK Pack always packs build as framework-specific [\#133](https://github.com/devlooped/nugetizer/issues/133)
+
+:twisted_rightwards_arrows: Merged:
+
+- Improve compatibility with SDK Pack for tools [\#188](https://github.com/devlooped/nugetizer/pull/188) (@kzu)
+- Improve readme content inclusion metadata inference [\#187](https://github.com/devlooped/nugetizer/pull/187) (@kzu)
+- Improve default heuristics for build projects [\#186](https://github.com/devlooped/nugetizer/pull/186) (@kzu)
+- Allow packaging projects to be framework-specific [\#183](https://github.com/devlooped/nugetizer/pull/183) (@kzu)
+- Be smarter about PackFolder on project references [\#181](https://github.com/devlooped/nugetizer/pull/181) (@kzu)
+- Add support for buildTransitive pack folder kind [\#180](https://github.com/devlooped/nugetizer/pull/180) (@kzu)
+
 ## [v0.7.6](https://github.com/devlooped/nugetizer/tree/v0.7.6) (2022-05-26)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.5...v0.7.6)
