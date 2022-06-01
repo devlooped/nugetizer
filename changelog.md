@@ -1,8 +1,8 @@
 # Changelog
 
-## [v0.8.0](https://github.com/devlooped/nugetizer/tree/v0.8.0) (2022-05-31)
+## [v0.8.0-beta](https://github.com/devlooped/nugetizer/tree/v0.8.0-beta) (2022-06-01)
 
-[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.6...v0.8.0)
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.6...v0.8.0-beta)
 
 :sparkles: Implemented enhancements:
 
@@ -14,6 +14,7 @@
 :bug: Fixed bugs:
 
 - Packaging project generates package improperly [\#139](https://github.com/devlooped/nugetizer/issues/139)
+- Improve compatibility with SDK Pack for tools [\#134](https://github.com/devlooped/nugetizer/issues/134)
 - SDK Pack always packs build as framework-specific [\#133](https://github.com/devlooped/nugetizer/issues/133)
 
 :twisted_rightwards_arrows: Merged:
