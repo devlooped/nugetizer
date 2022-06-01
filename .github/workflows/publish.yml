@@ -32,7 +32,7 @@ jobs:
         shell: pwsh
         working-directory: src/NuGetizer.Tests
         run: |
-          msbuild -m:1 -p:VersionLabel="$env:GITHUB_REF.$env:GITHUB_RUN_NUMBER"
+          msbuild -r -m:1
           dotnet restore Scenarios/given_a_packaging_project/a.nuproj
 
       - name: 🧪 test
