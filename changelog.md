@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.8.0](https://github.com/devlooped/nugetizer/tree/v0.8.0) (2022-06-01)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.8.0-beta...v0.8.0)
+
 ## [v0.8.0-beta](https://github.com/devlooped/nugetizer/tree/v0.8.0-beta) (2022-06-01)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.7.6...v0.8.0-beta)
