@@ -10,6 +10,12 @@
 [file "src/icon.png"]
 	url = https://github.com/devlooped/oss/blob/main/src/icon.png
 	skip
+[file ".github/workflows/build.yml"]
+	url = https://github.com/devlooped/oss/blob/main/.github/workflows/build.yml
+	skip
+[file ".github/workflows/publish.yml"]
+	url = https://github.com/devlooped/oss/blob/main/.github/workflows/publish.yml
+	skip
 [file ".editorconfig"]
 	url = https://github.com/devlooped/oss/blob/main/.editorconfig
 	etag = 4e857df48d0abd81512350d6b3b1a1c83b78284be65bd5172a4ec8e52cd04e2d
@@ -35,11 +41,6 @@
 	etag = 2fc8a0d2b47091b058ae3e1f68333492044b49a684621f4939a0bce5bff869d5
 	weak
 	sha = 0683ee777d7d878d4bf013d7deea352685135a05
-[file ".github/workflows/build.yml"]
-	url = https://github.com/devlooped/oss/blob/main/.github/workflows/build.yml
-	etag = 4e65025ab77d15766520234d3a9953ff4f1eea91620e1080f10909de19804877
-	weak
-	sha = e19ed3228a0ac7f64a43197241a788fb224a683f
 [file ".gitignore"]
 	url = https://github.com/devlooped/oss/blob/main/.gitignore
 	etag = 1c1705a3f0ed65e33c9133996ebaa100aa445a8b968b2904ad48fef938702006
@@ -119,11 +120,6 @@
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/dotnet-file.yml
 	sha = 2a39a426f66402e47c80818f92748a1bfd7d736c
 	etag = c424e4f9159bd5d4ccb3b65646a65eed5ad153f57111e3b56900ebce10194f3f
-	weak
-[file ".github/workflows/publish.yml"]
-	url = https://github.com/devlooped/oss/blob/main/.github/workflows/publish.yml
-	sha = 0e5a33cc685fa85e3a81b797202f3e14e1cd84a9
-	etag = 1d6a05b7f684b4fc1bb387750b0e100406e8a0017981c4e9d39a012479f35266
 	weak
 [file ".github/workflows/release-artifacts.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/release-artifacts.yml

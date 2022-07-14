@@ -11,63 +11,39 @@ on:
       - code-of-conduct.md
       - security.md
       - support.md
-      - readme.md
   pull_request:
     types: [opened, synchronize, reopened]
 
 env:
   DOTNET_NOLOGO: true
+  Configuration: Release
 
 defaults:
   run:
     shell: bash
 
 jobs:
-  dotnet-format:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
         with: 
           submodules: recursive
           fetch-depth: 0
-
-      - name: ⚙ dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0.x'
 
       - name: ✓ ensure format
         run: dotnet format --verify-no-changes -v:diag --exclude ~/.nuget
 
-  build:
-    name: build-${{ matrix.os }}
-    needs: dotnet-format
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macOS-latest]
-    steps:
-      - name: 🤘 checkout
-        uses: actions/checkout@v2
-        with: 
-          submodules: recursive
-          fetch-depth: 0
-
-      - name: ⚙ dotnet
-        uses: actions/setup-dotnet@v1
-        if: matrix.os != 'windows-latest'
-        with:
-          dotnet-version: '6.0.x'
+      - name: ⚙ msbuild
+        uses: microsoft/setup-msbuild@v1.1
 
       - name: 🙏 build
-        run: dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
-
-      - name: ⚙ GNU grep
-        if: matrix.os == 'macOS-latest'
+        shell: pwsh
+        working-directory: src/NuGetizer.Tests
         run: |
-          brew install grep
-          echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> .bash_profile
+          msbuild -r -m:1
+          dotnet restore Scenarios/given_a_packaging_project/a.nuproj
 
       - name: 🧪 test
         uses: ./.github/workflows/test
@@ -79,7 +55,7 @@ jobs:
       - name: 🚀 sleet
         env:
           SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
-        if: matrix.os == 'ubuntu-latest' && env.SLEET_CONNECTION != ''
+        if: env.SLEET_CONNECTION != ''
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
