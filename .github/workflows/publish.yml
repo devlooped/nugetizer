@@ -11,13 +11,9 @@ env:
   DOTNET_NOLOGO: true
   Configuration: Release
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   publish:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
@@ -25,15 +21,13 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: ⚙ msbuild
-        uses: microsoft/setup-msbuild@v1.1
+      - name: ⚙ dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
 
       - name: 🙏 build
-        shell: pwsh
-        working-directory: src/NuGetizer.Tests
-        run: |
-          msbuild -r -m:1
-          dotnet restore Scenarios/given_a_packaging_project/a.nuproj
+        run: dotnet build -m:1 -p:version=${GITHUB_REF#refs/*/v}
 
       - name: 🧪 test
         uses: ./.github/workflows/test
@@ -42,5 +36,4 @@ jobs:
         run: dotnet pack -m:1 -p:version=${GITHUB_REF#refs/*/v}
 
       - name: 🚀 nuget
-        working-directory: bin
-        run: dotnet nuget push *.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
