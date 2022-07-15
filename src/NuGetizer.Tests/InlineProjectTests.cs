@@ -605,5 +605,94 @@ namespace NuGetizer
                 PackagePath = "build/Newtonsoft.Json.dll"
             }));
         }
+
+        [Fact]
+        public void when_packing_transitive_dependency_then_retargets_to_main_project()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='Library.csproj' />
+  </ItemGroup>
+</Project>", output: output, files: new[] {
+    ("Library.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Moq' Version='4.18.1' />
+    <ProjectReference Include='Helpers.csproj' />
+  </ItemGroup>
+</Project>"),
+    ("Helpers.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Xunit' Version='2.4.1' />
+  </ItemGroup>
+</Project>")
+            });
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Moq",
+                TargetFramework = "net472",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Xunit",
+                TargetFramework = "net472",
+            }));
+        }
+
+        [Fact]
+        public void when_multi_targeting_packing_transitive_dependency_then_retargets_to_main_project()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFrameworks>net472;netstandard2.0;net6.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include='Library.csproj' />
+  </ItemGroup>
+</Project>", output: output, files:
+    ("Library.csproj", @"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Moq' Version='4.18.1' />
+  </ItemGroup>
+</Project>"
+    ));
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Moq",
+                TargetFramework = "net472",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Moq",
+                TargetFramework = "net6.0",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Moq",
+                TargetFramework = "netstandard2.0",
+            }));
+        }
     }
 }
