@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.8.1](https://github.com/devlooped/nugetizer/tree/v0.8.1) (2022-07-15)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.8.0...v0.8.1)
+
+:sparkles: Implemented enhancements:
+
+- Support transitive package dependency from P2P [\#202](https://github.com/devlooped/nugetizer/pull/202) (@kzu)
+
+:bug: Fixed bugs:
+
+- Support transitive package dependency of referenced \(non-packing\) project [\#199](https://github.com/devlooped/nugetizer/issues/199)
+- Packaging when using Nerdbank.Gitversioning fails [\#198](https://github.com/devlooped/nugetizer/issues/198)
+- Yellow triangle on Nugetizer nuget package reference  under project  dependencies -\> packages  [\#196](https://github.com/devlooped/nugetizer/issues/196)
+- running nugetize fails - unable to find framework [\#189](https://github.com/devlooped/nugetizer/issues/189)
+
 ## [v0.8.0](https://github.com/devlooped/nugetizer/tree/v0.8.0) (2022-06-01)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.8.0-beta...v0.8.0)
