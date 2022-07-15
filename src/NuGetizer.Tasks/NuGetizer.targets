@@ -194,13 +194,16 @@ Copyright (c) .NET Foundation. All rights reserved.
         <!-- Only do this for assets that come from project references that don't build nugets (PackageId=='' above) -->
         <TargetFramework></TargetFramework>
         <!-- NOTE: we're always overwriting the TFM for framework-specific items in this case 
-          since this item will end up making up the contents of this package project in its 
+          since this item will end up making up the contents of this project package in its 
           current TFM configuration. 
           TBD: we might want to preserve it anyways and adjust later (i.e. net45 project 
           references netstandard1.6 project)
           TODO: take into account cross-targeting.
 		-->
         <TargetFrameworkMoniker Condition="'%(_ReferencedPackageContentWithOriginalValues.FrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <!-- Transitive dependencies from non-packing projects should be lifted as direct dependencies of the packing project, 
+             using its TFM, since they would need to become dependencies of the packing project in the current TFM. -->
+        <TargetFrameworkMoniker Condition="'%(_ReferencedPackageContentWithOriginalValues.PackFolder)' == 'Dependency'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
       </_ReferencedPackageContentWithOriginalValues>
     </ItemGroup>
 
