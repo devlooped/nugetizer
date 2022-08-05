@@ -164,3 +164,18 @@
 	sha = 1537aa96d3c999642d678e1143b09950f235b977
 	etag = 754274e682c3523e3ac0a142ada64abff20551dc73bf16edfbd66415dcf87fd0
 	weak
+[file ".github/workflows/includes.yml"]
+	url = https://github.com/devlooped/oss/blob/main/.github/workflows/includes.yml
+	sha = 66caefba98939c5c0505ab536417aa4ec4eec240
+	etag = acdb356278d3f41cf3cd4620ff81d16caddd2571ccfee73f5a86ffbd4f8c9944
+	weak
+[file "docs/footer.md"]
+	url = https://github.com/devlooped/oss/blob/main/docs/footer.md
+	sha = 56086e5645a50f8dc837bab919f7c12f6c50e070
+	etag = 6e45ba613fdc949a6a5d84ed8efd5cc1b36d13bb0fd965e206fd5e92b604e2d0
+	weak
+[file "docs/sponsors.md"]
+	url = https://github.com/devlooped/oss/blob/main/docs/sponsors.md
+	sha = 923ddc16dce95c591fe91059720b3447107ec57f
+	etag = 555eea0c0cd7014181709931752b99360405799579027d4dccf21975455561ab
+	weak
