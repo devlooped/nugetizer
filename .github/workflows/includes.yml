@@ -1,4 +1,4 @@
-name: +M▼ includes
+name: +Mᐁ includes
 on: 
   workflow_dispatch:
   push:
@@ -22,8 +22,8 @@ jobs:
           BOT_EMAIL_SECRET: ${{ secrets.BOT_EMAIL }}
           BOT_AUTHOR_SECRET: ${{ secrets.BOT_AUTHOR }}
 
-      - name: +M▼ includes
-        uses: devlooped/actions-include@v4
+      - name: +Mᐁ includes
+        uses: devlooped/actions-include@v6
 
       - name: ✍ pull request
         uses: peter-evans/create-pull-request@v3
@@ -31,10 +31,10 @@ jobs:
           base: main
           branch: markdown-includes
           delete-branch: true
-          labels: dependencies
+          labels: docs
           author: ${{ env.BOT_AUTHOR }}
           committer: ${{ env.BOT_AUTHOR }}
-          commit-message: +M▼ includes
-          title: +M▼ includes
-          body: +M▼ includes
+          commit-message: +Mᐁ includes
+          title: +Mᐁ includes
+          body: +Mᐁ includes
           token: ${{ env.GH_TOKEN }}
