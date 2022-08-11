@@ -46,6 +46,42 @@ in your package. This gives you ultimate control without having to understand an
 
 All [inference rules are laid out in a single .targets](src/NuGetizer.Tasks/NuGetizer.Inference.targets) file that's easy to inspect them to learn more, and the file is not imported at all when `EnablePackInference=false`.
 
+## Package Readme
+
+Since the introduction of [package readme on nuget.org](https://docs.microsoft.com/en-us/nuget/nuget-org/package-readme-on-nuget-org), 
+more and more packages are leveraging this feature to make a package more discoverable and user friendly. One common 
+need that arises is reusing existing documentation content that exists elsewhere in the project repository, such as 
+on the root readme for the project (which typically contains additional information beyond user facing documentation, 
+such as how to clone, build and contribute to the repository). In order to maximize reuse for these documentation files, 
+NuGetizer supports includes in the package readme, such as:
+
+```
+This is the package readme.
+<!-- include ../../../readme.md#usage -->
+
+<!-- include ../../../footer.md -->
+```
+
+This readme includes a specific section of the repository root readme (via `#usage`), which is defined as follows:
+
+```
+# Project Foo
+This is a general section on cloning, contributing, CI badges, etc.
+
+<!-- #usage -->
+# Usage
+Here we explain our awesome API...
+<!-- #usage -->
+...
+```
+
+By defining both starting and closing `#usage` markup, the package readme can include a specific section. 
+The footer, by contrast, is included wholesale. 
+
+When the `.nupkg` is created, these includes are resolved automatically so you keep content duplication to a 
+minimum. Nested includes are also supported (i.e. `footer.md` might in turn include a `sponsors.md` file or 
+a fragment of it).
+
 ## dotnet-nugetize
 
 Carefully tweaking your packages until they look exactly the way you want them should not be a tedious and slow process. Even requiring your project to be built between changes can be costly and reduce the speed at which you can iterate on the packaging aspects of the project. Also, generating the final `.nupkg`, opening it in a tool and inspecting its content, is also not ideal for rapid iteration.
