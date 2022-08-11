@@ -17,7 +17,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- The PackFolder of primary output (build, symbols, doc and satellite assemblies) set if PackBuildOutput = true -->
     <PackFolder Condition="'$(PackFolder)' == ''">lib</PackFolder>
 
-    <!-- Whether to automatically include a None item named `readme.md` -->
+    <!-- Whether to automatically include the $(PackageReadmeFile) file (by default, `readme.md` alongside the project) -->
     <PackReadme Condition="'$(PackReadme)' == ''">true</PackReadme>
 
     <!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
@@ -241,7 +241,11 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- Even if all these conditions are false, the user can still explicitly pack the file, of course -->
     <ItemGroup Label="Readme" Condition="'$(PackReadme)' == 'true' and '$(PackageReadmeFile)' != '' and '$(IsPackable)' == 'true'">
-      <InferenceCandidate Include="@(None -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))"
+      <_ExistingReadme Include="@(None -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))" />
+      <_ExistingReadme Include="@(Content -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))" Condition="'@(_ExistingReadme)' == ''" />
+      <_ExistingReadme Include="$(MSBuildProjectDirectory)\$(PackageReadmeFilename)$(PackageReadmeExtension)" Condition="'@(_ExistingReadme)' == '' and Exists('$(MSBuildProjectDirectory)\$(PackageReadmeFilename)$(PackageReadmeExtension)')" />
+
+      <InferenceCandidate Include="@(_ExistingReadme)"
                           PackagePath="%(Filename)%(Extension)"
                           Condition="'%(Extension)' == '$(PackageReadmeExtension)'" />
     </ItemGroup>
