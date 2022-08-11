@@ -92,6 +92,23 @@ namespace NuGetizer
             }));
         }
 
+
+        [Fact]
+        public void has_inferred_readme()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_library_with_content), new
+            {
+                PackageId = "ContentPackage"
+            });
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"readme.md",
+            }));
+        }
+
         #region Content scenarios
 
         [Fact]
