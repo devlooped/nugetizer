@@ -197,6 +197,17 @@ namespace NuGetizer.Tasks
 
             // We don't use PopulateFiles because that performs search expansion, base path 
             // extraction and the like, which messes with our determined files to include.
+
+            if (!string.IsNullOrEmpty(manifest.Metadata.Readme) &&
+                manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme) is ManifestFile readmeFile &&
+                File.Exists(readmeFile.Source))
+            {
+                // replace readme with includes replaced.
+                var temp = Path.GetTempFileName();
+                File.WriteAllText(temp, IncludesResolver.Process(readmeFile.Source));
+                readmeFile.Source = temp;
+            }
+
             builder.Files.AddRange(manifest.Files.Select(file =>
                 new PhysicalPackageFile { SourcePath = file.Source, TargetPath = file.Target }));
 

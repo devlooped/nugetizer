@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -577,6 +578,41 @@ namespace NuGetizer
 
             Assert.NotNull(manifest);
             Assert.Contains(manifest.Files, file => file.Target == "readme.txt");
+        }
+
+        [Fact]
+        public void when_creating_package_with_readme_then_resolves_includes()
+        {
+            var readme = Path.GetTempFileName();
+            var footer = Path.GetTempFileName();
+            File.WriteAllText(footer, "footer");
+            File.WriteAllText(readme, $"<!-- include {Path.GetFileName(footer)} -->");
+
+            task.Manifest.SetMetadata("Readme", "readme.md");
+            task.Contents = new[]
+            {
+                new TaskItem(readme, new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.None },
+                    { MetadataName.PackagePath, "readme.md" }
+                }),
+            };
+
+            var tmp = Path.GetTempFileName();
+            using (var file = File.Open(tmp, FileMode.OpenOrCreate))
+                task.Execute(file);
+
+            var zip = ZipFile.Open(tmp, ZipArchiveMode.Update);
+
+            Assert.Contains(zip.Entries, entry => entry.Name == "readme.md");
+
+            var entry = zip.Entries.Single(e => e.Name == "readme.md");
+            var updated = Path.GetTempFileName();
+            entry.ExtractToFile(updated, true);
+            var content = File.ReadAllText(updated);
+
+            Assert.Contains("footer", content);
         }
 
         [Fact]
