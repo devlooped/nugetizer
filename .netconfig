@@ -166,6 +166,4 @@
 	weak
 [file ".github/workflows/includes.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/includes.yml
-	sha = b9671b9e7f6235afbd8551dfedc1ab68a1a95c56
-	etag = 91c56f1354273c97e52d1756ebc94fa100045500199c87a3a53e708874a330c7
-	weak
+	skip
