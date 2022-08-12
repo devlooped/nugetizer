@@ -17,7 +17,7 @@ public class IncludesResolver
     {
         string content = null;
 
-        if (Uri.TryCreate(filePath, UriKind.Absolute, out var uri) && 
+        if (Uri.TryCreate(filePath, UriKind.Absolute, out var uri) &&
             (uri.Scheme == "http" || uri.Scheme == "https"))
         {
             var ev = new ManualResetEventSlim();
