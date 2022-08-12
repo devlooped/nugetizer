@@ -113,13 +113,13 @@
 	sha = a0f58a6d63e48ae6e55944c556d0bc94476dc8df
 [file ".github/workflows/changelog.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/changelog.yml
-	sha = b9671b9e7f6235afbd8551dfedc1ab68a1a95c56
-	etag = be8306e21620c4e829f2ad67fd1d4c25d484179028301488e9f49b5007e27e02
+	sha = 5406d907e0bf87dd1b4375f2ae2279dd775ed672
+	etag = 034c69fefe727b412a52e49964646131b899d6e7bb1576fe9d4a4db9208675ff
 	weak
 [file ".github/workflows/dotnet-file.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/dotnet-file.yml
-	sha = b9671b9e7f6235afbd8551dfedc1ab68a1a95c56
-	etag = 9f51b58651ad4e5bbd564475335aed876ec63f9e4d603d29862eb241ba3b7b0f
+	sha = 8f45cf28f3935ad2760ffdcd1528106c82f0af83
+	etag = 801f757177e58a55da03c12d394fc62865e57f392546d81f3695425767b0facb
 	weak
 [file ".github/workflows/release-artifacts.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/release-artifacts.yml
@@ -133,16 +133,6 @@
 	url = https://github.com/devlooped/.github/blob/main/.github/workflows/pages.yml
 	sha = e8f3774884afda36ac177c4193929d24d7901de9
 	etag = 42fdc888e07b492cccc6fd29972bd9ea6f13691a3fdf057e07f3f8eec9330b7a
-	weak
-[file ".github/workflows/sponsors.ps1"]
-	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsors.ps1
-	sha = 11f5c27cfdb304436ef0b7ee27ff333cda31ef65
-	etag = 57a303125f3367b68ad0700d89ff4ba57cb29b33b303903488c9c8638d0bf735
-	weak
-[file ".github/workflows/sponsors.yml"]
-	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsors.yml
-	sha = 8b6384e91fdfcf8f3cc9b3b262a9ca2a1095d06a
-	etag = 2c05a753600913f546c37a2ea9393b3ede3b6f8473e5c2d53462aa7342af7078
 	weak
 [file "Gemfile"]
 	url = https://github.com/devlooped/.github/blob/main/Gemfile
@@ -167,3 +157,8 @@
 [file ".github/workflows/includes.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/includes.yml
 	skip
+[file ".github/workflows/sponsor.yml"]
+	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsor.yml
+	sha = 4108ce6017b20ceb8d024f6675c1ea2573b317e0
+	etag = 7551f063d8b04d25dd100d7e5db792f840c5173ee74c4805b6a69b8b6bfe20b6
+	weak
