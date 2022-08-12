@@ -1,0 +1,18 @@
+name: sponsor ❤️
+on: 
+  issues:
+    types: [opened, edited, reopened]
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  sponsor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🤘 checkout
+        uses: actions/checkout@v2
+
+      - name: ❤️ sponsor 
+        uses: devlooped/actions-sponsor@main
+        with:
+          token: ${{ secrets.GH_TOKEN }}
