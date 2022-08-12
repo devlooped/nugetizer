@@ -169,13 +169,3 @@
 	sha = b9671b9e7f6235afbd8551dfedc1ab68a1a95c56
 	etag = 91c56f1354273c97e52d1756ebc94fa100045500199c87a3a53e708874a330c7
 	weak
-[file "docs/footer.md"]
-	url = https://github.com/devlooped/oss/blob/main/docs/footer.md
-	sha = 06e7171fa1d1f49300278ebf11020b8d03ef44ac
-	etag = 2e47c8bba7ea60a722ce2bfc8a0222e27bc33f25073486523710383540dc6257
-	weak
-[file "docs/sponsors.md"]
-	url = https://github.com/devlooped/sponsors/blob/main/sponsors.md
-	sha = 0a67f1a43b12eabc5fe3229fd9c9239dd97fc645
-	etag = 39e8d18b010c445fb65046c8504c1a95d66d5b4c6aff2f859d030a98faf182de
-	weak
