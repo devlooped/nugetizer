@@ -27,6 +27,7 @@ jobs:
       - name: +Mᐁ includes
         uses: devlooped/actions-include@v1
         with:
+          recurse: false
           validate: false
 
       - name: ✍ pull request
