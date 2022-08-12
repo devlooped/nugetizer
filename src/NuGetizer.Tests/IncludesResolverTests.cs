@@ -17,4 +17,12 @@ public class IncludesResolverTests
         Assert.Contains("section#3", content);
         Assert.Contains("@kzu", content);
     }
+
+    [Fact]
+    public void ResolveUrlInclude()
+    {
+        var content = IncludesResolver.Process("Content/url.md");
+
+        Assert.Contains("Daniel Cazzulino", content);
+    }
 }

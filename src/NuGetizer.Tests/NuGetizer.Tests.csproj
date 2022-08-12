@@ -52,6 +52,12 @@
     <ProjectProperty Include="OutputPath" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Content\url.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="EnsureProjectInformation" BeforeTargets="InjectThisAssemblyProject;GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />
   
   <Target Name="Test" DependsOnTargets="GetTargetPath">
