@@ -159,6 +159,6 @@
 	skip
 [file ".github/workflows/sponsor.yml"]
 	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsor.yml
-	sha = 4108ce6017b20ceb8d024f6675c1ea2573b317e0
-	etag = 7551f063d8b04d25dd100d7e5db792f840c5173ee74c4805b6a69b8b6bfe20b6
+	sha = e347e5c7b91aaeb11eff95037c2c0b54206cc976
+	etag = 06319ff741c03cf4cd5113926d490ec09999a85b5a0e0480ce44222db026341a
 	weak
