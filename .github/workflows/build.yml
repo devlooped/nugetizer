@@ -42,14 +42,28 @@ jobs:
         shell: pwsh
         working-directory: src/NuGetizer.Tests
         run: |
-          msbuild -r -m:1
           dotnet restore Scenarios/given_a_packaging_project/a.nuproj
+          msbuild -r
+
+      - name: 📦 binlog
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: binlog-build-${{ github.run_number }}
+          path: src/NuGetizer.Tests/msbuild.binlog
 
       - name: 🧪 test
         uses: ./.github/workflows/test
 
       - name: 📦 pack
         run: dotnet pack -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+
+      - name: 📦 binlog
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: binlog-pack-${{ github.run_number }}
+          path: msbuild.binlog
 
       # Only push CI package to sleet feed if building on ubuntu (fastest)
       - name: 🚀 sleet
