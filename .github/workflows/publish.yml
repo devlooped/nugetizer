@@ -32,14 +32,28 @@ jobs:
         shell: pwsh
         working-directory: src/NuGetizer.Tests
         run: |
-          msbuild -r -m:1 -p:version=${GITHUB_REF#refs/*/v}
           dotnet restore Scenarios/given_a_packaging_project/a.nuproj
+          msbuild -r
+
+      - name: 📦 binlog
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: binlog-build-${{ github.run_number }}
+          path: src/NuGetizer.Tests/msbuild.binlog
 
       - name: 🧪 test
         uses: ./.github/workflows/test
 
       - name: 📦 pack
-        run: dotnet pack -m:1 -p:version=${GITHUB_REF#refs/*/v}
+        run: dotnet pack -p:version=${GITHUB_REF#refs/*/v}
+
+      - name: 📦 binlog
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: binlog-pack-${{ github.run_number }}
+          path: msbuild.binlog
 
       - name: 🚀 nuget
         run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
