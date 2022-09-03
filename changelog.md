@@ -1,11 +1,12 @@
 # Changelog
 
-## [v0.9.0](https://github.com/devlooped/nugetizer/tree/v0.9.0) (2022-08-11)
+## [v0.9.0](https://github.com/devlooped/nugetizer/tree/v0.9.0) (2022-09-03)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.8.0...v0.9.0)
 
 :sparkles: Implemented enhancements:
 
+- Allow including content in the package readme from a URL [\#216](https://github.com/devlooped/nugetizer/issues/216)
 - Support markdown includes in package readme files [\#210](https://github.com/devlooped/nugetizer/issues/210)
 - Support transitive package dependency from P2P [\#202](https://github.com/devlooped/nugetizer/pull/202) (@kzu)
 
@@ -19,6 +20,9 @@
 
 :twisted_rightwards_arrows: Merged:
 
+- Generate and upload binlogs, don't version test build/run [\#230](https://github.com/devlooped/nugetizer/pull/230) (@kzu)
+- Latest agents with .net48 fail to run tests due to missing method [\#227](https://github.com/devlooped/nugetizer/pull/227) (@kzu)
+- +Mᐁ includes [\#217](https://github.com/devlooped/nugetizer/pull/217) (@devlooped-bot)
 - Package readme improvements [\#214](https://github.com/devlooped/nugetizer/pull/214) (@kzu)
 - +M▼ includes [\#204](https://github.com/devlooped/nugetizer/pull/204) (@github-actions[bot])
 
