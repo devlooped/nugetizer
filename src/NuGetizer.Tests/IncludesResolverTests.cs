@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.IO;
+using Xunit;
 
 namespace NuGetizer;
 
@@ -24,5 +25,19 @@ public class IncludesResolverTests
         var content = IncludesResolver.Process("Content/url.md");
 
         Assert.Contains("Daniel Cazzulino", content);
+    }
+
+    [Fact]
+    public void ResolveNonExistingInclude()
+    {
+        var path = Path.GetTempFileName();
+        var include = "<!-- include foo.md#bar -->";
+        File.WriteAllText(path, include);
+
+        string? failed = default;
+        var content = IncludesResolver.Process(path, s => failed = s);
+
+        Assert.NotNull(failed);
+        Assert.Contains("foo.md#bar", failed);
     }
 }
