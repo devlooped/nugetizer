@@ -203,8 +203,9 @@ namespace NuGetizer.Tasks
                 File.Exists(readmeFile.Source))
             {
                 // replace readme with includes replaced.
+                var replaced = IncludesResolver.Process(readmeFile.Source, message => Log.LogWarningCode("NG001", message));
                 var temp = Path.GetTempFileName();
-                File.WriteAllText(temp, IncludesResolver.Process(readmeFile.Source));
+                File.WriteAllText(temp, replaced);
                 readmeFile.Source = temp;
             }
 

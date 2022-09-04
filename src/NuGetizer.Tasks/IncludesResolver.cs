@@ -13,7 +13,7 @@ public class IncludesResolver
     static readonly Regex IncludeRegex = new Regex(@"<!--\s?include\s(.*?)\s?-->", RegexOptions.Compiled);
     static readonly HttpClient http = new();
 
-    public static string Process(string filePath)
+    public static string Process(string filePath, Action<string> logWarning = default)
     {
         string content = null;
 
@@ -74,8 +74,10 @@ public class IncludesResolver
                     var anchor = $"<!-- {fragment} -->";
                     var start = includedContent.IndexOf(anchor);
                     if (start == -1)
-                        // Warn/error?
+                    {
+                        logWarning?.Invoke($"Failed to resolve anchor {fragment} in {includedPath}.");
                         continue;
+                    }
 
                     includedContent = includedContent.Substring(start);
                     var end = includedContent.IndexOf(anchor, anchor.Length);
@@ -90,6 +92,10 @@ public class IncludesResolver
                     replacements[existingRegex] = replacement;
                 else
                     replacements[new Regex(@$"<!--\s?include {includedPath}{fragment}\s?-->")] = replacement;
+            }
+            else
+            {
+                logWarning?.Invoke($"Failed to resolve include: {includedPath}{fragment}. File not found at expected location {includedFullPath}.");
             }
         }
 
