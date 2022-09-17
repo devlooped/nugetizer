@@ -19,6 +19,31 @@ An [alternative clean and clear design](https://github.com/NuGet/Home/wiki/NuGet
 was proposed and I got to implement the initial spec, but it never got traction 
 with the NuGet team.
 
+# How
+
+You *must* install the [NuGetizer](https://nuget.org/packages/nugetizer) package on all 
+projects that are directly or indirectly being packed, since NuGetizer relies heavily on 
+MSBuild to provide discovery of contributed package content from projects and their 
+project references.
+
+Package Manager:
+```
+Install-Package NuGetizer
+```
+
+CLI:
+```
+dotnet add package NuGetizer
+```
+
+MSBuild:
+```
+<PackageReference Include="NuGetizer" Version="..." />
+```
+
+You don't need to set `PrivateAssets=all` for NuGetizer: it will automatically 
+exclude itself from your packed dependencies. 
+
 # What
 
 With the learnings from years of building and shipping packages of different 
