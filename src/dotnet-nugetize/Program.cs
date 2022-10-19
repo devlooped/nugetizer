@@ -78,7 +78,8 @@ namespace NuGetize
                 "-p:SkipCompilerExecution=true",
                 "-p:DesignTimeBuild=true",
                 "-p:DesignTimeSilentResolution=true",
-                "-p:ResolveAssemblyReferencesSilent=true"
+                "-p:ResolveAssemblyReferencesSilent=true",
+                "-p:IsPublishable=false"
             });
 
             if (help)
