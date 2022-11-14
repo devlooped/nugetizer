@@ -25,6 +25,7 @@ public class IncludesResolverTests
         var content = IncludesResolver.Process("Content/url.md");
 
         Assert.Contains("Daniel Cazzulino", content);
+        Assert.Contains("Sponsors", content);
     }
 
     [Fact]
