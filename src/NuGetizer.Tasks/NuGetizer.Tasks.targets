@@ -18,7 +18,7 @@
     <Title>NuGetizer</Title>
     <Description>Simple, flexible and powerful NuGet packaging</Description>
 
-    <IsDevelopmentDependency>true</IsDevelopmentDependency>
+    <DevelopmentDependency>true</DevelopmentDependency>
     <PackFolder>build</PackFolder>
 
     <PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>

@@ -128,7 +128,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <!-- By not re-creating the item, we preserve whatever metadata was provided already -->
       <PackageMetadata Include="$(PackageId)" Condition="'@(PackageMetadata)' == ''">
         <PackageId>$(PackageId)</PackageId>
-        <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' == 'true'">true</DevelopmentDependency>
+        <DevelopmentDependency Condition="'$(DevelopmentDependency)' == 'true'">true</DevelopmentDependency>
         <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
         <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
         <Title Condition="'$(Title)' != ''">$(Title)</Title>
