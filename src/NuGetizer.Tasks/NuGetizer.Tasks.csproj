@@ -10,9 +10,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.9.20" PrivateAssets="all" />
-    <PackageReference Include="NuGet.Packaging" Version="6.3.0" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Packaging" Version="6.4.0" PrivateAssets="all" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly" Version="1.0.9" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly" Version="1.0.10" PrivateAssets="all" />
     <PackageReference Include="Minimatch" Version="2.0.0" PrivateAssets="all" />
   </ItemGroup>
 
