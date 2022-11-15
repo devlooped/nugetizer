@@ -1,5 +1,27 @@
 # Changelog
 
+## [v0.9.1](https://github.com/devlooped/nugetizer/tree/v0.9.1) (2022-11-15)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.0...v0.9.1)
+
+:sparkles: Implemented enhancements:
+
+- When include in readme fails, log a warning [\#232](https://github.com/devlooped/nugetizer/issues/232)
+
+:bug: Fixed bugs:
+
+- NuGetizer is incompatible with SDK Pack DevelopmentDependency property [\#253](https://github.com/devlooped/nugetizer/issues/253)
+
+:hammer: Other:
+
+- Allow nugetize \(non-build\) tool for dotnet-tool projects [\#247](https://github.com/devlooped/nugetizer/issues/247)
+
+:twisted_rightwards_arrows: Merged:
+
+- Make IsDevelopmentDependency legacy [\#254](https://github.com/devlooped/nugetizer/pull/254) (@kzu)
+- Don't fail nugetize for tools [\#248](https://github.com/devlooped/nugetizer/pull/248) (@kzu)
+- When include in readme fails, log a warning [\#233](https://github.com/devlooped/nugetizer/pull/233) (@kzu)
+
 ## [v0.9.0](https://github.com/devlooped/nugetizer/tree/v0.9.0) (2022-09-03)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.8.0...v0.9.0)
