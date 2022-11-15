@@ -33,6 +33,26 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_development_dependency_then_package_has_development_dependency_metadata()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DevelopmentDependency>true</DevelopmentDependency>
+  </PropertyGroup>
+</Project>", output: output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Metadata,
+                DevelopmentDependency = "true"
+            }));
+        }
+
+        [Fact]
         public void when_is_packable_true_but_packageid_reset_to_empty_then_fails()
         {
             var result = Builder.BuildProject(@"

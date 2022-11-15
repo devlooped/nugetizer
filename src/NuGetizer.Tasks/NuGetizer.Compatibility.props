@@ -43,6 +43,8 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(IncludeSymbolsInPackage)' != ''">$(IncludeSymbolsInPackage)</PackSymbols>
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IncludeFrameworkReferencesInPackage)' != ''">$(IncludeFrameworkReferencesInPackage)</PackFrameworkReferences>
     <PackProjectReferences Condition="'$(PackProjectReferences)' == '' and '$(PackProjectReference)' != ''">true</PackProjectReferences>
+
+    <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' != ''">$(IsDevelopmentDependency)</DevelopmentDependency>
   </PropertyGroup>
 
 </Project>
