@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.9.1](https://github.com/devlooped/nugetizer/tree/v0.9.1) (2022-11-15)
+## [v0.9.1](https://github.com/devlooped/nugetizer/tree/v0.9.1) (2022-11-16)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.0...v0.9.1)
 
@@ -18,6 +18,9 @@
 
 :twisted_rightwards_arrows: Merged:
 
+- ⬆️ Bump files with dotnet-file sync [\#258](https://github.com/devlooped/nugetizer/pull/258) (@kzu)
+- Bump ThisAssembly [\#257](https://github.com/devlooped/nugetizer/pull/257) (@kzu)
+- Remove redundant files from upstream [\#256](https://github.com/devlooped/nugetizer/pull/256) (@kzu)
 - Make IsDevelopmentDependency legacy [\#254](https://github.com/devlooped/nugetizer/pull/254) (@kzu)
 - Don't fail nugetize for tools [\#248](https://github.com/devlooped/nugetizer/pull/248) (@kzu)
 - When include in readme fails, log a warning [\#233](https://github.com/devlooped/nugetizer/pull/233) (@kzu)
