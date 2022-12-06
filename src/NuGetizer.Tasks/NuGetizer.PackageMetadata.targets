@@ -55,7 +55,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <ItemDefinitionGroup>
     <PackageMetadata>
       <PackageId>$(PackageId)</PackageId>
-      <DevelopmentDependency>$(DevelopmentDependency)</DevelopmentDependency>
+      <DevelopmentDependency Condition="'$(DevelopmentDependency)' != ''">$(DevelopmentDependency)</DevelopmentDependency>
 
       <Authors Condition="'$(Authors)' != ''">$(Authors)</Authors>
       <Owners Condition="'$(Owners)' != ''">$(Owners)</Owners>
