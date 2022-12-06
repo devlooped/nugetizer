@@ -35,7 +35,7 @@ public class IncludesResolverTests
         var include = "<!-- include foo.md#bar -->";
         File.WriteAllText(path, include);
 
-        string? failed = default;
+        string failed = default;
         var content = IncludesResolver.Process(path, s => failed = s);
 
         Assert.NotNull(failed);
