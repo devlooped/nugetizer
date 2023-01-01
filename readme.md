@@ -468,7 +468,9 @@ out precisely what it is you want to inject into the .nupkg. For example:
     
 ```xml
 <Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
-    <PackageFile Include="$(MSBuildProjectDirectory)\..\docs\**\*.md" PackagePath="docs\%(RelativeDir)%(Filename)%(Extension)" />
+    <ItemGroup>
+        <PackageFile Include="$(MSBuildProjectDirectory)\..\docs\**\*.md" PackagePath="docs\%(RelativeDir)%(Filename)%(Extension)" />
+    </ItemGroup>
 </Target>
 ```
     
