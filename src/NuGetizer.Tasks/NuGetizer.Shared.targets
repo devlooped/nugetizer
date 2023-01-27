@@ -63,6 +63,8 @@ Copyright (c) .NET Foundation. All rights reserved.
     <TargetPathWithTargetPlatformMoniker>
       <IsPackable>$(IsPackable)</IsPackable>
       <IsNuGetized>true</IsNuGetized>
+      <!-- Allows P2P references to inspect this information, which will always be available when referencing the package -->
+      <NuGetPackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</NuGetPackageId>
     </TargetPathWithTargetPlatformMoniker>
   </ItemDefinitionGroup>
 
