@@ -120,7 +120,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       GetPackageVersion;
     </GetPackageMetadataDependsOn>
   </PropertyGroup>
-  <Target Name="GetPackageMetadata" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageMetadataDependsOn)" Returns="@(PackageMetadata)">
+  <Target Name="GetPackageMetadata" Condition="'$(IsPackable)' == 'true'" DependsOnTargets="$(GetPackageMetadataDependsOn)" BeforeTargets="GetAssemblyVersion" Returns="@(PackageMetadata)">
     <Error Text="The 'PackageId' property cannot be empty when 'IsPackable' is 'true'." Code="NG1001" Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''" />
     <Error Text="The 'PackageVersion' property cannot be empty." Code="NG1002" Condition="'$(PackageVersion)' == ''" />
     <PropertyGroup>
