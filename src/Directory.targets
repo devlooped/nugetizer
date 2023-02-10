@@ -13,8 +13,4 @@
     <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
   </PropertyGroup>
 
-  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">
-    <PackageReference Update="ThisAssembly" Version="1.0.9" />
-  </ItemGroup>
-
 </Project>
