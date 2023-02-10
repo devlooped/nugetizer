@@ -154,6 +154,12 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Pack Condition="'$(PackDependencies)' == 'false'">false</Pack>
       <PrivateAssets />
     </ImplicitPackageReference>
+    <ReferenceCopyLocalPathsOutputGroupOutput>
+      <Facade>false</Facade>
+      <FrameworkFile>false</FrameworkFile>
+      <NuGetPackageId />
+      <Pack />
+    </ReferenceCopyLocalPathsOutputGroupOutput>
     <ReferencePath>
       <Facade>false</Facade>
       <FrameworkFile>false</FrameworkFile>
@@ -373,11 +379,20 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   </Target>
 
-  <Target Name="_CollectPrimaryOutputDependencies" DependsOnTargets="BuildOnlySettings;RunResolvePackageDependencies;ResolveReferences" Returns="@(ImplicitPackageReference)">
+  <Target Name="_CollectPrimaryOutputDependencies" DependsOnTargets="ReferenceCopyLocalPathsOutputGroup;RunResolvePackageDependencies" Returns="@(ImplicitPackageReference)">
     <Error Code="NG1003" Text="Centrally managed package versions is only supported when using the Microsoft.NET.Sdk."
            Condition="'$(ManagePackageVersionsCentrally)' == 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
     <ItemGroup>
-      <_PrimaryOutputRelatedFile Include="@(ReferencePath);@(_ReferenceRelatedPaths)"
+      <!-- By adding the files in this order, we ensure that Distinct() will preserve this preference order.
+				   We add them with identities that will find the duplicate files resolved from the same package id, 
+				   so we can de-duplicate using the given preference order. -->
+      <_CopyLocalReference Include="@(ReferenceCopyLocalPathsOutputGroupOutput->'%(NuGetPackageId)|%(Filename)%(Extension)')" OriginalItemSpec="%(Identity)" />
+      <_CopyLocalReference Include="@(ReferencePath->'%(NuGetPackageId)|%(Filename)%(Extension)')" OriginalItemSpec="%(Identity)" />
+      <_CopyLocalReference Include="@(_ReferenceRelatedPaths->'%(NuGetPackageId)|%(Filename)%(Extension)')" OriginalItemSpec="%(Identity)" />
+      <_CopyLocalReferenceDistinct Include="@(_CopyLocalReference->Distinct())" />
+      <_ReferenceCopyLocalPaths Include="@(_CopyLocalReferenceDistinct->'%(OriginalItemSpec)')" />
+
+      <_PrimaryOutputRelatedFile Include="@(_ReferenceCopyLocalPaths)"
                                  Condition="'%(NuGetPackageId)' != 'NETStandard.Library' and 
                                             '%(Facade)' != 'true' and 
                                             '%(FrameworkFile)' != 'true' and 
