@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <DefaultItemExcludes>$(DefaultItemExcludes);Scenarios\**\*</DefaultItemExcludes>
-    <LangVersion>Preview</LangVersion>
+    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
   
   <ItemGroup>

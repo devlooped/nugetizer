@@ -29,7 +29,6 @@ namespace NuGetizer
             {
                 PackFolder = PackFolderKind.Lib,
                 Filename = "Mono.Options",
-                NuGetSourceType = "Package",
                 NuGetPackageId = "Mono.Options",
             }));
         }
@@ -53,7 +52,6 @@ namespace NuGetizer
             {
                 PackFolder = PackFolderKind.Lib,
                 Filename = "Newtonsoft.Json",
-                NuGetSourceType = "Package",
                 NuGetPackageId = "Newtonsoft.Json",
             }));
         }
@@ -77,7 +75,6 @@ namespace NuGetizer
             {
                 PackFolder = PackFolderKind.Lib,
                 Filename = "xunit",
-                NuGetSourceType = "Package",
                 NuGetPackageId = "xunit",
             }));
         }

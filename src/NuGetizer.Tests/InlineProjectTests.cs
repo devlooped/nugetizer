@@ -714,5 +714,38 @@ namespace NuGetizer
                 TargetFramework = "netstandard2.0",
             }));
         }
+
+        [Fact]
+        public void when_packing_with_refs_then_includes_runtime_libs_for_private()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                	<PropertyGroup>
+                		<OutputType>Exe</OutputType>
+                		<TargetFramework>net472</TargetFramework>
+                		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+                		<PackageId>TestNuGetizer</PackageId>
+                		<LangVersion>Latest</LangVersion>
+                	</PropertyGroup>
+
+                	<ItemGroup>
+                		<PackageReference Include="System.Buffers" Version="4.5.1" PrivateAssets="all" />
+                		<PackageReference Include="System.Memory" Version="4.5.5" PrivateAssets="all" />
+                	</ItemGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PathInPackage = "lib/net461/System.Buffers.dll",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PathInPackage = "lib/net461/System.Memory.dll",
+            }));
+        }
     }
 }
