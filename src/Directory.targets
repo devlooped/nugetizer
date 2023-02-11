@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets"
-          Condition="'$(IsPackable)' == 'true' AND '$(NuGetize)' == 'true'" />
+          Condition="($(IsPackable) == 'true' OR $(PackFolder) != '') AND $(NuGetize) == 'true'" />
 
   <PropertyGroup>
     <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
