@@ -42,7 +42,8 @@ namespace NuGetizer.Tasks
 
         public override bool Execute()
         {
-            if (Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") == "1")
+            if (Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") == "1" ||
+                Environment.GetEnvironmentVariable("DEBUG_NUGETIZER_PACK") == "1")
                 Debugger.Launch();
 
             try
@@ -244,8 +245,8 @@ namespace NuGetizer.Tasks
                                    Id = item.ItemSpec,
                                    Version = VersionRange.Parse(item.GetMetadata(MetadataName.Version)),
                                    TargetFramework = item.GetNuGetTargetFramework(),
-                                   Include = item.GetNullableMetadata(MetadataName.IncludeAssets),
-                                   Exclude = item.GetNullableMetadata(MetadataName.ExcludeAssets)
+                                   Include = item.GetNullableMetadata(MetadataName.PackInclude) ?? item.GetNullableMetadata(MetadataName.IncludeAssets),
+                                   Exclude = item.GetNullableMetadata(MetadataName.PackExclude) ?? item.GetNullableMetadata(MetadataName.ExcludeAssets)
                                };
 
             var definedDependencyGroups = (from dependency in dependencies

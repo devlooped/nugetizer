@@ -187,9 +187,9 @@ The basic item metadata that drive pack inference are:
 
 If the item does **not** provide a *PackagePath*, and *Pack* is not *false*, the inference targets wil try to determine the right value, based on the following additional metadata:
 
-a. **PackFolder**: typically one of the [built-in package folders](https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/PackagingConstants.cs#L19), such as *build*, *lib*, etc.
-b. **FrameworkSpecific**: *true*/*false*, determines whether the project's target framework is used when building the final *PackagePath*.
-c. **TargetPath**: optional PackFolder-relative path for the item. If not provided, the relative path of the item in the project (or its *Link* metadata) is used.
+  * **PackFolder**: typically one of the [built-in package folders](https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/PackagingConstants.cs#L19), such as *build*, *lib*, etc.
+  * **FrameworkSpecific**: *true*/*false*, determines whether the project's target framework is used when building the final *PackagePath*.
+  * **TargetPath**: optional PackFolder-relative path for the item. If not provided, the relative path of the item in the project (or its *Link* metadata) is used.
 
 
 When an item specifies *FrameworkSpecific=true*, the project's target framework is added to the final package path, such as `lib\netstandard2.0\My.dll`. Since the package folder itself typically determines whether it contains framework-specific files or not, the *FrameworkSpecific* value has sensible defaults so you don't have to specify it unless you want to override it. The [default values from NuGetizer.props](src/NuGetizer.Tasks/NuGetizer.props) are:
@@ -284,13 +284,19 @@ In addition, the resulting `PackageFile` items for these items point to the loca
 
 ### PackageReference
 
-Package references are turned into package dependencies by default (essentially converting `<PackageReference>` to `<PackageFile ... PackFolder="Dependency">`), unless `PackDependencies` property is `false`. If the package reference specifies `PrivateAssets="all"`, however, it's not added as a dependency. Instead, in that case, all the files contributed to the compilation are placed in the same `PackFolder` as the project's build output (if packable, depending on `PackBuildOutput` property).
+Package references are turned into package dependencies by default (essentially converting `<PackageReference>` to `<PackageFile ... PackFolder="Dependency">`), unless `PackDependencies` property is `false`. If the package reference specifies `PrivateAssets="all"`, however, it's not added as a dependency. Instead, in that case, all the files contributed to the compilation (more precisely: all copy-local runtime dependencies) are placed in the same `PackFolder` as the project's build output (if packable, depending on `PackBuildOutput` property).
 
-Build-only dependencies that don't contribute assemblies to the output (i.e. analyzers or things like [GitInfo](https://github.com/kzu/GitInfo) or [ThisAssembly](https://github.com/kzu/ThisAssembly) won't cause any extra items.
+Build-only dependencies that don't contribute assemblies to the output (i.e. analyzers or things like [GitInfo](https://github.com/devlooped/GitInfo) or [ThisAssembly](https://github.com/devlooped/ThisAssembly) won't cause any extra items.
 
 This even works transitively, so if you use *PrivateAssets=all* on package reference *A*, which in turn has a package dependency on *B* and *B* in turn depends on *C*, all of *A*, *B* and *C* assets will be packed. You can opt out of the transitive packing with `PackTransitive=false` metadata on the `PackageReference`.
 
 As usual, you can change this default behavior by using `Pack=false` metadata.
+
+You can also control precisely what assets are surfaced from your dependencies, by 
+using `PackInclude` and `PackExclude` metadata on the `PackageReference`. This will 
+result in the corresponding `include`/`exclude` attributes as documented in the 
+[nuspec reference](https://learn.microsoft.com/en-us/nuget/reference/nuspec#dependencies-element). If not defined, both are defaulted to the package 
+reference `IncludeAssets` and `ExcludeAssets` metadata.
 
 ### ProjectReference
 

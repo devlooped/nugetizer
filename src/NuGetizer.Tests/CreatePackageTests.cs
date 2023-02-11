@@ -331,6 +331,58 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_creating_package_with_dependency_packinclude_then_contains_dependency_include_attribute()
+        {
+            task.Contents = new[]
+            {
+                new TaskItem("Newtonsoft.Json", new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.Dependency },
+                    { MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net472" },
+                    { MetadataName.PackInclude, "build" }
+                }),
+            };
+
+            var manifest = ExecuteTask();
+
+            Assert.NotNull(manifest);
+            Assert.Single(manifest.Metadata.DependencyGroups);
+            Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
+            Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+            Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Include.Count);
+            Assert.Equal("build", manifest.Metadata.DependencyGroups.First().Packages.First().Include[0]);
+        }
+
+        [Fact]
+        public void when_creating_package_with_dependency_packexclude_assets_then_contains_dependency_exclude_attribute()
+        {
+            task.Contents = new[]
+            {
+                new TaskItem("Newtonsoft.Json", new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.Dependency },
+                    { MetadataName.Version, "8.0.0" },
+					// NOTE: AssignPackagePath takes care of converting TFM > short name
+					{ MetadataName.TargetFramework, "net472" },
+                    { MetadataName.PackExclude, "build" }
+                }),
+            };
+
+            var manifest = ExecuteTask();
+
+            Assert.NotNull(manifest);
+            Assert.Single(manifest.Metadata.DependencyGroups);
+            Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
+            Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+            Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Exclude.Count);
+            Assert.Equal("build", manifest.Metadata.DependencyGroups.First().Packages.First().Exclude[0]);
+        }
+
+        [Fact]
         public void when_creating_package_with_non_framework_secific_dependency_then_contains_generic_dependency_group()
         {
             task.Contents = new[]

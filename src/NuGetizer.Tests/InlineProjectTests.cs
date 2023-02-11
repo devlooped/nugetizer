@@ -722,11 +722,8 @@ namespace NuGetizer
                 """
                 <Project Sdk="Microsoft.NET.Sdk">
                 	<PropertyGroup>
-                		<OutputType>Exe</OutputType>
-                		<TargetFramework>net472</TargetFramework>
-                		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-                		<PackageId>TestNuGetizer</PackageId>
-                		<LangVersion>Latest</LangVersion>
+                        <IsPackable>true</IsPackable>
+                        <TargetFramework>net472</TargetFramework>
                 	</PropertyGroup>
 
                 	<ItemGroup>
@@ -745,6 +742,36 @@ namespace NuGetizer
             Assert.Contains(result.Items, item => item.Matches(new
             {
                 PathInPackage = "lib/net461/System.Memory.dll",
+            }));
+        }
+
+        [Fact]
+        public void when_packing_dependencies_then_can_include_exclude_assets()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                	<PropertyGroup>
+                		<OutputType>Exe</OutputType>
+                		<TargetFramework>net472</TargetFramework>
+                        <IsPackable>true</IsPackable>
+                        <LangVersion>Latest</LangVersion>
+                	</PropertyGroup>
+                
+                	<ItemGroup>
+                		<PackageReference Include="Devlooped.SponsorLink" Version="0.9.2" IncludeAssets="analyzers" ExcludeAssets="build" />
+                	</ItemGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Devlooped.SponsorLink",
+                PackFolder = "Dependency",
+                IncludeAssets = "analyzers",
+                ExcludeAssets = "build"
             }));
         }
     }

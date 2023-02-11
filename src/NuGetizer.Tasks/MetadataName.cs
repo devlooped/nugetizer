@@ -30,9 +30,27 @@
         /// </summary>
         public const string PrivateAssets = nameof(PrivateAssets);
 
+        /// <summary>
+        /// Assets to include for a dependency/package reference
+        /// </summary>
         public const string IncludeAssets = nameof(IncludeAssets);
 
+        /// <summary>
+        /// Assets to exclude for a dependency/package reference
+        /// </summary>
         public const string ExcludeAssets = nameof(ExcludeAssets);
+
+        /// <summary>
+        /// Same as <see cref="IncludeAssets"/>, but allows having a different value for the
+        /// included assets in pack vs build/restore of the referencing project.
+        /// </summary>
+        public const string PackInclude = nameof(PackInclude);
+
+        /// <summary>
+        /// Same as <see cref="ExcludeAssets"/>, but allows having a different value for the
+        /// excluded assets in pack vs build/restore of the referencing project.
+        /// </summary>
+        public const string PackExclude = nameof(PackExclude);
 
         /// <summary>
         /// Whether the project can be packed as a .nupkg.
