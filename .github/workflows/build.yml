@@ -32,9 +32,6 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: ✓ ensure format
-        run: dotnet format --verify-no-changes -v:diag --exclude ~/.nuget
-
       - name: ⚙ msbuild
         uses: microsoft/setup-msbuild@v1.1
 
@@ -73,3 +70,6 @@ jobs:
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
+
+      - name: ✓ ensure format
+        run: dotnet format --verify-no-changes -v:diag --exclude ~/.nuget
