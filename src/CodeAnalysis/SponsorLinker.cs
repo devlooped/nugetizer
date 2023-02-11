@@ -1,8 +1,9 @@
 ﻿using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Devlooped;
 
-namespace Devlooped.CredentialManager;
+namespace NuGetizer;
 
 [Generator]
 [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic, LanguageNames.FSharp)]
