@@ -1,7 +1,7 @@
 ﻿using System;
+using Devlooped;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Devlooped;
 
 namespace NuGetizer;
 
