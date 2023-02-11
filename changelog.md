@@ -1,5 +1,29 @@
 # Changelog
 
+## [v0.9.2](https://github.com/devlooped/nugetizer/tree/v0.9.2) (2023-02-11)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.1...v0.9.2)
+
+:sparkles: Implemented enhancements:
+
+- F\# projects are not supported [\#191](https://github.com/devlooped/nugetizer/issues/191)
+- Document support for packaging projects [\#55](https://github.com/devlooped/nugetizer/issues/55)
+- Only surface build and analyzer from SponsorLink [\#286](https://github.com/devlooped/nugetizer/pull/286) (@kzu)
+- Support Include/Exclude attributes from Dependency [\#285](https://github.com/devlooped/nugetizer/pull/285) (@kzu)
+- Add SponsorLink to ensure ongoing development and maintenance [\#284](https://github.com/devlooped/nugetizer/pull/284) (@kzu)
+- Pack runtime lib assets when inferring dependencies [\#282](https://github.com/devlooped/nugetizer/pull/282) (@kzu)
+- PackageFile should be hidden from solution explorer [\#281](https://github.com/devlooped/nugetizer/pull/281) (@kzu)
+- Ensure package metadata is populated before GetAssemblyVersion [\#280](https://github.com/devlooped/nugetizer/pull/280) (@kzu)
+- Add NuGetPackageId metadata to target path item [\#273](https://github.com/devlooped/nugetizer/pull/273) (@kzu)
+
+:bug: Fixed bugs:
+
+- NuGetizer v0.9.1 packing reference assembly instead of real assembly [\#263](https://github.com/devlooped/nugetizer/issues/263)
+
+:twisted_rightwards_arrows: Merged:
+
+- Add missing ItemGroup to MSBuild snipped [\#269](https://github.com/devlooped/nugetizer/pull/269) (@ap0llo)
+
 ## [v0.9.1](https://github.com/devlooped/nugetizer/tree/v0.9.1) (2022-11-16)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.0...v0.9.1)
@@ -47,7 +71,6 @@
 
 - Generate and upload binlogs, don't version test build/run [\#230](https://github.com/devlooped/nugetizer/pull/230) (@kzu)
 - Latest agents with .net48 fail to run tests due to missing method [\#227](https://github.com/devlooped/nugetizer/pull/227) (@kzu)
-- +Mᐁ includes [\#217](https://github.com/devlooped/nugetizer/pull/217) (@devlooped-bot)
 - Package readme improvements [\#214](https://github.com/devlooped/nugetizer/pull/214) (@kzu)
 - +M▼ includes [\#204](https://github.com/devlooped/nugetizer/pull/204) (@github-actions[bot])
 
