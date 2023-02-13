@@ -1,0 +1,25 @@
+name: docs
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - docs/**/*
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: 🙏 build
+        working-directory: docs
+        run: docfx build
+
+      - name: 🚀 deploy 
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: _site
