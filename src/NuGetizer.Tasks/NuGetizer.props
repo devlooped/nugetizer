@@ -67,6 +67,8 @@ Copyright (c) .NET Foundation. All rights reserved.
       <OriginalItemSpec />
       <!-- Don't show package files in project explorer by default -->
       <Visible>false</Visible>
+      <TargetFramework />
+      <TargetFrameworkMoniker />
     </PackageFile>
     <PackageReference>
       <!-- See https://github.com/NuGet/Home/wiki/PackageReference-Specification -->
