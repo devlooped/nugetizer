@@ -15,7 +15,9 @@ jobs:
 
       - name: 🙏 build
         working-directory: docs
-        run: docfx build
+        run: |
+          dotnet tool update -g docfx
+          docfx build
 
       - name: 🚀 deploy 
         uses: JamesIves/github-pages-deploy-action@releases/v3
