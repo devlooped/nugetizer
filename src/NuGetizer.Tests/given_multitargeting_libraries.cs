@@ -37,5 +37,34 @@ namespace NuGetizer
 
             Assert.True(File.Exists(result.Items[0].GetMetadata("FullPath")));
         }
+
+        [Fact]
+        public void when_getting_content_then_multitargets()
+        {
+            Builder.BuildScenario(
+                nameof(given_multitargeting_libraries),
+                projectName: "uilibrary.csproj", target: "Restore", output: output)
+                .AssertSuccess(output);
+
+            var result = Builder.BuildScenario(
+                nameof(given_multitargeting_libraries),
+                projectName: "uilibrary.csproj",
+                target: "GetPackageContents", output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "lib/net7.0/uilibrary.dll"
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "lib/net7.0-windows/uilibrary.dll"
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "lib/net7.0-maccatalyst/uilibrary.dll"
+            }));
+        }
     }
 }

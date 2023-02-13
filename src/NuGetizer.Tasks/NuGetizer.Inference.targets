@@ -194,7 +194,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
-  <Target Name="_CollectInferenceCandidates" Inputs="@(PackInference)" Outputs="%(PackInference.Identity)-BATCH">
+  <Target Name="_CollectInferenceCandidates" Inputs="@(PackInference)" Outputs="|%(PackInference.Identity)|">
     <PropertyGroup>
       <PackExclude>%(PackInference.PackExclude)</PackExclude>
       <PackInferenceIdentity>%(PackInference.Identity)</PackInferenceIdentity>
@@ -303,12 +303,14 @@ Copyright (c) .NET Foundation. All rights reserved.
                                      @(_SatelliteDllsProjectOutputGroupOutput -> '%(FinalOutputPath)')">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
+        <TargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFramework)</TargetFramework>
       </_InferredProjectOutput>
 
       <_InferredProjectOutput Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                             Condition="'$(PackSymbols)' != 'false'">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
+        <TargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFramework)</TargetFramework>
       </_InferredProjectOutput>
 
       <_InferredPackageFile Include="@(_InferredProjectOutput -> Distinct())" />
