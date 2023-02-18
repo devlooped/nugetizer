@@ -62,9 +62,15 @@
         /// </summary>
         public const string FrameworkSpecific = nameof(FrameworkSpecific);
 
+        /// <summary>
+        /// The target framework of an item.
+        /// </summary>
         public const string TargetFramework = nameof(TargetFramework);
 
-        public const string TargetFrameworkMoniker = nameof(TargetFrameworkMoniker);
+        /// <summary>
+        /// The original (and therefore default) target framework of the project that declared an item.
+        /// </summary>
+        public const string DefaultTargetFramework = nameof(DefaultTargetFramework);
 
         /// <summary>
         /// Available optional metadata values of contentFiles.

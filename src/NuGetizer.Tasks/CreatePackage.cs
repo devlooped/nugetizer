@@ -244,36 +244,43 @@ namespace NuGetizer.Tasks
                                {
                                    Id = item.ItemSpec,
                                    Version = VersionRange.Parse(item.GetMetadata(MetadataName.Version)),
-                                   TargetFramework = item.GetNuGetTargetFramework(),
+                                   // PackFolderKind=Dependency has FrameworkSpecific=true, so pass that along
+                                   TargetFramework = item.GetNuGetTargetFramework(true) ?? NuGetFramework.AnyFramework,
                                    Include = item.GetNullableMetadata(MetadataName.PackInclude) ?? item.GetNullableMetadata(MetadataName.IncludeAssets),
                                    Exclude = item.GetNullableMetadata(MetadataName.PackExclude) ?? item.GetNullableMetadata(MetadataName.ExcludeAssets)
                                };
 
             var definedDependencyGroups = (from dependency in dependencies
                                            group dependency by dependency.TargetFramework into dependenciesByFramework
-                                           select new PackageDependencyGroup
-                                           (
-                                               dependenciesByFramework.Key,
-                                               (from dependency in dependenciesByFramework
-                                                where dependency.Id != "_._"
-                                                group dependency by dependency.Id into dependenciesById
-                                                select new PackageDependency
-                                                 (
-                                                     dependenciesById.Key,
-                                                     dependenciesById.Select(x => x.Version).Aggregate(AggregateVersions),
-                                                     dependenciesById.Select(x => x.Include).Aggregate(default(List<string>), AggregateAssetsFlow),
-                                                     dependenciesById.Select(x => x.Exclude).Aggregate(default(List<string>), AggregateAssetsFlow)
-                                                 )).ToList()
-                                           )).ToDictionary(p => p.TargetFramework.GetFrameworkString());
+                                           let targetFramework = dependenciesByFramework.Key
+                                           let packages = (from dependency in dependenciesByFramework
+                                                           where dependency.Id != "_._"
+                                                           group dependency by dependency.Id into dependenciesById
+                                                           select new PackageDependency
+                                                           (
+                                                                dependenciesById.Key,
+                                                                dependenciesById.Select(x => x.Version).Aggregate(AggregateVersions),
+                                                                dependenciesById.Select(x => x.Include).Aggregate(default(List<string>), AggregateAssetsFlow),
+                                                                dependenciesById.Select(x => x.Exclude).Aggregate(default(List<string>), AggregateAssetsFlow)
+                                                           )).ToList()
+                                           select new PackageDependencyGroup(targetFramework, packages)
+                                           //).ToList();
+                                           ).ToDictionary(p => p.TargetFramework.GetFrameworkString());
+
+            var libframeworks = (from item in Contents
+                                 where PackFolderKind.Lib.Equals(item.GetMetadata(MetadataName.PackFolder), StringComparison.OrdinalIgnoreCase) &&
+                                       !"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase)
+                                 // PackFolderKind=Lib has FrameworkSpecific=true, so pass that along
+                                 select item.GetNuGetTargetFramework(true) ?? NuGetFramework.AnyFramework
+                                 ).ToList();
 
             // include frameworks referenced by libraries, but without dependencies..
-            foreach (var targetFramework in (from item in Contents
-                                             where PackFolderKind.Lib.Equals(item.GetMetadata(MetadataName.PackFolder), StringComparison.OrdinalIgnoreCase) &&
-                                                   !"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase)
-                                             select item.GetNuGetTargetFramework()))
-                if (!definedDependencyGroups.ContainsKey(targetFramework.GetFrameworkString()))
-                    definedDependencyGroups.Add(targetFramework.GetFrameworkString(),
-                                                new PackageDependencyGroup(targetFramework, Array.Empty<PackageDependency>()));
+            foreach (var targetFramework in libframeworks
+                .Where(f => !definedDependencyGroups.ContainsKey(f.GetFrameworkString())))
+            {
+                definedDependencyGroups.Add(targetFramework.GetFrameworkString(),
+                    new PackageDependencyGroup(targetFramework, Array.Empty<PackageDependency>()));
+            }
 
             manifest.Metadata.DependencyGroups = definedDependencyGroups.Values;
         }
@@ -381,8 +388,12 @@ namespace NuGetizer.Tasks
                                        select new FrameworkAssemblyReference
                                       (
                                           item.ItemSpec,
-                                          new[] { NuGetFramework.Parse(item.GetTargetFrameworkMoniker().FullName) }
-                                      )).Distinct(FrameworkAssemblyReferenceComparer.Default);
+                                          // PackFolderKind=FrameworkReference has FrameworkSpecific=true, so pass that along
+                                          new[] { item.GetNuGetTargetFramework(true) ?? NuGetFramework.AnyFramework }
+                                      ))
+                                      .ToList()
+                                      .Distinct(FrameworkAssemblyReferenceComparer.Default)
+                                      .ToList();
 
             manifest.Metadata.FrameworkReferences = frameworkReferences;
         }

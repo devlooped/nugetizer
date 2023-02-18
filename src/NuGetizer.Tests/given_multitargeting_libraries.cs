@@ -59,11 +59,11 @@ namespace NuGetizer
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "lib/net7.0-windows/uilibrary.dll"
+                PackagePath = "lib/net7.0-windows7.0/uilibrary.dll"
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "lib/net7.0-maccatalyst/uilibrary.dll"
+                PackagePath = "lib/net7.0-maccatalyst16.1/uilibrary.dll"
             }));
         }
     }

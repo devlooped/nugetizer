@@ -181,6 +181,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <GetPackageContentsDependsOn>
       $(GetPackageContentsDependsOn);
       _SetDefaultPackageReferencePack;
+      _SetPackTargetFramework;
       InferPackageContents
     </GetPackageContentsDependsOn>
   </PropertyGroup>
@@ -303,14 +304,12 @@ Copyright (c) .NET Foundation. All rights reserved.
                                      @(_SatelliteDllsProjectOutputGroupOutput -> '%(FinalOutputPath)')">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
-        <TargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFramework)</TargetFramework>
       </_InferredProjectOutput>
 
       <_InferredProjectOutput Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                             Condition="'$(PackSymbols)' != 'false'">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
-        <TargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFramework)</TargetFramework>
       </_InferredProjectOutput>
 
       <_InferredPackageFile Include="@(_InferredProjectOutput -> Distinct())" />
@@ -324,6 +323,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                                        '%(PackageReference.PrivateAssets)' != 'all' and
                                        '%(PackageReference.Pack)' != 'false'">
         <PackFolder>Dependency</PackFolder>
+        <!--<FrameworkSpecific Condition="'$(BuildOutputFrameworkSpecific)' == 'true'">true</FrameworkSpecific>-->
       </_InferredPackageFile>
 
       <!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
@@ -346,7 +346,8 @@ Copyright (c) .NET Foundation. All rights reserved.
         <Source>Implicit</Source>
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
-        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <OriginalTargetFramework>$(PackTargetFramework)</OriginalTargetFramework>
+        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
       </PackageFile>
     </ItemGroup>
   </Target>
