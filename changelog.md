@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.9.3](https://github.com/devlooped/nugetizer/tree/v0.9.3) (2023-02-18)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.2...v0.9.3)
+
+:sparkles: Implemented enhancements:
+
+- 💜 Bump SponsorLink for better privacy [\#303](https://github.com/devlooped/nugetizer/pull/303) (@kzu)
+
+:bug: Fixed bugs:
+
+- Fix support for platform-suffixed build output [\#288](https://github.com/devlooped/nugetizer/pull/288) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- Initial docfx boilerplate for a docs site [\#289](https://github.com/devlooped/nugetizer/pull/289) (@kzu)
+
 ## [v0.9.2](https://github.com/devlooped/nugetizer/tree/v0.9.2) (2023-02-11)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.1...v0.9.2)
