@@ -78,13 +78,13 @@ namespace NuGetizer.Tasks
 
             output.SetMetadata(MetadataName.PackageFolder, packageFolder.Replace('\\', '/'));
 
-            // NOTE: a declared TargetFramework metadata trumps TargetFrameworkMoniker, 
+            // NOTE: a declared TargetFramework metadata trumps the DefaultTargetFramework  
             // which is defaulted to that of the project being built.
             var targetFramework = output.GetMetadata(MetadataName.TargetFramework);
             if (string.IsNullOrEmpty(targetFramework) && frameworkSpecific)
             {
-                var frameworkMoniker = file.GetTargetFrameworkMoniker();
-                targetFramework = frameworkMoniker.GetShortFrameworkName() ?? "";
+                var nugetFramework = file.GetNuGetTargetFramework(frameworkSpecific);
+                targetFramework = nugetFramework?.GetShortFolderName() ?? "";
                 // At this point we have the correct target framework
                 output.SetMetadata(MetadataName.TargetFramework, targetFramework);
             }

@@ -426,7 +426,7 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_creating_package_with_any_framework_secific_dependency_then_contains_generic_dependency_group()
+        public void when_creating_package_with_any_framework_specific_dependency_then_contains_generic_dependency_group()
         {
             task.Contents = new[]
             {
@@ -812,13 +812,13 @@ namespace NuGetizer
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET472 }
+                    { MetadataName.DefaultTargetFramework, TargetFrameworks.NET472 }
                 }),
                 new TaskItem("System.Xml", new Metadata
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.PCL78 }
+                    { MetadataName.DefaultTargetFramework, TargetFrameworks.PCL78 }
                 }),
             };
 
@@ -844,25 +844,25 @@ namespace NuGetizer
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET472 }
+                    { MetadataName.DefaultTargetFramework, TargetFrameworks.NET472 }
                 }),
                 new TaskItem("System.Xml", new Metadata
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.NET472 }
+                    { MetadataName.DefaultTargetFramework, TargetFrameworks.NET472 }
                 }),
                 new TaskItem("System.Xml", new Metadata
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.PCL78 }
+                    { MetadataName.DefaultTargetFramework, TargetFrameworks.PCL78 }
                 }),
                 new TaskItem("System.Xml", new Metadata
                 {
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.FrameworkReference },
-                    { MetadataName.TargetFrameworkMoniker, TargetFrameworks.PCL78 }
+                    { MetadataName.DefaultTargetFramework, TargetFrameworks.PCL78 }
                 }),
             };
 

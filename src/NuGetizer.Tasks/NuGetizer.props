@@ -68,7 +68,10 @@ Copyright (c) .NET Foundation. All rights reserved.
       <!-- Don't show package files in project explorer by default -->
       <Visible>false</Visible>
       <TargetFramework />
-      <TargetFrameworkMoniker />
+      <!-- The (pack) target framework of the originating project -->
+      <OriginalTargetFramework />
+      <!-- The determined default (pack) target framework of an inferred item -->
+      <DefaultTargetFramework />
     </PackageFile>
     <PackageReference>
       <!-- See https://github.com/NuGet/Home/wiki/PackageReference-Specification -->

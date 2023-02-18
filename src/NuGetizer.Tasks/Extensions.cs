@@ -85,55 +85,22 @@ namespace NuGetizer
             }
         }
 
-        public static NuGetFramework GetNuGetTargetFramework(this ITaskItem taskItem)
+        public static NuGetFramework? GetNuGetTargetFramework(this ITaskItem taskItem, bool? frameworkSpecific = default)
         {
-            if (bool.TryParse(taskItem.GetMetadata(MetadataName.FrameworkSpecific), out var frameworkSpecific) &&
-                !frameworkSpecific)
+            if (bool.TryParse(taskItem.GetMetadata(MetadataName.FrameworkSpecific), out var fws))
+                frameworkSpecific = fws;
+
+            if (frameworkSpecific != true)
                 return NuGetFramework.AnyFramework;
 
             var metadataValue = taskItem.GetMetadata(MetadataName.TargetFramework);
             if (string.IsNullOrEmpty(metadataValue))
-                metadataValue = taskItem.GetMetadata(MetadataName.TargetFrameworkMoniker);
+                metadataValue = taskItem.GetMetadata(MetadataName.DefaultTargetFramework);
 
             if (!string.IsNullOrEmpty(metadataValue))
                 return NuGetFramework.Parse(metadataValue);
             else
-                return NuGetFramework.AnyFramework;
-        }
-
-        public static FrameworkName GetTargetFramework(this ITaskItem taskItem)
-        {
-            var metadataValue = taskItem.GetMetadata(MetadataName.TargetFramework);
-            if (string.IsNullOrEmpty(metadataValue))
-                metadataValue = taskItem.GetMetadata(MetadataName.TargetFrameworkMoniker);
-
-            if (!string.IsNullOrEmpty(metadataValue))
-                return new FrameworkName(NuGetFramework.Parse(metadataValue).DotNetFrameworkName);
-            else
-                return NullFramework;
-        }
-
-        public static FrameworkName GetTargetFrameworkMoniker(this ITaskItem item)
-        {
-            var value = item.GetMetadata(MetadataName.TargetFrameworkMoniker);
-            // \o/: Turn .NETPortable,Version=v5.0 into .NETPlatform,Version=v5.0, hardcoded for now?
-            // TODO: should be able to get .NETStandard,Version=v1.x from the item metadata somehow.
-
-            return string.IsNullOrEmpty(value) ?
-                NullFramework :
-                new FrameworkName(value);
-        }
-
-        public static string GetShortFrameworkName(this FrameworkName frameworkName)
-        {
-            if (frameworkName == null || frameworkName == NullFramework)
                 return null;
-
-            // In this case, NuGet returns portable50, is that correct?
-            //if (frameworkName.Identifier == ".NETPortable" && frameworkName.Version.Major == 5 && frameworkName.Version.Minor == 0)
-            //	return "dotnet";
-
-            return NuGetFramework.Parse(frameworkName.FullName).GetShortFolderName();
         }
 
         public static void LogErrorCode(this TaskLoggingHelper log, string code, string message, params object[] messageArgs) =>

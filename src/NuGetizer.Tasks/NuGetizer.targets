@@ -46,6 +46,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <GetPackageContentsDependsOn>
       $(GetPackageContentsDependsOn);
       GetPackageTargetPath;
+      _SetPackTargetFramework;
       _AddPackageManifest
     </GetPackageContentsDependsOn>
     <GetPackageContentsDependsOn Condition="'$(PackProjectReferences)' == 'true'">
@@ -64,7 +65,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <PackageFile>
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <Platform Condition="'%(PackageFile.Platform)' == ''">$(Platform)</Platform>
-        <TargetFrameworkMoniker Condition="'%(PackageFile.TargetFrameworkMoniker)' == '' and ('$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true')">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <DefaultTargetFramework Condition="'%(PackageFile.DefaultTargetFramework)' == '' and ('$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true')">$(PackTargetFramework)</DefaultTargetFramework>
       </PackageFile>
     </ItemGroup>
 
@@ -126,7 +127,7 @@ Copyright (c) .NET Foundation. All rights reserved.
         <PackFolder>Metadata</PackFolder>
         <PackageId>$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
-        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
       </PackageFile>
     </ItemGroup>
   </Target>
@@ -167,7 +168,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                                                '%(_ReferencedPackageContent.PackFolder)' == 'Metadata'">
         <!-- For consistency, annotate like the rest -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
-        <TargetFrameworkMoniker Condition="'$(IsPackagingProject)' != 'true'  or '$(BuildOutputFrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true'  or '$(BuildOutputFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
         <PackFolder>Dependency</PackFolder>
       </_ReferencedPackageDependency>
       <!-- Remove the referenced package actual contents if it provides a manifest, since it will be a dependency in that case. -->
@@ -181,7 +182,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- Always annotate package contents with the original target framework and moniker -->
       <_ReferencedPackageContentWithOriginalValues Include="@(_ReferencedPackageContent)"
                                                    OriginalTargetFramework="%(_ReferencedPackageContent.TargetFramework)"
-                                                   OriginalTargetFrameworkMoniker="%(_ReferencedPackageContent.TargetFrameworkMoniker)" />
+                                                   OriginalDefaultTargetFramework="%(_ReferencedPackageContent.DefaultTargetFramework)" />
     </ItemGroup>
 
     <!-- We don't retarget referenced content for packaging projects that aren't framework specific, and
@@ -193,17 +194,17 @@ Copyright (c) .NET Foundation. All rights reserved.
         <!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
         <!-- Only do this for assets that come from project references that don't build nugets (PackageId=='' above) -->
         <TargetFramework></TargetFramework>
-        <!-- NOTE: we're always overwriting the TFM for framework-specific items in this case 
+        <!-- NOTE: we're always overwriting the default TF for framework-specific items in this case 
           since this item will end up making up the contents of this project package in its 
-          current TFM configuration. 
+          current TF configuration. 
           TBD: we might want to preserve it anyways and adjust later (i.e. net45 project 
           references netstandard1.6 project)
           TODO: take into account cross-targeting.
 		-->
-        <TargetFrameworkMoniker Condition="'%(_ReferencedPackageContentWithOriginalValues.FrameworkSpecific)' == 'true'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <DefaultTargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.FrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
         <!-- Transitive dependencies from non-packing projects should be lifted as direct dependencies of the packing project, 
              using its TFM, since they would need to become dependencies of the packing project in the current TFM. -->
-        <TargetFrameworkMoniker Condition="'%(_ReferencedPackageContentWithOriginalValues.PackFolder)' == 'Dependency'">$(TargetFrameworkMoniker)</TargetFrameworkMoniker>
+        <DefaultTargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.PackFolder)' == 'Dependency'">$(PackTargetFramework)</DefaultTargetFramework>
       </_ReferencedPackageContentWithOriginalValues>
     </ItemGroup>
 
@@ -212,11 +213,11 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
         <!-- Assign current package id if appropriate -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
-        <!-- Clear the target framework since it trumps the TFM in AsignPackagePath now -->
+        <!-- Clear the target framework since it trumps the default TF in AsignPackagePath now -->
         <!-- Only do this for framework-specifc assets that come from project references that don't build nugets (PackageId=='' above) -->
         <TargetFramework Condition="'%(_ReferencedPackageContentWithOriginalValues.FrameworkSpecific)' == 'true'"></TargetFramework>
-        <TargetFrameworkMoniker>%(_ReferencedPackageContentWithOriginalValues.OriginalTargetFrameworkMoniker)</TargetFrameworkMoniker>
-      </_ReferencedPackageContentWithOriginalValues>
+        <DefaultTargetFramework>%(_ReferencedPackageContentWithOriginalValues.OriginalDefaultTargetFramework)</DefaultTargetFramework>
+    </_ReferencedPackageContentWithOriginalValues>
     </ItemGroup>
 
     <ItemGroup>
@@ -234,7 +235,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="_SplitProjectReferencesByIsNuGetized"
           Condition="'@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''"
           Inputs="@(_MSBuildProjectReferenceExistent)"
-          Outputs="%(_MSBuildProjectReferenceExistent.Identity)-BATCH">
+          Outputs="|%(_MSBuildProjectReferenceExistent.Identity)|">
 
     <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
              Targets="GetTargetPathWithTargetPlatformMoniker"
@@ -294,6 +295,18 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PropertyGroup>
       <BuildOutputFrameworkSpecific>@(_BuildOutputFrameworkSpecific)</BuildOutputFrameworkSpecific>
       <BuildOutputFrameworkSpecific Condition="'$(BuildOutputFrameworkSpecific)' == ''">false</BuildOutputFrameworkSpecific>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Ensures that for platform-suffixed target frameworks, we append the target platform version, which is required in that case from .NET5+ -->
+  <Target Name="_SetPackTargetFramework">
+    <PropertyGroup Condition="$(UsingMicrosoftNETSdk) == true">
+      <PackTargetFramework>$(TargetFramework)</PackTargetFramework>
+      <PackTargetFramework Condition="$(TargetFramework.EndsWith($(TargetPlatformIdentifier.ToLowerInvariant())))">$(TargetFramework)$(TargetPlatformVersion)</PackTargetFramework>
+    </PropertyGroup>
+    <!-- This makes NuGetizer backwards compatible with non-SDK projects, since we can parse a moniker just fine too -->
+    <PropertyGroup Condition="$(UsingMicrosoftNETSdk) != true">
+      <PackTargetFramework>$(TargetFrameworkMoniker)</PackTargetFramework>
     </PropertyGroup>
   </Target>
 

@@ -70,14 +70,16 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Output ItemName="_PackageContent" TaskParameter="TargetOutputs" />
     </MSBuild>
   
-    <!-- _AddPackageManifest adds per-TFM, so deduplicate and remove the TFM -->
+    <!-- _AddPackageManifest adds per-TFM, so deduplicate and remove the TF(M) -->
     <ItemGroup Condition="'$(IsPackable)' == 'true'">
       <_PackageMetadataContent Include="@(_PackageContent -> WithMetadataValue('PackFolder', 'Metadata'))" />
       <_PackageContent Remove="@(_PackageMetadataContent)" />
       <_PackageContent Include="@(_PackageMetadataContent -> Distinct())">
         <AdditionalProperties />
         <Platform>$(Platform)</Platform>
-        <TargetFrameworkMoniker />
+        <TargetFramework />
+        <DefaultTargetFramework />
+        <OriginalTargetFramework />
       </_PackageContent>
     </ItemGroup>
     

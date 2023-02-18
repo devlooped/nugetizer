@@ -89,7 +89,7 @@ namespace NuGetizer
                     new TaskItem("library.dll", new Metadata
                     {
                         { "PackagePath", "workbooks/library.dll" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
+                        { "DefaultTargetFramework", ".NETFramework,Version=v4.7.2" },
                         { "FrameworkSpecific", "true" }
                     })
                 }
@@ -143,7 +143,7 @@ namespace NuGetizer
                 {
                     new TaskItem("library.dll", new Metadata
                     {
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.5" },
+                        { "DefaultTargetFramework", ".NETFramework,Version=v4.5" },
                         { "PackFolder", "lib" }
                     })
                 }
@@ -165,7 +165,7 @@ namespace NuGetizer
                 {
                     new TaskItem("library.dll", new Metadata
                     {
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
+                        { "DefaultTargetFramework", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "lib" }
                     })
                 }
@@ -186,7 +186,7 @@ namespace NuGetizer
                 {
                     new TaskItem("library.dll", new Metadata
                     {
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
+                        { "DefaultTargetFramework", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "lib" }
                     })
                 }
@@ -466,7 +466,7 @@ namespace NuGetizer
                     new TaskItem("library.dll", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", targetFrameworkMoniker },
+                        { "DefaultTargetFramework", targetFrameworkMoniker },
                         { "PackFolder", "lib" }
                     })
                 }
@@ -504,7 +504,7 @@ namespace NuGetizer
                     new TaskItem("library.dll", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
+                        { "DefaultTargetFramework", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", packageFileKind }
                     })
                 }
@@ -596,7 +596,7 @@ namespace NuGetizer
                     new TaskItem("Sample.cs", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", tfm },
+                        { "DefaultTargetFramework", tfm },
                         { "PackFolder", "content" },
                         { "CodeLanguage", lang }
                     })
@@ -807,7 +807,7 @@ namespace NuGetizer
                     new TaskItem("sdk/bin/tool.exe", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
+                        { "DefaultTargetFramework", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "tool" },
                         { "FrameworkSpecific", "true" },
                         { "TargetPath", "sdk/bin/tool.exe"}
@@ -898,7 +898,7 @@ namespace NuGetizer
                     new TaskItem("tools/foo.exe", new Metadata
                     {
                         { "PackageId", "A" },
-                        { "TargetFrameworkMoniker", ".NETFramework,Version=v4.7.2" },
+                        { "DefaultTargetFramework", ".NETFramework,Version=v4.7.2" },
                         { "PackFolder", "tools" },
                     }),
                 }
