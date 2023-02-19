@@ -38,14 +38,6 @@ jobs:
           git add -A
           git commit -m "Publish pages from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
           
-      - name: 🚀 push devlooped
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          force: true
-          directory: _site
-          
       - name: 🚀 push clarius
         uses: ad-m/github-push-action@v0.6.0
         with:
