@@ -83,16 +83,6 @@
 [file ".github/workflows/release-artifacts.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/release-artifacts.yml
 	skip
-[file ".github/workflows/pages.yml"]
-	url = https://github.com/clarius/pages/blob/main/.github/workflows/pages.yml
-	sha = afcb0421af6507eba5ceba913b8fc37261efc085
-	etag = c52b3f0463b88abf696ddf2c6902675e0bc9d1e812bb317cb758221d75330b56
-	weak
-[file "Gemfile"]
-	url = https://github.com/clarius/pages/blob/main/Gemfile
-	sha = 565a77f40db0863cb47ceb36f88790259a697c91
-	etag = 24e482e91192e292b633e3c17c4f095286ffb5a041d299d761b2e6ef99ee7669
-	weak
 [file ".github/workflows/test/action.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/test/action.yml
 	sha = 9a1b07589b9bde93bc12528e9325712a32dec418

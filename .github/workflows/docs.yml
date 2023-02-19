@@ -26,3 +26,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
           FOLDER: _site
+
+      - name: ✓ commit
+        run: |
+          cd _site
+          git init
+          git add -A
+          git config --local user.email "bot@clarius.org"
+          git config --local user.name "bot@clarius.org"
+          git commit -m "Publish pages from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
+
+      - name: 🚀 push
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ env.PAGES_ACCESS_TOKEN }}
+          repository: ${{ env.PAGES_ORGANIZATION }}/${{ env.PAGES_REPOSITORY }}
+          branch: gh-pages
+          force: true
+          directory: _site
