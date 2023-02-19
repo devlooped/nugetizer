@@ -11,8 +11,18 @@ jobs:
   docs:
     runs-on: windows-latest
     steps:
+      - name: 🤖 defaults
+        uses: devlooped/actions-bot@v1
+        with:
+          name: ${{ secrets.BOT_NAME }}
+          email: ${{ secrets.BOT_EMAIL }}
+          gh_token: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Checkout 🛎️
         uses: actions/checkout@v2
+        with:
+          token: ${{ env.GH_TOKEN }}
 
       - name: 🙏 build
         working-directory: docs
@@ -26,8 +36,6 @@ jobs:
           cd _site
           git init
           git add -A
-          git config --local user.email "bot@clarius.org"
-          git config --local user.name "bot@clarius.org"
           git commit -m "Publish pages from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
           
       - name: 🚀 push devlooped
