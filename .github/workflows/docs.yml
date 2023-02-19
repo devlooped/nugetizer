@@ -21,6 +21,7 @@ jobs:
           docfx build
 
       - name: ✓ commit
+        shell: bash
         run: |
           cd _site
           git init
