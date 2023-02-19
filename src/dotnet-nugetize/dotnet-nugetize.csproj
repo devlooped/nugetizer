@@ -2,8 +2,7 @@
   
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework Condition="'$(BuildingInsideVisualStudio)' == 'true'">net6.0</TargetFramework>
-    <TargetFrameworks Condition="'$(BuildingInsideVisualStudio)' != 'true'">netcoreapp3.1;net6.0</TargetFrameworks>
+    <TargetFramework>net6.0</TargetFramework>
     
     <LangVersion>Latest</LangVersion>
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
@@ -24,7 +23,9 @@
     <PackageReference Include="PolySharp" Version="1.12.1" PrivateAssets="all" />
     <PackageReference Include="Spectre.Console" Version="0.46.0" />
     <PackageReference Include="Spectre.Console.Analyzer" Version="0.46.0" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Project" Version="1.0.10" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.2.9" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Strings" Version="1.2.9" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.WinHttpHandler" Version="7.0.0" Pack="false" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,7 @@
     <ProjectProperty Include="Product" />    
     <ProjectProperty Include="Copyright" />
     <ProjectProperty Include="RepositorySha" />
+    <ProjectProperty Include="PackageId" />
   </ItemGroup>
 
 </Project>
