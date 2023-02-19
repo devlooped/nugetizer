@@ -7,13 +7,17 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
-using ColoredConsole;
 using Mono.Options;
+using Spectre.Console;
 
 namespace NuGetize
 {
     class Program
     {
+        static readonly Style yellow = new(Color.Yellow);
+        static readonly Style errorStyle = new(Color.Red);
+        static readonly Style warningStyle = yellow;
+
         bool binlog = Debugger.IsAttached;
         bool debug = Debugger.IsAttached && Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") != "0";
         bool quiet = false;
@@ -49,8 +53,8 @@ namespace NuGetize
 
             if (version)
             {
-                Console.WriteLine($"{ThisAssembly.Project.Product} version {ThisAssembly.Project.Version}+{ThisAssembly.Project.RepositorySha}");
-                Console.WriteLine($"{ThisAssembly.Project.Copyright}");
+                AnsiConsole.WriteLine($"{ThisAssembly.Project.Product} version {ThisAssembly.Project.Version}+{ThisAssembly.Project.RepositorySha}");
+                AnsiConsole.WriteLine($"{ThisAssembly.Project.Copyright}");
             }
             else
             {
@@ -84,7 +88,7 @@ namespace NuGetize
 
             if (help)
             {
-                Console.WriteLine($"Usage: {ThisAssembly.Project.ToolCommandName} [options] [msbuild args]");
+                AnsiConsole.WriteLine($"Usage: {ThisAssembly.Project.ToolCommandName} [options] [msbuild args]");
                 options.WriteOptionDescriptions(Console.Out);
                 return 0;
             }
@@ -135,7 +139,7 @@ namespace NuGetize
                 {
                     // The error might have been caused by us not being able to write our slnTargets
                     if (project.EndsWith(".sln") && !deleteSlnTargets)
-                        ColorConsole.WriteLine($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.".Yellow());
+                        AnsiConsole.Write(new Paragraph($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.", warningStyle));
 
                     if (binlog)
                         TryOpenBinlog();
@@ -150,7 +154,7 @@ namespace NuGetize
                     {
                         // The error might have been caused by us not being able to write our slnTargets
                         if (project.EndsWith(".sln") && !deleteSlnTargets)
-                            ColorConsole.WriteLine($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.".Yellow());
+                            AnsiConsole.Write(new Paragraph($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.", warningStyle));
 
                         if (binlog)
                             TryOpenBinlog();
@@ -169,18 +173,21 @@ namespace NuGetize
 
             if (!File.Exists(file))
             {
-                ColorConsole.WriteLine("Failed to discover nugetized content.".Red());
+                AnsiConsole.Write(new Paragraph("Failed to discover nugetized content.", errorStyle));
                 return -1;
             }
 
             var doc = XDocument.Load(file);
+            Tree? root = default;
 
             if (contentsOnly)
             {
+                root = new Tree("[yellow]Package Contents[/]");
+
                 if (project.EndsWith(".sln"))
-                    ColorConsole.WriteLine($"Solution {Path.GetFileName(project)} contains only non-packable project(s), rendering contributed package contents.".Yellow());
+                    AnsiConsole.Write(new Paragraph($"Solution {Path.GetFileName(project)} contains only non-packable project(s), rendering contributed package contents.", errorStyle));
                 else
-                    ColorConsole.WriteLine($"Project {Path.GetFileName(project)} is not packable, rendering its contributed package contents.".Yellow());
+                    AnsiConsole.Write(new Paragraph($"Project {Path.GetFileName(project)} is not packable, rendering its contributed package contents.", warningStyle));
 
                 var dependencies = doc.Root.Descendants("PackageContent")
                     .Where(x =>
@@ -193,20 +200,7 @@ namespace NuGetize
                     .ThenBy(x => x.Attribute("Include").Value)
                     .ToList();
 
-                if (dependencies.Count > 0)
-                {
-                    ColorConsole.WriteLine($"  Dependencies:".Yellow());
-                    foreach (var group in dependencies.GroupBy(x => x.Element("TargetFramework").Value))
-                    {
-                        ColorConsole.WriteLine("    ", group.Key.Green());
-                        foreach (var dependency in group)
-                        {
-                            ColorConsole.WriteLine("      ", dependency.Attribute("Include").Value.White(), $", {dependency.Element("Version").Value}".Gray());
-                        }
-                    }
-                }
-
-                ColorConsole.WriteLine($"  Contents:".Yellow());
+                AddDependencies(root, dependencies);
 
                 var contents = doc.Root.Descendants("PackageContent")
                     .Where(x => x.Element("PackagePath") != null)
@@ -214,8 +208,7 @@ namespace NuGetize
                     .OrderBy(x => Path.GetDirectoryName(x.Element("PackagePath").Value))
                     .ThenBy(x => x.Element("PackagePath").Value);
 
-                Render(contents.ToList(), 0, 0, "");
-                Console.WriteLine();
+                AddContents(root.AddNode("[yellow]Contents:[/]"), contents.ToList());
             }
             else
             {
@@ -231,13 +224,23 @@ namespace NuGetize
                         continue;
 
                     foundPackage = true;
-                    ColorConsole.WriteLine($"Package: {Path.GetFileName(metadata.Element("NuPkg").Value)}".Yellow());
-                    ColorConsole.WriteLine($"         {metadata.Element("Nuspec").Value}".Yellow());
+
+                    var grid = new Grid();
+                    grid.AddColumn().AddColumn();
+                    grid.AddRow(new Text("Package", yellow), new Grid().AddColumn()
+                        .AddRow($"[yellow]{Path.GetFileName(metadata.Element("NuPkg").Value)}[/]")
+                        .AddRow(new Text(metadata.Element("Nuspec").Value,
+                            new Style(Color.Blue, decoration: Decoration.Underline, link: metadata.Element("Nuspec").Value))));
+
+                    root = new Tree(grid);
 
                     var width = metadata.Elements()
                         .Select(x => x.Name.LocalName.Length)
                         .OrderByDescending(x => x)
                         .First();
+
+                    var table = new Grid().AddColumn().AddColumn();
+                    table.AddRow(new Text("Metadata:", yellow));
 
                     foreach (var md in metadata.Elements()
                         .Where(x =>
@@ -246,8 +249,10 @@ namespace NuGetize
                             x.Name != "NuPkg")
                         .OrderBy(x => x.Name.LocalName))
                     {
-                        ColorConsole.WriteLine($"    {md.Name.LocalName.PadRight(width)}: ", md.Value.White());
+                        table.AddRow(new Text(md.Name.LocalName), new Text(md.Value));
                     }
+
+                    root.AddNode(table);
 
                     var dependencies = doc.Root.Descendants("PackageContent")
                         .Where(x =>
@@ -261,20 +266,7 @@ namespace NuGetize
                         .ThenBy(x => x.Attribute("Include").Value)
                         .ToList();
 
-                    if (dependencies.Count > 0)
-                    {
-                        ColorConsole.WriteLine($"  Dependencies:".Yellow());
-                        foreach (var group in dependencies.GroupBy(x => x.Element("TargetFramework").Value))
-                        {
-                            ColorConsole.WriteLine("    ", group.Key.Green());
-                            foreach (var dependency in group)
-                            {
-                                ColorConsole.WriteLine("      ", dependency.Attribute("Include").Value.White(), $", {dependency.Element("Version").Value}".Gray());
-                            }
-                        }
-                    }
-
-                    ColorConsole.WriteLine($"  Contents:".Yellow());
+                    AddDependencies(root, dependencies);
 
                     var contents = doc.Root.Descendants("PackageContent")
                         .Where(x =>
@@ -284,20 +276,24 @@ namespace NuGetize
                         .OrderBy(x => Path.GetDirectoryName(x.Element("PackagePath").Value))
                         .ThenBy(x => x.Element("PackagePath").Value);
 
-                    Render(contents.ToList(), 0, 0, "");
-                    Console.WriteLine();
+                    AddContents(root.AddNode("[yellow]Contents:[/]"), contents.ToList());
+                    //Render(contents.ToList(), 0, 0, "");
+                    //Console.WriteLine();
                 }
 
                 if (!foundPackage)
                 {
-                    ColorConsole.WriteLine($"No package content was found.".Red());
+                    AnsiConsole.Write(new Paragraph($"No package content was found.", errorStyle));
                     return -1;
                 }
             }
 
-            Console.WriteLine();
+            if (root != null)
+                AnsiConsole.Write(root);
+
+            AnsiConsole.WriteLine();
             if (items != null)
-                ColorConsole.WriteLine("> ", file.Yellow());
+                AnsiConsole.WriteLine($"> [yellow]{file}[/]");
 
             if (binlog)
                 TryOpenBinlog();
@@ -305,61 +301,69 @@ namespace NuGetize
             return 0;
         }
 
-        static int Render(IList<XElement> files, int index, int level, string path)
+        void AddContents(TreeNode node, List<XElement> contents)
         {
-            var normalizedLevelPath = path == "" ? Path.DirectorySeparatorChar.ToString() : (Path.DirectorySeparatorChar + path + Path.DirectorySeparatorChar);
-            while (index < files.Count)
+            var parents = new Dictionary<string, TreeNode>();
+            parents.Add("", node);
+            foreach (var element in contents)
             {
-                var element = files[index];
                 var file = element.Element("PackagePath").Value;
                 var dir = Path.GetDirectoryName(file);
                 var paths = dir.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
-                var normalizeCurrentPath = Path.DirectorySeparatorChar + string.Join(Path.DirectorySeparatorChar, paths) + Path.DirectorySeparatorChar;
-
-                if (!normalizeCurrentPath.StartsWith(normalizedLevelPath) || paths.Length < level)
-                    return index;
-
-                if (paths.Length > level)
+                var parent = node;
+                // Locate parent node given the relative path
+                if (paths.Length > 0)
                 {
-                    ColorConsole.Write(new string(' ', (level + 1) * 2 + 2));
-                    if (level == 0)
-                        ColorConsole.Write("/".Gray());
-
-                    ColorConsole.WriteLine(paths[level].Green(), "/".Gray());
-                    index = Render(files, index, level + 1, string.Join(Path.DirectorySeparatorChar, paths[..(level + 1)]));
-                }
-                else
-                {
-                    Console.Write(new string(' ', (level + 1) * 2 + 2));
-                    if (level == 0)
-                        ColorConsole.Write("/".Gray());
-
-                    var attributes = new List<string>();
-                    var packFolder = element.Element("PackFolder")?.Value;
-
-                    if (packFolder != null &&
-                        ("content".Equals(packFolder, StringComparison.OrdinalIgnoreCase) ||
-                         "contentFiles".Equals(packFolder, StringComparison.OrdinalIgnoreCase)))
+                    for (var i = 0; i < paths.Length; i++)
                     {
-                        if (element.Element("BuildAction")?.Value is string buildAction)
-                            attributes.Add("buildAction=" + buildAction);
-                        if (element.Element("CopyToOutput")?.Value is string copyToOutput)
-                            attributes.Add("copyToOutput=" + copyToOutput);
-                        if (element.Element("Flatten")?.Value is string flatten)
-                            attributes.Add("flatten=" + flatten);
+                        var key = string.Join('/', paths[0..(i + 1)]);
+                        if (!parents.TryGetValue(key, out var existing))
+                        {
+                            parent = parent.AddNode($"[green]{paths[i]}[/]");
+                            parents.Add(key, parent);
+                        }
+                        else
+                        {
+                            parent = existing;
+                        }
                     }
+                }
 
-                    ColorConsole.Write(Path.GetFileName(file).White());
-                    if (attributes.Count > 0)
-                        ColorConsole.Write((" (" + string.Join(',', attributes) + ")").Gray());
+                var attributes = new List<string>();
+                var packFolder = element.Element("PackFolder")?.Value;
+                if (packFolder != null &&
+                    ("content".Equals(packFolder, StringComparison.OrdinalIgnoreCase) ||
+                     "contentFiles".Equals(packFolder, StringComparison.OrdinalIgnoreCase)))
+                {
+                    if (element.Element("BuildAction")?.Value is string buildAction)
+                        attributes.Add("buildAction=" + buildAction);
+                    if (element.Element("CopyToOutput")?.Value is string copyToOutput)
+                        attributes.Add("copyToOutput=" + copyToOutput);
+                    if (element.Element("Flatten")?.Value is string flatten)
+                        attributes.Add("flatten=" + flatten);
+                }
 
-                    Console.WriteLine();
+                if (attributes.Count > 0)
+                    parent.AddNode($"[white]{Path.GetFileName(file)}[/] [grey]({string.Join(',', attributes)})[/]");
+                else
+                    parent.AddNode($"[white]{Path.GetFileName(file)}[/]");
+            }
+        }
 
-                    index++;
+        void AddDependencies(Tree root, List<XElement> dependencies)
+        {
+            if (dependencies.Count == 0)
+                return;
+
+            var deps = root.AddNode("[yellow]Dependencies:[/]");
+            foreach (var group in dependencies.GroupBy(x => x.Element("TargetFramework").Value))
+            {
+                var tf = deps.AddNode($"[green]{group.Key}[/]");
+                foreach (var dependency in group)
+                {
+                    tf.AddNode(Markup.FromInterpolated($"[white]{dependency.Attribute("Include").Value}[/], [grey]{dependency.Element("Version").Value}[/]"));
                 }
             }
-
-            return index;
         }
 
         static void TryOpenBinlog()
@@ -389,7 +393,7 @@ namespace NuGetize
                 info.Environment["DEBUG_NUGETIZER"] = "1";
 
             var proc = Process.Start(info);
-            proc.ErrorDataReceived += (sender, args) => ColorConsole.Write(args.Data.Red());
+            proc.ErrorDataReceived += (sender, args) => AnsiConsole.Write(new Paragraph(args.Data, errorStyle));
 
             var output = new StringBuilder();
             var timedout = false;

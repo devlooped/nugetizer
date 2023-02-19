@@ -8,7 +8,7 @@
     <BuildOnPack>false</BuildOnPack>
 
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <Nullable>disable</Nullable>
+    <Nullable>annotations</Nullable>
     <SignAssembly>false</SignAssembly>
 
     <!-- Ignore warning for: Package 'NuGet.ProjectManagement 4.2.0' was restored using '.NETFramework,Version=v4.6.1, -->
