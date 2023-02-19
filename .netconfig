@@ -124,3 +124,8 @@
 	sha = 1afd173fe8f81b510c597737b0d271218e81fa73
 	etag = 482dc2c892fc7ce0cb3a01eb5d9401bee50ddfb067d8cb85873555ce63cf5438
 	weak
+[file "src/dotnet-nugetize/System/Base62.cs"]
+	url = https://github.com/devlooped/catbag/blob/main/System/Base62.cs
+	sha = 43712304cdfff2c34ba01197cc2ccc0e16e7af08
+	etag = 045b9e458f11f846ae9a3979b8122c68173405fb5451083d4993f94004e60e76
+	weak
