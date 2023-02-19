@@ -28,7 +28,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\docs.yml = .github\workflows\docs.yml
 		.github\workflows\dotnet-file.yml = .github\workflows\dotnet-file.yml
 		.github\workflows\includes.yml = .github\workflows\includes.yml
-		.github\workflows\pages.yml = .github\workflows\pages.yml
 		.github\workflows\publish.yml = .github\workflows\publish.yml
 		.github\workflows\release-notes.yml = .github\workflows\release-notes.yml
 		.github\workflows\release.yml = .github\workflows\release.yml
