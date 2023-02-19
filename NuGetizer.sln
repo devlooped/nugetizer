@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\changelog.yml = .github\workflows\changelog.yml
+		.github\workflows\docs.yml = .github\workflows\docs.yml
 		.github\workflows\dotnet-file.yml = .github\workflows\dotnet-file.yml
 		.github\workflows\includes.yml = .github\workflows\includes.yml
 		.github\workflows\pages.yml = .github\workflows\pages.yml
@@ -33,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeAnalysis", "src\CodeAnalysis\CodeAnalysis.csproj", "{8D400518-0FF9-4180-8D2A-D152D7A59075}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeAnalysis", "src\CodeAnalysis\CodeAnalysis.csproj", "{8D400518-0FF9-4180-8D2A-D152D7A59075}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
