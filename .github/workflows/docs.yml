@@ -20,14 +20,6 @@ jobs:
           choco install docfx --force -y --version 2.59.4
           docfx build
 
-      - name: 🚀 push devlooped
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          force: true
-          directory: _site
-          
       - name: ✓ commit
         run: |
           cd _site
@@ -36,7 +28,15 @@ jobs:
           git config --local user.email "bot@clarius.org"
           git config --local user.name "bot@clarius.org"
           git commit -m "Publish pages from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
-
+          
+      - name: 🚀 push devlooped
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          force: true
+          directory: _site
+          
       - name: 🚀 push clarius
         uses: ad-m/github-push-action@v0.6.0
         with:
