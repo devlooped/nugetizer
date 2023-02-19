@@ -10,6 +10,7 @@
     "resource": [
       {
         "files": [
+          ".nojekyll",
           "logo.svg",
           "favicon.ico",
           "styles/*.css",
