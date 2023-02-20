@@ -1,0 +1,48 @@
+name: docs
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - docs/**/*
+
+jobs:
+  docs:
+    runs-on: windows-latest
+    steps:
+      - name: 🤖 defaults
+        uses: devlooped/actions-bot@v1
+        with:
+          name: ${{ secrets.BOT_NAME }}
+          email: ${{ secrets.BOT_EMAIL }}
+          gh_token: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          token: ${{ env.GH_TOKEN }}
+
+      - name: 🙏 build
+        working-directory: docs
+        run: |
+          choco install docfx --force -y --version 2.59.4
+          docfx build
+
+      - name: ✓ commit
+        shell: bash
+        run: |
+          cd _site
+          git init
+          git add -A
+          git commit -m "Publish pages from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
+          
+      - name: 🚀 push clarius
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.CLARIUS_ACCESS_TOKEN }}
+          repository: clarius/nugetizer
+          branch: gh-pages
+          force: true
+          directory: _site

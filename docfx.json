@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json.schemastore.org/docfx",
+  "build": {
+    "content": [
+      {
+        "files": [ "**/*.{md,yml}" ],
+        "exclude": [ "_site/**" ]
+      }
+    ],    
+    "resource": [
+      {
+        "files": [
+          ".nojekyll",
+          "styles/*.css",
+          "styles/*.js",
+          "img/*.*"
+        ]
+      },
+      {
+        "files": [ "logo.svg", "favicon.ico" ],
+        "src": "/img", 
+        "dest": "/"
+      },
+      {
+        "files": [ "**/*.*" ],
+        "exclude": [ "**/obj/**", "**/bin/**", "**/*.{md,yml}" ],
+        "src": "docs",
+        "dest": "docs"
+      }
+    ],
+    "globalMetadata": {
+      "_appTitle": "NuGetizer",
+      "_enableSearch": true
+    },
+    "dest": "_site"
+  }
+}
