@@ -8,3 +8,9 @@
     href: overview.md
   - name: How To
     href: how-to.md
+- name: Advanced
+  items:
+  - name: Overview
+    href: overview.md
+  - name: How To
+    href: how-to.md

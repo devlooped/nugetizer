@@ -1,0 +1,11 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="NuGetizer" Version="42.42.42-main.*" />
+  </ItemGroup>
+
+</Project>
