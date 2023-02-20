@@ -1,6 +1,7 @@
 {
 	"name": ".NET",
 	"image": "mcr.microsoft.com/vscode/devcontainers/universal:2.0",
+	"postCreateCommand": "export PATH=$PATH:~/.dotnet/tools",
 	"customizations": {
 		"vscode": {
 			"extensions": [
