@@ -36,7 +36,7 @@ class Program
 
         var settings = new Settings("devlooped", "NuGetizer", "dotnet-nugetize");
         var status = Create(settings).CheckAsync(Directory.GetCurrentDirectory());
-        var result = await new Program().RunAsync(args);
+        var result = new Program().Run(args);
 
         // No need to check sponsorlink status if we couldn't render useful results.
         if (result == 0)
@@ -75,7 +75,7 @@ class Program
         return result;
     }
 
-    async Task<int> RunAsync(string[] args)
+    int Run(string[] args)
     {
         var version = false;
         var help = false;
@@ -139,10 +139,10 @@ class Program
             return 0;
         }
 
-        return await Execute();
+        return Execute();
     }
 
-    async Task<int> Execute()
+    int Execute()
     {
         var tooldir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         var invalidChars = Path.GetInvalidPathChars();
