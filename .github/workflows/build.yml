@@ -51,7 +51,7 @@ jobs:
         uses: ./.github/workflows/test
 
       - name: 📦 pack
-        run: dotnet pack -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet pack -m:1 -p:Version="42.42.$GITHUB_RUN_NUMBER-${GITHUB_REF#refs/*/v}"
 
       - name: 📦 binlog
         uses: actions/upload-artifact@v3
