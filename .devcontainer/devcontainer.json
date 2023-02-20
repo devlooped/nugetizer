@@ -4,6 +4,9 @@
 	"postCreateCommand": "export PATH=$PATH:~/.dotnet/tools",
 	"customizations": {
 		"vscode": {
+			"settings": {
+				"explorer.excludeGitIgnore": true
+			},			
 			"extensions": [
 				"streetsidesoftware.code-spell-checker",
 				"ms-dotnettools.csharp",
