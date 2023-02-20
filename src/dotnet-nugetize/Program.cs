@@ -26,7 +26,7 @@ class Program
 
     bool binlog = Debugger.IsAttached;
     bool debug = Debugger.IsAttached && Environment.GetEnvironmentVariable("DEBUG_NUGETIZER") != "0";
-    bool quiet = false;
+    bool verbose = false;
     string items;
     List<string> extra;
 
@@ -85,7 +85,7 @@ class Program
             { "?|h|help", "Display this help.", h => help = h != null },
             { "b|bl|binlog", "Generate binlog.", b => binlog = b != null },
             { "d|debug", "Debug nugetizer tasks.", d => debug = d != null, true },
-            { "q|quiet", "Don't render MSBuild output.", q => quiet = q != null },
+            { "v|verbose", "Render MSBuild output.", v => verbose = v != null },
             { "i|items:", "MSBuild items file path containing full package contents metadata.", i => items = Path.GetFullPath(i) },
             { "version", "Render tool version and copyright information.", v => version = v != null },
         }
@@ -455,11 +455,10 @@ class Program
         if (!timedout)
             output.Append(proc.StandardOutput.ReadToEnd());
 
-        if (quiet)
-            return proc.ExitCode == 0;
+        if (!verbose && proc.ExitCode == 0)
+            return true;
 
-        if (timedout || proc.ExitCode != 0)
-            Console.Out.Write(output.ToString());
+        Console.Out.Write(output.ToString());
 
         return proc.ExitCode == 0;
     }
