@@ -1,21 +1,6 @@
 {
-	"name": "C# (.NET)",
-	"image": "mcr.microsoft.com/devcontainers/dotnet:0-7.0",
-	"features": {
-		"ghcr.io/devcontainers/features/github-cli:1": {
-			"installDirectlyFromGitHubRelease": true,
-			"version": "latest"
-		},
-		"ghcr.io/devcontainers/features/powershell:1": {
-			"version": "latest"
-		},
-		"ghcr.io/akhildevelops/devcontainer-features/android-cli:0": {},
-		"ghcr.io/devcontainers/features/dotnet:1": {
-			"installUsingApt": true,
-			"version": "latest"
-		}
-	},
-	"postCreateCommand": "dotnet restore && dotnet tool update --g dotnet-nugetize",
+	"name": ".NET",
+	"image": "mcr.microsoft.com/vscode/devcontainers/universal:2.0",
 	"customizations": {
 		"vscode": {
 			"extensions": [
