@@ -15,5 +15,17 @@
 			"version": "latest"
 		}
 	},
-	"postCreateCommand": "dotnet restore && dotnet tool update --g dotnet-nugetize"
+	"postCreateCommand": "dotnet restore && dotnet tool update --g dotnet-nugetize",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"streetsidesoftware.code-spell-checker",
+				"ms-dotnettools.csharp",
+				"GitHub.copilot",
+				"yzhang.markdown-all-in-one",
+				"DotJoshJohnson.xml",
+				"tintoy.msbuild-project-tools"
+			]
+		}
+	}
 }
