@@ -3,9 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
-    paths:
-      - docs/**/*
+      - docs
 
 jobs:
   docs:
@@ -25,7 +23,6 @@ jobs:
           token: ${{ env.GH_TOKEN }}
 
       - name: 🙏 build
-        working-directory: docs
         run: |
           choco install docfx --force -y --version 2.59.4
           docfx build

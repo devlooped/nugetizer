@@ -1,9 +1,0 @@
-# Keeps NuGetizer dependency updated in docs/scenarios
-version: 2
-updates:
-- package-ecosystem: nuget
-  directory: /docs
-  allow:
-    - dependency-name: "NuGetizer"
-  schedule:
-    interval: daily
