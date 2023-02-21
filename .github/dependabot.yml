@@ -7,3 +7,11 @@ updates:
   directory: /
   schedule:
     interval: daily
+
+# Keeps NuGetizer dependency updated in docs/scenarios
+- package-ecosystem: nuget
+  directory: /docs
+  allow:
+    - dependency-name: "NuGetizer"
+  schedule:
+    interval: daily
