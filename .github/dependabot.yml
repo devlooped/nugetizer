@@ -1,9 +1,9 @@
-# Please see the documentation for all configuration options:
-# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-
+# Keeps NuGetizer dependency updated in docs/scenarios
 version: 2
 updates:
 - package-ecosystem: nuget
-  directory: /
+  directory: /docs
+  allow:
+    - dependency-name: "NuGetizer"
   schedule:
     interval: daily

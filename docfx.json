@@ -4,28 +4,29 @@
     "content": [
       {
         "files": [ "**/*.{md,yml}" ],
-        "exclude": [ "_site/**" ]
+        "exclude": [ "src/**", "_site/**" ]
       }
     ],    
     "resource": [
       {
         "files": [
-          ".nojekyll",
+          "favicon.ico",
+          "logo.svg",
           "styles/*.css",
           "styles/*.js",
-          "img/*.*"
+          "img/**/*.*"
         ]
-      },
-      {
-        "files": [ "logo.svg", "favicon.ico" ],
-        "src": "/img", 
-        "dest": "/"
       },
       {
         "files": [ "**/*.*" ],
         "exclude": [ "**/obj/**", "**/bin/**", "**/*.{md,yml}" ],
-        "src": "docs",
-        "dest": "docs"
+        "src": "./docs",
+        "dest": "./docs"
+      },
+      {
+        "files": [ ".nojekyll" ],
+        "src": "./styles", 
+        "dest": "./"
       }
     ],
     "globalMetadata": {

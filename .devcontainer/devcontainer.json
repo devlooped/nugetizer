@@ -1,7 +1,7 @@
 {
 	"name": ".NET",
 	"image": "mcr.microsoft.com/vscode/devcontainers/universal:2.0",
-	"postCreateCommand": "export PATH=$PATH:~/.dotnet/tools",
+	"postCreateCommand": "./.devcontainer/postCreateCommand.sh",
 	"customizations": {
 		"vscode": {
 			"settings": {
@@ -13,7 +13,8 @@
 				"GitHub.copilot",
 				"yzhang.markdown-all-in-one",
 				"DotJoshJohnson.xml",
-				"tintoy.msbuild-project-tools"
+				"tintoy.msbuild-project-tools",
+        "eamodio.gitlens"
 			]
 		}
 	}

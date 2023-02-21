@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>Quickstart</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <Authors>NuGetizer</Authors>
+    <Description>NuGetized quickstart</Description>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" 
+                      PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="none.txt" Pack="true" />
+    <Content Include="content.txt" Pack="true" />
+    <Compile Update="@(Compile)" Pack="true" />
+  </ItemGroup>
+
+</Project>

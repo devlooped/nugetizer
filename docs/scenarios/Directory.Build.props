@@ -1,8 +1,22 @@
 ﻿<Project>
 
+  <PropertyGroup>
+    <GetPackageContentsDependsOn>
+      RemoveFakeCompile;
+      $(GetPackageContentsDependsOn)
+    </GetPackageContentsDependsOn>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Avoids build failure due to empty @(Compile) -->
     <Compile Include="$(MSBuildThisFileDirectory)_._" />
   </ItemGroup>
+
+  <Target Name="RemoveFakeCompile">
+    <!-- Removes the fake _._ file so it doesn't polute the scenarios output -->
+    <ItemGroup>
+      <Compile Remove="$(MSBuildThisFileDirectory)_._" />
+    </ItemGroup>
+  </Target>
 
 </Project>
