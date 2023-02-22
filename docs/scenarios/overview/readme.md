@@ -59,3 +59,5 @@ Highlights from the project file:
   
   > [!NOTE]
   > In another example we'll see how to further annotate these items to modify their `buildAction`, `copyToOutput` and `flatten` [behaviors](https://learn.microsoft.com/en-us/nuget/reference/nuspec#using-the-contentfiles-element-for-content-files).
+
+  *  If a `readme.md` (or `.txt`) file is present in the project directory, it is automatically included in the package as the [readme file to be rendered by nuget.org](https://learn.microsoft.com/en-us/NuGet/nuget-org/package-readme-on-nuget-org). See [an example of a comprehensive readme](https://www.nuget.org/packages/ThisAssembly.Constants).
