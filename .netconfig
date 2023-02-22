@@ -50,9 +50,9 @@
 	sha = 0683ee777d7d878d4bf013d7deea352685135a05
 [file "src/Directory.Build.props"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.props
-	etag = 1d5ec6bdb8b12c13635a11364dcfe54aefb82cc171f332a8d536aa35476222d5
+	etag = a5cfa7374ce9141e98426583688be558d08a35b1c9be0c8150e7c4a0a5cfde1b
 	weak
-	sha = ef8e7fa7593ded91d871d30eeebd0dc79f679159
+	sha = 28a27ba9594b5df731460864038593f568f6d64e
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
 	etag = a495854b35fb101774cdfd2b2c2875ed3dd85ada5d04cbdd3b7a90c9afdbe36f
