@@ -774,5 +774,31 @@ namespace NuGetizer
                 ExcludeAssets = "build"
             }));
         }
+
+        [Fact]
+        public void when_private_assets_then_packs_transitively()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                	<PropertyGroup>
+                		<TargetFramework>net6.0</TargetFramework>
+                        <IsPackable>true</IsPackable>
+                	</PropertyGroup>
+                
+                	<ItemGroup>
+                		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" PrivateAssets="all" />
+                	</ItemGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                NuGetPackageId = "Microsoft.Extensions.Configuration.Abstractions",
+                PackFolder = "Lib",
+            }));
+        }
     }
 }

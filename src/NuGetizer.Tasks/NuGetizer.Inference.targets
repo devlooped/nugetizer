@@ -39,6 +39,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <_OutputFullPath Condition="$([System.IO.Path]::IsPathRooted($(OutputPath)))">$(OutputPath)</_OutputFullPath>
     <_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(OutputPath)</_OutputFullPath>
+
+    <!-- Ensure built-in RunResolvePackageDependencies target emits stuff we need for inference of transitive dependencies -->
+    <EmitLegacyAssetsFileItems>true</EmitLegacyAssetsFileItems>
   </PropertyGroup>
 
   <PropertyGroup Label="Package Readme" Condition="'$(PackReadme)' == 'true' and '$(IsPackable)' == 'true'">
