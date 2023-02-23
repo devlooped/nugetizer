@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Quickstart</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageFile Include="instructions.txt" PackagePath="tools/instructions.txt" />
+    <PackageFile Include="Quickstart.props" PackFolder="build" />
+  </ItemGroup>
+
+</Project>
