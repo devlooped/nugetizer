@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.9.4](https://github.com/devlooped/nugetizer/tree/v0.9.4) (2023-02-22)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.3...v0.9.4)
+
+:sparkles: Implemented enhancements:
+
+- Change nugetize default to non-verbose [\#313](https://github.com/devlooped/nugetizer/pull/313) (@kzu)
+- Add SponsorLink to the nugetize CLI [\#309](https://github.com/devlooped/nugetizer/pull/309) (@kzu)
+- Improve package rendering in dotnet-nugetize [\#307](https://github.com/devlooped/nugetizer/pull/307) (@kzu)
+- Improve the handling of platform-suffixed target frameworks [\#306](https://github.com/devlooped/nugetizer/pull/306) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- Devcontainer and docs experimentation [\#314](https://github.com/devlooped/nugetizer/pull/314) (@kzu)
+- ⛙ ⬆️ Bump dependencies [\#311](https://github.com/devlooped/nugetizer/pull/311) (@github-actions[bot])
+
 ## [v0.9.3](https://github.com/devlooped/nugetizer/tree/v0.9.3) (2023-02-18)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.2...v0.9.3)
