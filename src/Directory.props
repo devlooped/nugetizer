@@ -21,5 +21,6 @@
   <Target Name="Test" />
 
   <Import Project="NuGetizer.Tasks\NuGetizer.props" Condition="'$(NuGetize)' == 'true'" />
+  <Import Project="Directory.props.user" Condition="Exists('Directory.props.user')" />
 
 </Project>
