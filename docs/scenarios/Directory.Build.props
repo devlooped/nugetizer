@@ -1,6 +1,10 @@
 ﻿<Project>
 
   <PropertyGroup>
+    <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <GetPackageContentsDependsOn>
       RemoveFakeCompile;
       $(GetPackageContentsDependsOn)
@@ -18,5 +22,7 @@
       <Compile Remove="$(MSBuildThisFileDirectory)_._" />
     </ItemGroup>
   </Target>
+
+  <Import Project="Directory.props.user" Condition="Exists('Directory.props.user')" />
 
 </Project>

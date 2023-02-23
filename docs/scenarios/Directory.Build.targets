@@ -1,13 +1,9 @@
 ﻿<Project>
 
-  <PropertyGroup>
-    <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
-    <RestoreSources>$(UserProfile)\.nuget\packages</RestoreSources>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Update="NuGetizer" Version="0.9.3" />
-    <!-- <PackageReference Update="NuGetizer" Version="42.42.42-main.*" /> -->
+    <PackageReference Update="NuGetizer" Version="0.9.6" />
   </ItemGroup>
+
+  <Import Project="Directory.targets.user" Condition="Exists('Directory.targets.user')" />
 
 </Project>
