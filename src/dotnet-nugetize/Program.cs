@@ -271,12 +271,18 @@ class Program
 
                 foundPackage = true;
 
+                var specFile = new FileInfo(metadata.Element("Nuspec").Value).FullName;
+                if (specFile.StartsWith(Directory.GetCurrentDirectory()))
+                    specFile = specFile.Replace(Directory.GetCurrentDirectory(), "");
+                if (specFile.StartsWith(Path.DirectorySeparatorChar) || specFile.StartsWith(Path.AltDirectorySeparatorChar))
+                    specFile = "." + specFile;
+
                 var grid = new Grid();
                 grid.AddColumn().AddColumn();
                 grid.AddRow(new Text("Package", yellow), new Grid().AddColumn()
                     .AddRow($"[yellow]{Path.GetFileName(metadata.Element("NuPkg").Value)}[/]")
-                    .AddRow(new Text(metadata.Element("Nuspec").Value,
-                        new Style(Color.Blue, decoration: Decoration.Underline, link: metadata.Element("Nuspec").Value))));
+                    .AddRow(new Text(specFile,
+                        new Style(Color.Blue, decoration: Decoration.Underline, link: specFile))));
 
                 root = new Tree(grid);
 
