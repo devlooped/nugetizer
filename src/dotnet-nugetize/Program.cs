@@ -282,7 +282,7 @@ class Program
                 grid.AddRow(new Text("Package", yellow), new Grid().AddColumn()
                     .AddRow($"[yellow]{Path.GetFileName(metadata.Element("NuPkg").Value)}[/]")
                     .AddRow(new Text(specFile,
-                        new Style(Color.Blue, decoration: Decoration.Underline, link: specFile))));
+                        new Style(Color.Blue, decoration: Decoration.Underline, link: new FileInfo(metadata.Element("Nuspec").Value).FullName))));
 
                 root = new Tree(grid);
 
