@@ -226,3 +226,11 @@ NuGetizer supports the SDK-style `.msbuildproj` project file type which has buil
 ![empty packaging project](img/scenarios/quickstart/packaging.png)
 
 In addition to referencing any of the projects shown in this Quickstart, packaging projects can also reference other packaging projects in turn for complex packing scenarios too.
+
+The following is a fairly comprehensive example of a packaging project, including references to build/tasks project, code analysis projcet, multi-targeting main library and additional tools:
+
+[!code-xml[](docs/scenarios/quickstart/packaging-complete/Package/Quickstart.msbuildproj)]
+
+Which produces the following content:
+
+![packaging project with multiple references](img/scenarios/quickstart/packaging-complete.png)

@@ -1,7 +1,7 @@
 ﻿<Project>
 
   <ItemGroup>
-    <PackageReference Update="NuGetizer" Version="0.9.6" />
+    <PackageReference Update="NuGetizer" Version="0.9.4" />
   </ItemGroup>
 
   <Import Project="Directory.targets.user" Condition="Exists('Directory.targets.user')" />
