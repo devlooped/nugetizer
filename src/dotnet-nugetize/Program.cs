@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +13,6 @@ using Devlooped;
 using Mono.Options;
 using Spectre.Console;
 using Spectre.Console.Rendering;
-using static Devlooped.SponsorLink;
 using static ThisAssembly.Strings;
 
 namespace NuGetize;
@@ -396,7 +393,7 @@ class Program
             }
 
             if (attributes.Count > 0)
-                parent.AddNode($"[white]{Path.GetFileName(file)}[/] [grey]({string.Join(',', attributes)})[/]");
+                parent.AddNode($"[white]{Path.GetFileName(file)}[/] [grey]({string.Join(", ", attributes)})[/]");
             else
                 parent.AddNode($"[white]{Path.GetFileName(file)}[/]");
         }
@@ -413,7 +410,16 @@ class Program
             var tf = deps.AddNode($"[green]{group.Key}[/]");
             foreach (var dependency in group)
             {
-                tf.AddNode(Markup.FromInterpolated($"[white]{dependency.Attribute("Include").Value}[/], [grey]{dependency.Element("Version").Value}[/]"));
+                var attributes = new List<string>();
+                if (dependency.Element("PackInclude")?.Value is string include && !string.IsNullOrEmpty(include))
+                    attributes.Add("include=" + include);
+                if (dependency.Element("PackExclude")?.Value is string exclude && !string.IsNullOrEmpty(exclude))
+                    attributes.Add("exclude=" + exclude);
+
+                if (attributes.Count > 0)
+                    tf.AddNode(Markup.FromInterpolated($"[white]{dependency.Attribute("Include").Value}[/], [grey]{dependency.Element("Version").Value}[/] [grey]({string.Join(", ", attributes)})[/]"));
+                else
+                    tf.AddNode(Markup.FromInterpolated($"[white]{dependency.Attribute("Include").Value}[/], [grey]{dependency.Element("Version").Value}[/]"));
             }
         }
     }
