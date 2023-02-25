@@ -6,10 +6,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Devlooped;
 using Mono.Options;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -34,8 +36,7 @@ class Program
     {
         Console.OutputEncoding = Encoding.Unicode;
 
-        var settings = new Settings("devlooped", "NuGetizer", "dotnet-nugetize");
-        var status = Create(settings).CheckAsync(Directory.GetCurrentDirectory());
+        var status = SponsorCheck.CheckAsync(Directory.GetCurrentDirectory(), "devlooped", "NuGetizer", "dotnet-nugetize", ThisAssembly.Project.Version);
         var result = new Program().Run(args);
 
         // No need to check sponsorlink status if we couldn't render useful results.
@@ -47,25 +48,25 @@ class Program
 
             switch (value.Value)
             {
-                case Devlooped.SponsorLink.Status.AppMissing:
+                case SponsorStatus.AppMissing:
                     Warning(
                         AppMissing.Header,
-                        new Markup(AppMissing.Message1(settings.Product, settings.Sponsorable)),
+                        new Markup(AppMissing.Message1("NuGetizer", "devlooped")),
                         new Grid().AddColumns(2)
                             .AddRow(
                                 new Markup(AppMissing.Message2),
                                 new Text("https://github.com/apps/sponsorlink",
                                     new Style(Color.Blue, decoration: Decoration.Underline, link: "https://github.com/apps/sponsorlink"))));
                     break;
-                case Devlooped.SponsorLink.Status.NotSponsoring:
+                case SponsorStatus.NotSponsoring:
                     Warning(
                         NotSponsoring.Header,
-                        new Markup(NotSponsoring.Message(settings.Product)),
-                        new Text("https://github.com/sponsors/" + settings.Sponsorable,
+                        new Markup(NotSponsoring.Message("NuGetizer")),
+                        new Text("https://github.com/sponsors/devlooped",
                             new Style(Color.Blue, decoration: Decoration.Underline, link: "https://github.com/apps/sponsorlink")));
                     break;
-                case Devlooped.SponsorLink.Status.Sponsoring:
-                    AnsiConsole.Write(new Markup($":heart_decoration: [grey30]{Sponsoring.Message(settings.Product, settings.Sponsorable)}[/]"));
+                case SponsorStatus.Sponsoring:
+                    AnsiConsole.Write(new Markup($":heart_decoration: [grey30]{Sponsoring.Message("NuGetizer", "devlooped")}[/]"));
                     break;
                 default:
                     break;
