@@ -136,6 +136,6 @@
     <value>Run paused for [bold yellow]{ms}ms[/].</value>
   </data>
   <data name="Sponsoring_Message" xml:space="preserve">
-    <value>Thank you for supporting [bold italic grey66]{product}[/] with your sponsorship of [bold italic grey66]{sponsorable}[/]!</value>
+    <value>Thank you for supporting [bold grey66]{product}[/] with your sponsorship of [bold grey66]{sponsorable}[/]!</value>
   </data>
 </root>

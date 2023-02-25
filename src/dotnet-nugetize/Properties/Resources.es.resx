@@ -136,6 +136,6 @@
     <value>Ejecución pausada por [bold yellow]{ms}ms[/].</value>
   </data>
   <data name="Sponsoring_Message" xml:space="preserve">
-    <value>Gracias por apoyar a [bold italic grey66]{product}[/] con tu patrocinio de [bold italic grey66]{sponsorable}[/]!</value>
+    <value>Gracias por apoyar a [bold grey66]{product}[/] con tu patrocinio de [bold grey66]{sponsorable}[/]!</value>
   </data>
 </root>
