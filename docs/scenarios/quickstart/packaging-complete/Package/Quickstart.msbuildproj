@@ -3,10 +3,13 @@
   <PropertyGroup>
     <PackageId>Quickstart</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NuGetizer" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" 
+                      PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
