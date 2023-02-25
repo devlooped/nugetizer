@@ -366,7 +366,7 @@ which has built-in support in Visual Studio. It can use the `Microsoft.Build.NoT
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.Build.NoTargets/3.5.0">
+<Project Sdk="Microsoft.Build.NoTargets/3.7.0">
   <PropertyGroup>
     <PackageId>MyPackage</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -400,7 +400,7 @@ it's automatically imported in consuming projects.
 The packaging project would now look as follows:
 
 ```xml
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>MyPackage</PackageId>
@@ -447,11 +447,9 @@ You can also add a reference to a CLI *tools* program like the following:
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <PackFolder>tools</PackFolder>
-    <!-- We don't need this particular tool in a framework-specific subfolder under /tools -->
-    <BuildOutputFrameworkSpecific>false</BuildOutputFrameworkSpecific>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='System.CommandLine' Version='2.0.0-beta3.22114.1' PrivateAssets='all' />
+    <PackageReference Include='System.CommandLine' Version='2.0.0-beta3.22114.1' />
   </ItemGroup>
 </Project>
 ```

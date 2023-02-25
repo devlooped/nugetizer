@@ -177,7 +177,7 @@ namespace NuGetizer
         public void when_framework_specific_then_retargets_direct_and_referenced_content()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -221,7 +221,7 @@ namespace NuGetizer
         public void when_referenced_project_has_packfolder_then_preserves_it()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -266,7 +266,7 @@ namespace NuGetizer
         public void when_project_reference_packfolder_additional_properties_then_overrides_project_pack_folder()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -295,7 +295,7 @@ namespace NuGetizer
         public void when_project_reference_packfolder_then_overrides_project_pack_folder()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -324,7 +324,7 @@ namespace NuGetizer
         public void when_pack_folder_build_then_none_packs_as_build()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -347,7 +347,7 @@ namespace NuGetizer
         public void when_readme_found_but_pack_readme_false_then_does_not_add_it()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -379,7 +379,7 @@ namespace NuGetizer
         public void when_readme_found_but_project_not_packable_then_does_not_add_content()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <TargetFramework>net6.0</TargetFramework>
@@ -410,7 +410,7 @@ namespace NuGetizer
         public void when_readme_found_then_adds_metadata_and_content()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -441,7 +441,7 @@ namespace NuGetizer
         public void when_readme_custom_extension_specified_then_adds_metadata_and_content()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
