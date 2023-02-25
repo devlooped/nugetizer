@@ -1,0 +1,59 @@
+NuGetizer is a drop-in replacement for the .NET SDK built-in Pack (a.k.a. "SDK Pack") which instantly supercharges your ability to customize and extend the packing process in a consistent and easy to understand process designed and centered around best practices in MSBuild design and extensibility.
+
+Yes, this means you'll never need to write a `.nuspec` by hand ever again, no matter how complicated or advanced your packing scenarios are.
+
+Comprehensive and intuitive heuristics built from experience building nuget packages for over a decade make getting started with NuGetizer seamless and easy, while still accomodating the most advanced scenarios through plain MSBuild extensibility. Out of the box, NuGetizer supports:
+
+* Drop-in replacement for the built-in .NET SDK Pack
+* Packing project references (including transitive references)
+* Packing multi-targeted projects, including framework-specific resources and dependencies
+* Fast iterative development with complementary [dotnet-nugetize](https://nuget.org/packages/dotnet-nugetize) command line tool
+* Consistent and predictable naming for package content inference behaviors:
+  * `Pack=[true|false]` => Include/exclude from package (on any item, such as `PackageReference`, `ProjectReference`, `None`, `Content`, etc.) 
+  * `PackFolder=[folder]` => Name of known folders with special behavior, such as `Lib`, `Build`, `Content`, `Tools`, etc. (as a project property or item metadata)
+  * `PackagePath=[path]` => Package-relative path (on any item, such as `None`, `Content`, etc.)
+  * `Pack[Item Type]=[true|false]` => Set default pack behavior for all items of a given type (such as `PackNone`, `PackContent`, `PackBuildOutput`, `PackDependencies`, `PackFrameworkReferences`, `PackEmbeddedResource`, `PackResource` etc.)
+* Packaging projects using `.msbuildproj` and [Microsoft.Build.NoTargets](https://nuget.org/packages/Microsoft.Build.NoTargets) SDK
+* SourceLink support to populate [repository information in the package](https://devblogs.microsoft.com/nuget/introducing-source-code-link-for-nuget-packages/)
+
+It's strongly recommended that you install the [dotnet-nugetize](https://nuget.org/packages/dotnet-nugetize) tool to get the best experience with NuGetizer:
+
+```
+dotnet tool install -g dotnet-nugetize
+```
+
+Given the following project:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <PackageId>Quickstart</PackageId>
+    <Authors>NuGetizer</Authors>
+    <Description>NuGetized quickstart</Description>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" 
+                      PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="none.txt" Pack="true" />
+    <Content Include="content.txt" Pack="true" />
+    <Compile Update="@(Compile)" Pack="true" />
+  </ItemGroup>
+
+</Project>
+```
+
+Running `nugetize` on the project directory will produce:
+
+![nugetize quickstart](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/quickstart.png)
