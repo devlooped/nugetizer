@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Quickstart</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This how-to file might showcase C# code which is TF-agnostic -->
+    <Content Include="HowTo.txt" 
+             BuildAction="None" 
+             CopyToOutput="PreserveNewest"
+             CodeLanguage="cs"
+             TargetFramework="any" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net60</TargetFrameworks>
+    <PackageId>Core</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\common\Common.csproj" FrameworkSpecific="false" />
+  </ItemGroup>
+
+</Project>

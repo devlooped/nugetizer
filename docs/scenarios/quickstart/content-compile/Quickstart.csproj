@@ -3,15 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Quickstart</PackageId>
+    <PackCompile>true</PackCompile>
+    <PackBuildOutput>false</PackBuildOutput>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NuGetizer" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageFile Include="instructions.txt" PackagePath="tools/instructions.txt" />
-    <PackageFile Include="Quickstart.props" PackFolder="build" />
   </ItemGroup>
 
 </Project>

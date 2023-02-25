@@ -4,7 +4,7 @@
     "content": [
       {
         "files": [ "**/*.{md,yml}" ],
-        "exclude": [ "src/**", "_site/**" ]
+        "exclude": [ "src/**", "_site/**", "node_modules/**" ]
       }
     ],    
     "resource": [
@@ -19,7 +19,11 @@
       },
       {
         "files": [ "**/*.*" ],
-        "exclude": [ "**/obj/**", "**/bin/**", "**/*.{md,yml}" ],
+        "exclude": [ 
+          "**/obj/**", 
+          "**/bin/**", 
+          "**/*.{md,yml}" 
+        ],
         "src": "./docs",
         "dest": "./docs"
       },

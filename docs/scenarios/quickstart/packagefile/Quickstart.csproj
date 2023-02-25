@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Quickstart</PackageId>
+    <EnablePackInference>false</EnablePackInference>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageFile Include="instructions.txt" PackagePath="docs/instructions.txt" />
+    <PackageFile Include="lib.dll" PackFolder="tools" />
+    <PackageFile Include="Quickstart.props" PackFolder="build" />
+    <PackageFile Include="Quickstart.Framework.props" PackFolder="build" 
+                                                      FrameworkSpecific="true" />
+  </ItemGroup>
+
+</Project>
