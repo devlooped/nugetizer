@@ -13,6 +13,4 @@
     <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
   </PropertyGroup>
 
-  <Import Project="Directory.targets.user" Condition="Exists('Directory.targets.user')" />
-
 </Project>
