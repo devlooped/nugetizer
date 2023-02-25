@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.9.5](https://github.com/devlooped/nugetizer/tree/v0.9.5) (2023-02-25)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.4...v0.9.5)
+
+:sparkles: Implemented enhancements:
+
+- Pack console apps using publish output by default [\#324](https://github.com/devlooped/nugetizer/pull/324) (@kzu)
+- Allow extending the build with local-only targets [\#323](https://github.com/devlooped/nugetizer/pull/323) (@kzu)
+- Ensure transitive dependencies are properly resolved for inference [\#322](https://github.com/devlooped/nugetizer/pull/322) (@kzu)
+- Render nuspec as a relative path to the nugetize output [\#321](https://github.com/devlooped/nugetizer/pull/321) (@kzu)
+
 ## [v0.9.4](https://github.com/devlooped/nugetizer/tree/v0.9.4) (2023-02-22)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v0.9.3...v0.9.4)
