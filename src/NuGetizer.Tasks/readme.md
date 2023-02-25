@@ -6,6 +6,7 @@ Comprehensive and intuitive heuristics built from experience building nuget pack
 
 * Drop-in replacement for the built-in .NET SDK Pack
 * Packing project references (including transitive references)
+* Straightforward support for [smart libraries](https://www.cazzulino.com/smart-libraries.html#packaging) packing needs
 * Packing multi-targeted projects, including framework-specific resources and dependencies
 * Fast iterative development with complementary [dotnet-nugetize](https://nuget.org/packages/dotnet-nugetize) command line tool
 * Consistent and predictable naming for package content inference behaviors:
@@ -15,6 +16,9 @@ Comprehensive and intuitive heuristics built from experience building nuget pack
   * `Pack[Item Type]=[true|false]` => Set default pack behavior for all items of a given type (such as `PackNone`, `PackContent`, `PackBuildOutput`, `PackDependencies`, `PackFrameworkReferences`, `PackEmbeddedResource`, `PackResource` etc.)
 * Packaging projects using `.msbuildproj` and [Microsoft.Build.NoTargets](https://nuget.org/packages/Microsoft.Build.NoTargets) SDK
 * SourceLink support to populate [repository information in the package](https://devblogs.microsoft.com/nuget/introducing-source-code-link-for-nuget-packages/)
+* Automatic `readme.md` inclusion in the package
+* Support for [content includes in readme](https://www.cazzulino.com/pack-readme-includes.html)
+
 
 It's strongly recommended that you install the [dotnet-nugetize](https://nuget.org/packages/dotnet-nugetize) tool to get the best experience with NuGetizer:
 
@@ -57,3 +61,38 @@ Given the following project:
 Running `nugetize` on the project directory will produce:
 
 ![nugetize quickstart](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/quickstart.png)
+
+A typical packaging project for a [smart multi-targeted library](https://www.cazzulino.com/smart-libraries.html#packaging) might look like the following:
+
+```xml
+<Project Sdk="Microsoft.Build.NoTargets/3.7.0">
+
+  <PropertyGroup>
+    <PackageId>Quickstart</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" 
+                      PrivateAssets="all" />
+    </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Analyzer\Quickstart.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Build\Quickstart.Tasks.csproj" />
+    <ProjectReference Include="..\Lib\Quickstart.csproj" />
+    <ProjectReference Include="..\Tools\Quickstart.csproj" />
+  </ItemGroup>
+
+</Project>
+```
+
+And produce the following `nugetize`  tool output:
+
+![nugetize smart library](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/packaging.png)
+
+[Learn more about NuGetizer](https://www.clarius.org/nugetizer/) and its capabilities.
+
+<!-- include https://github.com/devlooped/sponsors/raw/main/footer.md -->
+<!-- exclude -->
