@@ -1,8 +1,0 @@
-﻿<Project>
-
-  <ItemGroup>
-    <!-- Avoids build failure due to empty @(Compile) -->
-    <Compile Include="$(MSBuildThisFileDirectory)_._" />
-  </ItemGroup>
-
-</Project>
