@@ -62,7 +62,7 @@ Running `nugetize` on the project directory will produce:
 
 ![nugetize quickstart](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/quickstart.png)
 
-A typical packaging project for a [smart multi-targeted library](https://www.cazzulino.com/smart-libraries.html#packaging) might look like the following:
+A typical packaging `.msbuildproj` project for a [smart multi-targeted library](https://www.cazzulino.com/smart-libraries.html#packaging) might look like the following:
 
 ```xml
 <Project Sdk="Microsoft.Build.NoTargets/3.7.0">
@@ -76,7 +76,7 @@ A typical packaging project for a [smart multi-targeted library](https://www.caz
     <PackageReference Include="NuGetizer" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" 
                       PrivateAssets="all" />
-    </ItemGroup>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Analyzer\Quickstart.CodeAnalysis.csproj" />
@@ -91,6 +91,9 @@ A typical packaging project for a [smart multi-targeted library](https://www.caz
 And produce the following `nugetize`  tool output:
 
 ![nugetize smart library](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/packaging.png)
+
+> You can open this sample and run it directly in your browser in a [![GitHub Codespace](https://img.shields.io/badge/-GitHub%20Codespace-black?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=docs&repo=297430130&machine=basicLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json)
+
 
 [Learn more about NuGetizer](https://www.clarius.org/nugetizer/) and its capabilities.
 
