@@ -13,7 +13,7 @@ namespace NuGetizer
         public void when_pack_as_tool_then_packs_no_dependencies()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>MyTool</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -67,7 +67,7 @@ namespace NuGetizer
         public void when_pack_folder_tool_but_no_pack_as_tool_then_packs_dependencies_normally()
         {
             var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>MyTool</PackageId>
     <TargetFramework>net6.0</TargetFramework>
@@ -94,9 +94,8 @@ namespace NuGetizer
                 <Project Sdk="Microsoft.NET.Sdk">
                   <PropertyGroup>
                     <OutputType>Exe</OutputType>
-                    <PackageId>MyTool</PackageId>
                     <TargetFramework>net6.0</TargetFramework>
-                                    <PackageId>MyTool</PackageId>
+                    <PackageId>MyTool</PackageId>
                     <PackFolder>tools</PackFolder>
                   </PropertyGroup>
                   <ItemGroup>

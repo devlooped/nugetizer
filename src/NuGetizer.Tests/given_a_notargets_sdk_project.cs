@@ -15,7 +15,7 @@ namespace NuGetizer
             var result = Builder.BuildProjects(
                 "GetPackageContents", output, null,
                 ("main.msbuildproj", @"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Foo</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -26,7 +26,7 @@ namespace NuGetizer
   </ItemGroup>
 </Project>"),
                 ("other.msbuildproj", @"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Bar</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -76,7 +76,7 @@ namespace NuGetizer
   </ItemGroup>
 </Project>"),
                 ("other.msbuildproj", @"
-<Project Sdk='Microsoft.Build.NoTargets/3.5.0'>
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Bar</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
