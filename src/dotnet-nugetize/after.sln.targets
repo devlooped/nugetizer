@@ -3,9 +3,11 @@
   <Target Name="RemoveNonNuGetized" BeforeTargets="GetPackageContents">
     <MSBuild Properties="BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" 
              BuildInParallel="True" 
-             SkipNonexistentProjects="%(ProjectReference.SkipNonexistentProjects)" 
-             Targets="GetTargetPath" 
-             Projects="@(ProjectReference)">
+             SkipNonexistentProjects="true" 
+             SkipNonexistentTargets="true"
+             Targets="GetTargetPath"
+             Projects="@(ProjectReference)"
+             ContinueOnError="true">
       <Output TaskParameter="TargetOutputs" ItemName="ReferencedProjectTargetPath" />
     </MSBuild>
     <ItemGroup>
