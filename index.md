@@ -20,8 +20,7 @@ such as:
 
 > [!TIP]
 > For added convenience in exploring **NuGetizer**'s capabilities, you can run all 
-the examples in this documentation directly in your browser in a  
-[![GitHub Codespace](https://img.shields.io/badge/-GitHub%20Codespace-black?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=docs&repo=297430130&machine=basicLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json)
+the examples in this documentation directly in your browser in a [![GitHub Codespace](https://img.shields.io/badge/-GitHub%20Codespace-black?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=docs&repo=297430130&machine=basicLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json)
 
 Getting started is really easy with powerful (yet flexible) built-in [package contents inference](TODO://inference) and a few properties and item metadata that are named and used consistently in a wide variety of common MSBuild items:
 
