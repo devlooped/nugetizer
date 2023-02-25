@@ -248,6 +248,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   </Target>
 
   <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn);_CollectInferenceCandidates" Returns="@(PackageFile)">
+    <Error Code="NG1004" Condition="'$(PackAsTool)' == 'true' and '$(PackAsPublish)' == 'true'" Text="PackAsTool and PackAsPublish are mutually exclusive." />
 
     <!-- Even if all these conditions are false, the user can still explicitly pack the file, of course -->
     <ItemGroup Label="Readme" Condition="'$(PackReadme)' == 'true' and '$(PackageReadmeFile)' != '' and '$(IsPackable)' == 'true'">
@@ -294,7 +295,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                                        '%(_InferenceCandidateWithTargetPath.CopyToOutputDirectory)' == 'Never'" />
     </ItemGroup>
 
-    <ItemGroup Label="BuildOutput Inference" Condition="'$(PackBuildOutput)' == 'true'">
+    <ItemGroup Label="BuildOutput Inference" Condition="'$(PackBuildOutput)' == 'true' and '$(PackAsPublish)' != 'true'">
       <!-- Unfortunately, even with https://github.com/Microsoft/msbuild/pull/1115, when multi-targeting 
            .NETFramework, the desktop WinFX.targets are imported which don't have the fix, so we need to 
            do it "the old way" for this particular output group -->
@@ -318,9 +319,20 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_InferredPackageFile Include="@(_InferredProjectOutput -> Distinct())" />
     </ItemGroup>
 
+    <ItemGroup Label="Publishable Inference" Condition="'$(PackAsPublish)' == 'true' and '$(PackAsTool)' != 'true'">
+      <_InferredPublishItem Include="@(PublishItemsOutputGroupOutputs -> '%(OutputPath)')" />
+      <_InferredPackageFile Include="@(_InferredPublishItem -> '%(FullPath)')">
+        <PackFolder>$(PackFolder)</PackFolder>
+        <FrameworkSpecific>false</FrameworkSpecific>
+        <!-- NOTE: we don't set `BuildOutputFrameworkSpecific` since we're not packing the build output
+             but rather the *publish* output. Users could change that by setting a TF-specific PackFolder -->
+      </_InferredPackageFile>
+    </ItemGroup>
+
     <ItemGroup Label="References Inference">
       <_InferredPackageFile Include="@(PackageReference)"
                             Condition="'$(PackAsTool)' != 'true' and
+                                       '$(PackAsPublish)' != 'true' and 
                                        '%(PackageReference.Identity)' != 'NuGetizer' and
                                        '%(PackageReference.Identity)' != 'NETStandard.Library' and 
                                        '%(PackageReference.PrivateAssets)' != 'all' and
@@ -334,6 +346,7 @@ Copyright (c) .NET Foundation. All rights reserved.
            TBD: maybe include ResolvedFrom=ImplicitlyExpandDesignTimeFacades too? -->
       <_InferredPackageFile Include="@(ReferencePath->'%(OriginalItemSpec)')"
                             Condition="'$(PackAsTool)' != 'true' and
+                                       '$(PackAsPublish)' != 'true' and 
                                        '$(PackFrameworkReferences)' == 'true' and 
                                        '%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}' and 
                                        '%(ReferencePath.Pack)' != 'false'">
@@ -385,7 +398,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   </Target>
 
-  <Target Name="_CollectPrimaryOutputDependencies" DependsOnTargets="ReferenceCopyLocalPathsOutputGroup;RunResolvePackageDependencies" Returns="@(ImplicitPackageReference)">
+  <Target Name="_CollectPrimaryOutputDependencies" 
+          DependsOnTargets="ReferenceCopyLocalPathsOutputGroup;RunResolvePackageDependencies" 
+          Returns="@(ImplicitPackageReference)">
     <Error Code="NG1003" Text="Centrally managed package versions is only supported when using the Microsoft.NET.Sdk."
            Condition="'$(ManagePackageVersionsCentrally)' == 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
     <ItemGroup>
@@ -416,6 +431,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="_ResolvePackageDependencies" Condition="'$(UsingMicrosoftNETSdk)' == 'true'" DependsOnTargets="RunResolvePackageDependencies" />
 
   <Target Name="InferPrimaryOutputDependencies"
+          Condition="'$(PackAsTool)' != 'true' and '$(PackAsPublish)' != 'true'" 
           Inputs="@(_PrimaryOutputRelatedFile)"
           Outputs="%(_PrimaryOutputRelatedFile.NuGetPackageId)"
           Returns="@(_InferredPackageFile)"
@@ -470,7 +486,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
-  <Target Name="_SetInferPackageContentsDependsOn" AfterTargets="_SetPropertiesFromCapabilities">
+  <Target Name="_SetInferenceProperties" AfterTargets="_SetPropertiesFromCapabilities">
     <PropertyGroup>
       <!-- NOTE: this avoids taking dependencies on targets that are only available when the project supports the concept of references -->
       <_SupportsReferences Condition="
@@ -500,7 +516,26 @@ Copyright (c) .NET Foundation. All rights reserved.
         $(InferPackageContentsDependsOn);
         AllProjectOutputGroups
       </InferPackageContentsDependsOn>
+
+      <!-- Smarter inference for publishable console apps
+           * PackAsTool should still do what SDK Pack does.
+           * PackAsPublish=false turns off this inference.
+           * IsPublishable is set by the SDK, but for everything, even libs :(, 
+             but we can use that as an alternative off switch too.
+           * Finally, the CrossPlatformExecutable capability is set by the SDK for 
+             .NETCoreApp projects that are actually executable (Exe or WinExe) 
+      -->
+      <PackAsPublish Condition="'$(PackAsPublish)' == '' and 
+                                '$(PackAsTool)' != 'true' and 
+                                '$(IsPublishable)' == 'true' and 
+                                $(_AllProjectCapabilities.Contains('CrossPlatformExecutable'))">true</PackAsPublish>
+
+      <InferPackageContentsDependsOn Condition="'$(PackAsPublish)' == 'true'">
+        $(InferPackageContentsDependsOn);
+        PublishItemsOutputGroup
+      </InferPackageContentsDependsOn>
     </PropertyGroup>
+
   </Target>
 
 </Project>

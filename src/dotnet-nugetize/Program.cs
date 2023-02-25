@@ -128,8 +128,7 @@ class Program
             "-p:SkipCompilerExecution=true",
             "-p:DesignTimeBuild=true",
             "-p:DesignTimeSilentResolution=true",
-            "-p:ResolveAssemblyReferencesSilent=true",
-            "-p:IsPublishable=false"
+            "-p:ResolveAssemblyReferencesSilent=true"
         });
 
         if (help)

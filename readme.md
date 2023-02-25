@@ -445,6 +445,7 @@ You can also add a reference to a CLI *tools* program like the following:
 <Project Sdk='Microsoft.NET.Sdk'>
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Exe</OutputType>
     <PackFolder>tools</PackFolder>
     <!-- We don't need this particular tool in a framework-specific subfolder under /tools -->
     <BuildOutputFrameworkSpecific>false</BuildOutputFrameworkSpecific>
@@ -464,6 +465,20 @@ content inference.
 
 This section contains miscellaneous useful features that are typically used in advanced scenarios and 
 are not necessarily mainstream.
+
+### PackAsPublish for CLI tools
+
+When a project's output type is `Exe` and it's not set to `PackAsTool=true` (used specifically for .NET tools), 
+it will default to be use the `Publish` output for packing. This is typically what you want for a CLI 
+project, since dependencies are included in the publish directory automatically without having to annotate 
+any references with `PrivateAssets=all`.
+
+This can be turned off by setting `PackAsPublish=false` on the project, which will cause the project 
+to be packed as a regular class library, with the dependencies inference rules applied (such as 
+`PrivateAssets=all` for package reference and `CopyLocal=true` for references).
+
+When packing as publish, the output won't be framework-specific by default, and will just contribute 
+the published contents to the specified `PackFolder`.
 
 ### Dynamically Extending Package Contents
 
