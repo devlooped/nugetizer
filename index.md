@@ -22,13 +22,13 @@ such as:
 > For added convenience in exploring **NuGetizer**'s capabilities, you can run all 
 the examples in this documentation directly in your browser in a [![GitHub Codespace](https://img.shields.io/badge/-GitHub%20Codespace-black?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=docs&repo=297430130&machine=basicLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json)
 
-Getting started is really easy with powerful (yet flexible) built-in [package contents inference](TODO://inference) and a few properties and item metadata that are named and used consistently in a wide variety of common MSBuild items:
+Getting started is really easy with powerful (yet flexible) built-in [package contents inference](https://github.com/devlooped/nugetizer#package-contents-inference) and a few properties and item metadata that are named and used consistently in a wide variety of common MSBuild items:
 
 | Item Metadata | Description |
 |---------------|-------------|
 | Pack          | Whether to pack an item. (`true`\|`false`) |
 | PackagePath   | The relative path of the file within the package. Implicitly means `Pack=true`. |
-| PackFolder    | The [known folder](TODO://LINK) within the package where the file will be placed. Implicitly means `Pack=true`. Useful in combination with `FrameworkSpecific`.|
+| PackFolder    | The [known folder](https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/PackagingConstants.cs#L19) within the package where the file will be placed. Implicitly means `Pack=true`. Useful in combination with `FrameworkSpecific`.|
 | FrameworkSpecific | Whether the `PackFolder` should be considered as framework-specific. (`true`\|`false`) |
 
 If an item is *framework-specific*, the project's `TargetFramwework` will be used to calculate the final `PackagePath` automatically (i.e. `/lib/netstandard2.0/Lib.dll` or `/contentFiles/cs/net7.0-android/Api.cs`).
@@ -64,7 +64,7 @@ The following are some of the project properties affecting package inference def
 | PackBuildOutput| Whether to pack the project's build output. (Default `true`) |
 | BuildOutputFrameworkSpecific | Whether the project-s build output shoud be considered framework-specific. |
 | PackSymbols     | true if PackBuildOutput=true (*) |
-| PackFolder    | The [known folder](TODO://LINK) within the package where the project's build output will be placed. (Default `lib`) |
+| PackFolder    | The [known folder](https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/PackagingConstants.cs#L19) within the package where the project's build output will be placed. (Default `lib`) |
 | PackContent   | Whether to pack `Content` items. (Default `false`) |
 | PackNone      | Whether to pack `None` items. (Default `false`) |
 | PackReadme    | Whether to pack a `readme.md` file alongside the project. (Default `true`) |
