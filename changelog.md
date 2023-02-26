@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.0.0-rc](https://github.com/devlooped/nugetizer/tree/v1.0.0-rc) (2023-02-26)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0-beta...v1.0.0-rc)
+
+:sparkles: Implemented enhancements:
+
+- Allow running nugetizer on any major .NET version [\#330](https://github.com/devlooped/nugetizer/pull/330) (@kzu)
+- Fix nugetize tool for solutions that use project dependencies [\#329](https://github.com/devlooped/nugetizer/pull/329) (@kzu)
+- Render include/exclude attributes in dependencies [\#328](https://github.com/devlooped/nugetizer/pull/328) (@kzu)
+- Fix link for nuspec by using full path in actual link [\#327](https://github.com/devlooped/nugetizer/pull/327) (@kzu)
+
 ## [v1.0.0-beta](https://github.com/devlooped/nugetizer/tree/v1.0.0-beta) (2023-02-25)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0-alpha...v1.0.0-beta)
