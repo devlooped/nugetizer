@@ -4,7 +4,7 @@ Carefully tweaking your packages until they look exactly the way you want them s
 
 This tool works together with [NuGetizer](https://nuget.org/packages/NuGetizer) to provide the most productive solution for your packing needs. This is achieved is by a combination of a simulated [design-time build](https://github.com/dotnet/project-system/blob/master/docs/design-time-builds.md) that skips the compiler invocation and avoids the output file copying entirely, and built-in support in NuGetizer to emit the entire contents of the package as MSBuild items with full metadata, that the tool can use to render an accurate report that contains exactly the same information that would be used to emit the final `.nupkg` without actually generating it.
 
-The following is the output of a comprehensive [smart multi-targeted library](https://www.cazzulino.com/smart-libraries.html#packaging) example:
+The following is the output of a comprehensive [smart multi-targeted library](https://www.cazzulino.com/smart-libraries.html#packaging) example [from the documentation](https://github.com/devlooped/nugetizer/tree/docs/docs/scenarios/quickstart/packaging-complete):
 
 ![nugetize smart library](https://raw.githubusercontent.com/devlooped/nugetizer/main/img/complete.png)
 
