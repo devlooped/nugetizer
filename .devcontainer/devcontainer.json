@@ -1,12 +1,7 @@
 {
     "name": ".NET",
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
     "features": {
-        "ghcr.io/devcontainers/features/dotnet:1": {
-            "installUsingApt": false,
-            "version": "7",
-            "additionalVersions": "6"
-        },
         "ghcr.io/devcontainers/features/powershell:1": {
             "version": "latest"
         }
