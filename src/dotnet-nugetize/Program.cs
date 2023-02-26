@@ -31,9 +31,6 @@ class Program
 
     static async Task<int> Main(string[] args)
     {
-        if (Environment.GetEnvironmentVariable("CODESPACES") != "true")
-            Console.OutputEncoding = Encoding.Unicode;
-
         var status = SponsorCheck.CheckAsync(Directory.GetCurrentDirectory(), "devlooped", "NuGetizer", "dotnet-nugetize", ThisAssembly.Project.Version);
         var result = new Program().Run(args);
 
