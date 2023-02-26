@@ -1,21 +1,54 @@
 {
-	"name": ".NET",
-	"image": "mcr.microsoft.com/vscode/devcontainers/universal:2.0",
-	"postCreateCommand": "./.devcontainer/postCreateCommand.sh",
-	"customizations": {
-		"vscode": {
-			"settings": {
-				"explorer.excludeGitIgnore": true
-			},			
-			"extensions": [
-				"streetsidesoftware.code-spell-checker",
-				"ms-dotnettools.csharp",
-				"GitHub.copilot",
-				"yzhang.markdown-all-in-one",
-				"DotJoshJohnson.xml",
-				"tintoy.msbuild-project-tools",
-        "eamodio.gitlens"
-			]
-		}
-	}
+    "name": ".NET",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "features": {
+        "ghcr.io/devcontainers/features/dotnet:1": {
+            "installUsingApt": false,
+            "version": "7",
+            "additionalVersions": "6"
+        },
+        "ghcr.io/devcontainers/features/powershell:1": {
+            "version": "latest"
+        }
+    },
+    "workspaceFolder": "/workspaces/nugetizer/docs/scenarios",
+    "onCreateCommand": "dotnet tool update -g dotnet-nugetize && dotnet workload restore ./quickstart/packaging-complete/Lib/Quickstart.csproj",
+    "postCreateCommand": "pwsh -c 'gci *.*proj -recurse | % { dotnet restore $_ }'",
+    "remoteEnv": {
+        "PATH": "/home/vscode/.dotnet/tools:/home/codespace/.dotnet/tools:${containerEnv:PATH}"
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "explorer.excludeGitIgnore": true,
+                "workbench.colorTheme": "GitHub Dark",
+                "editor.fontFamily": "CaskaydiaCove Nerd Font Mono,./.vscode/Caskaydia.otf",
+                "editor.fontSize": 14,
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "bash",
+                        "icon": "terminal-bash"
+                    },
+                    "pwsh": {
+                        "path": "pwsh",
+                        "icon": "terminal-powershell"
+                    }
+                },
+                "terminal.integrated.defaultProfile.linux": "pwsh",
+                "terminal.integrated.fontSize": 13,
+                "terminal.integrated.fontFamily": "monospace",
+                "git.autofetch": true,
+                "omnisharp.enableMsBuildLoadProjectsOnDemand": true,
+                "omnisharp.enableRoslynAnalyzers": true,
+                "omnisharp.enableEditorConfigSupport": true,
+                "omnisharp.enableImportCompletion": true
+            },
+            "extensions": [
+                "EditorConfig.EditorConfig",
+                "yzhang.markdown-all-in-one",
+                "DotJoshJohnson.xml",
+                "tintoy.msbuild-project-tools"
+            ]
+        }
+    }
 }
