@@ -3,6 +3,11 @@
   <PropertyGroup>
     <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
     <LangVersion>Latest</LangVersion>
+
+    <!-- See https://learn.microsoft.com/en-us/visualstudio/msbuild/property-functions?view=vs-2022 -->
+    <OSPlatform Condition="$([MSBuild]::IsOSPlatform('Linux'))">Linux</OSPlatform>
+    <OSPlatform Condition="$([MSBuild]::IsOSPlatform('OSX'))">OSX</OSPlatform>
+    <OSPlatform Condition="$([MSBuild]::IsOSPlatform('Windows'))">Windows</OSPlatform>    
   </PropertyGroup>
 
   <PropertyGroup>
