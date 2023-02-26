@@ -7,7 +7,7 @@
         }
     },
     "workspaceFolder": "/workspaces/nugetizer/docs/scenarios",
-    "onCreateCommand": "dotnet tool update -g dotnet-nugetize && dotnet workload restore ./quickstart/packaging-complete/Lib/Quickstart.csproj",
+    "onCreateCommand": "dotnet tool update -g dotnet-nugetize && sudo dotnet workload restore ./quickstart/packaging-complete/Lib/Quickstart.csproj",
     "postCreateCommand": "pwsh -c 'gci *.*proj -recurse | % { dotnet restore $_ }'",
     "remoteEnv": {
         "PATH": "/home/vscode/.dotnet/tools:/home/codespace/.dotnet/tools:${containerEnv:PATH}"
