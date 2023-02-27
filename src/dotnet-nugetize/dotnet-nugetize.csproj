@@ -13,8 +13,10 @@
     <PackAsTool>true</PackAsTool>
     <RollForward>Major</RollForward>
 
-    <Title>Discover how NuGetizer packs a project</Title>
-    <Description>Run the `nugetize` tool on a folder with a packable project (i.e. it has at least a PackageId value) to see what package structure NuGetizer would produce.</Description>
+    <Description>
+      A must-have complementary tool to NuGetizer, this tool will help you discover how NuGetizer packs a project
+      rapidly iterate on your project's packaging until you get it just right for your needs.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>
