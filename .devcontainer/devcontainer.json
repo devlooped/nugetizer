@@ -39,6 +39,7 @@
                 "omnisharp.enableImportCompletion": true
             },
             "extensions": [
+                "ms-dotnettools.csharp",
                 "EditorConfig.EditorConfig",
                 "yzhang.markdown-all-in-one",
                 "DotJoshJohnson.xml",
