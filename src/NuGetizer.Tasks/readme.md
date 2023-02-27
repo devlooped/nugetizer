@@ -18,7 +18,7 @@ Comprehensive and intuitive heuristics built from experience building nuget pack
 * SourceLink support to populate [repository information in the package](https://devblogs.microsoft.com/nuget/introducing-source-code-link-for-nuget-packages/)
 * Automatic `readme.md` inclusion in the package
 * Support for [content includes in readme](https://www.cazzulino.com/pack-readme-includes.html)
-
+* [Package validation](https://learn.microsoft.com/en-us/dotnet/fundamentals/package-validation/overview) enabled by default for release multi-targeting packages.
 
 It's strongly recommended that you install the [dotnet-nugetize](https://nuget.org/packages/dotnet-nugetize) tool to get the best experience with NuGetizer:
 

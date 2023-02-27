@@ -800,5 +800,22 @@ namespace NuGetizer
                 PackFolder = "Lib",
             }));
         }
+
+        [Fact]
+        public void when_validating_package_then_succeeds()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                	<PropertyGroup>
+                		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+                        <IsPackable>true</IsPackable>
+                        <EnablePackageValidation>true</EnablePackageValidation>
+                	</PropertyGroup>                
+                </Project>
+                """, target: "Pack", output: output);
+
+            result.AssertSuccess(output);
+        }
     }
 }

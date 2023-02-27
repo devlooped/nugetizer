@@ -1,0 +1,60 @@
+<!--
+***********************************************************************************************
+NuGetizer.PackageValidation.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+          
+This targets file adds compatibility with the .NET SDK package validation feature 
+(see https://learn.microsoft.com/en-us/dotnet/fundamentals/package-validation/overview).
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup Condition="$(NuGetPackTaskAssemblyFile) == ''">
+    <NuGetPackTaskAssemblyFile Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildSDKsPath)\NuGet.Build.Tasks.Pack\CoreCLR\NuGet.Build.Tasks.Pack.dll</NuGetPackTaskAssemblyFile>
+    <NuGetPackTaskAssemblyFile Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildSDKsPath)\NuGet.Build.Tasks.Pack\Desktop\NuGet.Build.Tasks.Pack.dll</NuGetPackTaskAssemblyFile>
+  </PropertyGroup>
+  
+  <UsingTask Condition="$(UsingMicrosoftNETSdk) == 'true' and Exists($(NuGetPackTaskAssemblyFile))"
+             TaskName="NuGet.Build.Tasks.GetProjectTargetFrameworksTask" AssemblyFile="$(NuGetPackTaskAssemblyFile)" />
+
+  <Target Name="AfterGetPackageContents" BeforeTargets="Pack" DependsOnTargets="GetPackageContents;GetPackageTargetPath">
+    <ItemGroup>
+      <_NuGetPackInput Include="@(_PackageContent -> WithMetadataValue('PackFolder', 'lib'));
+                                @(_PackageContent -> WithMetadataValue('PackageFolder', 'lib'))" />
+      <NuGetPackInput Include="@(_PackageContent -> Distinct())" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    ============================================================
+    _GetTargetFrameworksOutput
+    Read target frameworks from the project.
+    Cloned for compatibility from NuGet.Build.Tasks.Pack SDK.
+    ============================================================
+  -->
+  <Target Name="_GetTargetFrameworksOutput" Returns="@(_TargetFrameworks)">
+
+    <PropertyGroup>
+      <_ProjectFrameworks/>
+    </PropertyGroup>
+
+    <GetProjectTargetFrameworksTask ProjectPath="$(MSBuildProjectFullPath)"
+                                    TargetFrameworks="$(TargetFrameworks)"
+                                    TargetFramework="$(TargetFramework)"
+                                    TargetFrameworkMoniker="$(TargetFrameworkMoniker)"
+                                    TargetPlatformIdentifier="$(TargetPlatformIdentifier)"
+                                    TargetPlatformVersion="$(TargetPlatformVersion)"
+                                    TargetPlatformMinVersion="$(TargetPlatformMinVersion)">
+      <Output TaskParameter="ProjectTargetFrameworks"
+              PropertyName="_ProjectFrameworks" />
+    </GetProjectTargetFrameworksTask>
+
+    <ItemGroup Condition=" '$(_ProjectFrameworks)' != '' ">
+      <_TargetFrameworks Include="$(_ProjectFrameworks.Split(';'))" />
+    </ItemGroup>
+  </Target>
+  
+</Project>

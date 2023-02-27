@@ -554,6 +554,23 @@ This option is useful in combination with `BuildProjectReferences=false` when
 packing on CI, since at that point all that's run are the P2P protocol involving 
 `GetPackageContents`.
 
+### Package Validation
+
+[Package validation](https://learn.microsoft.com/en-us/dotnet/fundamentals/package-validation/overview) 
+is a new feature in .NET 6 that allows you to validate that your multi-targeting 
+library packages offer consistent APIs across all targets. Since it's quite 
+important to validate that your packages are consistent across all targets, 
+NuGetizer turns this feature on by default for `Release` builds in multi-targeting 
+projects (unlike the default which is strictly opt-in).
+
+You can turn this off by setting the following property at the project level:
+
+```xml
+<PropertyGroup>
+  <EnablePackageValidation>false</EnablePackageValidation>
+</PropertyGroup>
+```
+
 <!-- include https://github.com/devlooped/sponsors/raw/main/footer.md -->
 # Sponsors 
 
