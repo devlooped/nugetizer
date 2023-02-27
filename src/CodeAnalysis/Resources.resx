@@ -162,4 +162,25 @@
   <data name="MissingReadme_Title" xml:space="preserve">
     <value>Package readme missing</value>
   </data>
+  <data name="MissingLicense_ID" xml:space="preserve">
+    <value>NG0105</value>
+  </data>
+  <data name="MissingLicense_Message" xml:space="preserve">
+    <value>Provide a package license expression for improved user experience on the NuGet gallery.</value>
+  </data>
+  <data name="MissingLicense_Title" xml:space="preserve">
+    <value>Package license missing</value>
+  </data>
+  <data name="MissingLicense_Description" xml:space="preserve">
+    <value>Set the PackageLicenseExpression project property to an accepted value such as 'MIT' or 'Apache-2.0'. See accepted values at https://spdx.org/licenses/.</value>
+  </data>
+  <data name="DuplicateLicense_ID" xml:space="preserve">
+    <value>NG0106</value>
+  </data>
+  <data name="DuplicateLicense_Title" xml:space="preserve">
+    <value>Incompatible package license attributes</value>
+  </data>
+  <data name="DuplicateLicense_Message" xml:space="preserve">
+    <value>Only one of PackageLicenseExpression, PackageLicenseFile, and PackageLicenseUrl can be specified at a time.</value>
+  </data>
 </root>
