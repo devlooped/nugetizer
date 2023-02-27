@@ -40,6 +40,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <ItemGroup>
     <AvailableItemName Include="PackageFile" />
+    <CompilerVisibleProperty Include="IsPackable" />
+    <CompilerVisibleProperty Include="Description" />
+    <CompilerVisibleProperty Include="PackageIcon" />
+    <CompilerVisibleProperty Include="PackageIconUrl" />
   </ItemGroup>
 
   <ItemDefinitionGroup>
