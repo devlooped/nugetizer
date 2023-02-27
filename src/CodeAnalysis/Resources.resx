@@ -139,7 +139,7 @@
     <value>Provided description is too long</value>
   </data>
   <data name="MissingIcon_Description" xml:space="preserve">
-    <value>The PackageIcon project property can specify the path to a JPEG or PNG file to use as the package icon.</value>
+    <value>The PackageIcon project property can specify the path to a JPEG or PNG file to use as the package icon, which will be automatically packed properly.</value>
   </data>
   <data name="MissingIcon_ID" xml:space="preserve">
     <value>NG0103</value>
@@ -149,5 +149,17 @@
   </data>
   <data name="MissingIcon_Title" xml:space="preserve">
     <value>Package icon missing</value>
+  </data>
+  <data name="MissingReadme_Description" xml:space="preserve">
+    <value>Setting the PackageReadmeFile project property is enough to get the file packed properly.</value>
+  </data>
+  <data name="MissingReadme_ID" xml:space="preserve">
+    <value>NG0104</value>
+  </data>
+  <data name="MissingReadme_Message" xml:space="preserve">
+    <value>Provide a markdown readme file for improved user experience on the NuGet gallery.</value>
+  </data>
+  <data name="MissingReadme_Title" xml:space="preserve">
+    <value>Package readme missing</value>
   </data>
 </root>

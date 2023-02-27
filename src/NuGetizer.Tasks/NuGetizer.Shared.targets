@@ -59,6 +59,13 @@ Copyright (c) .NET Foundation. All rights reserved.
   <ItemGroup>
     <!-- This is the capability that CPS in .NETStandard/.NETCore uses to enable the Pack context menu. Unify with that -->
     <ProjectCapability Include="Pack" Condition="'$(IsPackable)' == 'true'" />
+
+    <!-- Properties for the analyzers -->
+    <CompilerVisibleProperty Include="PackageId" />
+    <CompilerVisibleProperty Include="Description" />
+    <CompilerVisibleProperty Include="PackageIcon" />
+    <CompilerVisibleProperty Include="PackageIconUrl" />
+    <CompilerVisibleProperty Include="PackageReadmeFile" />
   </ItemGroup>
 
   <!-- Extends the built-in GetTargetPathWithTargetPlatformMoniker output to signal that the project has been nugetized -->

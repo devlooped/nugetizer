@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
 using static ThisAssembly;
 using static ThisAssembly.Strings;
+using System.Diagnostics;
 
 namespace NuGetizer;
 
@@ -37,13 +38,25 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             "Design",
             DiagnosticSeverity.Info,
             true,
+            description: Strings.MissingIcon.Description,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#icon");
+
+        public static readonly DiagnosticDescriptor MissingReadme = new(
+            Strings.MissingReadme.ID,
+            Strings.MissingReadme.Title,
+            Strings.MissingReadme.Message,
+            "Design",
+            DiagnosticSeverity.Info,
+            true,
+            description: Strings.MissingReadme.Description,
+            helpLinkUri: "https://learn.microsoft.com/en-us/NuGet/nuget-org/package-readme-on-nuget-org");
     }
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
         Descriptors.DefaultDescription,
         Descriptors.LongDescription, 
-        Descriptors.MissingIcon);
+        Descriptors.MissingIcon, 
+        Descriptors.MissingReadme);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -54,21 +67,22 @@ class MetadataAnalyzer : DiagnosticAnalyzer
         {
             var options = ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions;
 
+            Debugger.Launch();
+
             // If the project isn't packable, don't issue any warnings.
-            if (!options.TryGetValue("build_property.IsPackable", out var packable) ||
-                !bool.TryParse(packable, out var isPackable) ||
-                !isPackable)
+            if (!options.TryGetValue("build_property.PackageId", out var packageId) ||
+                string.IsNullOrEmpty(packageId))
                 return;
+
+            //var location = Location.Create(projectPath, new TextSpan(), new LinePositionSpan());
 
             if (ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.Description", out var description))
             {
-                System.Diagnostics.Debugger.Launch();
-
                 if (description == DefaultDescription.DefaultValue)
-                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DefaultDescription, Location.None));
+                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DefaultDescription, null));
                 // There is really no way of getting such a long text in the diagnostic. We actually get an empty string.
                 else if (description.Length > 4000)
-                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.LongDescription, Location.None));
+                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.LongDescription, null));
             }
 
             string? packageIcon = default;
@@ -76,9 +90,13 @@ class MetadataAnalyzer : DiagnosticAnalyzer
 
             if (!ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageIcon", out packageIcon) &&
                 !ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageIconUrl", out packageIconUrl))
-                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, Location.None));
-            else if (string.IsNullOrEmpty(packageIcon) && string.IsNullOrEmpty(packageIconUrl))
-                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, Location.None));
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, null));
+            else if (string.IsNullOrWhiteSpace(packageIcon) && string.IsNullOrWhiteSpace(packageIconUrl))
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, null));
+
+            if (!ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageReadmeFile", out var readme) || 
+                string.IsNullOrWhiteSpace(readme))
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingReadme, null));
         });
     }
 }
