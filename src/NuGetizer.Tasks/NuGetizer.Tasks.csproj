@@ -5,6 +5,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RootNamespace>NuGetizer</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
     <Description>
       NuGetizer is a drop-in replacement for the .NET SDK built-in Pack (a.k.a. "SDK Pack"), 
       fully extensible via consistent and easy to understand MSBuild properties and items, 
@@ -13,6 +14,7 @@
       Yes, this means you'll never need to write a .nuspec by hand ever again, no matter 
       how complicated or advanced your packing scenarios are.
     </Description>
+    <PackageTags>dotnet tool nuget pack packaging</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -17,6 +17,8 @@
       A must-have complementary tool to NuGetizer, this tool will help you discover how NuGetizer packs a project
       rapidly iterate on your project's packaging until you get it just right for your needs.
     </Description>
+
+    <PackageTags>dotnet tool nuget pack packaging</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
