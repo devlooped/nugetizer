@@ -40,6 +40,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <EmitNuspec Condition="'$(EmitNuspec)' == ''">false</EmitNuspec>
     <NuspecFile Condition="'$(NuspecFile)' == '' and '$(PackageId)' != ''">$(BaseOutputPath.TrimEnd('\'))\$(PackageId).nuspec</NuspecFile>
     <NuspecFile Condition="'$(NuspecFile)' == '' and '$(PackageId)' == ''">$(BaseOutputPath.TrimEnd('\'))\$(AssemblyName).nuspec</NuspecFile>
+
+    <!-- We default package validation to true for Release multi-targeting projects, ensuring best-practices. It's opt-in in .NET6+ otherwise. -->
+    <EnablePackageValidation Condition="$(EnablePackageValidation) == '' and $(Configuration) == 'Release' and '$(TargetFrameworks)' != ''">true</EnablePackageValidation>
   </PropertyGroup>
 
   <PropertyGroup Label="Hidden">
@@ -291,5 +294,10 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <!-- Cleanups improve the local development loop, by always ensure the fresly built packages can be restored from output -->
   <Import Project="NuGetizer.Cleanup.targets" Condition="'$(CI)' != 'true' and '$(EnablePackCleanup)' != 'false' and '$(IsPackable)' == 'true' and '$(PackageId)' != ''" />
+
+  <!-- In NuGetizer.props, we point the pack targets to our metadata one, so it's imported last automatically, from the Sdk.targets. 
+       So we only need to import again here if *not* using the UsingMicrosoftNETSdk -->
   <Import Project="NuGetizer.PackageMetadata.targets" Condition="'$(NuGetizerPackageMetadataImported)' != 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
+
+  <Import Project="NuGetizer.PackageValidation.targets" Condition="$(EnablePackageValidation) == 'true'" />
 </Project>
