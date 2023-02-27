@@ -30,7 +30,6 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             true,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#description");
 
-
         public static readonly DiagnosticDescriptor MissingIcon = new(
             Strings.MissingIcon.ID,
             Strings.MissingIcon.Title,
@@ -50,13 +49,34 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             true,
             description: Strings.MissingReadme.Description,
             helpLinkUri: "https://learn.microsoft.com/en-us/NuGet/nuget-org/package-readme-on-nuget-org");
+
+        public static readonly DiagnosticDescriptor MissingLicense = new(
+            Strings.MissingLicense.ID,
+            Strings.MissingLicense.Title,
+            Strings.MissingLicense.Message,
+            "Design",
+            DiagnosticSeverity.Info,
+            true,
+            description: Strings.MissingLicense.Description,
+            helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#license");
+
+        public static readonly DiagnosticDescriptor DuplicateLicense = new(
+            Strings.DuplicateLicense.ID,
+            Strings.DuplicateLicense.Title,
+            Strings.DuplicateLicense.Message,
+            "Design",
+            DiagnosticSeverity.Error,
+            true,
+            helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#license");
     }
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
         Descriptors.DefaultDescription,
         Descriptors.LongDescription, 
         Descriptors.MissingIcon, 
-        Descriptors.MissingReadme);
+        Descriptors.MissingReadme, 
+        Descriptors.MissingLicense, 
+        Descriptors.DuplicateLicense);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -97,6 +117,26 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             if (!ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageReadmeFile", out var readme) || 
                 string.IsNullOrWhiteSpace(readme))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingReadme, null));
+
+            string? licenseExpr = default;
+            string? licenseFile = default;
+            string? licenseUrl = default;
+
+            ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageLicenseExpression", out licenseExpr);
+            ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageLicenseFile", out licenseFile);
+            ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageLicenseUrl", out licenseUrl);
+
+            var specified =
+                (!string.IsNullOrWhiteSpace(licenseExpr) ? 1 : 0) +
+                (!string.IsNullOrWhiteSpace(licenseFile) ? 1 : 0) +
+                (!string.IsNullOrWhiteSpace(licenseUrl) ? 1 : 0);
+
+            if (specified == 0)
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingLicense, null));
+
+            // if two or more of the license types are specified, report
+            if (specified > 1)
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DuplicateLicense, null));
         });
     }
 }
