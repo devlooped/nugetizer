@@ -817,5 +817,142 @@ namespace NuGetizer
 
             result.AssertSuccess(output);
         }
+
+        [Fact]
+        public void when_package_icon_default_then_packs_icon()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                    <IsPackable>true</IsPackable>
+                    <PackageIcon>icon.png</PackageIcon>
+                    <EnableDefaultItems>true</EnableDefaultItems>
+                  </PropertyGroup>
+                </Project>  
+                """
+                , output: output,
+                files: ("icon.png", ""));
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = "Metadata",
+                Icon = "icon.png",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "icon.png",
+            }));
+        }
+
+        [Fact]
+        public void when_package_icon_relative_folder_default_then_packs_icon()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                    <IsPackable>true</IsPackable>
+                    <PackageIcon>assets\icon.png</PackageIcon>
+                    <EnableDefaultItems>true</EnableDefaultItems>
+                  </PropertyGroup>
+                </Project>  
+                """
+                , output: output,
+                files: ("assets\\icon.png", ""));
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = "Metadata",
+                Icon = "assets/icon.png",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "assets/icon.png",
+            }));
+        }
+
+        [Fact]
+        public void when_package_icon_content_then_packs_icon_and_not_content()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                    <IsPackable>true</IsPackable>
+                    <PackageIcon>icon.png</PackageIcon>
+                  </PropertyGroup>
+                  <ItemGroup>
+                    <Content Include="icon.png" />
+                  </ItemGroup>
+                </Project>  
+                """
+                , output: output,
+                files: ("icon.png", ""));
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = "Metadata",
+                Icon = "icon.png",
+            }));
+            // The icon that would be in the content folder is not packed as a contentFile
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackFolder = "content"
+            }));
+            // And it's instead in the root of the package
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "icon.png",
+            }));
+        }
+
+        [Fact]
+        public void when_package_icon_linked_content_then_packs_link()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                    <IsPackable>true</IsPackable>
+                    <PackageIcon>assets\icon.png</PackageIcon>
+                  </PropertyGroup>
+                  <ItemGroup>
+                    <Content Include="..\icon.png" Link="assets\icon.png" />
+                  </ItemGroup>
+                </Project>  
+                """
+                , output: output,
+                files: ("..\\icon.png", ""));
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = "Metadata",
+                Icon = "assets/icon.png",
+            }));
+            // The icon that would be in the content folder is not packed as a contentFile
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackFolder = "content"
+            }));
+            // And it's instead in the root of the package
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "assets/icon.png",
+            }));
+        }
+
     }
 }

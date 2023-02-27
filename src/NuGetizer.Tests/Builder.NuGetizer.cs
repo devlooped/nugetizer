@@ -68,7 +68,9 @@ static partial class Builder
             }
             catch (System.Xml.XmlException)
             {
-                File.WriteAllText(Path.Combine(scenarioDir, file.name), file.contents);
+                var path = Path.Combine(scenarioDir, file.name);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.WriteAllText(path, file.contents);
             }
         }
 

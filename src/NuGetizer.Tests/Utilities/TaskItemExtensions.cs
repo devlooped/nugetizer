@@ -14,8 +14,8 @@ namespace NuGetizer
         {
             foreach (var prop in metadata.GetType().GetProperties())
             {
-                var actual = item.GetMetadata(prop.Name);
-                var expected = prop.GetValue(metadata).ToString();
+                var actual = item.GetMetadata(prop.Name).Replace('\\', '/');
+                var expected = prop.GetValue(metadata).ToString().Replace('\\', '/');
 
                 if (!actual.Equals(expected, StringComparison.OrdinalIgnoreCase))
                     return false;
@@ -26,10 +26,8 @@ namespace NuGetizer
 
         public static Manifest GetManifest(this ITaskItem package)
         {
-            using (var reader = new PackageArchiveReader(package.GetMetadata("FullPath")))
-            {
-                return reader.GetManifest();
-            }
+            using var reader = new PackageArchiveReader(package.GetMetadata("FullPath"));
+            return reader.GetManifest();
         }
     }
 }

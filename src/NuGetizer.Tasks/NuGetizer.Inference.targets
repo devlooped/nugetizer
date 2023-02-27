@@ -187,6 +187,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       _SetPackTargetFramework;
       InferPackageContents
     </GetPackageContentsDependsOn>
+    
   </PropertyGroup>
 
   <Target Name="_SetDefaultPackageReferencePack" Condition="'$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive'"
@@ -198,6 +199,31 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
+  <!-- 
+    Updates None/Content to have the proper packaging metadata for the icon metadata.
+    The PackageIcon can point to a relative project directory path, or a root relative path. 
+    In either case, the PackageIcon becomes the package path.
+    The item can be a linked file too, in which case the PackageIcon should match the link 
+    within the project structure.
+    If the item was Content, we change its packing properties so it doesn't become a 
+    contentFiles item in the package, which would end up in the users' solution.
+  -->
+  <Target Name="_InferPackageIcon" Condition="'$(PackageIcon)' != ''">
+    <ItemGroup>
+      <None Update="@(None)"
+            Pack="true"
+            PackagePath="%(None.Link)"
+            Condition="%(None.Identity) == '$(PackageIcon)' or %(None.Link) == '$(PackageIcon)'" />
+
+      <Content Update="@(Content)" 
+               Pack="true"
+               BuildAction="None"
+               PackFolder="None"
+               PackagePath="%(Content.Link)" 
+               Condition="%(Content.Identity) == '$(PackageIcon)' or %(Content.Link) == '$(PackageIcon)'" />      
+    </ItemGroup>
+  </Target>
+  
   <Target Name="_CollectInferenceCandidates" Inputs="@(PackInference)" Outputs="|%(PackInference.Identity)|">
     <PropertyGroup>
       <PackExclude>%(PackInference.PackExclude)</PackExclude>
@@ -247,7 +273,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   </Target>
 
-  <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn);_CollectInferenceCandidates" Returns="@(PackageFile)">
+  <Target Name="InferPackageContents" DependsOnTargets="$(InferPackageContentsDependsOn);_InferPackageIcon;_CollectInferenceCandidates" Returns="@(PackageFile)">
     <Error Code="NG1004" Condition="'$(PackAsTool)' == 'true' and '$(PackAsPublish)' == 'true'" Text="PackAsTool and PackAsPublish are mutually exclusive." />
 
     <!-- Even if all these conditions are false, the user can still explicitly pack the file, of course -->
@@ -261,6 +287,28 @@ Copyright (c) .NET Foundation. All rights reserved.
                           Condition="'%(Extension)' == '$(PackageReadmeExtension)'" />
     </ItemGroup>
 
+    <ItemGroup Label="Icon" Condition="'$(PackageIcon)' != ''">
+      <_PackageIcon Include="$(PackageIcon)" />
+    </ItemGroup>
+    <PropertyGroup Label="Icon" Condition="'$(PackageIcon)' != '' and @(_PackageIcon -> Count()) == '1'">
+      <PackageIconExists Condition="Exists(@(_PackageIcon -> '%(FullPath)'))"></PackageIconExists>
+      <PackageIconFilename Condition="'$(PackageIconExists)' == 'true'">@(_PackageIcon -> '%(Filename)')</PackageIconFilename>
+      <PackageIconExtension Condition="'$(PackageIconExists)' == 'true'">@(_PackageIcon -> '%(Extension)')</PackageIconExtension>
+    </PropertyGroup>
+    
+    <!-- Even if all these conditions are false, the user can still explicitly pack the icon file, of course -->
+    <ItemGroup Label="Icon" Condition="'$(PackageIcon)' != ''">
+      <_ExistingIcon Include="@(None -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))" />
+
+      <_ExistingReadme Include="@(None -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))" />
+      <_ExistingReadme Include="@(Content -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))" Condition="'@(_ExistingReadme)' == ''" />
+      <_ExistingReadme Include="$(MSBuildProjectDirectory)\$(PackageReadmeFilename)$(PackageReadmeExtension)" Condition="'@(_ExistingReadme)' == '' and Exists('$(MSBuildProjectDirectory)\$(PackageReadmeFilename)$(PackageReadmeExtension)')" />
+
+      <InferenceCandidate Include="@(_ExistingReadme)"
+                          PackagePath="%(Filename)%(Extension)"
+                          Condition="'%(Extension)' == '$(PackageReadmeExtension)'" />
+    </ItemGroup>
+    
     <ItemGroup>
       <InferenceCandidate>
         <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(PackFolder)' != '' or '%(PackageReference)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
