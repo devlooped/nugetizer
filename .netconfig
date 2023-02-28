@@ -117,3 +117,8 @@
 	sha = 43712304cdfff2c34ba01197cc2ccc0e16e7af08
 	etag = 045b9e458f11f846ae9a3979b8122c68173405fb5451083d4993f94004e60e76
 	weak
+[file "src/NuGetizer.Tasks/System/Dynamic/DynamicReflection.cs"]
+	url = https://github.com/devlooped/catbag/blob/main/System/Dynamic/DynamicReflection.cs
+	sha = 8cfabc25a6e5d58aedf59364d1d8c26e64024dd2
+	etag = 2067e8993f995b6627a93438e0d97f8a6daa59bc2b3a2b0216899525c9c43edd
+	weak

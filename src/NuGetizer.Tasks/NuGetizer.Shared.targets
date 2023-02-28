@@ -13,6 +13,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="NuGetizer.Tasks.CreatePackage" AssemblyFile="NuGetizer.Tasks.dll" />
+  <UsingTask TaskName="NuGetizer.Tasks.EntryTarget" AssemblyFile="NuGetizer.Tasks.dll" />
 
   <!-- Adds compatibility targets with Pack SDK -->
   <Import Project="NuGetizer.Compatibility.props" />
@@ -61,6 +62,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ProjectCapability Include="Pack" Condition="'$(IsPackable)' == 'true'" />
 
     <!-- Properties for the analyzers -->
+    <CompilerVisibleProperty Include="IsPacking" />
     <CompilerVisibleProperty Include="PackageId" />
     <CompilerVisibleProperty Include="Description" />
     <CompilerVisibleProperty Include="PackageIcon" />
@@ -72,7 +74,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <CompilerVisibleProperty Include="SourceControlInformationFeatureSupported" />
     <CompilerVisibleProperty Include="RepositoryCommit" />
     <CompilerVisibleProperty Include="RepositoryUrl" />
-    <CompilerVisibleProperty Include="PackageProjectUrl" />    
+    <CompilerVisibleProperty Include="PackageProjectUrl" />
+    <CompilerVisibleProperty Include="EmbedUntrackedSources" />
+    <CompilerVisibleProperty Include="EnableSourceLink" />
   </ItemGroup>
 
   <!-- Extends the built-in GetTargetPathWithTargetPlatformMoniker output to signal that the project has been nugetized -->
@@ -85,6 +89,40 @@ Copyright (c) .NET Foundation. All rights reserved.
     </TargetPathWithTargetPlatformMoniker>
   </ItemDefinitionGroup>
 
+
+  <!--
+	=================================================================================================
+	SetIsPacking
+	=================================================================================================
+
+	This target sets the $(IsPacking) value, which can be used in subsequent targets to issue 
+  diagnostics or perform additional checks that should only be performed when an actual package 
+  is going to be built. 
+	
+	It defaults to the _IsPacking property passed in by the dotnet pack CLI command, and attemps to 
+  read the Entry target used by VS when right-clicking a project or solution and explicitly running 
+  the Pack command.
+  
+  If PackOnBuild is true, IsPacking will be too.
+  =================================================================================================
+	-->
+  <Target Name="SetIsPacking" BeforeTargets="GenerateMSBuildEditorConfigFile;GenerateMSBuildEditorConfigFileCore">
+    <PropertyGroup>
+      <IsPacking Condition="'$(PackOnBuild)' == 'true'">true</IsPacking>
+      <!-- _IsPacking is set by the dotnet pack CLI: https://github.com/dotnet/sdk/blob/main/src/Cli/dotnet/commands/dotnet-pack/PackCommand.cs#L41 -->
+      <IsPacking Condition="'$(IsPacking)' == ''">$(_IsPacking)</IsPacking>
+    </PropertyGroup>
+
+    <!-- Inspecting with the Build Logging tool shows that Right-click > Pack in VS sets GeneratePackageOnBuild=false as a global property -->    
+    <EntryTarget Condition="'$(IsPacking)' == '' and '$(BuildingInsideVisualStudio)' == 'true' and '$(GeneratePackageOnBuild)' == 'false'">
+      <Output TaskParameter="Target" PropertyName="EntryTarget" />
+    </EntryTarget>
+
+    <PropertyGroup Condition="'$(IsPacking)' == '' and '$(EntryTarget)' == 'Pack'">
+      <IsPacking>true</IsPacking>
+    </PropertyGroup>
+  </Target>
+  
   <!--
 	=================================================================================================
 	GetPackageVersion

@@ -186,17 +186,17 @@
   <data name="DuplicateLicense_Message" xml:space="preserve">
     <value>Only one of PackageLicenseExpression, PackageLicenseFile, and PackageLicenseUrl can be specified at a time.</value>
   </data>
-  <data name="SourceLink_ID" xml:space="preserve">
+  <data name="RepositoryCommit_ID" xml:space="preserve">
     <value>NG0107</value>
   </data>
-  <data name="SourceLink_Title" xml:space="preserve">
-    <value>Source repository information missing</value>
+  <data name="RepositoryCommit_Title" xml:space="preserve">
+    <value>Source revision information missing</value>
   </data>
-  <data name="SourceLink_Message" xml:space="preserve">
-    <value>Consider including source repository information for a better user experience. </value>
+  <data name="RepositoryCommit_Message" xml:space="preserve">
+    <value>Consider including source revision information for a better user experience. </value>
   </data>
-  <data name="SourceLink_Description" xml:space="preserve">
-    <value>SourceLink is the recommended way to automatically include this information. Install the relevant NuGet package for your source control provider (such as GitHub, AzureRepos, GitLab, etc.) and NuGetizer will automatically use the provided information.</value>
+  <data name="RepositoryCommit_Description" xml:space="preserve">
+    <value>Source Link is the recommended way to automatically include this information. Install the relevant NuGet package for your source control provider (such as GitHub, AzureRepos, GitLab, etc.) and NuGetizer will automatically use the provided information.</value>
   </data>
   <data name="RepositoryUrl_ID" xml:space="preserve">
     <value>NG0108</value>
@@ -221,5 +221,29 @@
   </data>
   <data name="ProjectUrl_Description" xml:space="preserve">
     <value>Make sure PackageProjectUrl is an actual homepage users can navigate to directly from nuget.org. RepositoryUrl, on the other hand, is intended for version control software.</value>
+  </data>
+  <data name="SourceLink_ID" xml:space="preserve">
+    <value>NG0110</value>
+  </data>
+  <data name="SourceLink_Title" xml:space="preserve">
+    <value>Source Link missing</value>
+  </data>
+  <data name="SourceLink_Message" xml:space="preserve">
+    <value>Consider using Source Link to enable a great debugging experience for your users. </value>
+  </data>
+  <data name="SourceLink_Description" xml:space="preserve">
+    <value>Source Link is the recommended way to automatically include source information with your package. Install the relevant NuGet package for your source control provider (such as GitHub, AzureRepos, GitLab, etc.) and NuGetizer will automatically use the provided information.</value>
+  </data>
+  <data name="SourceLinkEmbed_ID" xml:space="preserve">
+    <value>NG0111</value>
+  </data>
+  <data name="SourceLinkEmbed_Title" xml:space="preserve">
+    <value>EmbedUntrackedSources not set</value>
+  </data>
+  <data name="SourceLinkEmbed_Message" xml:space="preserve">
+    <value>Consider setting EmbedUntrackedSources=true in your project to improve the debugging experience for your users. </value>
+  </data>
+  <data name="SourceLinkEmbed_Description" xml:space="preserve">
+    <value>When EmbedUntrackedSources is set to 'true', Source Link will embed in your PDB the items that participated in the compile, but not are included in source control.</value>
   </data>
 </root>
