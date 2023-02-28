@@ -24,7 +24,7 @@ static partial class Builder
     public static BuildResult Build(ProjectInstance project, string targets, Dictionary<string, string> properties = null, ILogger[] loggers = null)
     {
         properties = properties ?? new Dictionary<string, string>();
-        
+
         var manager = BuildManager.DefaultBuildManager;
         var request = new BuildRequestData(project, targets.Split(','));
         var parameters = new BuildParameters

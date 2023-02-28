@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Microsoft.CSharp.RuntimeBinder;
-using System.Linq;
 
 namespace NuGetizer.Tasks;
 
