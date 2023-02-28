@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using static ThisAssembly;
 using static ThisAssembly.Strings;
 using System.Diagnostics;
+using System;
 
 namespace NuGetizer;
 
@@ -70,14 +71,14 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             true,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#license");
 
-        public static readonly DiagnosticDescriptor MissingSourceLink = new(
-            SourceLink.ID,
-            SourceLink.Title,
-            SourceLink.Message,
+        public static readonly DiagnosticDescriptor MissingRepositoryCommit = new(
+            RepositoryCommit.ID,
+            RepositoryCommit.Title,
+            RepositoryCommit.Message,
             "Design",
             DiagnosticSeverity.Info,
             true,
-            description: SourceLink.Description,
+            description: RepositoryCommit.Description,
             helpLinkUri: "https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink");
 
         public static readonly DiagnosticDescriptor MissingRepositoryUrl = new(
@@ -99,6 +100,26 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             true,
             description: ProjectUrl.Description,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/create-packages/package-authoring-best-practices#package-metadata");
+
+        public static readonly DiagnosticDescriptor MissingSourceLink = new(
+            SourceLink.ID,
+            SourceLink.Title,
+            SourceLink.Message,
+            "Design",
+            DiagnosticSeverity.Info,
+            true,
+            description: SourceLink.Description,
+            helpLinkUri: "https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink");
+
+        public static readonly DiagnosticDescriptor MissingSourceEmbed = new(
+            SourceLinkEmbed.ID,
+            SourceLinkEmbed.Title,
+            SourceLinkEmbed.Message,
+            "Design",
+            DiagnosticSeverity.Info,
+            true,
+            description: SourceLinkEmbed.Description,
+            helpLinkUri: "https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink");
     }
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
@@ -108,9 +129,11 @@ class MetadataAnalyzer : DiagnosticAnalyzer
         Descriptors.MissingReadme, 
         Descriptors.MissingLicense, 
         Descriptors.DuplicateLicense, 
-        Descriptors.MissingSourceLink, 
+        Descriptors.MissingRepositoryCommit, 
         Descriptors.MissingRepositoryUrl, 
-        Descriptors.MissingProjectUrl);
+        Descriptors.MissingProjectUrl, 
+        Descriptors.MissingSourceLink, 
+        Descriptors.MissingSourceEmbed);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -121,14 +144,16 @@ class MetadataAnalyzer : DiagnosticAnalyzer
         {
             var options = ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions;
 
-            Debugger.Launch();
-
             // If the project isn't packable, don't issue any warnings.
             if (!options.TryGetValue("build_property.PackageId", out var packageId) ||
                 string.IsNullOrEmpty(packageId))
                 return;
 
-            //var location = Location.Create(projectPath, new TextSpan(), new LinePositionSpan());
+            var isPacking = options.TryGetValue("build_property.IsPacking", out var packingProp) &&
+                "true".Equals(packingProp, StringComparison.OrdinalIgnoreCase);
+
+            var sourceLinkEnabled = options.TryGetValue("build_property.EnableSourceLink", out var enableSLProp) &&
+                "true".Equals(enableSLProp, StringComparison.OrdinalIgnoreCase);
 
             if (options.TryGetValue("build_property.Description", out var description))
             {
@@ -173,12 +198,27 @@ class MetadataAnalyzer : DiagnosticAnalyzer
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DuplicateLicense, null));
 
             // Source control properties
-            if (options.TryGetValue("build_property.SourceControlInformationFeatureSupported", out var sccSupported) && 
-                bool.TryParse(sccSupported, out var isSccSupported) && isSccSupported)
+            if (options.TryGetValue("build_property.SourceControlInformationFeatureSupported", out var sccSupported) &&
+                "true".Equals(sccSupported, StringComparison.OrdinalIgnoreCase))
             {
-                if (!options.TryGetValue("build_property.RepositoryCommit", out var repoCommit) ||
+                string? repoCommit = default;
+                
+                if (!options.TryGetValue("build_property.RepositoryCommit", out repoCommit) ||
                     string.IsNullOrWhiteSpace(repoCommit))
-                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingSourceLink, null));
+                {
+                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingRepositoryCommit, null));
+                    repoCommit = default;
+                }
+
+                if (isPacking)
+                {
+                    if (!sourceLinkEnabled)
+                        ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingSourceLink, null));
+                    // When packing, suggest reproducible builds by embedding untrack sources
+                    else if (!options.TryGetValue("build_property.EmbedUntrackedSources", out var embedUntracked) ||
+                             !"true".Equals(embedUntracked, StringComparison.OrdinalIgnoreCase))
+                        ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingSourceEmbed, null));
+                }
             }
 
             if (!options.TryGetValue("build_property.RepositoryUrl", out var repoUrl) ||
@@ -189,6 +229,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
                 string.IsNullOrWhiteSpace(projectUrl) || 
                 projectUrl == repoUrl)
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingProjectUrl, null, repoUrl));
+
         });
     }
 }
