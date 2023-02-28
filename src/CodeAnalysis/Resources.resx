@@ -124,7 +124,7 @@
     <value>NG0101</value>
   </data>
   <data name="DefaultDescription_Message" xml:space="preserve">
-    <value>Provide a short description of your package for improved discoverability.</value>
+    <value>Provide a short description of your package for improved discoverability with the Description project property.</value>
   </data>
   <data name="DefaultDescription_Description" xml:space="preserve">
     <value>The default description set by the .NET SDK ('Package Description') is being used for your package. This will look poorly in the NuGet gallery.</value>
