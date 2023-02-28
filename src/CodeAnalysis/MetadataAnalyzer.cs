@@ -1,10 +1,10 @@
-﻿using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis;
+﻿using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using static ThisAssembly;
 using static ThisAssembly.Strings;
-using System.Diagnostics;
-using System;
 
 namespace NuGetizer;
 
@@ -90,7 +90,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             true,
             description: RepositoryUrl.Description,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#repository");
-        
+
         public static readonly DiagnosticDescriptor MissingProjectUrl = new(
             ProjectUrl.ID,
             ProjectUrl.Title,
@@ -124,22 +124,22 @@ class MetadataAnalyzer : DiagnosticAnalyzer
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
         Descriptors.DefaultDescription,
-        Descriptors.LongDescription, 
-        Descriptors.MissingIcon, 
-        Descriptors.MissingReadme, 
-        Descriptors.MissingLicense, 
-        Descriptors.DuplicateLicense, 
-        Descriptors.MissingRepositoryCommit, 
-        Descriptors.MissingRepositoryUrl, 
-        Descriptors.MissingProjectUrl, 
-        Descriptors.MissingSourceLink, 
+        Descriptors.LongDescription,
+        Descriptors.MissingIcon,
+        Descriptors.MissingReadme,
+        Descriptors.MissingLicense,
+        Descriptors.DuplicateLicense,
+        Descriptors.MissingRepositoryCommit,
+        Descriptors.MissingRepositoryUrl,
+        Descriptors.MissingProjectUrl,
+        Descriptors.MissingSourceLink,
         Descriptors.MissingSourceEmbed);
 
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        
+
         context.RegisterCompilationAction(ctx =>
         {
             var options = ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions;
@@ -173,7 +173,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             else if (string.IsNullOrWhiteSpace(packageIcon) && string.IsNullOrWhiteSpace(packageIconUrl))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, null));
 
-            if (!options.TryGetValue("build_property.PackageReadmeFile", out var readme) || 
+            if (!options.TryGetValue("build_property.PackageReadmeFile", out var readme) ||
                 string.IsNullOrWhiteSpace(readme))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingReadme, null));
 
@@ -202,7 +202,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
                 "true".Equals(sccSupported, StringComparison.OrdinalIgnoreCase))
             {
                 string? repoCommit = default;
-                
+
                 if (!options.TryGetValue("build_property.RepositoryCommit", out repoCommit) ||
                     string.IsNullOrWhiteSpace(repoCommit))
                 {
@@ -226,7 +226,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingRepositoryUrl, null));
 
             if (!options.TryGetValue("build_property.PackageProjectUrl", out var projectUrl) ||
-                string.IsNullOrWhiteSpace(projectUrl) || 
+                string.IsNullOrWhiteSpace(projectUrl) ||
                 projectUrl == repoUrl)
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingProjectUrl, null, repoUrl));
 
