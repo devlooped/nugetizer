@@ -124,7 +124,10 @@
     <value>NG0101</value>
   </data>
   <data name="DefaultDescription_Message" xml:space="preserve">
-    <value>The default description set by the .NET SDK was found for your package. Provide a short description of your package for improved discoverability.</value>
+    <value>Provide a short description of your package for improved discoverability.</value>
+  </data>
+  <data name="DefaultDescription_Description" xml:space="preserve">
+    <value>The default description set by the .NET SDK ('Package Description') is being used for your package. This will look poorly in the NuGet gallery.</value>
   </data>
   <data name="DefaultDescription_Title" xml:space="preserve">
     <value>Default description detected</value>
@@ -145,7 +148,7 @@
     <value>NG0103</value>
   </data>
   <data name="MissingIcon_Message" xml:space="preserve">
-    <value>Provide a 128x128 icon in JPEG or PNG format.</value>
+    <value>Consider providing a 128x128 icon in JPEG or PNG format.</value>
   </data>
   <data name="MissingIcon_Title" xml:space="preserve">
     <value>Package icon missing</value>
@@ -157,7 +160,7 @@
     <value>NG0104</value>
   </data>
   <data name="MissingReadme_Message" xml:space="preserve">
-    <value>Provide a markdown readme file for improved user experience on the NuGet gallery.</value>
+    <value>Consider providing a markdown readme file for improved user experience on the NuGet gallery.</value>
   </data>
   <data name="MissingReadme_Title" xml:space="preserve">
     <value>Package readme missing</value>
@@ -166,7 +169,7 @@
     <value>NG0105</value>
   </data>
   <data name="MissingLicense_Message" xml:space="preserve">
-    <value>Provide a package license expression for improved user experience on the NuGet gallery.</value>
+    <value>Consider providing a package license expression for improved user experience on the NuGet gallery.</value>
   </data>
   <data name="MissingLicense_Title" xml:space="preserve">
     <value>Package license missing</value>
@@ -182,5 +185,41 @@
   </data>
   <data name="DuplicateLicense_Message" xml:space="preserve">
     <value>Only one of PackageLicenseExpression, PackageLicenseFile, and PackageLicenseUrl can be specified at a time.</value>
+  </data>
+  <data name="SourceLink_ID" xml:space="preserve">
+    <value>NG0107</value>
+  </data>
+  <data name="SourceLink_Title" xml:space="preserve">
+    <value>Source repository information missing</value>
+  </data>
+  <data name="SourceLink_Message" xml:space="preserve">
+    <value>Consider including source repository information for a better user experience. </value>
+  </data>
+  <data name="SourceLink_Description" xml:space="preserve">
+    <value>SourceLink is the recommended way to automatically include this information. Install the relevant NuGet package for your source control provider (such as GitHub, AzureRepos, GitLab, etc.) and NuGetizer will automatically use the provided information.</value>
+  </data>
+  <data name="RepositoryUrl_ID" xml:space="preserve">
+    <value>NG0108</value>
+  </data>
+  <data name="RepositoryUrl_Title" xml:space="preserve">
+    <value>Repository URL missing</value>
+  </data>
+  <data name="RepositoryUrl_Message" xml:space="preserve">
+    <value>Consider providing the RepositoryUrl metadata of your project if it is open source.</value>
+  </data>
+  <data name="RepositoryUrl_Description" xml:space="preserve">
+    <value>This should be a publicly available url that can be invoked directly by a version control software. Populated automatically when setting the PublishRepositoryUrl project property to 'true' and using SourceLink.</value>
+  </data>
+  <data name="ProjectUrl_ID" xml:space="preserve">
+    <value>NG0109</value>
+  </data>
+  <data name="ProjectUrl_Title" xml:space="preserve">
+    <value>Project URL missing</value>
+  </data>
+  <data name="ProjectUrl_Message" xml:space="preserve">
+    <value>Consider providing a distinct value for the PackageProjectUrl project property, which now defaults to RepositoryUrl with value '{0}'.</value>
+  </data>
+  <data name="ProjectUrl_Description" xml:space="preserve">
+    <value>Make sure PackageProjectUrl is an actual homepage users can navigate to directly from nuget.org. RepositoryUrl, on the other hand, is intended for version control software.</value>
   </data>
 </root>

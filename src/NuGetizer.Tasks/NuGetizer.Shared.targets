@@ -69,6 +69,10 @@ Copyright (c) .NET Foundation. All rights reserved.
     <CompilerVisibleProperty Include="PackageLicenseExpression" />
     <CompilerVisibleProperty Include="PackageLicenseFile" />
     <CompilerVisibleProperty Include="PackageLicenseUrl" />
+    <CompilerVisibleProperty Include="SourceControlInformationFeatureSupported" />
+    <CompilerVisibleProperty Include="RepositoryCommit" />
+    <CompilerVisibleProperty Include="RepositoryUrl" />
+    <CompilerVisibleProperty Include="PackageProjectUrl" />    
   </ItemGroup>
 
   <!-- Extends the built-in GetTargetPathWithTargetPlatformMoniker output to signal that the project has been nugetized -->
