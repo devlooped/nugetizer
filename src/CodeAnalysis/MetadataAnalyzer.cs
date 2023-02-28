@@ -19,6 +19,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             "Design",
             DiagnosticSeverity.Warning,
             true,
+            description: Strings.DefaultDescription.Description,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#description");
 
         public static readonly DiagnosticDescriptor LongDescription = new(
@@ -68,6 +69,36 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             DiagnosticSeverity.Error,
             true,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#license");
+
+        public static readonly DiagnosticDescriptor MissingSourceLink = new(
+            SourceLink.ID,
+            SourceLink.Title,
+            SourceLink.Message,
+            "Design",
+            DiagnosticSeverity.Info,
+            true,
+            description: SourceLink.Description,
+            helpLinkUri: "https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink");
+
+        public static readonly DiagnosticDescriptor MissingRepositoryUrl = new(
+            RepositoryUrl.ID,
+            RepositoryUrl.Title,
+            RepositoryUrl.Message,
+            "Design",
+            DiagnosticSeverity.Info,
+            true,
+            description: RepositoryUrl.Description,
+            helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#repository");
+        
+        public static readonly DiagnosticDescriptor MissingProjectUrl = new(
+            ProjectUrl.ID,
+            ProjectUrl.Title,
+            ProjectUrl.MessageString,
+            "Design",
+            DiagnosticSeverity.Info,
+            true,
+            description: ProjectUrl.Description,
+            helpLinkUri: "https://learn.microsoft.com/en-us/nuget/create-packages/package-authoring-best-practices#package-metadata");
     }
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
@@ -76,13 +107,16 @@ class MetadataAnalyzer : DiagnosticAnalyzer
         Descriptors.MissingIcon, 
         Descriptors.MissingReadme, 
         Descriptors.MissingLicense, 
-        Descriptors.DuplicateLicense);
+        Descriptors.DuplicateLicense, 
+        Descriptors.MissingSourceLink, 
+        Descriptors.MissingRepositoryUrl, 
+        Descriptors.MissingProjectUrl);
 
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-
+        
         context.RegisterCompilationAction(ctx =>
         {
             var options = ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions;
@@ -96,7 +130,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
 
             //var location = Location.Create(projectPath, new TextSpan(), new LinePositionSpan());
 
-            if (ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.Description", out var description))
+            if (options.TryGetValue("build_property.Description", out var description))
             {
                 if (description == DefaultDescription.DefaultValue)
                     ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DefaultDescription, null));
@@ -108,13 +142,13 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             string? packageIcon = default;
             string? packageIconUrl = default;
 
-            if (!ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageIcon", out packageIcon) &&
-                !ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageIconUrl", out packageIconUrl))
+            if (!options.TryGetValue("build_property.PackageIcon", out packageIcon) &&
+                !options.TryGetValue("build_property.PackageIconUrl", out packageIconUrl))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, null));
             else if (string.IsNullOrWhiteSpace(packageIcon) && string.IsNullOrWhiteSpace(packageIconUrl))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, null));
 
-            if (!ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageReadmeFile", out var readme) || 
+            if (!options.TryGetValue("build_property.PackageReadmeFile", out var readme) || 
                 string.IsNullOrWhiteSpace(readme))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingReadme, null));
 
@@ -122,9 +156,9 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             string? licenseFile = default;
             string? licenseUrl = default;
 
-            ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageLicenseExpression", out licenseExpr);
-            ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageLicenseFile", out licenseFile);
-            ctx.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.PackageLicenseUrl", out licenseUrl);
+            options.TryGetValue("build_property.PackageLicenseExpression", out licenseExpr);
+            options.TryGetValue("build_property.PackageLicenseFile", out licenseFile);
+            options.TryGetValue("build_property.PackageLicenseUrl", out licenseUrl);
 
             var specified =
                 (!string.IsNullOrWhiteSpace(licenseExpr) ? 1 : 0) +
@@ -137,6 +171,24 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             // if two or more of the license types are specified, report
             if (specified > 1)
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DuplicateLicense, null));
+
+            // Source control properties
+            if (options.TryGetValue("build_property.SourceControlInformationFeatureSupported", out var sccSupported) && 
+                bool.TryParse(sccSupported, out var isSccSupported) && isSccSupported)
+            {
+                if (!options.TryGetValue("build_property.RepositoryCommit", out var repoCommit) ||
+                    string.IsNullOrWhiteSpace(repoCommit))
+                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingSourceLink, null));
+            }
+
+            if (!options.TryGetValue("build_property.RepositoryUrl", out var repoUrl) ||
+                string.IsNullOrWhiteSpace(repoUrl))
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingRepositoryUrl, null));
+
+            if (!options.TryGetValue("build_property.PackageProjectUrl", out var projectUrl) ||
+                string.IsNullOrWhiteSpace(projectUrl) || 
+                projectUrl == repoUrl)
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingProjectUrl, null, repoUrl));
         });
     }
 }
