@@ -201,35 +201,35 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             if (options.TryGetValue("build_property.SourceControlInformationFeatureSupported", out var sccSupported) &&
                 "true".Equals(sccSupported, StringComparison.OrdinalIgnoreCase))
             {
-                string? repoCommit = default;
-
-                if (!options.TryGetValue("build_property.RepositoryCommit", out repoCommit) ||
-                    string.IsNullOrWhiteSpace(repoCommit))
-                {
-                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingRepositoryCommit, null));
-                    repoCommit = default;
-                }
 
                 if (isPacking)
                 {
+                    string? repoCommit = default;
+                    
+                    if (!options.TryGetValue("build_property.RepositoryCommit", out repoCommit) ||
+                        string.IsNullOrWhiteSpace(repoCommit))
+                    {
+                        ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingRepositoryCommit, null));
+                        repoCommit = default;
+                    }
+
                     if (!sourceLinkEnabled)
                         ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingSourceLink, null));
                     // When packing, suggest reproducible builds by embedding untrack sources
                     else if (!options.TryGetValue("build_property.EmbedUntrackedSources", out var embedUntracked) ||
                              !"true".Equals(embedUntracked, StringComparison.OrdinalIgnoreCase))
                         ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingSourceEmbed, null));
+
+                    if (!options.TryGetValue("build_property.RepositoryUrl", out var repoUrl) ||
+                        string.IsNullOrWhiteSpace(repoUrl))
+                        ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingRepositoryUrl, null));
+
+                    if (!options.TryGetValue("build_property.PackageProjectUrl", out var projectUrl) ||
+                        string.IsNullOrWhiteSpace(projectUrl) ||
+                        projectUrl == repoUrl)
+                        ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingProjectUrl, null, repoUrl));
                 }
             }
-
-            if (!options.TryGetValue("build_property.RepositoryUrl", out var repoUrl) ||
-                string.IsNullOrWhiteSpace(repoUrl))
-                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingRepositoryUrl, null));
-
-            if (!options.TryGetValue("build_property.PackageProjectUrl", out var projectUrl) ||
-                string.IsNullOrWhiteSpace(projectUrl) ||
-                projectUrl == repoUrl)
-                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingProjectUrl, null, repoUrl));
-
         });
     }
 }
