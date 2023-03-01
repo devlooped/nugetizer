@@ -289,6 +289,12 @@ class Program
                 var table = new Grid().AddColumn().AddColumn();
                 table.AddRow(new Text("Metadata:", yellow));
 
+                // We use this to detect Authors==AssemblyName and not render the property in that case
+                // since it's effectively like an empty value, akin to the default description.
+                var assemblyName = metadata.Element("AssemblyName");
+                if (assemblyName != null)
+                    assemblyName.Remove();
+
                 foreach (var md in metadata.Elements()
                     .Where(x =>
                         x.Name != "PackageId" &&
@@ -297,6 +303,8 @@ class Program
                     .OrderBy(x => x.Name.LocalName))
                 {
                     if (md.Name.LocalName == "Description" && md.Value == "Package Description")
+                        continue;
+                    if (md.Name.LocalName == "Authors" && md.Value == assemblyName?.Value)
                         continue;
 
                     table.AddRow(new Text(md.Name.LocalName), new Text(md.Value));
