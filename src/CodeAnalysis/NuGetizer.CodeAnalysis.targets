@@ -1,0 +1,24 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="IsPacking" />
+    <CompilerVisibleProperty Include="PackageId" />
+    <CompilerVisibleProperty Include="Description" />
+    <CompilerVisibleProperty Include="PackageIcon" />
+    <CompilerVisibleProperty Include="PackageIconUrl" />
+    <CompilerVisibleProperty Include="PackageReadmeFile" />
+    <CompilerVisibleProperty Include="PackageLicenseExpression" />
+    <CompilerVisibleProperty Include="PackageLicenseFile" />
+    <CompilerVisibleProperty Include="PackageLicenseUrl" />
+    <CompilerVisibleProperty Include="SourceControlInformationFeatureSupported" />
+    <CompilerVisibleProperty Include="RepositoryCommit" />
+    <CompilerVisibleProperty Include="RepositoryUrl" />
+    <CompilerVisibleProperty Include="PackageProjectUrl" />
+    <CompilerVisibleProperty Include="EmbedUntrackedSources" />
+    <CompilerVisibleProperty Include="EnableSourceLink" />
+
+    <CompilerVisibleProperty Include="Authors" />
+    <CompilerVisibleProperty Include="AssemblyName" />    
+  </ItemGroup>
+
+</Project>

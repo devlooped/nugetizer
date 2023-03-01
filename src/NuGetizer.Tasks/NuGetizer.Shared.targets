@@ -17,6 +17,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <!-- Adds compatibility targets with Pack SDK -->
   <Import Project="NuGetizer.Compatibility.props" />
+  <!-- Adds CodeAnalysis props and items needed for diagnostics -->
+  <Import Project="NuGetizer.CodeAnalysis.targets" />
 
   <PropertyGroup>
     <!-- Whether to infer package contents -->
@@ -60,23 +62,6 @@ Copyright (c) .NET Foundation. All rights reserved.
   <ItemGroup>
     <!-- This is the capability that CPS in .NETStandard/.NETCore uses to enable the Pack context menu. Unify with that -->
     <ProjectCapability Include="Pack" Condition="'$(IsPackable)' == 'true'" />
-
-    <!-- Properties for the analyzers -->
-    <CompilerVisibleProperty Include="IsPacking" />
-    <CompilerVisibleProperty Include="PackageId" />
-    <CompilerVisibleProperty Include="Description" />
-    <CompilerVisibleProperty Include="PackageIcon" />
-    <CompilerVisibleProperty Include="PackageIconUrl" />
-    <CompilerVisibleProperty Include="PackageReadmeFile" />
-    <CompilerVisibleProperty Include="PackageLicenseExpression" />
-    <CompilerVisibleProperty Include="PackageLicenseFile" />
-    <CompilerVisibleProperty Include="PackageLicenseUrl" />
-    <CompilerVisibleProperty Include="SourceControlInformationFeatureSupported" />
-    <CompilerVisibleProperty Include="RepositoryCommit" />
-    <CompilerVisibleProperty Include="RepositoryUrl" />
-    <CompilerVisibleProperty Include="PackageProjectUrl" />
-    <CompilerVisibleProperty Include="EmbedUntrackedSources" />
-    <CompilerVisibleProperty Include="EnableSourceLink" />
   </ItemGroup>
 
   <!-- Extends the built-in GetTargetPathWithTargetPlatformMoniker output to signal that the project has been nugetized -->

@@ -132,15 +132,6 @@
   <data name="DefaultDescription_Title" xml:space="preserve">
     <value>Default description detected</value>
   </data>
-  <data name="LongDescription_ID" xml:space="preserve">
-    <value>NG0102</value>
-  </data>
-  <data name="LongDescription_Message" xml:space="preserve">
-    <value>The Description property used for the package must be up to 4000 characters long.</value>
-  </data>
-  <data name="LongDescription_Title" xml:space="preserve">
-    <value>Provided description is too long</value>
-  </data>
   <data name="MissingIcon_Description" xml:space="preserve">
     <value>The PackageIcon project property can specify the path to a JPEG or PNG file to use as the package icon, which will be automatically packed properly.</value>
   </data>
@@ -245,5 +236,19 @@
   </data>
   <data name="SourceLinkEmbed_Description" xml:space="preserve">
     <value>When EmbedUntrackedSources is set to 'true', Source Link will embed in your PDB the items that participated in the compile, but not are included in source control.</value>
+  </data>
+  <data name="DefaultAuthors_ID" xml:space="preserve">
+    <value>NG0102</value>
+  </data>
+  <data name="DefaultAuthors_Title" xml:space="preserve">
+    <value>Default authors detected</value>
+  </data>
+  <data name="DefaultAuthors_Message" xml:space="preserve">
+    <value>Authors metadata matches the project's AssemblyName. The value should match the profile name(s) of the actual package author(s).</value>
+  </data>
+  <data name="DefaultAuthors_Description" xml:space="preserve">
+    <value>Authors project property should contain a comma-separated list of packages authors, matching the profile names on nuget.org. 
+    These are displayed in the NuGet Gallery on nuget.org and are used to cross-reference packages by the same authors.</value>
+    <comment>Long-form description</comment>
   </data>
 </root>

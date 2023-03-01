@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using static ThisAssembly;
@@ -23,15 +22,6 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             DiagnosticSeverity.Warning,
             true,
             description: Strings.DefaultDescription.Description,
-            helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#description");
-
-        public static readonly DiagnosticDescriptor LongDescription = new(
-            Strings.LongDescription.ID,
-            Strings.LongDescription.Title,
-            Strings.LongDescription.Message,
-            Category,
-            DiagnosticSeverity.Error,
-            true,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#description");
 
         public static readonly DiagnosticDescriptor MissingIcon = new(
@@ -122,11 +112,20 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             true,
             description: SourceLinkEmbed.Description,
             helpLinkUri: "https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink");
+
+        public static readonly DiagnosticDescriptor DefaultAuthors = new(
+            Strings.DefaultAuthors.ID,
+            Strings.DefaultAuthors.Title,
+            Strings.DefaultAuthors.Message,
+            Category,
+            DiagnosticSeverity.Warning,
+            true,
+            description: Strings.DefaultAuthors.Description,
+            helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#authors");
     }
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
         Descriptors.DefaultDescription,
-        Descriptors.LongDescription,
         Descriptors.MissingIcon,
         Descriptors.MissingReadme,
         Descriptors.MissingLicense,
@@ -135,7 +134,8 @@ class MetadataAnalyzer : DiagnosticAnalyzer
         Descriptors.MissingRepositoryUrl,
         Descriptors.MissingProjectUrl,
         Descriptors.MissingSourceLink,
-        Descriptors.MissingSourceEmbed);
+        Descriptors.MissingSourceEmbed,
+        Descriptors.DefaultAuthors);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -157,13 +157,17 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             var sourceLinkEnabled = options.TryGetValue("build_property.EnableSourceLink", out var enableSLProp) &&
                 "true".Equals(enableSLProp, StringComparison.OrdinalIgnoreCase);
 
-            if (options.TryGetValue("build_property.Description", out var description))
+            if (options.TryGetValue("build_property.Description", out var description) &&
+                description == DefaultDescription.DefaultValue)
             {
-                if (description == DefaultDescription.DefaultValue)
-                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DefaultDescription, null));
-                // There is really no way of getting such a long text in the diagnostic. We actually get an empty string.
-                else if (description.Length > 4000)
-                    ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.LongDescription, null));
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DefaultDescription, null));
+            }
+
+            if (options.TryGetValue("build_property.Authors", out var authors) &&
+                options.TryGetValue("build_property.AssemblyName", out var assembly) &&
+                authors == assembly)
+            {
+                ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DefaultAuthors, null));
             }
 
             string? packageIcon = default;
