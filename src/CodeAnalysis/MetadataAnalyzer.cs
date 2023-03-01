@@ -11,13 +11,15 @@ namespace NuGetizer;
 [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic, LanguageNames.FSharp)]
 class MetadataAnalyzer : DiagnosticAnalyzer
 {
+    const string Category = "NuGet";
+
     class Descriptors
     {
         public static readonly DiagnosticDescriptor DefaultDescription = new(
             Strings.DefaultDescription.ID,
             Strings.DefaultDescription.Title,
             Strings.DefaultDescription.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Warning,
             true,
             description: Strings.DefaultDescription.Description,
@@ -27,7 +29,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             Strings.LongDescription.ID,
             Strings.LongDescription.Title,
             Strings.LongDescription.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Error,
             true,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#description");
@@ -36,7 +38,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             Strings.MissingIcon.ID,
             Strings.MissingIcon.Title,
             Strings.MissingIcon.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Info,
             true,
             description: Strings.MissingIcon.Description,
@@ -46,7 +48,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             Strings.MissingReadme.ID,
             Strings.MissingReadme.Title,
             Strings.MissingReadme.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Info,
             true,
             description: Strings.MissingReadme.Description,
@@ -56,7 +58,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             Strings.MissingLicense.ID,
             Strings.MissingLicense.Title,
             Strings.MissingLicense.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Info,
             true,
             description: Strings.MissingLicense.Description,
@@ -66,7 +68,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             Strings.DuplicateLicense.ID,
             Strings.DuplicateLicense.Title,
             Strings.DuplicateLicense.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Error,
             true,
             helpLinkUri: "https://learn.microsoft.com/en-us/nuget/reference/nuspec#license");
@@ -75,7 +77,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             RepositoryCommit.ID,
             RepositoryCommit.Title,
             RepositoryCommit.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Info,
             true,
             description: RepositoryCommit.Description,
@@ -85,7 +87,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             RepositoryUrl.ID,
             RepositoryUrl.Title,
             RepositoryUrl.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Info,
             true,
             description: RepositoryUrl.Description,
@@ -95,7 +97,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             ProjectUrl.ID,
             ProjectUrl.Title,
             ProjectUrl.MessageString,
-            "Design",
+            Category,
             DiagnosticSeverity.Info,
             true,
             description: ProjectUrl.Description,
@@ -105,7 +107,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             SourceLink.ID,
             SourceLink.Title,
             SourceLink.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Info,
             true,
             description: SourceLink.Description,
@@ -115,7 +117,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
             SourceLinkEmbed.ID,
             SourceLinkEmbed.Title,
             SourceLinkEmbed.Message,
-            "Design",
+            Category,
             DiagnosticSeverity.Info,
             true,
             description: SourceLinkEmbed.Description,
