@@ -22,7 +22,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_NuspecFile>%(NuspecFile.FullPath)</_NuspecFile>
     </PropertyGroup>
     <ItemGroup>
-      <PackageMetadata Update="@(PackageMetadata)" Nuspec="$(_NuspecFile)" NuPkg="@(PackageTargetPath)" />
+      <PackageMetadata Update="@(PackageMetadata)" Nuspec="$(_NuspecFile)" NuPkg="@(PackageTargetPath)" AssemblyName="$(AssemblyName)" />
       <PackageContent Include="@(_PackageContent)" Exclude="@(PackageMetadata)" />
     </ItemGroup>
     <!-- Force assign path if rendering contents only -->
