@@ -296,6 +296,9 @@ class Program
                         x.Name != "NuPkg")
                     .OrderBy(x => x.Name.LocalName))
                 {
+                    if (md.Name.LocalName == "Description" && md.Value == "Package Description")
+                        continue;
+
                     table.AddRow(new Text(md.Name.LocalName), new Text(md.Value));
                 }
 
