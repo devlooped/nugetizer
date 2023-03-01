@@ -205,7 +205,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
                 if (isPacking)
                 {
                     string? repoCommit = default;
-                    
+
                     if (!options.TryGetValue("build_property.RepositoryCommit", out repoCommit) ||
                         string.IsNullOrWhiteSpace(repoCommit))
                     {
