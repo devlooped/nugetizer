@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Microsoft.CSharp.RuntimeBinder;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
@@ -17,13 +21,39 @@ namespace NuGetizer
 
         public static IEnumerable<T> NullAsEmpty<T>(this IEnumerable<T> source) => source ?? Enumerable.Empty<T>();
 
-        public static bool TryGetMetadata(this ITaskItem taskItem, string metadataName, out string value)
+        /// <summary>
+        /// Tries to get a non-empty metadata value.
+        /// </summary>
+        public static bool TryGetMetadata(this ITaskItem taskItem, string metadataName, [NotNullWhen(true)] out string? value)
         {
             value = taskItem.GetMetadata(metadataName);
             if (string.IsNullOrEmpty(value))
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Tries to get a non-public property of the item
+        /// </summary>
+        public static bool TryDynamic(this ITaskItem taskItem, Func<dynamic, string> function, [NotNullWhen(true)] out string? value)
+        {
+            try
+            {
+                value = function(taskItem.AsDynamicReflection());
+                if (string.IsNullOrEmpty(value))
+                {
+                    value = null;
+                    return false;
+                }
+
+                return true;
+            }
+            catch (RuntimeBinderException)
+            {
+                value = null;
+                return false;
+            }
         }
 
         public static bool TryGetBoolMetadata(this ITaskItem taskItem, string metadataName, out bool value)
@@ -43,7 +73,7 @@ namespace NuGetizer
             return bool.TryParse(metadataValue, out var result) ? result : defaultValue;
         }
 
-        public static string GetNullableMetadata(this ITaskItem taskItem, string metadataName)
+        public static string? GetNullableMetadata(this ITaskItem taskItem, string metadataName)
         {
             var value = taskItem.GetMetadata(metadataName);
             if (string.IsNullOrEmpty(value))

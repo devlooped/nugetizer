@@ -101,6 +101,28 @@ namespace NuGetizer.Tasks
                     else if (Path.IsPathRooted(file.GetMetadata("RelativeDir")))
                         // If the relative dir is absolute, we can just append the filename+extension instead
                         packagePath = Path.Combine(packagePath, file.GetMetadata("FileName") + file.GetMetadata("Extension"));
+                    else if (file.TryGetMetadata("RecursiveDir", out var recursiveDir))
+                        // If there is a recursive dir, use that as the subdir structure, since it's a wildcard inclusion
+                        // So it's equivalent to {packagePath}%(RecursiveDir)\%(Filename)%(Extension)
+                        packagePath = Path.Combine(packagePath, recursiveDir, file.GetMetadata("FileName") + file.GetMetadata("Extension"));
+                    else if (file.TryDynamic(d => d.IncludeBeforeWildcardExpansionEscaped, out var includeWildcard) &&
+                        // The include with wildcard isn't publish, so we just try our best here.
+                        includeWildcard.IndexOf('*') is var wildcardIndex && wildcardIndex > 0 &&
+                        // If there was a wildcard indeed, we try to find whether the RelativeDir starts 
+                        // with the same expression, meaning it's part of a wildcard inclusion, but did 
+                        // not end up having subdirs as part of the wildcard, which is why it wasn't caught 
+                        // by the check for RecursiveDir above. But it should still behave that way for 
+                        // consistency, otherwise, non-recursive files under the wildcard'ed folder will 
+                        // end up in a completely different dir than their recursive counterparts.
+                        includeWildcard.Substring(0, wildcardIndex) is var includeRelativeDir &&
+                        file.TryGetMetadata("RelativeDir", out var relativeDir) &&
+                        relativeDir.StartsWith(includeRelativeDir))
+                        // If there is a wildcard, replace RelativeDir metadata until the wildcard starts, and use 
+                        // that as the subdir structure
+                        packagePath = Path.Combine(packagePath,
+                            relativeDir.Substring(wildcardIndex),
+                            file.GetMetadata("FileName") +
+                            file.GetMetadata("Extension"));
                     else
                         packagePath = Path.Combine(packagePath,
                             file.GetMetadata("RelativeDir"),

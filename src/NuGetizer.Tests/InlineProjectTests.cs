@@ -954,5 +954,66 @@ namespace NuGetizer
             }));
         }
 
+        [Fact]
+        public void when_packagepath_ends_in_path_then_packs_recursive_dir()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                    <IsPackable>true</IsPackable>
+                  </PropertyGroup>
+                  <ItemGroup>
+                    <PackageFile Include="..\img\**\*.*" PackagePath="assets\" />
+                  </ItemGroup>
+                </Project>  
+                """
+                , "GetPackageContents", output, default,
+                ("../img/brand/icon.png", ""),
+                ("../img/docs/screen.png", ""));
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "assets/brand/icon.png",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "assets/docs/screen.png",
+            }));
+        }
+
+        [Fact]
+        public void when_packagepath_ends_in_path_then_packs_basedir_dir()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                    <IsPackable>true</IsPackable>
+                  </PropertyGroup>
+                  <ItemGroup>
+                    <PackageFile Include="..\img\**\*.*" PackagePath="assets\" />
+                  </ItemGroup>
+                </Project>  
+                """
+                , "GetPackageContents", output, default,
+                ("../img/icon.png", ""),
+                ("../img/screen.png", ""));
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "assets/icon.png",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "assets/screen.png",
+            }));
+        }
     }
 }
