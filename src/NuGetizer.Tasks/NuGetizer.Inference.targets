@@ -22,11 +22,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- Whether to include @(Content) items with CopyToOutputDirectory != '' in the package -->
     <PackContent Condition="'$(PackContent)' == ''">true</PackContent>
-    
+
     <!-- Whether to include @(BuiltProjectOutputGroupOutput), @(DocumentationProjectOutputGroupOutput) and @(SatelliteDllsProjectOutputGroupOutput) items in the package -->
     <!-- When packing as a tool (SDK compatibility mode), primary output should not be packed by us, since the SDK PackTool target will already collect the output of /publish instead. -->
     <PackBuildOutput Condition="'$(PackBuildOutput)' == '' and '$(IsPackagingProject)' != 'true' and '$(PackAsTool)' != 'true'">true</PackBuildOutput>
-        
+
+    <!-- Whether to @(SatelliteDllsProjectOutputGroupOutput) items in the package. Used when inferring for PackBuildOutput=true -->
+    <PackSatelliteDlls Condition="'$(PackSatelliteDlls)' == '' and '$(PackBuildOutput)' == 'true'">true</PackSatelliteDlls>
+
     <!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(PackBuildOutput)' == 'true'">true</PackSymbols>
 
@@ -187,7 +190,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       _SetPackTargetFramework;
       InferPackageContents
     </GetPackageContentsDependsOn>
-    
+
   </PropertyGroup>
 
   <Target Name="_SetDefaultPackageReferencePack" Condition="'$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive'"
@@ -215,15 +218,15 @@ Copyright (c) .NET Foundation. All rights reserved.
             PackagePath="%(None.Link)"
             Condition="%(None.Identity) == '$(PackageIcon)' or %(None.Link) == '$(PackageIcon)'" />
 
-      <Content Update="@(Content)" 
+      <Content Update="@(Content)"
                Pack="true"
                BuildAction="None"
                PackFolder="None"
-               PackagePath="%(Content.Link)" 
-               Condition="%(Content.Identity) == '$(PackageIcon)' or %(Content.Link) == '$(PackageIcon)'" />      
+               PackagePath="%(Content.Link)"
+               Condition="%(Content.Identity) == '$(PackageIcon)' or %(Content.Link) == '$(PackageIcon)'" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="_CollectInferenceCandidates" Inputs="@(PackInference)" Outputs="|%(PackInference.Identity)|">
     <PropertyGroup>
       <PackExclude>%(PackInference.PackExclude)</PackExclude>
@@ -295,7 +298,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <PackageIconFilename Condition="'$(PackageIconExists)' == 'true'">@(_PackageIcon -> '%(Filename)')</PackageIconFilename>
       <PackageIconExtension Condition="'$(PackageIconExists)' == 'true'">@(_PackageIcon -> '%(Extension)')</PackageIconExtension>
     </PropertyGroup>
-    
+
     <!-- Even if all these conditions are false, the user can still explicitly pack the icon file, of course -->
     <ItemGroup Label="Icon" Condition="'$(PackageIcon)' != ''">
       <_ExistingIcon Include="@(None -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))" />
@@ -308,7 +311,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                           PackagePath="%(Filename)%(Extension)"
                           Condition="'%(Extension)' == '$(PackageReadmeExtension)'" />
     </ItemGroup>
-    
+
     <ItemGroup>
       <InferenceCandidate>
         <ShouldPack Condition="('%(Pack)' == 'true' or '%(PackagePath)' != '' or '%(PackFolder)' != '' or '%(PackageReference)' != '') and '%(Pack)' != 'false'">true</ShouldPack>
@@ -348,7 +351,8 @@ Copyright (c) .NET Foundation. All rights reserved.
            .NETFramework, the desktop WinFX.targets are imported which don't have the fix, so we need to 
            do it "the old way" for this particular output group -->
       <_SatelliteDllsProjectOutputGroupOutput Include="@(SatelliteDllsProjectOutputGroupOutput)"
-                                              FinalOutputPath="%(FullPath)" />
+                                              FinalOutputPath="%(FullPath)"
+                                              Condition="'$(PackSatelliteDlls)' != 'false'"/>
 
       <_InferredProjectOutput Include="@(BuiltProjectOutputGroupOutput -> '%(FinalOutputPath)');
                                      @(BuiltProjectOutputGroupKeyOutput -> '%(FinalOutputPath)');
@@ -359,12 +363,21 @@ Copyright (c) .NET Foundation. All rights reserved.
       </_InferredProjectOutput>
 
       <_InferredProjectOutput Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
-                            Condition="'$(PackSymbols)' != 'false'">
+                              Condition="'$(PackSymbols)' != 'false'">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
       </_InferredProjectOutput>
 
       <_InferredPackageFile Include="@(_InferredProjectOutput -> Distinct())" />
+    </ItemGroup>
+
+    <ItemGroup Label="SatelliteDll Resources from Dependencies" Condition="'$(PackBuildOutput)' == 'true' and '$(PackAsPublish)' != 'true'">
+      <!-- Include transitive resources if their NuGetPackageId has PrivateAssets=all and Pack!=false only. -->
+      <_InferredPackageFile Include="@(ResourceCopyLocalItems)"
+                            PackFolder="$(PackFolder)"
+                            TargetPath="%(ResourceCopyLocalItems.DestinationSubPath)"
+                            FrameworkSpecific="$(BuildOutputFrameworkSpecific)"
+                            Condition="$(PrivatePackageReferenceIds.Contains(';%(ResourceCopyLocalItems.NuGetPackageId);'))" />
     </ItemGroup>
 
     <ItemGroup Label="Publishable Inference" Condition="'$(PackAsPublish)' == 'true' and '$(PackAsTool)' != 'true'">
@@ -446,8 +459,8 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   </Target>
 
-  <Target Name="_CollectPrimaryOutputDependencies" 
-          DependsOnTargets="ReferenceCopyLocalPathsOutputGroup;RunResolvePackageDependencies" 
+  <Target Name="_CollectPrimaryOutputDependencies"
+          DependsOnTargets="ReferenceCopyLocalPathsOutputGroup;RunResolvePackageDependencies"
           Returns="@(ImplicitPackageReference)">
     <Error Code="NG1003" Text="Centrally managed package versions is only supported when using the Microsoft.NET.Sdk."
            Condition="'$(ManagePackageVersionsCentrally)' == 'true' and '$(UsingMicrosoftNETSdk)' != 'true'" />
@@ -474,14 +487,23 @@ Copyright (c) .NET Foundation. All rights reserved.
                                    PackageDependencies="@(PackageDependencies)">
       <Output TaskParameter="ImplicitPackageReferences" ItemName="ImplicitPackageReference" />
     </InferImplicitPackageReference>
+
+    <ItemGroup>
+      <_PrivatePackageReference Include="@(PackageReference)" Condition="%(PackageReference.Pack) != 'false' and '%(PackageReference.PrivateAssets)' == 'all'" />
+      <_PrivatePackageReference Include="@(ImplicitPackageReference)" Condition="%(PackageReference.Pack) != 'false' and '%(PackageReference.PrivateAssets)' == 'all'" />
+    </ItemGroup>
+    <PropertyGroup>
+      <PrivatePackageReferenceIds>;@(_PrivatePackageReference);</PrivatePackageReferenceIds>
+    </PropertyGroup>
+
   </Target>
 
   <Target Name="_ResolvePackageDependencies" Condition="'$(UsingMicrosoftNETSdk)' == 'true'" DependsOnTargets="RunResolvePackageDependencies" />
 
   <Target Name="InferPrimaryOutputDependencies"
-          Condition="'$(PackAsTool)' != 'true' and '$(PackAsPublish)' != 'true'" 
+          Condition="'$(PackAsTool)' != 'true' and '$(PackAsPublish)' != 'true'"
           Inputs="@(_PrimaryOutputRelatedFile)"
-          Outputs="%(_PrimaryOutputRelatedFile.NuGetPackageId)"
+          Outputs="|%(_PrimaryOutputRelatedFile.NuGetPackageId)|"
           Returns="@(_InferredPackageFile)"
           DependsOnTargets="_ResolvePackageDependencies;_CollectPrimaryOutputDependencies">
 

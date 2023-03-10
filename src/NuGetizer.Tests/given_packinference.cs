@@ -595,5 +595,38 @@ namespace NuGetizer
                 Extension = ".dll",
             }));
         }
+
+        [Fact]
+        public void when_packing_dependencies_then_includes_satellite_resources_for_private_assets()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                	<PropertyGroup>
+                		<OutputType>Exe</OutputType>
+                		<TargetFramework>netstandard2.0</TargetFramework>
+                        <IsPackable>true</IsPackable>
+                        <LangVersion>Latest</LangVersion>
+                	</PropertyGroup>
+                
+                	<ItemGroup>
+                		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
+                	</ItemGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "lib/netstandard2.0/es/Microsoft.CodeAnalysis.CSharp.resources.dll",
+            }));
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = "lib/netstandard2.0/es/Microsoft.CodeAnalysis.resources.dll",
+            }));
+        }
+
     }
 }

@@ -230,7 +230,8 @@ Whether items are packed by default or not is controlled by properties named aft
 | PackBuildOutput | true |
 | PackReadme      | true |
 | PackSymbols     | true if PackBuildOutput=true (*) |
-| PackDependencies| empty (**) |
+| PackSatelliteDlls | true if PackBuildOutput=true (**) |
+| PackDependencies| empty (***) |
 | PackFrameworkReferences | true if PackFolder=lib, false if PackDependencies=false |
 | PackProjectReferences | true |
 
@@ -239,7 +240,10 @@ Whether items are packed by default or not is controlled by properties named aft
 \* Back in the day, PDBs were Windows-only and fat files. Nowadays, portable PDBs 
    (the new default) are lightweight and can even be embedded. Combined with [SourceLink](https://github.com/dotnet/sourcelink), including them in the package (either standalone or embeded) provides the best experience for your users, so it's the default.
 
-\** In some scenarios, you might want to turn off packing behavior for all PackageReference and FrameworkReferences alike. Setting PackDependencies=false achieves that.
+\** Satellite resources can come from the main project or from dependencies, if those PackageReferences 
+    have `PrivateAssets=all`.
+
+\*** In some scenarios, you might want to turn off packing behavior for all PackageReference and FrameworkReferences alike. Setting PackDependencies=false achieves that.
 
 
 The various supported item inference are surfaced as `<PackInference Include="Compile;Content;None;..." />` items, which are ultimately evaluated together with the metadata for the individual items. These make the package inference candidates. You can also provide an exclude expression for that evaluation so that certain items are excluded by default, even if every other item of the same type is included. For example, to pack all `Content` items, except those in the `docs` folder, you can simply update the inference item like so:
