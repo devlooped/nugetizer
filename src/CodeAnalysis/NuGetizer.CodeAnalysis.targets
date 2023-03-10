@@ -3,7 +3,6 @@
   <ItemGroup>
     <CompilerVisibleProperty Include="IsPacking" />
     <CompilerVisibleProperty Include="PackageId" />
-    <CompilerVisibleProperty Include="Description" />
     <CompilerVisibleProperty Include="PackageIcon" />
     <CompilerVisibleProperty Include="PackageIconUrl" />
     <CompilerVisibleProperty Include="PackageReadmeFile" />
@@ -22,4 +21,13 @@
   </ItemGroup>
   <Import Project="Devlooped.SponsorLink.targets" Condition="Exists('Devlooped.SponsorLink.targets')" />
 
+  <Target Name="_AddDescription" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
+    <ItemGroup>
+      <!-- We can't unconditionally emit Description since it can have newlines and that breaks editorconfig. -->
+      <CompilerVisibleProperty Include="Description" Condition="$(Description) == 'Package Description'" />
+    </ItemGroup>
+  </Target>
+
+  <Import Project="Devlooped.SponsorLink.targets" Condition="Exists('Devlooped.SponsorLink.targets')" />
+  
 </Project>
