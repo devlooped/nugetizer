@@ -293,24 +293,26 @@ namespace NuGetizer
         [Fact]
         public void when_updating_package_item_metadata_then_updates_metadata()
         {
-            var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.NET.Sdk'>
-  <PropertyGroup>
-    <PackageId>Foo</PackageId>
-    <PackBuildOutput>false</PackBuildOutput>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageMetadata Include='Foo'>
-      <Description>ItemDescription</Description>
-    </PackageMetadata>
-  </ItemGroup>
-</Project>", output: output);
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <PackageId>Foo</PackageId>
+                    <PackBuildOutput>false</PackBuildOutput>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                  </PropertyGroup>
+                  <ItemGroup>
+                    <PackageMetadata Include="Foo">
+                      <Description>ItemDescription</Description>
+                    </PackageMetadata>
+                  </ItemGroup>
+                </Project>
+                """, output: output);
 
             result.AssertSuccess(output);
 
-            Assert.Single(result.Items);
-            var metadata = result.Items[0];
+            Assert.Single(result.Items, i => i.GetMetadata("PackFolder") == "Metadata");
+            var metadata = result.Items.First(i => i.GetMetadata("PackFolder") == "Metadata");
 
             Assert.Equal("ItemDescription", metadata.GetMetadata("Description"));
         }
@@ -318,24 +320,26 @@ namespace NuGetizer
         [Fact]
         public void when_updating_package_metadata_via_target_then_updates_metadata()
         {
-            var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.NET.Sdk'>
-  <PropertyGroup>
-    <PackageId>Foo</PackageId>
-    <PackBuildOutput>false</PackBuildOutput>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  <Target Name='BeforeGetMetadata' BeforeTargets='GetPackageMetadata'>
-    <PropertyGroup>
-      <Description>PropertyDescription</Description>
-    </PropertyGroup>
-  </Target>
-</Project>", output: output);
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <PackageId>Foo</PackageId>
+                    <PackBuildOutput>false</PackBuildOutput>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                  </PropertyGroup>
+                  <Target Name="BeforeGetMetadata" BeforeTargets="GetPackageMetadata">
+                    <PropertyGroup>
+                      <Description>PropertyDescription</Description>
+                    </PropertyGroup>
+                  </Target>
+                </Project>
+                """, output: output);
 
             result.AssertSuccess(output);
 
-            Assert.Single(result.Items);
-            var metadata = result.Items[0];
+            Assert.Single(result.Items, i => i.GetMetadata("PackFolder") == "Metadata");
+            var metadata = result.Items.First(i => i.GetMetadata("PackFolder") == "Metadata");
 
             Assert.Equal("PropertyDescription", metadata.GetMetadata("Description"));
         }
@@ -343,27 +347,31 @@ namespace NuGetizer
         [Fact]
         public void when_setting_metadata_property_then_updates_metadata()
         {
-            var result = Builder.BuildProject(@"
-<Project Sdk='Microsoft.NET.Sdk'>
-  <PropertyGroup>
-    <PackageId>Foo</PackageId>
-    <PackBuildOutput>false</PackBuildOutput>
-    <Title>MyPackage</Title>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  <Target Name='BeforeGetMetadata' BeforeTargets='GetPackageMetadata'>
-    <PropertyGroup>
-      <Description>PropertyDescription</Description>
-    </PropertyGroup>
-  </Target>
-</Project>", output: output);
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <PackageId>Foo</PackageId>
+                    <PackBuildOutput>false</PackBuildOutput>
+                    <Title>MyPackage</Title>
+                    <Description>Description</Description>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                  </PropertyGroup>
+                  <Target Name="BeforeGetMetadata" BeforeTargets="GetPackageMetadata">
+                    <PropertyGroup>
+                      <Description>PropertyDescription</Description>
+                    </PropertyGroup>
+                  </Target>
+                </Project>
+                """, output: output);
 
             result.AssertSuccess(output);
 
-            Assert.Single(result.Items);
-            var metadata = result.Items[0];
+            Assert.Single(result.Items, i => i.GetMetadata("PackFolder") == "Metadata");
+            var metadata = result.Items.First(i => i.GetMetadata("PackFolder") == "Metadata");
 
             Assert.Equal("MyPackage", metadata.GetMetadata("Title"));
+            Assert.Equal("PropertyDescription", metadata.GetMetadata("Description"));
         }
 
         [Fact]
@@ -759,7 +767,7 @@ namespace NuGetizer
                 	</PropertyGroup>
                 
                 	<ItemGroup>
-                		<PackageReference Include="Devlooped.SponsorLink" Version="0.9.2" IncludeAssets="analyzers" ExcludeAssets="build" />
+                		<PackageReference Include="PolySharp" Version="1.12.1" IncludeAssets="analyzers" ExcludeAssets="build" />
                 	</ItemGroup>
                 </Project>
                 """, output: output);
@@ -768,7 +776,7 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                Identity = "Devlooped.SponsorLink",
+                Identity = "PolySharp",
                 PackFolder = "Dependency",
                 IncludeAssets = "analyzers",
                 ExcludeAssets = "build"
