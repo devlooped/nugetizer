@@ -20,5 +20,6 @@
     <CompilerVisibleProperty Include="Authors" />
     <CompilerVisibleProperty Include="AssemblyName" />    
   </ItemGroup>
+  <Import Project="Devlooped.SponsorLink.targets" Condition="Exists('Devlooped.SponsorLink.targets')" />
 
 </Project>
