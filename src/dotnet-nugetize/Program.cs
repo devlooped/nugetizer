@@ -361,8 +361,11 @@ class Program
 
     void AddContents(TreeNode node, List<XElement> contents)
     {
-        var parents = new Dictionary<string, TreeNode>();
-        parents.Add("", node);
+        var parents = new Dictionary<string, TreeNode>
+        {
+            { "", node }
+        };
+
         foreach (var element in contents)
         {
             var file = element.Element("PackagePath").Value;
