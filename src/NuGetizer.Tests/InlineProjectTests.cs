@@ -776,6 +776,36 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_packing_dependencies_then_defaults_to_no_packinclude_nor_packexclude()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                	<PropertyGroup>
+                		<OutputType>Exe</OutputType>
+                		<TargetFramework>netstandard2.0</TargetFramework>
+                        <IsPackable>true</IsPackable>
+                        <LangVersion>Latest</LangVersion>
+                	</PropertyGroup>
+                
+                	<ItemGroup>
+                		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+                	</ItemGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Microsoft.CSharp",
+                PackFolder = "Dependency",
+                PackInclude = "",
+                PackExclude = ""
+            }));
+        }
+
+        [Fact]
         public void when_private_assets_then_packs_transitively()
         {
             var result = Builder.BuildProject(
