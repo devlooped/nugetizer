@@ -2,6 +2,8 @@
   <!-- Extend Directory.Build.props -->
 
   <PropertyGroup>
+    <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
+
     <DefaultItemExcludes>$(DefaultItemExcludes);nugetize.*</DefaultItemExcludes>
 
     <!-- We explicitly Build separately from Pack, because otherwise tasks assembly gets locked -->
