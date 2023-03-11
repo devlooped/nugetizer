@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace NuGetizer;
 
-[Generator]
 [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic, LanguageNames.FSharp)]
 class SponsorLinker : SponsorLink
 {
