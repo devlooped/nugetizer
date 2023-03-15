@@ -26,7 +26,7 @@ static class EmbeddedResource
             throw new InvalidOperationException($"Did not find required resource ending in '{resourceName}' in assembly '{baseName}'.");
 
         using var stream = Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream(manifestResourceName) 
+            .GetManifestResourceStream(manifestResourceName)
             ?? throw new InvalidOperationException($"Did not find required resource '{manifestResourceName}' in assembly '{baseName}'.");
 
         using var reader = new StreamReader(stream);
