@@ -10,7 +10,7 @@ class SponsorLinker : SponsorLink
 {
     public SponsorLinker() : base(SponsorLinkSettings.Create(
         "devlooped", "NuGetizer",
-        version: new Version(ThisAssembly.Info.Version).ToString(2),
+        version: new Version(ThisAssembly.Info.Version).ToString(3),
         diagnosticsIdPrefix: "NG"
 #if DEBUG
         , quietDays: 0
