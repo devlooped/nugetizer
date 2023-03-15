@@ -306,6 +306,9 @@ class Program
                     if (md.Name.LocalName == "Authors" && md.Value == assemblyName?.Value)
                         continue;
 
+                    if (string.IsNullOrWhiteSpace(md.Value))
+                        continue;
+
                     table.AddRow(new Text(md.Name.LocalName), new Text(md.Value));
                 }
 
