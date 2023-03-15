@@ -10,7 +10,7 @@ namespace NuGetizer
 {
     public class InlineProjectTests
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public InlineProjectTests(ITestOutputHelper output) => this.output = output;
 

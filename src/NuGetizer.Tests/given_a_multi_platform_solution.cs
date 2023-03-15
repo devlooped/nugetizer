@@ -5,7 +5,7 @@ namespace NuGetizer
 {
     public class given_a_multi_platform_solution
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_multi_platform_solution(ITestOutputHelper output)
         {

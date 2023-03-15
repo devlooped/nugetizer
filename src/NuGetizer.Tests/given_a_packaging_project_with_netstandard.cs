@@ -7,7 +7,7 @@ namespace NuGetizer
     // by adding binding redirects, appdomain isolation, etc. :(
     public class given_a_packaging_project_with_netstandard
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_packaging_project_with_netstandard(ITestOutputHelper output) => this.output = output;
 

@@ -6,7 +6,7 @@ namespace NuGetizer
 {
     public class given_a_library_with_non_nugetized_reference
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_library_with_non_nugetized_reference(ITestOutputHelper output) => this.output = output;
 

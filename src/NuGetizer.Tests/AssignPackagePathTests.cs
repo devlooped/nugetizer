@@ -22,8 +22,8 @@ namespace NuGetizer
                 .Select(item => new TaskItem(item.EvaluatedInclude, item.Metadata.ToDictionary(meta => meta.Name, meta => meta.UnevaluatedValue)))
                 .ToArray();
 
-        ITestOutputHelper output;
-        MockBuildEngine engine;
+        readonly ITestOutputHelper output;
+        readonly MockBuildEngine engine;
 
         public AssignPackagePathTests(ITestOutputHelper output)
         {
@@ -510,8 +510,7 @@ namespace NuGetizer
                 }
             };
 
-            var isFrameworkSpecific = true;
-            bool.TryParse(frameworkSpecific, out isFrameworkSpecific);
+            bool.TryParse(frameworkSpecific, out var isFrameworkSpecific);
 
             Assert.True(task.Execute());
             Assert.Contains(task.AssignedFiles, item => item.Matches(new

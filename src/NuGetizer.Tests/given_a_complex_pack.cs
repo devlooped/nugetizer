@@ -9,7 +9,7 @@ namespace NuGetizer
 {
     public class given_a_complex_pack
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_complex_pack(ITestOutputHelper output)
         {

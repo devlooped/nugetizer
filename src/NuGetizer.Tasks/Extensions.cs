@@ -17,7 +17,7 @@ namespace NuGetizer
 {
     public static class Extensions
     {
-        static readonly FrameworkName NullFramework = new FrameworkName("Null,Version=v1.0");
+        static readonly FrameworkName NullFramework = new("Null,Version=v1.0");
 
         public static IEnumerable<T> NullAsEmpty<T>(this IEnumerable<T> source) => source ?? Enumerable.Empty<T>();
 
@@ -93,26 +93,24 @@ namespace NuGetizer
 
         public static Manifest GetManifest(this IPackageCoreReader packageReader)
         {
-            using (var stream = packageReader.GetNuspec())
-            {
-                var manifest = Manifest.ReadFrom(stream, true);
-                manifest.Files.AddRange(packageReader.GetFiles()
-                    // Skip the auto-added stuff
-                    .Where(file =>
-                        file != "[Content_Types].xml" &&
-                        file != "_rels/.rels" &&
-                        !file.EndsWith(".nuspec") &&
-                        !file.EndsWith(".psmdcp"))
-                    .Select(file => new ManifestFile
-                    {
-                        // Can't replicate the Source path as it was originally before adding 
-                        // to the package, so leave it null to avoid false promises in tests.
-                        //Source = file.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar),
-                        Target = file.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
-                    }));
+            using var stream = packageReader.GetNuspec();
+            var manifest = Manifest.ReadFrom(stream, true);
+            manifest.Files.AddRange(packageReader.GetFiles()
+                // Skip the auto-added stuff
+                .Where(file =>
+                    file != "[Content_Types].xml" &&
+                    file != "_rels/.rels" &&
+                    !file.EndsWith(".nuspec") &&
+                    !file.EndsWith(".psmdcp"))
+                .Select(file => new ManifestFile
+                {
+                    // Can't replicate the Source path as it was originally before adding 
+                    // to the package, so leave it null to avoid false promises in tests.
+                    //Source = file.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar),
+                    Target = file.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+                }));
 
-                return manifest;
-            }
+            return manifest;
         }
 
         public static NuGetFramework? GetNuGetTargetFramework(this ITaskItem taskItem, bool? frameworkSpecific = default)

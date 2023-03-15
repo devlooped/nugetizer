@@ -11,7 +11,7 @@ namespace NuGetizer
 {
     public class TargetsTests
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public TargetsTests(ITestOutputHelper output) => this.output = output;
 

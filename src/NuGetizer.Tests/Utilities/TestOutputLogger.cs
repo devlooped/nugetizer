@@ -7,12 +7,12 @@ using Xunit.Abstractions;
 /// </summary>
 class TestOutputLogger : ILogger
 {
-    ITestOutputHelper output;
+    readonly ITestOutputHelper output;
 
     public TestOutputLogger(ITestOutputHelper output, LoggerVerbosity? verbosity = LoggerVerbosity.Quiet)
     {
         this.output = output;
-        this.Verbosity = verbosity.GetValueOrDefault();
+        Verbosity = verbosity.GetValueOrDefault();
     }
 
     public void Reset()
@@ -43,7 +43,7 @@ class TestOutputLogger : ILogger
 
         eventSource.AnyEventRaised += (sender, e) =>
         {
-            if (!(e is BuildMessageEventArgs) && Verbosity > LoggerVerbosity.Normal)
+            if (e is not BuildMessageEventArgs && Verbosity > LoggerVerbosity.Normal)
                 output?.WriteLine(e.Message);
         };
 

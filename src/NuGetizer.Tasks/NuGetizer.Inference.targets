@@ -235,7 +235,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ItemGroup Condition="'$(PackInferenceIdentity)' == 'None' and ('$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive')">
       <None Update="@(None)" Condition="'%(None.PackFolder)' == ''" PackFolder="$(PackFolder)" />
-      <None Update="@(None)" Condition="'%(None.FrameworkSpecific)' == ''" FrameworkSpecific="$(BuildFrameworkSpecific)" />
+      <None Update="@(None)" Condition="'%(None.FrameworkSpecific)' == ''" FrameworkSpecific="$(BuildOutputFrameworkSpecific)" />
     </ItemGroup>
 
     <!-- If we have an exclude wildcard to evaluate, do so and keep only non-matching items -->

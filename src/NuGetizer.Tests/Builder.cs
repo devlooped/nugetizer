@@ -23,7 +23,7 @@ static partial class Builder
 
     public static BuildResult Build(ProjectInstance project, string targets, Dictionary<string, string> properties = null, ILogger[] loggers = null)
     {
-        properties = properties ?? new Dictionary<string, string>();
+        properties ??= new Dictionary<string, string>();
 
         var manager = BuildManager.DefaultBuildManager;
         var request = new BuildRequestData(project, targets.Split(','));
@@ -48,7 +48,7 @@ static partial class Builder
         if (!File.Exists(projectOrSolution))
             throw new FileNotFoundException($"Project or solution to build {projectOrSolution} was not found.", projectOrSolution);
 
-        properties = properties ?? new Dictionary<string, string>();
+        properties ??= new Dictionary<string, string>();
 
         // If file is not a solution, build up a fake solution configuration so P2P references just work
         if (Path.GetExtension(projectOrSolution) != ".sln")

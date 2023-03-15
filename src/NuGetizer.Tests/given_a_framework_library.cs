@@ -5,7 +5,7 @@ namespace NuGetizer
 {
     public class given_a_framework_library
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_framework_library(ITestOutputHelper output)
         {

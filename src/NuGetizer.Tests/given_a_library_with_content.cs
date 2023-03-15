@@ -7,7 +7,7 @@ namespace NuGetizer
 {
     public class given_a_library_with_content
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_library_with_content(ITestOutputHelper output)
         {

@@ -170,26 +170,20 @@ class MetadataAnalyzer : DiagnosticAnalyzer
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.DefaultAuthors, null));
             }
 
-            string? packageIcon = default;
-            string? packageIconUrl = default;
 
-            if (!options.TryGetValue("build_property.PackageIcon", out packageIcon) &&
-                !options.TryGetValue("build_property.PackageIconUrl", out packageIconUrl))
+            if (!options.TryGetValue("build_property.PackageIcon", out var packageIcon) &&
+                !options.TryGetValue("build_property.PackageIconUrl", out var packageIconUrl))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, null));
-            else if (string.IsNullOrWhiteSpace(packageIcon) && string.IsNullOrWhiteSpace(packageIconUrl))
+            else if (string.IsNullOrWhiteSpace(packageIcon) && string.IsNullOrWhiteSpace(default))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingIcon, null));
 
             if (!options.TryGetValue("build_property.PackageReadmeFile", out var readme) ||
                 string.IsNullOrWhiteSpace(readme))
                 ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingReadme, null));
 
-            string? licenseExpr = default;
-            string? licenseFile = default;
-            string? licenseUrl = default;
-
-            options.TryGetValue("build_property.PackageLicenseExpression", out licenseExpr);
-            options.TryGetValue("build_property.PackageLicenseFile", out licenseFile);
-            options.TryGetValue("build_property.PackageLicenseUrl", out licenseUrl);
+            options.TryGetValue("build_property.PackageLicenseExpression", out var licenseExpr);
+            options.TryGetValue("build_property.PackageLicenseFile", out var licenseFile);
+            options.TryGetValue("build_property.PackageLicenseUrl", out var licenseUrl);
 
             var specified =
                 (!string.IsNullOrWhiteSpace(licenseExpr) ? 1 : 0) +
@@ -210,9 +204,7 @@ class MetadataAnalyzer : DiagnosticAnalyzer
 
                 if (isPacking)
                 {
-                    string? repoCommit = default;
-
-                    if (!options.TryGetValue("build_property.RepositoryCommit", out repoCommit) ||
+                    if (!options.TryGetValue("build_property.RepositoryCommit", out var repoCommit) ||
                         string.IsNullOrWhiteSpace(repoCommit))
                     {
                         ctx.ReportDiagnostic(Diagnostic.Create(Descriptors.MissingRepositoryCommit, null));

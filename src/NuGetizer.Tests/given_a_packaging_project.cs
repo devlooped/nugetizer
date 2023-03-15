@@ -6,7 +6,7 @@ namespace NuGetizer
 {
     public class given_a_packaging_project
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_packaging_project(ITestOutputHelper output)
         {

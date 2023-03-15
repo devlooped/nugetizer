@@ -12,8 +12,8 @@ namespace Microsoft.Build.Framework
     /// </summary>
     class MockBuildEngine : IBuildEngine
     {
-        bool trace = false;
-        ITestOutputHelper output;
+        readonly bool trace = false;
+        readonly ITestOutputHelper output;
 
         public MockBuildEngine(bool trace = true)
         {
@@ -86,8 +86,7 @@ namespace Microsoft.Build.Framework
             Trace.WriteLine(message);
             Debug.WriteLine(message);
             Debugger.Log(0, "", message);
-            if (output != null)
-                output.WriteLine(message);
+            output?.WriteLine(message);
         }
     }
 }

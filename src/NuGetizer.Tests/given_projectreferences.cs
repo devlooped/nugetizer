@@ -5,7 +5,7 @@ namespace NuGetizer
 {
     public class given_projectreferences
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_projectreferences(ITestOutputHelper output) => this.output = output;
 

@@ -25,11 +25,12 @@ namespace NuGetizer.Tasks
                 Debugger.Launch();
 
             var packages = new ConcurrentDictionary<PackageIdentity, List<PackageIdentity>>();
-            Func<string, PackageIdentity> parse = value =>
+
+            static PackageIdentity parse(string value)
             {
                 var parts = value.Split('/');
                 return new PackageIdentity(parts[0], parts[1]);
-            };
+            }
 
             // Build the list of parent>child relationships.
             foreach (var dependency in PackageDependencies.Where(x => x.ItemSpec.Contains('/')))

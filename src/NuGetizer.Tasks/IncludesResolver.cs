@@ -10,7 +10,7 @@ namespace NuGetizer;
 
 public class IncludesResolver
 {
-    static readonly Regex IncludeRegex = new Regex(@"<!--\s?include\s(.*?)\s?-->", RegexOptions.Compiled);
+    static readonly Regex IncludeRegex = new(@"<!--\s?include\s(.*?)\s?-->", RegexOptions.Compiled);
     static readonly HttpClient http = new();
 
     public static string Process(string filePath, Action<string> logWarning = default)
