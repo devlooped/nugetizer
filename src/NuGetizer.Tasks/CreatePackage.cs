@@ -417,7 +417,7 @@ namespace NuGetizer.Tasks
         {
             if (next == null)
                 return aggregate;
-            
+
             aggregate ??= new List<string>(1);
             aggregate.AddRange(next.Split(';'));
             return aggregate;
