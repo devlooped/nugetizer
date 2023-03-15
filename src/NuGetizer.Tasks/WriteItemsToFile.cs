@@ -42,8 +42,9 @@ namespace NuGetizer.Tasks
             else
                 metadataFromItem = item => Enumerable.Empty<XElement>();
 
-            Func<ITaskItem, XElement> itemFromElement = item => new XElement(itemName,
+            XElement itemFromElement(ITaskItem item) => new(itemName,
                 new XAttribute("Include", useFullPath ? item.GetMetadata("FullPath") : item.ItemSpec), metadataFromItem(item));
+
             var filePath = File.GetMetadata("FullPath");
 
             XDocument document;

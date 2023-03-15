@@ -292,8 +292,7 @@ class Program
                 // We use this to detect Authors==AssemblyName and not render the property in that case
                 // since it's effectively like an empty value, akin to the default description.
                 var assemblyName = metadata.Element("AssemblyName");
-                if (assemblyName != null)
-                    assemblyName.Remove();
+                assemblyName?.Remove();
 
                 foreach (var md in metadata.Elements()
                     .Where(x =>
@@ -359,7 +358,7 @@ class Program
         return 0;
     }
 
-    void AddContents(TreeNode node, List<XElement> contents)
+    static void AddContents(TreeNode node, List<XElement> contents)
     {
         var parents = new Dictionary<string, TreeNode>
         {
@@ -411,7 +410,7 @@ class Program
         }
     }
 
-    void AddDependencies(Tree root, List<XElement> dependencies)
+    static void AddDependencies(Tree root, List<XElement> dependencies)
     {
         if (dependencies.Count == 0)
             return;
@@ -533,8 +532,8 @@ class Program
 
     class AnonymousEqualityComparer<T> : IEqualityComparer<T>
     {
-        Func<T, T, bool> equals;
-        Func<T, int> getHashCode;
+        readonly Func<T, T, bool> equals;
+        readonly Func<T, int> getHashCode;
 
         public AnonymousEqualityComparer(Func<T, T, bool> equals, Func<T, int> getHashCode)
         {

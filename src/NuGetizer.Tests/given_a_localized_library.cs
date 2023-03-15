@@ -6,7 +6,7 @@ namespace NuGetizer
 {
     public class given_a_localized_library
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_localized_library(ITestOutputHelper output)
         {

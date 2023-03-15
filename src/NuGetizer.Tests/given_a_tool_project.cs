@@ -5,7 +5,7 @@ namespace NuGetizer
 {
     public class given_a_tool_project
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_tool_project(ITestOutputHelper output) => this.output = output;
 

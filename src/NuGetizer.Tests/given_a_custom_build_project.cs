@@ -5,7 +5,7 @@ namespace NuGetizer
 {
     public class given_a_custom_build_project
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_a_custom_build_project(ITestOutputHelper output)
         {

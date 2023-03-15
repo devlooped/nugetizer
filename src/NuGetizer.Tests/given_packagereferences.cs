@@ -6,7 +6,7 @@ namespace NuGetizer
 {
     public class given_packagereferences
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_packagereferences(ITestOutputHelper output) => this.output = output;
 

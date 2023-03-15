@@ -7,7 +7,7 @@ namespace NuGetizer
 {
     public class given_packinference
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_packinference(ITestOutputHelper output) => this.output = output;
 

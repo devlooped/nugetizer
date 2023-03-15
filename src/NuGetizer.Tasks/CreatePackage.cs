@@ -80,12 +80,13 @@ namespace NuGetizer.Tasks
 
         public Manifest CreateManifest()
         {
-            var metadata = new ManifestMetadata();
+            var metadata = new ManifestMetadata
+            {
+                Id = Manifest.GetNullableMetadata(MetadataName.PackageId) ?? Manifest.GetMetadata("Id")
+            };
 
-            metadata.Id = Manifest.GetNullableMetadata(MetadataName.PackageId) ?? Manifest.GetMetadata("Id");
-
-            if (Manifest.TryGetMetadata(nameof(ManifestMetadata.Version), out var version))
-                metadata.Version = NuGetVersion.Parse(Manifest.GetMetadata(MetadataName.Version));
+            if (Manifest.TryGetMetadata(MetadataName.Version, out var version))
+                metadata.Version = NuGetVersion.Parse(version);
 
             if (Manifest.TryGetBoolMetadata(nameof(ManifestMetadata.DevelopmentDependency), out var devDep) && devDep)
                 metadata.DevelopmentDependency = true;
@@ -416,8 +417,8 @@ namespace NuGetizer.Tasks
         {
             if (next == null)
                 return aggregate;
-            if (aggregate == null)
-                aggregate = new List<string>(1);
+            
+            aggregate ??= new List<string>(1);
             aggregate.AddRange(next.Split(';'));
             return aggregate;
         }
@@ -471,12 +472,12 @@ namespace NuGetizer.Tasks
             {
                 foreach (var packageType in packageTypes.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    string[] packageTypeSplitInPart = packageType.Split(new char[] { ',' });
-                    string packageTypeName = packageTypeSplitInPart[0].Trim();
+                    var packageTypeSplitInPart = packageType.Split(new char[] { ',' });
+                    var packageTypeName = packageTypeSplitInPart[0].Trim();
                     var version = PackageType.EmptyVersion;
                     if (packageTypeSplitInPart.Length > 1)
                     {
-                        string versionString = packageTypeSplitInPart[1];
+                        var versionString = packageTypeSplitInPart[1];
                         Version.TryParse(versionString, out version);
                     }
                     listOfPackageTypes.Add(new PackageType(packageTypeName, version));

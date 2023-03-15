@@ -19,14 +19,12 @@ namespace NuGetizer
 {
     public class CreatePackageTests
     {
-        ITestOutputHelper output;
-        MockBuildEngine engine;
-        CreatePackage task;
+        readonly MockBuildEngine engine;
+        readonly CreatePackage task;
         bool createPackage = false;
 
         public CreatePackageTests(ITestOutputHelper output)
         {
-            this.output = output;
             engine = new MockBuildEngine(output);
             task = new CreatePackage
             {
@@ -546,13 +544,6 @@ namespace NuGetizer
 
             var manifest = ExecuteTask();
 
-            HashSet<string> requiredFrameworks = new HashSet<string>()
-            {
-                "net35",
-                "net40",
-                "net472"
-            };
-
             Assert.NotNull(manifest);
             Assert.Equal(3, manifest.Metadata.DependencyGroups.Count());
         }
@@ -735,7 +726,6 @@ namespace NuGetizer
         [Fact]
         public void when_creating_package_with_content_file_copy_to_output_then_adds_as_content_file()
         {
-            var none = Path.GetTempFileName();
             var content = Path.GetTempFileName();
             task.Contents = new[]
             {
@@ -767,7 +757,6 @@ namespace NuGetizer
         [Fact]
         public void when_creating_package_with_content_file_flatten_then_adds_as_content_file()
         {
-            var none = Path.GetTempFileName();
             var content = Path.GetTempFileName();
             task.Contents = new[]
             {

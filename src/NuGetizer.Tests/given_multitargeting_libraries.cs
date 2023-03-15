@@ -6,7 +6,7 @@ namespace NuGetizer
 {
     public class given_multitargeting_libraries
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_multitargeting_libraries(ITestOutputHelper output) => this.output = output;
 

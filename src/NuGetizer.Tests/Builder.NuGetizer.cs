@@ -56,21 +56,21 @@ static partial class Builder
         var scenarioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scenarios", scenarioName);
         Directory.CreateDirectory(scenarioDir);
 
-        foreach (var file in files)
+        foreach (var (name, contents) in files)
         {
             try
             {
-                var doc = XDocument.Parse(file.contents);
+                var doc = XDocument.Parse(contents);
                 doc.Root.AddFirst(XElement
                     .Parse("<Import Project='$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))' />"));
 
-                doc.Save(Path.Combine(scenarioDir, file.name));
+                doc.Save(Path.Combine(scenarioDir, name));
             }
             catch (System.Xml.XmlException)
             {
-                var path = Path.Combine(scenarioDir, file.name);
+                var path = Path.Combine(scenarioDir, name);
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                File.WriteAllText(path, file.contents);
+                File.WriteAllText(path, contents);
             }
         }
 
@@ -93,7 +93,7 @@ static partial class Builder
     {
         var scenarioDir = Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, ThisAssembly.Project.OutputPath, "Scenarios", scenarioName);
         if (projectName != null && !Path.HasExtension(projectName))
-            projectName = projectName + ".csproj";
+            projectName += ".csproj";
 
         if (projectName == null)
         {
@@ -245,8 +245,7 @@ class OpenBuildLogAttribute : BeforeAfterTestAttribute
             if (value)
             {
                 var data = Thread.GetNamedDataSlot(nameof(OpenBuildLogAttribute));
-                if (data == null)
-                    data = Thread.AllocateNamedDataSlot(nameof(OpenBuildLogAttribute));
+                data ??= Thread.AllocateNamedDataSlot(nameof(OpenBuildLogAttribute));
 
                 Thread.SetData(data, new object());
             }
@@ -276,7 +275,7 @@ class OpenBuildLogAttribute : BeforeAfterTestAttribute
 
     class DisposableOpenBinlog : IDisposable
     {
-        bool isActive;
+        readonly bool isActive;
 
         public DisposableOpenBinlog()
         {
@@ -308,8 +307,7 @@ class VerbosityAttribute : BeforeAfterTestAttribute
         // we forget the attribute in a commit ;)
 #if DEBUG
         var data = Thread.GetNamedDataSlot(nameof(LoggerVerbosity));
-        if (data == null)
-            data = Thread.AllocateNamedDataSlot(nameof(LoggerVerbosity));
+        data ??= Thread.AllocateNamedDataSlot(nameof(LoggerVerbosity));
 
         Thread.SetData(data, Verbosity);
 #endif

@@ -6,7 +6,7 @@ namespace NuGetizer
 {
     public class given_sourcelink
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_sourcelink(ITestOutputHelper output) => this.output = output;
 

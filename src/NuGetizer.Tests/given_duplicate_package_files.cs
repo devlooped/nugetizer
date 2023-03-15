@@ -7,7 +7,7 @@ namespace NuGetizer
 {
     public class given_duplicate_package_files
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public given_duplicate_package_files(ITestOutputHelper output)
         {
