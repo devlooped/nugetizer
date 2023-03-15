@@ -17,9 +17,10 @@
     <CompilerVisibleProperty Include="EnableSourceLink" />
 
     <CompilerVisibleProperty Include="Authors" />
-    <CompilerVisibleProperty Include="AssemblyName" />    
+    <CompilerVisibleProperty Include="AssemblyName" />
+
+    <SponsorablePackageId Include="NuGetizer" />
   </ItemGroup>
-  <Import Project="Devlooped.SponsorLink.targets" Condition="Exists('Devlooped.SponsorLink.targets')" />
 
   <Target Name="_AddDescription" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
     <ItemGroup>
@@ -28,6 +29,4 @@
     </ItemGroup>
   </Target>
 
-  <Import Project="Devlooped.SponsorLink.targets" Condition="Exists('Devlooped.SponsorLink.targets')" />
-  
 </Project>
