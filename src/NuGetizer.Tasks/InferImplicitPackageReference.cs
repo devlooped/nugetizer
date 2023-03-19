@@ -53,6 +53,7 @@ namespace NuGetizer.Tasks
             }
 
             var inferred = new Dictionary<PackageIdentity, ITaskItem>();
+            var direct = new HashSet<string>(PackageReferences.Select(x => x.ItemSpec));
 
             foreach (var reference in PackageReferences)
             {
@@ -60,7 +61,7 @@ namespace NuGetizer.Tasks
                 var originalMetadata = (IDictionary<string, string>)reference.CloneCustomMetadata();
                 foreach (var dependency in FindDependencies(identity, packages))
                 {
-                    if (!inferred.ContainsKey(dependency))
+                    if (!direct.Contains(dependency.Id) && !inferred.ContainsKey(dependency))
                     {
                         var item = new TaskItem(dependency.Id);
                         foreach (var metadata in originalMetadata)
