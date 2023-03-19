@@ -432,7 +432,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <Target Name="_UpdatePackageReferenceVersions"
           Inputs="@(PackageReference)"
           Outputs="|%(Identity)|"
-          Condition="'$(UsingMicrosoftNETSdk)' == 'true' and '$(ManagePackageVersionsCentrally)' == 'true'"
+          Condition="'$(UsingMicrosoftNETSdk)' == 'true'"
           DependsOnTargets="RunResolvePackageDependencies"
           Returns="@(_CentrallyManagedDependency)">
 
@@ -442,19 +442,20 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_CandidatePackageIsImplicit>%(PackageReference.IsImplicitlyDefined)</_CandidatePackageIsImplicit>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(_CandidatePackageVersion)' == '' and '$(_CandidatePackageIsImplicit)' != 'true'">
-      <_CentrallyManagedDependency Include="@(PackageDependencies)"
-                                   Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').StartsWith('$(_CandidatePackageId)/')) and 
-                                              $([MSBuild]::ValueOrDefault('%(ParentPackage)', '')) == ''" />
+    <ItemGroup Condition="$(_CandidatePackageIsImplicit) != 'true' and 
+                          ($(_CandidatePackageVersion) == '' or $(_CandidatePackageVersion.Contains('*')))">
+      <_ResolvedPackageDependency Include="@(PackageDependencies)"
+                                  Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').StartsWith('$(_CandidatePackageId)/')) and 
+                                             $([MSBuild]::ValueOrDefault('%(ParentPackage)', '')) == ''" />
     </ItemGroup>
 
-    <PropertyGroup Condition="'@(_CentrallyManagedDependency)' != ''">
-      <_CentrallyManagedDependency>%(_CentrallyManagedDependency.Identity)</_CentrallyManagedDependency>
-      <_CentrallyManagedVersion>$(_CentrallyManagedDependency.Replace('$(_CandidatePackageId)/', ''))</_CentrallyManagedVersion>
+    <PropertyGroup Condition="'@(_ResolvedPackageDependency)' != ''">
+      <_ResolvedPackageDependency>%(_ResolvedPackageDependency.Identity)</_ResolvedPackageDependency>
+      <_ResolvedPackageVersion>$(_ResolvedPackageDependency.Replace('$(_CandidatePackageId)/', ''))</_ResolvedPackageVersion>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(_CentrallyManagedVersion)' != ''">
-      <PackageReference Update="@(PackageReference)" Version="$(_CentrallyManagedVersion)" />
+    <ItemGroup Condition="'$(_ResolvedPackageVersion)' != ''">
+      <PackageReference Update="@(PackageReference)" Version="$(_ResolvedPackageVersion)" />
     </ItemGroup>
 
   </Target>
