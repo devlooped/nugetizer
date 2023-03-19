@@ -628,5 +628,32 @@ namespace NuGetizer
             }));
         }
 
+        [Fact]
+        public void when_packing_dependencies_then_resolves_wildcard()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                	<PropertyGroup>
+                		<OutputType>Exe</OutputType>
+                		<TargetFramework>netstandard2.0</TargetFramework>
+                        <IsPackable>true</IsPackable>
+                        <LangVersion>Latest</LangVersion>
+                	</PropertyGroup>
+                
+                	<ItemGroup>
+                		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.*" />
+                	</ItemGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackFolder = "Dependency",
+                Version = "4.0.*",
+            }));
+        }
     }
 }
