@@ -19,7 +19,7 @@
     <Description>Simple, flexible and powerful NuGet packaging</Description>
 
     <DevelopmentDependency>true</DevelopmentDependency>
-    <PackFolder>build</PackFolder>
+    <PackFolder>buildTransitive</PackFolder>
 
     <PackOnBuild Condition="'$(PackOnBuild)' == '' And '$(Configuration)' == 'Release'">true</PackOnBuild>
     <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\..\bin</PackageOutputPath>
