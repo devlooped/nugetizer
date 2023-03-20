@@ -20,6 +20,11 @@ Copyright (c) .NET Foundation. All rights reserved.
   <!-- Adds CodeAnalysis props and items needed for diagnostics -->
   <Import Project="NuGetizer.CodeAnalysis.targets" />
 
+  <ItemGroup>
+    <!-- NuGetizer should *always* be a private asset. This avoids SL checks on P2P scenarios. -->
+    <PackageReference Update="NuGetizer" PrivateAssets="all" />
+  </ItemGroup>
+
   <PropertyGroup>
     <!-- Whether to infer package contents -->
     <EnablePackInference Condition="'$(EnablePackInference)' == ''">true</EnablePackInference>
