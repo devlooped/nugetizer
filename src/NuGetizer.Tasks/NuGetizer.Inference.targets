@@ -190,8 +190,13 @@ Copyright (c) .NET Foundation. All rights reserved.
       _SetPackTargetFramework;
       InferPackageContents
     </GetPackageContentsDependsOn>
-
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- NuGetizer should never pack transitively (i.e. SponsorLink assets), even 
+         when PrivateAssets=all is used due to being a development dependency now. -->
+    <PackageReference Update="NuGetizer" PackTransitively="false" />    
+  </ItemGroup>
 
   <Target Name="_SetDefaultPackageReferencePack" Condition="'$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive'"
           BeforeTargets="InferPrimaryOutputDependencies;InferPackageContents">
