@@ -1,5 +1,35 @@
 # Changelog
 
+## [v1.0.0-rc.1](https://github.com/devlooped/nugetizer/tree/v1.0.0-rc.1) (2023-03-21)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0-rc...v1.0.0-rc.1)
+
+:sparkles: Implemented enhancements:
+
+- Floating version problem [\#64](https://github.com/devlooped/nugetizer/issues/64)
+- Ensure private assets always for NuGetizer [\#355](https://github.com/devlooped/nugetizer/pull/355) (@kzu)
+- Never pack NuGetizer transitively [\#354](https://github.com/devlooped/nugetizer/pull/354) (@kzu)
+- Make NuGetizer targets buildTransitive to fix SponsorLink [\#353](https://github.com/devlooped/nugetizer/pull/353) (@kzu)
+- Resolve wildcard dependency just like central package versions [\#351](https://github.com/devlooped/nugetizer/pull/351) (@kzu)
+- Automatically pack dependencies satellite resources for private packages [\#342](https://github.com/devlooped/nugetizer/pull/342) (@kzu)
+- Improve support for recursive dir inclusion [\#341](https://github.com/devlooped/nugetizer/pull/341) (@kzu)
+- In nugetize tool, skip Authors metadata if it equals AssemblyName [\#339](https://github.com/devlooped/nugetizer/pull/339) (@kzu)
+- Add warning when Authors == AssemblyName [\#338](https://github.com/devlooped/nugetizer/pull/338) (@kzu)
+- Set diagnostics category to NuGet [\#337](https://github.com/devlooped/nugetizer/pull/337) (@kzu)
+- For nugetize tool, consider default description as empty [\#336](https://github.com/devlooped/nugetizer/pull/336) (@kzu)
+- Add best-practice analyzers for nuget packaging [\#334](https://github.com/devlooped/nugetizer/pull/334) (@kzu)
+- Implement PackageIcon automatic packing [\#332](https://github.com/devlooped/nugetizer/pull/332) (@kzu)
+- Add compatibility with SDK package validation [\#331](https://github.com/devlooped/nugetizer/pull/331) (@kzu)
+
+:bug: Fixed bugs:
+
+- Never infer implicit reference for existing direct reference [\#352](https://github.com/devlooped/nugetizer/pull/352) (@kzu)
+- Don't include Description as compiler metadata unconditionally [\#344](https://github.com/devlooped/nugetizer/pull/344) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- Address minor style issues, bump SponsorLink [\#347](https://github.com/devlooped/nugetizer/pull/347) (@kzu)
+
 ## [v1.0.0-rc](https://github.com/devlooped/nugetizer/tree/v1.0.0-rc) (2023-02-26)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0-beta...v1.0.0-rc)
