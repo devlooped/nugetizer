@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.0.0](https://github.com/devlooped/nugetizer/tree/v1.0.0) (2023-03-21)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0-rc.1...v1.0.0)
+
 ## [v1.0.0-rc.1](https://github.com/devlooped/nugetizer/tree/v1.0.0-rc.1) (2023-03-21)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0-rc...v1.0.0-rc.1)
