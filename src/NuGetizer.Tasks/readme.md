@@ -9,11 +9,13 @@ Comprehensive and intuitive heuristics built from experience building nuget pack
 * Straightforward support for [smart libraries](https://www.cazzulino.com/smart-libraries.html#packaging) packing needs
 * Packing multi-targeted projects, including framework-specific resources and dependencies
 * Fast iterative development with complementary [dotnet-nugetize](https://nuget.org/packages/dotnet-nugetize) command line tool
+* Comprehensive [diagnostic analyzers](https://www.cazzulino.com/nugetizer-diagnostics.html) to provide guidance on packing 
+  best practices
 * Consistent and predictable naming for package content inference behaviors:
   * `Pack=[true|false]` => Include/exclude from package (on any item, such as `PackageReference`, `ProjectReference`, `None`, `Content`, etc.) 
   * `PackFolder=[folder]` => Name of known folders with special behavior, such as `Lib`, `Build`, `Content`, `Tools`, etc. (as a project property or item metadata)
   * `PackagePath=[path]` => Package-relative path (on any item, such as `None`, `Content`, etc.)
-  * `Pack[Item Type]=[true|false]` => Set default pack behavior for all items of a given type (such as `PackNone`, `PackContent`, `PackBuildOutput`, `PackDependencies`, `PackFrameworkReferences`, `PackEmbeddedResource`, `PackResource` etc.)
+  * `Pack[Item Type]=[true|false]` => Set default pack behavior for all items of a given type via simple properties (such as `PackNone`, `PackContent`, `PackBuildOutput`, `PackDependencies`, `PackFrameworkReferences`, `PackEmbeddedResource`, `PackResource` etc.)
 * Packaging projects using `.msbuildproj` and [Microsoft.Build.NoTargets](https://nuget.org/packages/Microsoft.Build.NoTargets) SDK
 * SourceLink support to populate [repository information in the package](https://devblogs.microsoft.com/nuget/introducing-source-code-link-for-nuget-packages/)
 * Automatic `readme.md` inclusion in the package
@@ -95,7 +97,8 @@ And produce the following `nugetize`  tool output:
 > You can open this sample and run it directly in your browser in a [![GitHub Codespace](https://img.shields.io/badge/-GitHub%20Codespace-black?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=docs&repo=297430130&machine=basicLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json)
 
 
-[Learn more about NuGetizer](https://www.clarius.org/nugetizer/) and its capabilities.
+[Learn more about NuGetizer](https://www.clarius.org/nugetizer/) and its capabilities from the project 
+documentation site.
 
 <!-- include https://github.com/devlooped/sponsors/raw/main/footer.md -->
 <!-- exclude -->
