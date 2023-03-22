@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.1](https://github.com/devlooped/nugetizer/tree/v1.0.1) (2023-03-22)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0...v1.0.1)
+
+:bug: Fixed bugs:
+
+- Revert changes to make build targets transitive [\#360](https://github.com/devlooped/nugetizer/pull/360) (@kzu)
+
 ## [v1.0.0](https://github.com/devlooped/nugetizer/tree/v1.0.0) (2023-03-21)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0-rc.1...v1.0.0)
