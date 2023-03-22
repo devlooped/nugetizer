@@ -31,9 +31,4 @@
     <SponsorablePackageId Include="NuGetizer" />
   </ItemGroup>
 
-  <!-- This ensures devlooped targets are imported transitively even if we are a dev dependency 
-       and therefore don't propagate the SL dependency, which would otherwise cause a build error 
-       due to analyzers being forcedly transitive even if the reference is private assets/dev dep.
-  -->
-  <Import Project="Devlooped.SponsorLink.targets" Condition="$(SponsorLinkImported) != true"/>
 </Project>
