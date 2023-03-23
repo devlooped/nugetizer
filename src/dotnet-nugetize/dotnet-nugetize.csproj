@@ -28,7 +28,7 @@
     <PackageReference Include="PolySharp" Version="1.12.1" PrivateAssets="all" />
     <PackageReference Include="Spectre.Console" Version="0.46.0" />
     <PackageReference Include="Spectre.Console.Analyzer" Version="0.46.0" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Project" Version="1.2.9" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.2.12" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Strings" Version="1.2.9" PrivateAssets="all" />
     <PackageReference Include="Devlooped.SponsorLink" Version="0.9.9" />
     <PackageReference Include="System.Net.Http.WinHttpHandler" Version="7.0.0" />
