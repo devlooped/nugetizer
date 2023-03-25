@@ -22,7 +22,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <ItemGroup>
     <!-- NuGetizer should *always* be a private asset. This avoids SL checks on P2P scenarios. -->
-    <PackageReference Update="NuGetizer" PrivateAssets="all" />
+    <PackageReference Update="NuGetizer" PrivateAssets="all" Pack="false" />
   </ItemGroup>
 
   <PropertyGroup>
