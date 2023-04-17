@@ -32,9 +32,9 @@
 	sha = 4f070a477b4162a280f02722ae666376ae4fcc71
 [file ".gitignore"]
 	url = https://github.com/devlooped/oss/blob/main/.gitignore
-	etag = 7b3f23aa88e3ed628f03677a5b0fc4587c404bd0ef97dcf9650917a48316d51c
+	etag = 96e0860052044780f1fc9e3bdfbee09d82d5dddb8b1217d67460fc7330a64dd8
 	weak
-	sha = 9dff0bde290185226986f512c75fa0434bc9fe3f
+	sha = b87a8a795a4c2b6830602225c066c11108552a99
 [file "Directory.Build.rsp"]
 	url = https://github.com/devlooped/oss/blob/main/Directory.Build.rsp
 	etag = 6a6c6e1d3895df953abf14c82b0899e3eea75cdcd679f6212dcfea15183d73d6
@@ -55,9 +55,9 @@
 	sha = 6ae80a175a8f926ac5d9ffb0f6afd55d85cc9320
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
-	etag = a890e3c9574327c4885f386756cba483c0f8fb2446554e4badcb6ab5b0eecfd0
+	etag = 428f80b0786ff17b836c7a5b0640948724855d17933e958642b22849ac00dadb
 	weak
-	sha = 6ae80a175a8f926ac5d9ffb0f6afd55d85cc9320
+	sha = 1514d15399a7d545ad92a0e9d57dc8295fdd6af8
 [file "src/kzu.snk"]
 	url = https://github.com/devlooped/oss/blob/main/src/kzu.snk
 	etag = b8d789b5b6bea017cdcc8badcea888ad78de3e34298efca922054e9fb0e7b6b9
