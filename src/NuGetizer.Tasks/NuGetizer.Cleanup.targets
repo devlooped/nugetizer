@@ -37,7 +37,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   </Target>
 
   <!-- Clears nuget cache for the current project package id -->
-  <Target Name="CleanCachedPackageId" AfterTargets="Build;Pack">
+  <Target Name="CleanCachedPackageId" AfterTargets="Pack">
     <PropertyGroup>
       <PackageFolder>$(NuGetCache)\$(PackageId.ToLowerInvariant())</PackageFolder>
     </PropertyGroup>
@@ -49,7 +49,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
   <Target Name="CleanHttpNuGetCache"
           Condition="'$(CleanHttpNuGetCacheOnPack)' == 'true' and Exists('$(HttpNuGetCache)')"
-          AfterTargets="Build;Pack">
+          AfterTargets="Pack">
     <Message Text="Cleaning $(HttpNuGetCache)" />
     <Exec Command='rd "$(HttpNuGetCache)" /q /s' Condition="'$(OS)' == 'Windows_NT'" />
     <Exec Command='rm -rf "$(HttpNuGetCache)"' Condition="'$(OS)' != 'Windows_NT'" />
