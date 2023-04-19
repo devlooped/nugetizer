@@ -1,5 +1,24 @@
 # Changelog
 
+## [v1.0.2](https://github.com/devlooped/nugetizer/tree/v1.0.2) (2023-04-19)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.1...v1.0.2)
+
+:sparkles: Implemented enhancements:
+
+- Add more clear descriptions to SL usage by nugetizer [\#380](https://github.com/devlooped/nugetizer/pull/380) (@kzu)
+- NuGetizer should always be Pack=false [\#377](https://github.com/devlooped/nugetizer/pull/377) (@kzu)
+
+:bug: Fixed bugs:
+
+- Cleanup happens on every build [\#369](https://github.com/devlooped/nugetizer/issues/369)
+- Bump SponsorLink to get fixes [\#381](https://github.com/devlooped/nugetizer/pull/381) (@kzu)
+- Clean package cache only after packing [\#379](https://github.com/devlooped/nugetizer/pull/379) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- ⛙ ⬆️ Bump dependencies [\#378](https://github.com/devlooped/nugetizer/pull/378) (@github-actions[bot])
+
 ## [v1.0.1](https://github.com/devlooped/nugetizer/tree/v1.0.1) (2023-03-22)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.0...v1.0.1)
