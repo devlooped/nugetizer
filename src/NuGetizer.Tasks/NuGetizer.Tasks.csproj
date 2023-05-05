@@ -24,7 +24,7 @@
     <PackageReference Include="NuGet.Packaging" Version="6.3.0" PrivateAssets="all" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" PrivateAssets="all" />
     <PackageReference Include="PolySharp" Version="1.13.1" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Project" Version="1.2.13" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.2.14" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Strings" Version="1.2.13" PrivateAssets="all" />
     <PackageReference Include="Minimatch" Version="2.0.0" PrivateAssets="all" />
   </ItemGroup>
