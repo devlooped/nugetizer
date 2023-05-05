@@ -1053,5 +1053,32 @@ namespace NuGetizer
                 PackagePath = "assets/screen.png",
             }));
         }
+
+        [Fact]
+        public void when_dependency_is_development_dependency_then_can_explicitly_pack_it()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>netstandard2.0</TargetFramework>
+                    <IsPackable>true</IsPackable>
+                  </PropertyGroup>
+                  <ItemGroup>
+                    <PackageReference Include="ThisAssembly.Constants" Version="1.2.14" Pack="true" TargetFramework="netstandard2.0" />
+                  </ItemGroup>
+                </Project>  
+                """
+                , "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "ThisAssembly.Constants",
+                PackFolder = "Dependency",
+            }));
+        }
+
     }
 }
