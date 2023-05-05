@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.4](https://github.com/devlooped/nugetizer/tree/v1.0.4) (2023-05-05)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.3...v1.0.4)
+
+:sparkles: Implemented enhancements:
+
+- Missing part of the previous fix to pack private assets [\#390](https://github.com/devlooped/nugetizer/pull/390) (@kzu)
+
 ## [v1.0.3](https://github.com/devlooped/nugetizer/tree/v1.0.3) (2023-05-05)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.2...v1.0.3)
