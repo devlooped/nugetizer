@@ -240,7 +240,8 @@ namespace NuGetizer.Tasks
         {
             var dependencies = from item in Contents
                                where PackFolderKind.Dependency.Equals(item.GetMetadata(MetadataName.PackFolder), StringComparison.OrdinalIgnoreCase) &&
-                                     !"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase)
+                                     (!"all".Equals(item.GetMetadata(MetadataName.PrivateAssets), StringComparison.OrdinalIgnoreCase) ||
+                                     "true".Equals(item.GetMetadata("Pack"), StringComparison.OrdinalIgnoreCase))
                                select new Dependency
                                {
                                    Id = item.ItemSpec,

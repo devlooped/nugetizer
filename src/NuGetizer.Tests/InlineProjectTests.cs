@@ -1057,7 +1057,7 @@ namespace NuGetizer
         [Fact]
         public void when_dependency_is_development_dependency_then_can_explicitly_pack_it()
         {
-            var result = Builder.BuildProject(
+            var project =
                 """
                 <Project Sdk="Microsoft.NET.Sdk">
                   <PropertyGroup>
@@ -1068,8 +1068,8 @@ namespace NuGetizer
                     <PackageReference Include="ThisAssembly.Constants" Version="1.2.14" Pack="true" TargetFramework="netstandard2.0" />
                   </ItemGroup>
                 </Project>  
-                """
-                , "GetPackageContents", output);
+                """;
+            var result = Builder.BuildProject(project, "GetPackageContents", output);
 
             result.AssertSuccess(output);
 
@@ -1078,7 +1078,23 @@ namespace NuGetizer
                 Identity = "ThisAssembly.Constants",
                 PackFolder = "Dependency",
             }));
-        }
 
+            result = Builder.BuildProject(project, "Pack", output);
+
+            result.AssertSuccess(output);
+
+            var package = result.Items[0].ItemSpec;
+            File.Exists(package);
+
+            using (var archive = ZipFile.OpenRead(package))
+            {
+                Assert.Contains(archive.Entries, entry => entry.FullName == "scenario.nuspec");
+                using var stream = archive.Entries.First(x => x.FullName == "scenario.nuspec").Open();
+                var manifest = Manifest.ReadFrom(stream, false);
+                Assert.NotEmpty(manifest.Metadata.DependencyGroups);
+                Assert.NotEmpty(manifest.Metadata.DependencyGroups.First().Packages);
+                Assert.Equal("ThisAssembly.Constants", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
+            }
+        }
     }
 }
