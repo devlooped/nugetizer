@@ -1,5 +1,22 @@
 # Changelog
 
+## [v1.0.3](https://github.com/devlooped/nugetizer/tree/v1.0.3) (2023-05-05)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.2...v1.0.3)
+
+:sparkles: Implemented enhancements:
+
+- Make sure we can explicitly pack a privateassets/development dependency [\#388](https://github.com/devlooped/nugetizer/pull/388) (@kzu)
+
+:bug: Fixed bugs:
+
+- SponsorLink warnings in VS builds that can't be suppressed and "build paused for Xms"? [\#371](https://github.com/devlooped/nugetizer/issues/371)
+- 'NuGetizer.SponsorLinker' exception happening randomly [\#370](https://github.com/devlooped/nugetizer/issues/370)
+
+:twisted_rightwards_arrows: Merged:
+
+- ⛙ ⬆️ Bump dependencies [\#389](https://github.com/devlooped/nugetizer/pull/389) (@github-actions[bot])
+
 ## [v1.0.2](https://github.com/devlooped/nugetizer/tree/v1.0.2) (2023-04-19)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.1...v1.0.2)
