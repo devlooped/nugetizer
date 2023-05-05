@@ -401,8 +401,8 @@ Copyright (c) .NET Foundation. All rights reserved.
                                        '$(PackAsPublish)' != 'true' and 
                                        '%(PackageReference.Identity)' != 'NuGetizer' and
                                        '%(PackageReference.Identity)' != 'NETStandard.Library' and 
-                                       '%(PackageReference.PrivateAssets)' != 'all' and
-                                       '%(PackageReference.Pack)' != 'false'">
+                                       '%(PackageReference.Pack)' != 'false' and 
+                                       ('%(PackageReference.PrivateAssets)' != 'all' or '%(PackageReference.Pack)' == 'true')">
         <PackFolder>Dependency</PackFolder>
         <!--<FrameworkSpecific Condition="'$(BuildOutputFrameworkSpecific)' == 'true'">true</FrameworkSpecific>-->
       </_InferredPackageFile>
