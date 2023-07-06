@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.5](https://github.com/devlooped/nugetizer/tree/v1.0.5) (2023-07-06)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.4...v1.0.5)
+
+:twisted_rightwards_arrows: Merged:
+
+- Bump to latest version of SponsorLink [\#400](https://github.com/devlooped/nugetizer/pull/400) (@kzu)
+
 ## [v1.0.4](https://github.com/devlooped/nugetizer/tree/v1.0.4) (2023-05-05)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.3...v1.0.4)
