@@ -133,6 +133,16 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
+  <Target Name="_BeforeProjectReferences" BeforeTargets="AssignProjectConfiguration" Condition="$(_IsPacking) == 'true' And $(NoBuild) == 'true'">
+    <!-- Honor NoBuild property if specified, i.e. when doing dotnet pack -no-build 
+         NOTE: we pass this as the BuildReference property to the referenced projects, 
+         so the built-in SDK targets will know not to build them. -->
+    <ItemGroup>
+      <!-- Downstream targets such as inference cause a regular resolve which will default to BuildReference=true -->
+      <ProjectReference BuildReference="false"/>
+    </ItemGroup>
+  </Target>
+
   <Target Name="_GetReferencedPackageContents" 
           Condition="'$(_SupportsProjectReferences)' == 'true'"
           DependsOnTargets="$(_GetReferencedPackageContentsDependsOn)"
