@@ -2,6 +2,7 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Scenario.props, $(MSBuildThisFileDirectory)))" />
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
+    <PackageId Condition="$(MainPackageId) != ''">$(MainPackageId)</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="b.csproj" Pack="$(IncludeInPackage)" />

@@ -97,5 +97,23 @@ namespace NuGetizer
                 PackFolder = "lib",
             }));
         }
+
+        [Fact(Skip = "Doesn't work running from test, but does from CLI :(")]
+        public void when_pack_no_build_then_does_not_fail()
+        {
+            // Build once, to simulate a previous step in a CI pipeline.
+            Builder.BuildScenario(nameof(given_a_library_with_project_reference),
+                target: "Build",
+                properties: new { MainPackageId = "Library" },
+                output: output).AssertSuccess(output);
+
+            // Now pack without building
+            var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference),
+                target: "Pack",
+                properties: new { MainPackageId = "Library", NoBuild = "true" },
+                output: output);
+
+            result.AssertSuccess(output);
+        }
     }
 }
