@@ -9,7 +9,7 @@ Since packing is an exercise in getting the resulting .nupkg to contain exactly 
 Install the tool like any other .NET global tool with:
 
 ```
-dotnet tool install -g dotnet-nugetizer
+dotnet tool install -g dotnet-nugetize
 ```
 
 Afterwards, from a directory containing your solution or project, just run `nugetize`. This 
