@@ -18,7 +18,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <!-- Adds compatibility targets with Pack SDK -->
   <Import Project="NuGetizer.Compatibility.props" />
   <!-- Adds CodeAnalysis props and items needed for diagnostics -->
-  <Import Project="NuGetizer.CodeAnalysis.targets" />
+  <!--<Import Project="NuGetizer.CodeAnalysis.targets" />-->
 
   <ItemGroup>
     <!-- NuGetizer should *always* be a private asset. This avoids SL checks on P2P scenarios. -->
