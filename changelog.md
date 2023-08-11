@@ -1,5 +1,18 @@
 # Changelog
 
+## [v1.1.0](https://github.com/devlooped/nugetizer/tree/v1.1.0) (2023-08-11)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.5...v1.1.0)
+
+:bug: Fixed bugs:
+
+- error NETSDK1085: The 'NoBuild' property was set to true but the 'Build' target was invoked. [\#407](https://github.com/devlooped/nugetizer/issues/407)
+- Fix pack with --no-build [\#413](https://github.com/devlooped/nugetizer/pull/413) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- Remove current implementation of SponsorLink for now [\#420](https://github.com/devlooped/nugetizer/pull/420) (@kzu)
+
 ## [v1.0.5](https://github.com/devlooped/nugetizer/tree/v1.0.5) (2023-07-06)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.4...v1.0.5)
