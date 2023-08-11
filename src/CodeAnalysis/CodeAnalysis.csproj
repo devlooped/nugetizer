@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" Visible="false" />
-    <PackageReference Include="ThisAssembly.AssemblyInfo" Version="1.3.0" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Strings" Version="1.3.0" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.AssemblyInfo" Version="1.3.1" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Strings" Version="1.3.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" Pack="false" />
     <PackageReference Include="Devlooped.SponsorLink" Version="0.11.0" />
   </ItemGroup>
