@@ -22,7 +22,7 @@
     <PackageReference Include="NuGet.Packaging" Version="6.7.0" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.5.0" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.7.1" />
     <PackageReference Include="xunit" Version="2.5.0" />
     <PackageReference Include="xunit.runner.console" Version="2.5.0" />
     <PackageReference Include="xunit.runner.msbuild" Version="2.5.0" />
