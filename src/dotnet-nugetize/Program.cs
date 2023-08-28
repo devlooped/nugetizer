@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Devlooped;
 using Mono.Options;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -29,46 +28,10 @@ class Program
     string items;
     List<string> extra;
 
-    static async Task<int> Main(string[] args)
+    static int Main(string[] args)
     {
-        var status = SponsorCheck.CheckAsync(Directory.GetCurrentDirectory(), "devlooped", "NuGetizer", "dotnet-nugetize", ThisAssembly.Project.Version);
-        var result = new Program().Run(args);
-
-        // No need to check sponsorlink status if we couldn't render useful results.
-        if (result == 0)
-        {
-            var value = await status;
-            if (value == null)
-                return result;
-
-            switch (value.Value)
-            {
-                case SponsorStatus.AppMissing:
-                    Warning(
-                        AppMissing.Header,
-                        new Markup(AppMissing.Message1("NuGetizer", "devlooped")),
-                        new Grid().AddColumns(2)
-                            .AddRow(
-                                new Markup(AppMissing.Message2),
-                                new Text("https://github.com/apps/sponsorlink",
-                                    new Style(Color.Blue, decoration: Decoration.Underline, link: "https://github.com/apps/sponsorlink"))));
-                    break;
-                case SponsorStatus.NotSponsoring:
-                    Warning(
-                        NotSponsoring.Header,
-                        new Markup(NotSponsoring.Message("NuGetizer")),
-                        new Text("https://github.com/sponsors/devlooped",
-                            new Style(Color.Blue, decoration: Decoration.Underline, link: "https://github.com/apps/sponsorlink")));
-                    break;
-                case SponsorStatus.Sponsoring:
-                    AnsiConsole.Write(new Markup($":heart_decoration: [grey30]{Sponsoring.Message("NuGetizer", "devlooped")}[/]"));
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return result;
+        Console.OutputEncoding = Encoding.Unicode;
+        return new Program().Run(args);
     }
 
     int Run(string[] args)
