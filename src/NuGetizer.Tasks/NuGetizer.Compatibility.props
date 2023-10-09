@@ -44,7 +44,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IncludeFrameworkReferencesInPackage)' != ''">$(IncludeFrameworkReferencesInPackage)</PackFrameworkReferences>
     <PackProjectReferences Condition="'$(PackProjectReferences)' == '' and '$(PackProjectReference)' != ''">true</PackProjectReferences>
 
-    <DevelopmentDependency Condition="'$(IsDevelopmentDependency)' != ''">$(IsDevelopmentDependency)</DevelopmentDependency>
+    <DevelopmentDependency Condition="'$(DevelopmentDependency)' == '' and '$(IsDevelopmentDependency)' != ''">$(IsDevelopmentDependency)</DevelopmentDependency>
+
+    <PackFrameworkSpecific Condition="'$(PackFrameworkSpecific)' == '' and '$(BuildOutputFrameworkSpecific)' != ''">$(BuildOutputFrameworkSpecific)</PackFrameworkSpecific>
   </PropertyGroup>
 
 </Project>

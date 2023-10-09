@@ -240,7 +240,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ItemGroup Condition="'$(PackInferenceIdentity)' == 'None' and ('$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive')">
       <None Update="@(None)" Condition="'%(None.PackFolder)' == ''" PackFolder="$(PackFolder)" />
-      <None Update="@(None)" Condition="'%(None.FrameworkSpecific)' == ''" FrameworkSpecific="$(BuildOutputFrameworkSpecific)" />
+      <None Update="@(None)" Condition="'%(None.FrameworkSpecific)' == ''" FrameworkSpecific="$(PackFrameworkSpecific)" />
     </ItemGroup>
 
     <!-- If we have an exclude wildcard to evaluate, do so and keep only non-matching items -->
@@ -362,13 +362,13 @@ Copyright (c) .NET Foundation. All rights reserved.
                                      @(DocumentationProjectOutputGroupOutput -> '%(FinalOutputPath)');
                                      @(_SatelliteDllsProjectOutputGroupOutput -> '%(FinalOutputPath)')">
         <PackFolder>$(PackFolder)</PackFolder>
-        <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
+        <FrameworkSpecific>$(PackFrameworkSpecific)</FrameworkSpecific>
       </_InferredProjectOutput>
 
       <_InferredProjectOutput Include="@(DebugSymbolsProjectOutputGroupOutput -> '%(FinalOutputPath)')"
                               Condition="'$(PackSymbols)' != 'false'">
         <PackFolder>$(PackFolder)</PackFolder>
-        <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
+        <FrameworkSpecific>$(PackFrameworkSpecific)</FrameworkSpecific>
       </_InferredProjectOutput>
 
       <_InferredPackageFile Include="@(_InferredProjectOutput -> Distinct())" />
@@ -379,7 +379,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_InferredPackageFile Include="@(ResourceCopyLocalItems)"
                             PackFolder="$(PackFolder)"
                             TargetPath="%(ResourceCopyLocalItems.DestinationSubPath)"
-                            FrameworkSpecific="$(BuildOutputFrameworkSpecific)"
+                            FrameworkSpecific="$(PackFrameworkSpecific)"
                             Condition="$(PrivatePackageReferenceIds.Contains(';%(ResourceCopyLocalItems.NuGetPackageId);'))" />
     </ItemGroup>
 
@@ -388,7 +388,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_InferredPackageFile Include="@(_InferredPublishItem -> '%(FullPath)')">
         <PackFolder>$(PackFolder)</PackFolder>
         <FrameworkSpecific>false</FrameworkSpecific>
-        <!-- NOTE: we don't set `BuildOutputFrameworkSpecific` since we're not packing the build output
+        <!-- NOTE: we don't set `PackFrameworkSpecific` since we're not packing the build output
              but rather the *publish* output. Users could change that by setting a TF-specific PackFolder -->
       </_InferredPackageFile>
     </ItemGroup>
@@ -402,7 +402,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                                        '%(PackageReference.Pack)' != 'false' and 
                                        ('%(PackageReference.PrivateAssets)' != 'all' or '%(PackageReference.Pack)' == 'true')">
         <PackFolder>Dependency</PackFolder>
-        <!--<FrameworkSpecific Condition="'$(BuildOutputFrameworkSpecific)' == 'true'">true</FrameworkSpecific>-->
+        <!--<FrameworkSpecific Condition="'$(PackFrameworkSpecific)' == 'true'">true</FrameworkSpecific>-->
       </_InferredPackageFile>
 
       <!-- We can't use %(FrameworkFile)==true because it's not defined for raw file references and 
@@ -427,7 +427,7 @@ Copyright (c) .NET Foundation. All rights reserved.
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
         <OriginalTargetFramework>$(PackTargetFramework)</OriginalTargetFramework>
-        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
+        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(PackFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
       </PackageFile>
     </ItemGroup>
   </Target>
@@ -544,7 +544,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ItemGroup Condition="'$(_ShouldPack)' != 'false' and '$(_PrivateAssets)' == 'all'">
       <_InferredPackageFile Include="@(_PrimaryOutputFinalFile)">
         <PackFolder>$(PackFolder)</PackFolder>
-        <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
+        <FrameworkSpecific>$(PackFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
     </ItemGroup>
 
@@ -555,7 +555,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <_InferredPackageFile Include="@(_PrimaryOutputFinalFile)"
                             Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_PrimaryOutputFinalFile.FullPath)', '$(_ShouldIncludeAssetsRegex)', 'RegexOptions.IgnoreCase')) == 'true'">
         <PackFolder>$(PackFolder)</PackFolder>
-        <FrameworkSpecific>$(BuildOutputFrameworkSpecific)</FrameworkSpecific>
+        <FrameworkSpecific>$(PackFrameworkSpecific)</FrameworkSpecific>
       </_InferredPackageFile>
     </ItemGroup>
   </Target>

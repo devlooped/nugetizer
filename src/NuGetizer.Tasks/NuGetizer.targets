@@ -9,7 +9,7 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
 Copyright (c) .NET Foundation. All rights reserved. 
 ***********************************************************************************************
 -->
-<Project InitialTargets="_SetPropertiesFromCapabilities;_SetBuildOutputFrameworkSpecific" TreatAsLocalProperty="PackFolder" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project InitialTargets="_SetPropertiesFromCapabilities;_SetPackFrameworkSpecific" TreatAsLocalProperty="PackFolder" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="NuGetizer.Tasks.AssignPackagePath" AssemblyFile="NuGetizer.Tasks.dll" />
   <UsingTask TaskName="NuGetizer.Tasks.WriteItemsToFile" AssemblyFile="NuGetizer.Tasks.dll" />
 
@@ -66,7 +66,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <PackageFile>
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
         <Platform Condition="'%(PackageFile.Platform)' == ''">$(Platform)</Platform>
-        <DefaultTargetFramework Condition="'%(PackageFile.DefaultTargetFramework)' == '' and ('$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true')">$(PackTargetFramework)</DefaultTargetFramework>
+        <DefaultTargetFramework Condition="'%(PackageFile.DefaultTargetFramework)' == '' and ('$(IsPackagingProject)' != 'true' or '$(PackFrameworkSpecific)' == 'true')">$(PackTargetFramework)</DefaultTargetFramework>
       </PackageFile>
     </ItemGroup>
 
@@ -128,7 +128,7 @@ Copyright (c) .NET Foundation. All rights reserved.
         <PackFolder>Metadata</PackFolder>
         <PackageId>$(PackageId)</PackageId>
         <Platform>$(Platform)</Platform>
-        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
+        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true' or '$(PackFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
       </PackageFile>
     </ItemGroup>
   </Target>
@@ -179,7 +179,7 @@ Copyright (c) .NET Foundation. All rights reserved.
                                                '%(_ReferencedPackageContent.PackFolder)' == 'Metadata'">
         <!-- For consistency, annotate like the rest -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
-        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true'  or '$(BuildOutputFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
+        <DefaultTargetFramework Condition="'$(IsPackagingProject)' != 'true'  or '$(PackFrameworkSpecific)' == 'true'">$(PackTargetFramework)</DefaultTargetFramework>
         <PackFolder>Dependency</PackFolder>
       </_ReferencedPackageDependency>
       <!-- Remove the referenced package actual contents if it provides a manifest, since it will be a dependency in that case. -->
@@ -198,7 +198,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- We don't retarget referenced content for packaging projects that aren't framework specific, and
          never retarget content that already has a PackageId. -->
-    <ItemGroup Condition="'$(IsPackagingProject)' != 'true' or '$(BuildOutputFrameworkSpecific)' == 'true'">
+    <ItemGroup Condition="'$(IsPackagingProject)' != 'true' or '$(PackFrameworkSpecific)' == 'true'">
       <_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
         <!-- Assign current package id if appropriate -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
@@ -220,7 +220,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
 
     <!-- Otherwise, assign target paths based on the original TFM -->
-    <ItemGroup Condition="'$(IsPackagingProject)' == 'true' and '$(BuildOutputFrameworkSpecific)' != 'true'">
+    <ItemGroup Condition="'$(IsPackagingProject)' == 'true' and '$(PackFrameworkSpecific)' != 'true'">
       <_ReferencedPackageContentWithOriginalValues Condition="'%(_ReferencedPackageContentWithOriginalValues.PackageId)' == ''">
         <!-- Assign current package id if appropriate -->
         <PackageId Condition="'$(IsPackable)' == 'true'">$(PackageId)</PackageId>
@@ -277,8 +277,8 @@ Copyright (c) .NET Foundation. All rights reserved.
         <AdditionalProperties Condition="'$(_PrivateAssets)' == 'all'">IsPackable=false;%(_MSBuildProjectReferenceExistent.AdditionalProperties)</AdditionalProperties>
         <!-- If the project reference itself declares a PackFolder, use that instead of the calling project's -->
         <SetPackFolder Condition="'%(PackFolder)' != ''">PackFolder=%(PackFolder)</SetPackFolder>
-        <!-- Otherwise, set both PackFolder and BuildOutputFrameworkSpecific so it will match the caller's -->
-        <SetPackFolder Condition="'%(PackFolder)' == '' and '$(_PrivateAssets)' == 'all' and '$(PackFolder)' != '' and '$(PackFolder)' != 'Ignore'">PackFolder=$(PackFolder);BuildOutputFrameworkSpecific=$(BuildOutputFrameworkSpecific)</SetPackFolder>
+        <!-- Otherwise, set both PackFolder and PackFrameworkSpecific so it will match the caller's -->
+        <SetPackFolder Condition="'%(PackFolder)' == '' and '$(_PrivateAssets)' == 'all' and '$(PackFolder)' != '' and '$(PackFolder)' != 'Ignore'">PackFolder=$(PackFolder);PackFrameworkSpecific=$(PackFrameworkSpecific)</SetPackFolder>
       </_NuGetizedProjectReference>
     </ItemGroup>
 
@@ -298,14 +298,14 @@ Copyright (c) .NET Foundation. All rights reserved.
     </PropertyGroup>
   </Target>
 
-  <Target Name="_SetBuildOutputFrameworkSpecific" Condition="'$(BuildOutputFrameworkSpecific)' == ''">
+  <Target Name="_SetPackFrameworkSpecific" Condition="'$(PackFrameworkSpecific)' == ''">
     <!-- Determine whether primary output is framework specific  -->
     <ItemGroup>
-      <_BuildOutputFrameworkSpecific Include="@(PackFolderKind -> '%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(PackFolder)'" />
+      <_PackFrameworkSpecific Include="@(PackFolderKind -> '%(FrameworkSpecific)')" Condition="'%(Identity)' == '$(PackFolder)'" />
     </ItemGroup>
     <PropertyGroup>
-      <BuildOutputFrameworkSpecific>@(_BuildOutputFrameworkSpecific)</BuildOutputFrameworkSpecific>
-      <BuildOutputFrameworkSpecific Condition="'$(BuildOutputFrameworkSpecific)' == ''">false</BuildOutputFrameworkSpecific>
+      <PackFrameworkSpecific>@(_PackFrameworkSpecific)</PackFrameworkSpecific>
+      <PackFrameworkSpecific Condition="'$(PackFrameworkSpecific)' == ''">false</PackFrameworkSpecific>
     </PropertyGroup>
   </Target>
 
