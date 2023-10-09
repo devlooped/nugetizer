@@ -182,13 +182,13 @@ namespace NuGetizer
     <PackageId>Packer</PackageId>
     <TargetFramework>net6.0</TargetFramework>
     <PackFolder>build</PackFolder>
-    <BuildOutputFrameworkSpecific>true</BuildOutputFrameworkSpecific>
+    <PackFrameworkSpecific>true</PackFrameworkSpecific>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include='Tasks.csproj' PrivateAssets='all' />
     <!-- NOTE: for other stuff, we can put it in the same folders as the build output by 
          specifying PackFolder and FrameworkSpecific to match the project's. -->
-    <None Include='readme.md' PackFolder='$(PackFolder)' FrameworkSpecific='$(BuildOutputFrameworkSpecific)' />
+    <None Include='readme.md' PackFolder='$(PackFolder)' FrameworkSpecific='$(PackFrameworkSpecific)' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output,
