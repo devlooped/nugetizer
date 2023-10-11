@@ -286,9 +286,9 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- Even if all these conditions are false, the user can still explicitly pack the file, of course -->
     <ItemGroup Label="Readme" Condition="'$(PackReadme)' == 'true' and '$(PackageReadmeFile)' != '' and '$(IsPackable)' == 'true'">
-      <_ExistingReadme Include="@(None -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))" />
-      <_ExistingReadme Include="@(Content -> WithMetadataValue('Filename', '$(PackageReadmeFilename)'))" Condition="'@(_ExistingReadme)' == ''" />
-      <_ExistingReadme Include="$(MSBuildProjectDirectory)\$(PackageReadmeFilename)$(PackageReadmeExtension)" Condition="'@(_ExistingReadme)' == '' and Exists('$(MSBuildProjectDirectory)\$(PackageReadmeFilename)$(PackageReadmeExtension)')" />
+      <_ExistingReadme Include="@(None -> WithMetadataValue('Identity', '$(PackageReadmeFile)'))" />
+      <_ExistingReadme Include="@(Content -> WithMetadataValue('Identity', '$(PackageReadmeFile)'))" Condition="'@(_ExistingReadme)' == ''" />
+      <_ExistingReadme Include="$(MSBuildProjectDirectory)\$(PackageReadmeFile)" Condition="'@(_ExistingReadme)' == '' and Exists('$(MSBuildProjectDirectory)\$(PackageReadmeFile)')" />
 
       <InferenceCandidate Include="@(_ExistingReadme -> Distinct())"
                           PackagePath="%(Filename)%(Extension)"
