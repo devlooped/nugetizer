@@ -438,6 +438,37 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_multiple_readmes_found_then_adds_metadata_and_content_for_root()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Only needed since for scenarios we set this to false. -->
+    <EnableDefaultItems>true</EnableDefaultItems>
+  </PropertyGroup>
+</Project>",
+                "Pack,GetPackageContents", output,
+                files: [("readme.md", @"# readme"), ("docs/readme.md", @"# readme2")]);
+
+            result.AssertSuccess(output);
+
+            // Assert the readme file is added to the package
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackagePath = @"readme.md",
+            }));
+
+            // Assert the package metadata is present too
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Identity = "Packer",
+                Readme = "readme.md",
+            }));
+        }
+
+        [Fact]
         public void when_readme_custom_extension_specified_then_adds_metadata_and_content()
         {
             var result = Builder.BuildProject(@"
