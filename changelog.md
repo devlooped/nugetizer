@@ -1,5 +1,29 @@
 # Changelog
 
+## [v1.2.0](https://github.com/devlooped/nugetizer/tree/v1.2.0) (2023-10-11)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.1.1...v1.2.0)
+
+:sparkles: Implemented enhancements:
+
+- Rename BuildOutputFrameworkSpecific \> PackFrameworkSpecific for consistency [\#438](https://github.com/devlooped/nugetizer/issues/438)
+- Rename BuildOutputFrameworkSpecific \> PackFrameworkSpecific for consistency [\#439](https://github.com/devlooped/nugetizer/pull/439) (@kzu)
+
+:bug: Fixed bugs:
+
+- Inference of package icon causes duplicate package readme files [\#436](https://github.com/devlooped/nugetizer/issues/436)
+- Unhandled exception in nugetize output [\#417](https://github.com/devlooped/nugetizer/issues/417)
+- Don't fail for multiple readme files in content [\#446](https://github.com/devlooped/nugetizer/pull/446) (@kzu)
+- Fix copy error in inference targets for package icon [\#437](https://github.com/devlooped/nugetizer/pull/437) (@kzu)
+
+## [v1.1.1](https://github.com/devlooped/nugetizer/tree/v1.1.1) (2023-08-28)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.1.0...v1.1.1)
+
+:bug: Fixed bugs:
+
+- Remove obsolete SL v1 implementation CLI check [\#426](https://github.com/devlooped/nugetizer/pull/426) (@kzu)
+
 ## [v1.1.0](https://github.com/devlooped/nugetizer/tree/v1.1.0) (2023-08-11)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.0.5...v1.1.0)
