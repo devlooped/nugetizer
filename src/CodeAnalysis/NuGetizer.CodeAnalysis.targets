@@ -27,8 +27,4 @@
     </ItemGroup>
   </Target>
 
-  <ItemGroup Label="SponsorLink">
-    <SponsorablePackageId Include="NuGetizer" />
-  </ItemGroup>
-
 </Project>
