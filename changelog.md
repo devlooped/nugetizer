@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.2.1](https://github.com/devlooped/nugetizer/tree/v1.2.1) (2023-11-30)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.0...v1.2.1)
+
+:sparkles: Implemented enhancements:
+
+- Bring back nuget authoring analyzers [\#462](https://github.com/devlooped/nugetizer/issues/462)
+- Remove SponsorLink code and bring back analyzers [\#463](https://github.com/devlooped/nugetizer/pull/463) (@kzu)
+
 ## [v1.2.0](https://github.com/devlooped/nugetizer/tree/v1.2.0) (2023-10-11)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.1.1...v1.2.0)
