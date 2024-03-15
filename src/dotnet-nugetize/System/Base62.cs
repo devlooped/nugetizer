@@ -38,6 +38,12 @@ namespace System
     static partial class Base62
     {
         /// <summary>
+        /// Encodes a Guid into a base62 string.
+        /// </summary>
+        public static string ToBase62(this Guid guid) 
+            => Encode(BigInteger.Abs(new BigInteger(guid.ToByteArray())));
+
+        /// <summary>
         /// Encodes a numeric value into a base62 string.
         /// </summary>
         public static string Encode(BigInteger value)
@@ -53,7 +59,11 @@ namespace System
                 value /= 62;
             }
 
-            return new string(sb.ToString().Reverse().ToArray());
+            // Reverse the string, since we're building it backwards, 
+            var chars = sb.ToString().ToCharArray();
+            Array.Reverse(chars);
+
+            return new string(chars);
         }
 
         /// <summary>
