@@ -820,12 +820,12 @@ namespace NuGetizer
                 """
                 <Project Sdk="Microsoft.NET.Sdk">
                 	<PropertyGroup>
-                		<TargetFramework>net6.0</TargetFramework>
+                		<TargetFramework>net8.0</TargetFramework>
                         <IsPackable>true</IsPackable>
                 	</PropertyGroup>
                 
                 	<ItemGroup>
-                		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" PrivateAssets="all" />
+                		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" PrivateAssets="all" />
                 	</ItemGroup>
                 </Project>
                 """, output: output);

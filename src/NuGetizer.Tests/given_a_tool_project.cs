@@ -16,12 +16,12 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>MyTool</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackFolder>tools</PackFolder>
     <PackAsTool>true</PackAsTool>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='Microsoft.Extensions.DependencyModel' Version='6.0.0' />
+    <PackageReference Include='Microsoft.Extensions.DependencyModel' Version='8.0.0' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output);
@@ -45,7 +45,7 @@ namespace NuGetizer
   <PropertyGroup>
     <AssemblyName>MyTool</AssemblyName>
     <PackageId>MyTool</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackFolder>tools</PackFolder>
     <PackAsTool>true</PackAsTool>
   </PropertyGroup>
@@ -70,11 +70,11 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>MyTool</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackFolder>tools</PackFolder>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include='Microsoft.Extensions.DependencyModel' Version='6.0.0' />
+    <PackageReference Include='Microsoft.Extensions.DependencyModel' Version='8.0.0' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output);
@@ -94,12 +94,12 @@ namespace NuGetizer
                 <Project Sdk="Microsoft.NET.Sdk">
                   <PropertyGroup>
                     <OutputType>Exe</OutputType>
-                    <TargetFramework>net6.0</TargetFramework>
+                    <TargetFramework>net8.0</TargetFramework>
                     <PackageId>MyTool</PackageId>
                     <PackFolder>tools</PackFolder>
                   </PropertyGroup>
                   <ItemGroup>
-                    <PackageReference Include='Microsoft.Extensions.DependencyModel' Version='6.0.0' />
+                    <PackageReference Include='Microsoft.Extensions.DependencyModel' Version='8.0.0' />
                   </ItemGroup>
                 </Project>
                 """,
@@ -125,7 +125,7 @@ namespace NuGetizer
                 <Project Sdk="Microsoft.NET.Sdk">
                   <PropertyGroup>
                     <OutputType>Exe</OutputType>
-                    <TargetFramework>net6.0</TargetFramework>
+                    <TargetFramework>net8.0</TargetFramework>
                     <PackageId>MyTool</PackageId>
                     <PackFolder>tools</PackFolder>
                     <PackAsTool>true</PackAsTool>

@@ -180,7 +180,7 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackFolder>build</PackFolder>
     <PackFrameworkSpecific>true</PackFrameworkSpecific>
   </PropertyGroup>
@@ -209,11 +209,11 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build/net6.0/readme.md",
+                PackagePath = @"build/net8.0/readme.md",
             }));
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"build/net6.0/Tasks.dll",
+                PackagePath = @"build/net8.0/Tasks.dll",
             }));
         }
 
@@ -224,7 +224,7 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include='Transitive.csproj' />
@@ -269,10 +269,10 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=tools/net6.0' />
+    <ProjectReference Include='Library.csproj' AdditionalProperties='PackFolder=tools/net8.0' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output,
@@ -287,7 +287,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"tools/net6.0/Library.dll",
+                PackagePath = @"tools/net8.0/Library.dll",
             }));
         }
 
@@ -298,10 +298,10 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include='Library.csproj' PackFolder='tools/net6.0' />
+    <ProjectReference Include='Library.csproj' PackFolder='tools/net8.0' />
   </ItemGroup>
 </Project>",
                 "GetPackageContents", output,
@@ -316,7 +316,7 @@ namespace NuGetizer
             result.AssertSuccess(output);
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = @"tools/net6.0/Library.dll",
+                PackagePath = @"tools/net8.0/Library.dll",
             }));
         }
 
@@ -327,7 +327,7 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackFolder>build</PackFolder>
     <!-- Only needed since for scenarios we set this to false. -->
     <EnableDefaultItems>true</EnableDefaultItems>
@@ -350,7 +350,7 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <!-- Only needed since for scenarios we set this to false. -->
     <EnableDefaultItems>true</EnableDefaultItems>
     <PackReadme>false</PackReadme>
@@ -382,7 +382,7 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <!-- Only needed since for scenarios we set this to false. -->
     <EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
@@ -413,7 +413,7 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <!-- Only needed since for scenarios we set this to false. -->
     <EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
@@ -444,7 +444,7 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <!-- Only needed since for scenarios we set this to false. -->
     <EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
@@ -475,7 +475,7 @@ namespace NuGetizer
 <Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
   <PropertyGroup>
     <PackageId>Packer</PackageId>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <!-- Only needed since for scenarios we set this to false. -->
     <EnableDefaultItems>true</EnableDefaultItems>
     <PackageReadmeFile>readme.txt</PackageReadmeFile>
