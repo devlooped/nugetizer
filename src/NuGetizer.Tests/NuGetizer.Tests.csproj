@@ -12,7 +12,6 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build" Version="17.9.5" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.3.1" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.6.10" />
