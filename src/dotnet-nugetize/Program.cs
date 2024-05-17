@@ -83,6 +83,8 @@ class Program
             "-p:EmitNuspec=true",
             // Never emit the actual pkg since that would be the same as just running dotnet pack
             "-p:EmitPackage=false",
+            // Avoid SDK trying to validate the output package since we don't emit it
+            "-p:EnablePackageValidation=false",
             // DTB arguments that speed-up the execution
             "-p:SkipCompilerExecution=true",
             "-p:DesignTimeBuild=true",
