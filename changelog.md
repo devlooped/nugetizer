@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.2.2](https://github.com/devlooped/nugetizer/tree/v1.2.2) (2024-05-17)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.1...v1.2.2)
+
+:bug: Fixed bugs:
+
+- Make sure nugetize always sets EnablePackageValidation=false to avoid SDK attempting to validate a non-existent package [\#482](https://github.com/devlooped/nugetizer/issues/482)
+- Cannot imitate DevelopementDependency with PackageReference [\#448](https://github.com/devlooped/nugetizer/issues/448)
+- Don't fail with SDK trying to validate package on nugetize [\#483](https://github.com/devlooped/nugetizer/pull/483) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- Fix warnings from xunit analyzer [\#488](https://github.com/devlooped/nugetizer/pull/488) (@kzu)
+
 ## [v1.2.1](https://github.com/devlooped/nugetizer/tree/v1.2.1) (2023-11-30)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.0...v1.2.1)
