@@ -250,7 +250,7 @@ namespace NuGetizer
             Assert.Single(manifest.Metadata.DependencyGroups);
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
-            Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Include.Count);
+            Assert.Single(manifest.Metadata.DependencyGroups.First().Packages.First().Include);
             Assert.Equal("all", manifest.Metadata.DependencyGroups.First().Packages.First().Include[0]);
         }
 
@@ -276,7 +276,7 @@ namespace NuGetizer
             Assert.Single(manifest.Metadata.DependencyGroups);
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
-            Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Exclude.Count);
+            Assert.Single(manifest.Metadata.DependencyGroups.First().Packages.First().Exclude);
             Assert.Equal("all", manifest.Metadata.DependencyGroups.First().Packages.First().Exclude[0]);
         }
 
@@ -301,7 +301,7 @@ namespace NuGetizer
             Assert.Single(manifest.Metadata.DependencyGroups);
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
-            Assert.Equal(0, manifest.Metadata.DependencyGroups.First().Packages.First().Include.Count);
+            Assert.Empty(manifest.Metadata.DependencyGroups.First().Packages.First().Include);
         }
 
         [Fact]
@@ -325,7 +325,7 @@ namespace NuGetizer
             Assert.Single(manifest.Metadata.DependencyGroups);
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
-            Assert.Equal(0, manifest.Metadata.DependencyGroups.First().Packages.First().Exclude.Count);
+            Assert.Empty(manifest.Metadata.DependencyGroups.First().Packages.First().Exclude);
         }
 
         [Fact]
@@ -350,7 +350,7 @@ namespace NuGetizer
             Assert.Single(manifest.Metadata.DependencyGroups);
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
-            Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Include.Count);
+            Assert.Single(manifest.Metadata.DependencyGroups.First().Packages.First().Include);
             Assert.Equal("build", manifest.Metadata.DependencyGroups.First().Packages.First().Include[0]);
         }
 
@@ -376,7 +376,7 @@ namespace NuGetizer
             Assert.Single(manifest.Metadata.DependencyGroups);
             Assert.Single(manifest.Metadata.DependencyGroups.First().Packages);
             Assert.Equal("Newtonsoft.Json", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
-            Assert.Equal(1, manifest.Metadata.DependencyGroups.First().Packages.First().Exclude.Count);
+            Assert.Single(manifest.Metadata.DependencyGroups.First().Packages.First().Exclude);
             Assert.Equal("build", manifest.Metadata.DependencyGroups.First().Packages.First().Exclude[0]);
         }
 
