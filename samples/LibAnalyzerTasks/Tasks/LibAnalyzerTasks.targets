@@ -1,0 +1,13 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <!-- This showcases how to use a package-provided file as diagnostics linked content -->
+    <SponsorableLibSponsorable>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\readme.md))</SponsorableLibSponsorable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- This makes it visible to the generator -->
+    <CompilerVisibleProperty Include="SponsorableLibSponsorable" />
+  </ItemGroup>
+
+</Project>

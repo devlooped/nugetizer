@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Roslyn caches analyzers aggressively so we are better off using a very dynamic version number 
+         for local builds where a quick devloop is key. We bump version every 10 seconds -->
+    <VersionPrefix>42.42.$([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::Now.TimeOfDay.TotalSeconds), 10))))</VersionPrefix>
+
+    <PackOnBuild>true</PackOnBuild>
+    <PackageOutputPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)bin'))</PackageOutputPath>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <RestoreSources>https://pkg.kzu.app/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
+    <RestoreSources Condition="Exists('$(PackageOutputPath)')">$(PackageOutputPath);$(RestoreSources)</RestoreSources>
+
+    <!-- Avoid deleting older packed versions to avoid rebuild errors (since package is in same solution, which is uncommon) -->
+    <EnablePackCleanup>false</EnablePackCleanup>
+  </PropertyGroup>
+
+</Project>

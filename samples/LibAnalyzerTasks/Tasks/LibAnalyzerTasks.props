@@ -1,0 +1,8 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <!-- This makes sure builds are never broken from sponsorship warnings, even if WarningsAsErrors is used -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);LIB001;LIB002;LIB003;LIB004;LIB005</WarningsNotAsErrors>
+  </PropertyGroup>
+
+</Project>

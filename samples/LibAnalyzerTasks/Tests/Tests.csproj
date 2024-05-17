@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="xunit" Version="2.8.0" />
+
+    <!-- NOTE: requires packing the Library project first -->
+    <PackageReference Include="LibAnalyzerTasks" Version="42.42.*" Condition="Exists('$(PackageOutputPath)')" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- NOTE: requires packing and restoring first. Removes compile to avoid initial build error -->
+    <Compile Remove="Sample.cs" Condition="!Exists('$(PackageOutputPath)')" />
+  </ItemGroup>
+
+</Project>

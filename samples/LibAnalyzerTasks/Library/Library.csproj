@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>LibAnalyzerTasks</PackageId>
+    <Description>Sample library which includes analyzers, targets and tasks</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" Version="1.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Analyzer\Analyzer.csproj" ReferenceOutputAssembly="false" OutputType="Analyzer" />
+    <ProjectReference Include="..\Tasks\Tasks.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+</Project>
