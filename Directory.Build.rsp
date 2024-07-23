@@ -1,5 +1,4 @@
 # See https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-response-files
--bl
 -nr:false
 -m:1
 -v:m
