@@ -38,6 +38,33 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_toolcommand_then_packs_as_tool_with_no_dependencies()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
+  <PropertyGroup>
+    <PackageId>MyTool</PackageId>
+    <TargetFramework>net8.0</TargetFramework>
+    <ToolCommandName>mycommand</ToolCommandName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Microsoft.Extensions.DependencyModel' Version='8.0.0' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Identity = "Microsoft.Extensions.DependencyModel"
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackageFile = "Microsoft.Extensions.DependencyModel.dll"
+            }));
+        }
+
+        [Fact]
         public void when_pack_as_tool_then_packs_dotnet_tool_runtime_assets()
         {
             var result = Builder.BuildProject(@"

@@ -14,6 +14,9 @@ Copyright (c) .NET Foundation. All rights reserved.
   <UsingTask TaskName="NuGetizer.Tasks.EvaluateWildcards" AssemblyFile="NuGetizer.Tasks.dll" />
 
   <PropertyGroup>
+    <!-- When ToolCommandName is set, infer that packaging should default to PackAsTool -->
+    <PackAsTool Condition="'$(PackAsTool)' == '' and '$(ToolCommandName)' != ''">true</PackAsTool>
+
     <!-- The PackFolder of primary output (build, symbols, doc and satellite assemblies) set if PackBuildOutput = true -->
     <PackFolder Condition="'$(PackFolder)' == ''">lib</PackFolder>
 
