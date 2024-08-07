@@ -5,25 +5,23 @@
 name: publish
 on:
   release:
-    types: [released]
+    types: [prereleased, released]
 
 env:
   DOTNET_NOLOGO: true
   Configuration: Release
-
-defaults:
-  run:
-    shell: bash
+  PackOnBuild: true
+  GeneratePackageOnBuild: true
+  VersionLabel: ${{ github.ref }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  MSBUILDTERMINALLOGGER: auto
 
 jobs:
   publish:
     runs-on: windows-latest
     steps:
       - name: 🤘 checkout
-        uses: actions/checkout@v2
-        with: 
-          submodules: recursive
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
       - name: ⚙ msbuild
         uses: microsoft/setup-msbuild@v1.1
@@ -35,25 +33,38 @@ jobs:
           dotnet restore Scenarios/given_a_packaging_project/a.nuproj
           msbuild -r
 
-      - name: 📦 binlog
+      - name: 🐛 logs
         uses: actions/upload-artifact@v3
-        if: always()
+        if: runner.debug && always()
         with:
           name: binlog-build-${{ github.run_number }}
           path: src/NuGetizer.Tests/msbuild.binlog
 
       - name: 🧪 test
-        uses: ./.github/workflows/test
+        run: |
+          dotnet tool update -g dotnet-retest
+          dotnet retest -- --no-build
 
       - name: 📦 pack
-        run: dotnet pack -p:version=${GITHUB_REF#refs/*/v}
+        run: dotnet pack
 
-      - name: 📦 binlog
+      - name: 🐛 logs
         uses: actions/upload-artifact@v3
-        if: always()
+        if: runner.debug && always()
         with:
           name: binlog-pack-${{ github.run_number }}
           path: msbuild.binlog
 
       - name: 🚀 nuget
-        run: dotnet nuget push ./bin/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        if: env.NUGET_API_KEY != ''
+        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+
+      - name: 🚀 sleet
+        env:
+          SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
+        if: env.SLEET_CONNECTION != ''
+        run: |
+          dotnet tool install -g --version 4.0.18 sleet 
+          sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
