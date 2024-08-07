@@ -12,22 +12,20 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
-    <PackageReference Include="Microsoft.Build" Version="17.9.5" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.3.1" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build" Version="17.10.4" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.10.4" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
-    <PackageReference Include="MSBuild.StructuredLogger" Version="2.2.240" />
+    <PackageReference Include="MSBuild.StructuredLogger" Version="2.2.291" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
-    <PackageReference Include="NuGet.Packaging" Version="6.9.1" />
+    <PackageReference Include="NuGet.Packaging" Version="6.10.1" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.9.0" />
-    <PackageReference Include="xunit" Version="2.5.1" />
-    <PackageReference Include="xunit.runner.console" Version="2.8.0" />
-    <PackageReference Include="xunit.runner.msbuild" Version="2.8.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Project" Version="1.4.3" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Strings" Version="1.4.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.10.0" />
+    <PackageReference Include="xunit" Version="2.9.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.5.0" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Strings" Version="1.5.0" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
@@ -59,12 +57,7 @@
   </ItemGroup>
 
   <Target Name="EnsureProjectInformation" BeforeTargets="InjectThisAssemblyProject;GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />
-  
-  <Target Name="Test" DependsOnTargets="GetTargetPath">
-    <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" Condition="'$(UseConsole)' == 'true'" WorkingDirectory="$(MSBuildProjectDirectory)$(OutptuPath)" />
-    <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />
-  </Target>
-  
+   
   <Target Name="ClearMSBuild" AfterTargets="Build">
     <ItemGroup>
       <MSBuildAssembly Include="$(OutputPath)\Microsoft.Build*.dll" Exclude="$(OutputPath)\Microsoft.Build.Locator.dll" />

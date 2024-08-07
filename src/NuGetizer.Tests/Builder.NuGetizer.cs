@@ -142,7 +142,7 @@ static partial class Builder
         }
 
         var loggers = OpenBuildLogAttribute.IsActive || Environment.GetEnvironmentVariable("SYSTEM_DEBUG") == "true" ?
-            new ILogger[] { logger, new StructuredLogger
+            new ILogger[] { logger, new BinaryLogger
             {
                 Verbosity = LoggerVerbosity.Diagnostic,
                 Parameters = logFile
@@ -192,7 +192,7 @@ static partial class Builder
             if (!BuildResult.ResultsByTarget.ContainsKey(Target))
             {
                 output.WriteLine(ToString());
-                Assert.False(true, "Build results do not contain output for target " + Target);
+                Assert.Fail("Build results do not contain output for target " + Target);
             }
 
             if (ResultCode != TargetResultCode.Success)
