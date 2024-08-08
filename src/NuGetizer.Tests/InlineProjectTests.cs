@@ -846,7 +846,7 @@ namespace NuGetizer
                 """
                 <Project Sdk="Microsoft.NET.Sdk">
                 	<PropertyGroup>
-                		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+                		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
                         <IsPackable>true</IsPackable>
                         <EnablePackageValidation>true</EnablePackageValidation>
                 	</PropertyGroup>                
