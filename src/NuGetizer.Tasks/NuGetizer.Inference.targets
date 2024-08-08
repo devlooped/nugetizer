@@ -574,6 +574,14 @@ Copyright (c) .NET Foundation. All rights reserved.
 						$(_AllProjectCapabilities.Contains('WinRTReferences')) or
 						$(_AllProjectCapabilities.Contains('SDKReferences'))">true</_SupportsReferences>
 
+      <!-- Very constrained scenario for CLI pack with dotnet pack -no-build, which otherwise triggers 
+           transitive project references to be built when that's not what the user wants. -->
+      <DisableTransitiveProjectReferences Condition="'$(_SupportsReferences)' == 'true' and
+                                                     '$(_IsPacking)' == 'true' and 
+                                                     '$(NoBuild)' == 'true' and 
+                                                     '$(BuildingInsideVisualStudio)' != 'true' and 
+                                                     '$(DesignTimeBuild)' != 'true'" >true</DisableTransitiveProjectReferences>
+
       <InferPackageContentsDependsOn Condition="'$(_SupportsReferences)' == 'true'">
         ResolveReferences;
         _UpdatePackageReferenceVersions;
