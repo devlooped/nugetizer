@@ -31,5 +31,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)_._" />
   </ItemGroup>
 
-  <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetizerPropsImported)' != 'true'" />
+  <Import Project="$(NuGetTargetsPath)\NuGetizer.props" Condition="'$(NuGetizerPropsImported)' != 'true' and Exists('$(NuGetTargetsPath)\NuGetizer.props')" />
 </Project>
