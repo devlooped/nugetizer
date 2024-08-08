@@ -10,8 +10,6 @@ on:
 env:
   DOTNET_NOLOGO: true
   Configuration: Release
-  PackOnBuild: true
-  GeneratePackageOnBuild: true
   VersionLabel: ${{ github.ref }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
   MSBUILDTERMINALLOGGER: auto
