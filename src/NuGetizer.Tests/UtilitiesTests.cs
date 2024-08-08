@@ -55,12 +55,12 @@ namespace NuGetizer
             var item = new TaskItem("Foo", new Metadata
             {
                 { "FrameworkSpecific", "true" },
-                { "DefaultTargetFramework", "net7.0-windows7.0" },
+                { "DefaultTargetFramework", "net8.0-windows7.0" },
             });
 
             var framework = item.GetNuGetTargetFramework();
 
-            Assert.Equal("net7.0-windows7.0", framework.GetShortFolderName());
+            Assert.Equal("net8.0-windows7.0", framework.GetShortFolderName());
         }
 
     }
