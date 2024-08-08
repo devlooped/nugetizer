@@ -29,7 +29,6 @@ jobs:
         working-directory: src/NuGetizer.Tests
         run: |
           dotnet restore Scenarios/given_a_packaging_project/a.nuproj
-          dotnet workload restore
           msbuild -r
 
       - name: 🐛 logs
