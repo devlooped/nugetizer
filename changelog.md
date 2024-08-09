@@ -1,5 +1,18 @@
 # Changelog
 
+## [v1.2.3](https://github.com/devlooped/nugetizer/tree/v1.2.3) (2024-08-08)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.2...v1.2.3)
+
+:sparkles: Implemented enhancements:
+
+- Automatically infer PackAsTool when ToolCommandName is used [\#508](https://github.com/devlooped/nugetizer/pull/508) (@kzu)
+
+:bug: Fixed bugs:
+
+- When publishing as a tool, readme inclusions are resolved from publish dir [\#435](https://github.com/devlooped/nugetizer/issues/435)
+- Additional fix for --no-build in pack with transitive references [\#511](https://github.com/devlooped/nugetizer/pull/511) (@kzu)
+
 ## [v1.2.2](https://github.com/devlooped/nugetizer/tree/v1.2.2) (2024-05-17)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.1...v1.2.2)
