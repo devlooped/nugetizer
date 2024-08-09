@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.2.3](https://github.com/devlooped/nugetizer/tree/v1.2.3) (2024-08-08)
+## [v1.2.3](https://github.com/devlooped/nugetizer/tree/v1.2.3) (2024-08-09)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.2...v1.2.3)
 
@@ -10,6 +10,7 @@
 
 :bug: Fixed bugs:
 
+- error NETSDK1085: The 'NoBuild' property was set to true but the 'Build' target was invoked [\#501](https://github.com/devlooped/nugetizer/issues/501)
 - When publishing as a tool, readme inclusions are resolved from publish dir [\#435](https://github.com/devlooped/nugetizer/issues/435)
 - Additional fix for --no-build in pack with transitive references [\#511](https://github.com/devlooped/nugetizer/pull/511) (@kzu)
 
