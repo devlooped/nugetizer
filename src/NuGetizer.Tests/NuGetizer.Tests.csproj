@@ -20,9 +20,9 @@
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     <PackageReference Include="NuGet.Packaging" Version="6.10.1" />
     <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.10.0" />
-    <PackageReference Include="xunit" Version="2.9.0" />
+    <PackageReference Include="xunit" Version="2.9.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Project" Version="1.5.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Strings" Version="1.5.0" PrivateAssets="all" />
