@@ -72,8 +72,8 @@ class Program
         }
 
         // Built-in args we always pass to MSBuild
-        extra.AddRange(new[]
-        {
+        extra.AddRange(
+        [
             // Avoids contention when writing to the dotnet-nugetize MSBuild items file
             "-m:1",
             // Enable retrieving source link info if supported by the project
@@ -83,6 +83,8 @@ class Program
             "-p:EmitNuspec=true",
             // Never emit the actual pkg since that would be the same as just running dotnet pack
             "-p:EmitPackage=false",
+            // Never cleanup previously built packages
+            "-p:EnablePackCleanup=false",
             // Avoid SDK trying to validate the output package since we don't emit it
             "-p:EnablePackageValidation=false",
             // DTB arguments that speed-up the execution
@@ -90,7 +92,7 @@ class Program
             "-p:DesignTimeBuild=true",
             "-p:DesignTimeSilentResolution=true",
             "-p:ResolveAssemblyReferencesSilent=true"
-        });
+        ]);
 
         if (help)
         {
