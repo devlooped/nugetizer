@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.2.4](https://github.com/devlooped/nugetizer/tree/v1.2.4) (2024-11-25)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.3...v1.2.4)
+
+:sparkles: Implemented enhancements:
+
+- When running nugetize, never cleanup built packages [\#531](https://github.com/devlooped/nugetizer/pull/531) (@kzu)
+
 ## [v1.2.3](https://github.com/devlooped/nugetizer/tree/v1.2.3) (2024-08-09)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.2...v1.2.3)
