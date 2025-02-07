@@ -12,5 +12,5 @@ env:
 
 jobs:
   run:
-    uses: devlooped/oss/.github/workflows/dotnet-file-core.yml@reusable
+    uses: devlooped/oss/.github/workflows/dotnet-file-core.yml@main
     secrets: inherit
