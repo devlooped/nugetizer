@@ -13,13 +13,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
     <PackageReference Include="Microsoft.Build" Version="17.13.9" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.10.4" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.10.29" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.9.1" />
     <PackageReference Include="MSBuild.StructuredLogger" Version="2.2.386" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     <PackageReference Include="NuGet.Packaging" Version="6.12.1" />
-    <PackageReference Include="NuGet.ProjectManagement" Version="4.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.12.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
