@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.3.0](https://github.com/devlooped/nugetizer/tree/v1.3.0) (2025-07-21)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.4...v1.3.0)
+
+:sparkles: Implemented enhancements:
+
+- Razor class libraries and static web assets [\#506](https://github.com/devlooped/nugetizer/issues/506)
+- Package file is always updated on a build even when there are no changes [\#434](https://github.com/devlooped/nugetizer/issues/434)
+- Trim indent/newlines in text-based package metadata [\#627](https://github.com/devlooped/nugetizer/pull/627) (@kzu)
+
+:bug: Fixed bugs:
+
+- A very weird interaction of VS, NuGetizer and NuGet with `packages.lock.json` file. [\#504](https://github.com/devlooped/nugetizer/issues/504)
+
 ## [v1.2.4](https://github.com/devlooped/nugetizer/tree/v1.2.4) (2024-11-25)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.3...v1.2.4)
