@@ -131,6 +131,91 @@ namespace NuGetizer
                 return null;
         }
 
+        public static string ReplaceLineEndings(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+
+            return value.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
+        }
+
+        public static string TrimIndent(this string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "";
+
+            // Read lines without the newline characters
+            using var sr = new StringReader(value);
+            var lines = new List<string>();
+            string? line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                lines.Add(line);
+            }
+
+            // Find the first non-empty line
+            var start = 0;
+            while (start < lines.Count && string.IsNullOrWhiteSpace(lines[start]))
+            {
+                start++;
+            }
+            if (start == lines.Count)
+                return "";
+
+            // Determine the indentation prefix from the first content line
+            var firstContent = lines[start];
+            var indentLen = 0;
+            while (indentLen < firstContent.Length && char.IsWhiteSpace(firstContent[indentLen]))
+            {
+                indentLen++;
+            }
+            var indentPrefix = firstContent.Substring(0, indentLen);
+
+            // Find the last non-empty line
+            var end = lines.Count - 1;
+            while (end >= start && string.IsNullOrWhiteSpace(lines[end]))
+            {
+                end--;
+            }
+
+            // Trim indentation from each line
+            var trimmedLines = new List<string>();
+            for (var i = start; i <= end; i++)
+            {
+                var ln = lines[i];
+                var trimmed = ln.StartsWith(indentPrefix) ? ln.Substring(indentPrefix.Length) : ln;
+                trimmedLines.Add(trimmed);
+            }
+
+            // Collapse like Markdown: join lines within paragraphs with space, paragraphs separated by double newline
+            var paragraphs = new List<string>();
+            var currentPara = new List<string>();
+            for (var i = 0; i < trimmedLines.Count; i++)
+            {
+                var ln = trimmedLines[i];
+                if (string.IsNullOrWhiteSpace(ln))
+                {
+                    if (currentPara.Count > 0)
+                    {
+                        paragraphs.Add(string.Join(" ", currentPara.Select(l => l.TrimEnd())));
+                        currentPara.Clear();
+                    }
+                    // Skip blanks, multiple blanks collapse to one break
+                }
+                else
+                {
+                    currentPara.Add(ln);
+                }
+            }
+            if (currentPara.Count > 0)
+            {
+                paragraphs.Add(string.Join(" ", currentPara.Select(l => l.TrimEnd())));
+            }
+
+            // Join paragraphs with double newline
+            return string.Join(Environment.NewLine + Environment.NewLine, paragraphs);
+        }
+
         public static void LogErrorCode(this TaskLoggingHelper log, string code, string message, params object[] messageArgs) =>
             log.LogError(string.Empty, code, string.Empty, string.Empty, 0, 0, 0, 0, message, messageArgs);
 
