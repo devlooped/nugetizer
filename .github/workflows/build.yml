@@ -46,6 +46,7 @@ jobs:
         working-directory: src/NuGetizer.Tests
         run: |
           dotnet restore Scenarios/given_a_packaging_project/a.nuproj
+          # THIS IS IMPORTANT: WE NEED TO BUILD WITH DESKTOP MSBUILD
           msbuild -r
 
       - name: 🐛 logs
@@ -58,6 +59,7 @@ jobs:
       - name: 🧪 test
         run: |
           dotnet tool update -g dotnet-retest
+          # THIS IS IMPORTANT: WE TEST BUT NEVER BUILD (to keep desktop-built artifacts)
           dotnet retest -- --no-build
 
       - name: 📦 pack
