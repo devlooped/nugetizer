@@ -92,13 +92,13 @@ namespace NuGetizer.Tasks
                 metadata.DevelopmentDependency = true;
 
             if (Manifest.TryGetMetadata("Title", out var title))
-                metadata.Title = title;
+                metadata.Title = title.TrimIndent();
 
             if (Manifest.TryGetMetadata("Description", out var description))
-                metadata.Description = description;
+                metadata.Description = description.TrimIndent();
 
             if (Manifest.TryGetMetadata("Summary", out var summary))
-                metadata.Summary = summary;
+                metadata.Summary = summary.TrimIndent();
 
             if (Manifest.TryGetMetadata("Readme", out var readme))
                 metadata.Readme = readme;
@@ -171,7 +171,7 @@ namespace NuGetizer.Tasks
                 metadata.Icon = icon;
 
             if (Manifest.TryGetMetadata("ReleaseNotes", out var releaseNotes))
-                metadata.ReleaseNotes = releaseNotes;
+                metadata.ReleaseNotes = releaseNotes.TrimIndent();
 
             if (Manifest.TryGetMetadata("Tags", out var tags))
                 metadata.Tags = tags;

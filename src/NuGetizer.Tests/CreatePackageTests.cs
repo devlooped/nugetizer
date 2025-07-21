@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -35,7 +34,16 @@ namespace NuGetizer
                     { MetadataName.PackageId, "package" },
                     { MetadataName.Version, "1.0.0" },
                     { "Title", "title" },
-                    { "Description", "description" },
+                    { "Description",
+                        """
+
+                            This is the description.
+                            Indent will be trimmed.
+
+
+                            New paragraph preserved.
+
+                        """ },
                     { "Summary", "summary" },
                     { "Language", "en" },
 
@@ -111,7 +119,6 @@ namespace NuGetizer
             Assert.Equal(task.Manifest.GetMetadata("PackageId"), metadata.Id);
             Assert.Equal(task.Manifest.GetMetadata("Version"), metadata.Version.ToString());
             Assert.Equal(task.Manifest.GetMetadata("Title"), metadata.Title);
-            Assert.Equal(task.Manifest.GetMetadata("Description"), metadata.Description);
             Assert.Equal(task.Manifest.GetMetadata("Summary"), metadata.Summary);
             Assert.Equal(task.Manifest.GetMetadata("Language"), metadata.Language);
             Assert.Equal(task.Manifest.GetMetadata("Copyright"), metadata.Copyright);
@@ -126,6 +133,15 @@ namespace NuGetizer
                     Assert.Equal(PackageType.Dependency.Name, item.Name);
                     Assert.Equal(PackageType.EmptyVersion, item.Version);
                 });
+
+            // C#-style triming is applied.
+            Assert.Equal(
+                """
+                This is the description. Indent will be trimmed.
+
+                New paragraph preserved.
+                """.ReplaceLineEndings(),
+                metadata.Description.ReplaceLineEndings());
         }
 
         [Fact]
