@@ -14,12 +14,8 @@
       <NuGetizer Include="..\NuGetizer\bin\$(Configuration)\**\*.*" />
     </ItemGroup>
 
-    <Copy SourceFiles="@(ScenarioFile)"
-				DestinationFiles="@(ScenarioFile -> '$(OutputPath)Scenarios\%(RecursiveDir)%(Filename)%(Extension)')"
-				SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(NuGetizer)"
-				DestinationFiles="@(NuGetizer -> '$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"
-				SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ScenarioFile)" DestinationFiles="@(ScenarioFile -&gt; '$(OutputPath)Scenarios\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(NuGetizer)" DestinationFiles="@(NuGetizer -&gt; '$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>
