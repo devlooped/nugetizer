@@ -6,8 +6,7 @@
     <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(NuGetize)' == 'true' or '$(GeneratePackageOnBuild)' != ''">false</ImportNuGetBuildTasksPackTargetsFromSdk>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets"
-          Condition="($(IsPackable) == 'true' OR $(PackFolder) != '') AND $(NuGetize) == 'true'" />
+  <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets" Condition="($(IsPackable) == 'true' OR $(PackFolder) != '') AND $(NuGetize) == 'true'" />
 
   <PropertyGroup>
     <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
