@@ -3,9 +3,8 @@
   <!-- GeneratePackageOnBuild=false is used by VS when right-click Pack is used :) -->
   <Target Name="Pack" Condition="'$(GeneratePackageOnBuild)' == 'false' AND '$(NuGetize)' != 'true'" Returns="@(PackOutput)">
     <!-- Typically called in the IDE when we run Pack context menu. -->
-    <MSBuild Projects="$(MSBuildProjectFullPath)" UnloadProjectsOnCompletion="true" UseResultsCache="false"
-             Properties="NuGetize=true" Targets="Pack">
-      <Output TaskParameter="TargetOutputs" ItemName="PackOutput"/>
+    <MSBuild Projects="$(MSBuildProjectFullPath)" UnloadProjectsOnCompletion="true" UseResultsCache="false" Properties="NuGetize=true" Targets="Pack">
+      <Output TaskParameter="TargetOutputs" ItemName="PackOutput" />
     </MSBuild>
   </Target>
 

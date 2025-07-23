@@ -36,10 +36,7 @@
     <PropertyGroup>
       <XmlNs>&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;</XmlNs>
     </PropertyGroup>
-    <XmlPoke Namespaces="$(XmlNs)"
-				 XmlInputPath="$(OutputPath)NuGetizer.Version.props"
-				 Query="/msb:Project/msb:PropertyGroup/msb:PackVersion"
-				 Value="$(Version)"/>
+    <XmlPoke Namespaces="$(XmlNs)" XmlInputPath="$(OutputPath)NuGetizer.Version.props" Query="/msb:Project/msb:PropertyGroup/msb:PackVersion" Value="$(Version)" />
   </Target>
 
   <PropertyGroup>
@@ -61,23 +58,11 @@
       <Output ItemName="_PackFolderKind" TaskParameter="TargetOutputs" />
     </MSBuild>
 
-    <WriteLinesToFile Lines='
-namespace $(RootNamespace)
-{
-	/// &lt;summary&gt;Known PackFolder metadata values for PackageFile and _PackageContent items&lt;/summary&gt;
-	public static partial class PackFolderKind
-	{
-' Overwrite='true' File='$(PackFolderKindFile)' />
+    <WriteLinesToFile Lines=" namespace $(RootNamespace) {  /// &lt;summary&gt;Known PackFolder metadata values for PackageFile and _PackageContent items&lt;/summary&gt;  public static partial class PackFolderKind  { " Overwrite="true" File="$(PackFolderKindFile)" />
 
-    <WriteLinesToFile Lines='
-		/// &lt;summary&gt;PackageFolder: $([MSBuild]::ValueOrDefault(%(PackageFolder), %(Identity)))&lt;/summary&gt;
-		public const string %(_PackFolderKind.Identity) = "$([MSBuild]::ValueOrDefault(%(PackageFolder), %(Identity)))"%3B
-' Overwrite='false' File='$(PackFolderKindFile)' />
+    <WriteLinesToFile Lines="   /// &lt;summary&gt;PackageFolder: $([MSBuild]::ValueOrDefault(%(PackageFolder), %(Identity)))&lt;/summary&gt;   public const string %(_PackFolderKind.Identity) = &quot;$([MSBuild]::ValueOrDefault(%(PackageFolder), %(Identity)))&quot;%3B " Overwrite="false" File="$(PackFolderKindFile)" />
 
-    <WriteLinesToFile Lines='
-	}
-}
-' Overwrite='false' File='$(PackFolderKindFile)' />
+    <WriteLinesToFile Lines="  } } " Overwrite="false" File="$(PackFolderKindFile)" />
 
     <ItemGroup>
       <FileWrites Include="$(PackFolderKindFile)" />
