@@ -276,7 +276,7 @@ Copyright (c) .NET Foundation. All rights reserved.
         <PackagePathHasFilename Condition="$([MSBuild]::ValueOrDefault('%(PackagePath)', '').EndsWith('%(PackageFile)'))"></PackagePathHasFilename>
       </TfmSpecificPackageFile>
       <TfmSpecificPackageFile Condition="'%(PackagePathHasFilename)' == 'false'">
-        <PackagePath>$([MSBuild]::ValueOrDefault('%(PackagePath)', '').TrimEnd('/'))/%(PackageFile)</PackagePath>
+        <PackagePath>$([MSBuild]::ValueOrDefault('%(PackagePath)', '').TrimEnd('/'))/%(RecursiveDir)%(PackageFile)</PackagePath>
       </TfmSpecificPackageFile>
       <None Include="@(TfmSpecificPackageFile)" />
 

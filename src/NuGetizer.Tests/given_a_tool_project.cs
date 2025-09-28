@@ -91,6 +91,27 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_pack_as_tool_with_localized_resources_then_packs_dotnet_tool_runtime_assets()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <AssemblyName>MyTool</AssemblyName>
+    <PackageId>MyTool</PackageId>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackFolder>tools</PackFolder>
+    <PackAsTool>true</PackAsTool>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Spectre.Console.Cli' Version='0.51.1' />
+  </ItemGroup>    
+</Project>",
+                "Pack", output);
+
+            result.AssertSuccess(output);
+        }
+
+        [Fact]
         public void when_pack_folder_tool_but_no_pack_as_tool_then_packs_dependencies_normally()
         {
             var result = Builder.BuildProject(@"
