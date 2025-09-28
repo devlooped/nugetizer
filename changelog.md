@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.3.1](https://github.com/devlooped/nugetizer/tree/v1.3.1) (2025-09-28)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.3.0...v1.3.1)
+
+:bug: Fixed bugs:
+
+- Fix issue with localized resources when packing tools [\#638](https://github.com/devlooped/nugetizer/pull/638) (@kzu)
+
 ## [v1.3.0](https://github.com/devlooped/nugetizer/tree/v1.3.0) (2025-07-21)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.2.4...v1.3.0)
