@@ -104,8 +104,8 @@
 	weak
 [file "src/dotnet-nugetize/System/Base62.cs"]
 	url = https://github.com/devlooped/catbag/blob/main/System/Base62.cs
-	sha = 966d2cd0a1b01e686654e4aed7c7b1306ea9b58a
-	etag = 4757c5b87c4114fb5132c4c8c6a09fb348ecbe18e639afc321d47ed2b6732460
+	sha = cf76df0d6a218c26ebe117339fe3445050b0532a
+	etag = aed711a45e051edfddfcb76d9f8021d30f9817c342cfe8d1cc38f2af37b47aa8
 	weak
 [file "src/NuGetizer.Tasks/System/Dynamic/DynamicReflection.cs"]
 	url = https://github.com/devlooped/catbag/blob/main/System/Dynamic/DynamicReflection.cs
