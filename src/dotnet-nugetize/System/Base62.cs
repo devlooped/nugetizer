@@ -41,13 +41,19 @@ namespace System
         /// Encodes a Guid into a base62 string.
         /// </summary>
         public static string ToBase62(this Guid guid) 
-            => Encode(BigInteger.Abs(new BigInteger(guid.ToByteArray())));
+            => Encode(new BigInteger(guid.ToByteArray()));
 
         /// <summary>
-        /// Encodes a numeric value into a base62 string.
+        /// Encodes the absolute numeric value into a base62 string.
         /// </summary>
         public static string Encode(BigInteger value)
         {
+            if (value == 0) 
+                return "0";
+
+            // normalize sign in case we got negative.
+            value = BigInteger.Abs(value);
+
             // TODO: I'm almost sure there's a more succint way 
             // of doing this with LINQ and Aggregate, but just 
             // can't figure it out...
