@@ -14,6 +14,7 @@
 
     <RestoreSources>https://pkg.kzu.app/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
     <RestoreSources Condition="Exists('$(PackageOutputPath)')">$(PackageOutputPath);$(RestoreSources)</RestoreSources>
+    <NuGetizerOutputPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\bin'))</NuGetizerOutputPath>
 
     <!-- Avoid deleting older packed versions to avoid rebuild errors (since package is in same solution, which is uncommon) -->
     <EnablePackCleanup>false</EnablePackCleanup>

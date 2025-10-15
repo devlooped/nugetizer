@@ -1,0 +1,7 @@
+<Project>
+
+  <ItemGroup Condition="Exists('$(NuGetizerOutputPath)')">
+    <PackageReference Update="NuGetizer" Version="42.42.42" />
+  </ItemGroup>
+
+</Project>
