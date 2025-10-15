@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="src/CodeAnalysis/CodeAnalysis.csproj" />
+  <Project Path="src/dotnet-nugetize/dotnet-nugetize.csproj" />
+  <Project Path="src/NuGetizer.Tasks/NuGetizer.Tasks.csproj" />
+  <Project Path="src/NuGetizer.Tests/NuGetizer.Tests.csproj">
+    <BuildDependency Project="src/NuGetizer.Tasks/NuGetizer.Tasks.csproj" />
+  </Project>
+</Solution>
