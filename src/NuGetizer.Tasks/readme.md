@@ -6,6 +6,10 @@ NuGetizer is a drop-in replacement for the .NET SDK built-in Pack (a.k.a. "SDK P
 
 Yes, this means you'll never need to write a `.nuspec` by hand ever again, no matter how complicated or advanced your packing scenarios are.
 
+<!-- include https://github.com/devlooped/.github/raw/main/osmf.md -->
+
+## Overview
+
 Comprehensive and intuitive heuristics built from experience building nuget packages for over a decade make getting started with NuGetizer seamless and easy, while still accomodating the most advanced scenarios through plain MSBuild extensibility. Out of the box, NuGetizer supports:
 
 * Drop-in replacement for the built-in .NET SDK Pack
@@ -103,8 +107,6 @@ And produce the following `nugetize`  tool output:
 
 [Learn more about NuGetizer](https://www.clarius.org/nugetizer/) and its capabilities from the project 
 documentation site.
-
-<!-- include https://github.com/devlooped/.github/raw/main/osmf.md -->
 
 <!-- include https://github.com/devlooped/sponsors/raw/main/footer.md -->
 <!-- exclude -->
