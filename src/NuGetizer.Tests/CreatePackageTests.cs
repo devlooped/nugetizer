@@ -301,6 +301,42 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_readme_has_relativeurl_then_expands_github_url()
+        {
+            var content = Path.GetTempFileName();
+            File.WriteAllText(content, "See [license](license.txt).");
+            task.Contents = new[]
+            {
+                new TaskItem(content, new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.None },
+                    { MetadataName.PackagePath, "readme.md" }
+                }),
+            };
+
+            task.Manifest.SetMetadata("Readme", "readme.md");
+            task.Manifest.SetMetadata("RepositoryType", "git");
+            task.Manifest.SetMetadata("RepositoryUrl", "https://github.com/devlooped/nugetizer");
+            task.Manifest.SetMetadata("RepositorySha", "9dc2cb5de");
+
+            createPackage = true;
+            ExecuteTask(out var manifest);
+
+            Assert.NotNull(manifest);
+
+            Assert.Equal("readme.md", manifest.Metadata.Readme);
+
+            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
+            Assert.NotNull(file);
+            Assert.True(File.Exists(file.Source));
+
+            var readme = File.ReadAllText(file.Source);
+
+            Assert.Contains("[license](https://github.com/devlooped/nugetizer/blob/9dc2cb5de/license.txt)", readme);
+        }
+
+        [Fact]
         public void when_creating_package_with_simple_dependency_then_contains_dependency_group()
         {
             task.Contents = new[]
