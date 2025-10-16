@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -16,6 +16,7 @@
     </Description>
     <PackageTags>dotnet tool nuget pack packaging</PackageTags>
     <DevelopmentDependency>true</DevelopmentDependency>
+    <PackageLicenseFile>OSMFEULA.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +38,7 @@
     <None Update="NuGetizer.MultiTargeting.targets" PackagePath="buildMultiTargeting\NuGetizer.targets" />
     <None Include="NuGetizer.PackageMetadata.targets;dotnet-nugetize.props;dotnet-nugetize.targets" PackagePath="buildMultiTargeting\%(Filename)%(Extension)" Pack="true" />
     <None Update="NuGetizer.Tasks.targets" Pack="false" />
+    <None Include="..\..\osmfeula.txt" Link="osmfeula.txt" PackagePath="OSMFEULA.txt" />
   </ItemGroup>
 
   <ItemGroup>
