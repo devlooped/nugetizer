@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.4.1](https://github.com/devlooped/nugetizer/tree/v1.4.1) (2025-10-16)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.0...v1.4.1)
+
 ## [v1.4.0](https://github.com/devlooped/nugetizer/tree/v1.4.0) (2025-10-16)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.3.1...v1.4.0)
