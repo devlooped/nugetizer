@@ -63,7 +63,7 @@ jobs:
           dotnet retest -- --no-build
 
       - name: 📦 pack
-        run: dotnet pack -m:1
+        run: dotnet pack -m:1 -c:${{ env.Configuration }}
 
       - name: 🐛 logs
         uses: actions/upload-artifact@v4
