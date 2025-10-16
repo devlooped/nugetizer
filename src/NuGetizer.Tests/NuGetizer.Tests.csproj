@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <DefaultItemExcludes>$(DefaultItemExcludes);Scenarios\**\*</DefaultItemExcludes>
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
@@ -19,6 +19,8 @@
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.10.46" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.9.1" />
     <PackageReference Include="MSBuild.StructuredLogger" Version="2.3.17" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="17.13.9" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.13.9" ExcludeAssets="runtime" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     <PackageReference Include="NuGet.Packaging" Version="6.12.1" />
@@ -29,7 +31,7 @@
   <ItemGroup>
     <None Include="Scenarios\**\*.*" Exclude="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Content\**\*.*" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="..\NuGetizer.Tasks\bin\$(Configuration)\*.*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <Content Include="..\NuGetizer.Tasks\bin\$(Configuration)\*.*" Exclude="..\NuGetizer.Tasks\bin\$(Configuration)\Microsoft.Build*.dll" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     <Compile Remove="ModuleInitializerAttribute.cs" Condition="'$(TargetFramework)' == 'net6.0'" />
   </ItemGroup>  
   <ItemGroup>
@@ -39,10 +41,6 @@
   <ItemGroup>
     <ProjectProperty Include="NuGetRestoreTargets" />
     <ProjectProperty Include="NuGetTargets" />
-    <ProjectProperty Include="MSBuildBinPath" />
-    <ProjectProperty Include="MSBuildToolsPath" />
-    <ProjectProperty Include="MSBuildToolsPath32" />
-    <ProjectProperty Include="MSBuildToolsPath64" />
     <ProjectProperty Include="PrivateRepositoryUrl" />
     <ProjectProperty Include="MSBuildProjectDirectory" />
     <ProjectProperty Include="OutputPath" />
@@ -56,15 +54,7 @@
 
   <Target Name="EnsureProjectInformation" BeforeTargets="InjectThisAssemblyProject;GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />
    
-  <Target Name="ClearMSBuild" AfterTargets="Build">
-    <ItemGroup>
-      <MSBuildAssembly Include="$(OutputPath)\Microsoft.Build*.dll" Exclude="$(OutputPath)\Microsoft.Build.Locator.dll" />
-    </ItemGroup>
-    <Delete Files="@(MSBuildAssembly)">
-      <Output TaskParameter="DeletedFiles" ItemName="DeletedFiles" />
-    </Delete>
-    <Message Text="Deleted: @(DeletedFiles)" Importance="high" />
-  </Target>
+
   
   <Import Project="NuGetizer.Tests.targets" />
 
