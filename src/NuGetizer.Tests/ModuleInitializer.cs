@@ -37,7 +37,8 @@ namespace NuGetizer.Tests
                  assemblyName.Name.StartsWith("Microsoft.CodeAnalysis") ||
                  assemblyName.Name.StartsWith("NuGet.") ||
                  assemblyName.Name.StartsWith("System.Collections.Immutable") ||
-                 assemblyName.Name.StartsWith("System.Reflection.Metadata")))
+                 assemblyName.Name.StartsWith("System.Reflection.Metadata") ||
+                 assemblyName.Name.StartsWith("System.Security.Cryptography")))
             {
                 var assemblyPath = Path.Combine(sdkPath, assemblyName.Name + ".dll");
                 if (File.Exists(assemblyPath))
