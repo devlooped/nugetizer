@@ -44,6 +44,7 @@ namespace NuGetizer.Tasks
         Manifest manifest;
         Dictionary<string, string> tokens;
         Regex tokensExpr;
+        Regex linkExpr;
 
         public override bool Execute()
         {
@@ -230,6 +231,26 @@ namespace NuGetizer.Tasks
             {
                 // replace readme with includes replaced.
                 var replaced = ReplaceTokens(IncludesResolver.Process(readmeFile.Source, message => Log.LogWarningCode("NG001", message)));
+
+                if (manifest.Metadata.Repository?.Type == "git" &&
+                    !string.IsNullOrEmpty(manifest.Metadata.Repository?.Commit) &&
+                    Uri.TryCreate(manifest.Metadata.Repository.Url, UriKind.Absolute, out var uri) &&
+                    uri.Host.EndsWith("github.com"))
+                {
+                    // expr to match markdown links. use named groups to capture the link text and url.
+                    linkExpr ??= new Regex(@"\[(?<text>[^\]]+)\]\((?<url>[^)]+)\)", RegexOptions.None);
+                    var repoUrl = manifest.Metadata.Repository.Url.TrimEnd('/');
+                    replaced = linkExpr.Replace(replaced, match =>
+                    {
+                        var url = match.Groups["url"].Value;
+                        if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                            return match.Value;
+
+                        var newUrl = $"{repoUrl}/blob/{manifest.Metadata.Repository.Commit}/{url.TrimStart('/')}";
+                        return $"[{match.Groups["text"].Value}]({newUrl})";
+                    });
+                }
+
                 if (!replaced.Equals(File.ReadAllText(readmeFile.Source), StringComparison.Ordinal))
                 {
                     var temp = Path.GetTempFileName();
