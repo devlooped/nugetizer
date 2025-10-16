@@ -18,7 +18,7 @@ namespace NuGetizer.Tests
         {
             // Get the .NET SDK path by running 'dotnet --info'
             sdkPath = GetDotNetSdkPath();
-            
+
             File.AppendAllText(logFile, $"Initializing MSBuild from SDK at {sdkPath}\r\n");
 
             // Set up assembly resolution to prefer SDK assemblies
@@ -32,8 +32,8 @@ namespace NuGetizer.Tests
         static Assembly OnAssemblyResolving(AssemblyLoadContext context, AssemblyName assemblyName)
         {
             // Resolve MSBuild, NuGet and related assemblies from the SDK directory
-            if (assemblyName.Name != null && 
-                (assemblyName.Name.StartsWith("Microsoft.Build") || 
+            if (assemblyName.Name != null &&
+                (assemblyName.Name.StartsWith("Microsoft.Build") ||
                  assemblyName.Name.StartsWith("Microsoft.CodeAnalysis") ||
                  assemblyName.Name.StartsWith("NuGet.") ||
                  assemblyName.Name.StartsWith("System.Collections.Immutable") ||
@@ -75,7 +75,7 @@ namespace NuGetizer.Tests
                 // Parse the output to get SDK paths, prefer SDK 8.x for net8.0 compatibility
                 // Output format: "8.0.100 [/usr/share/dotnet/sdk]"
                 var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                
+
                 // Look for an SDK version 8.x first (matches our target framework net8.0)
                 foreach (var line in lines)
                 {
