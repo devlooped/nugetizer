@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
@@ -33,7 +35,7 @@ namespace NuGetizer
                 {
                     { MetadataName.PackageId, "package" },
                     { MetadataName.Version, "1.0.0" },
-                    { "Title", "title" },
+                    { "Title", "title $id$" },
                     { "Description",
                         """
 
@@ -60,7 +62,13 @@ namespace NuGetizer
                     { "ReleaseNotes", "release notes" },
                     { "MinClientVersion", "3.4.0" },
                     { "PackageTypes", PackageType.Dependency.Name }
-                })
+                }),
+                ReplacementTokens =
+                [
+                    new TaskItem("Id", new Dictionary<string, string> { ["Value"] = "package" }),
+                    new TaskItem("Version", new Dictionary<string, string> { ["Value"] = "1.0.0" }),
+                    new TaskItem("Product", new Dictionary<string, string> { ["Value"] = "NuGetizer" }),
+                ]
             };
 
 #if RELEASE
@@ -70,9 +78,16 @@ namespace NuGetizer
 #endif
         }
 
-        Manifest ExecuteTask() => createPackage ?
-                task.Execute(new MemoryStream()) :
-                task.CreateManifest();
+        Manifest ExecuteTask() => ExecuteTask(out _);
+
+        Manifest ExecuteTask(out Manifest sourceManifest)
+        {
+            if (createPackage)
+                return task.Execute(new MemoryStream(), out sourceManifest);
+
+            sourceManifest = null;
+            return task.CreateManifest();
+        }
 
         [Fact]
         public void when_output_path_not_exists_then_creates_it()
@@ -118,7 +133,7 @@ namespace NuGetizer
 
             Assert.Equal(task.Manifest.GetMetadata("PackageId"), metadata.Id);
             Assert.Equal(task.Manifest.GetMetadata("Version"), metadata.Version.ToString());
-            Assert.Equal(task.Manifest.GetMetadata("Title"), metadata.Title);
+            Assert.Equal("title package", metadata.Title);
             Assert.Equal(task.Manifest.GetMetadata("Summary"), metadata.Summary);
             Assert.Equal(task.Manifest.GetMetadata("Language"), metadata.Language);
             Assert.Equal(task.Manifest.GetMetadata("Copyright"), metadata.Copyright);
@@ -215,6 +230,74 @@ namespace NuGetizer
             Assert.Equal(LicenseType.File, metadata.LicenseMetadata.Type);
             Assert.Null(metadata.LicenseMetadata.LicenseExpression);
             Assert.Null(metadata.LicenseMetadata.WarningsAndErrors);
+        }
+
+        [Fact]
+        public void when_license_file_has_tokens_then_replacements_applied()
+        {
+            var content = Path.GetTempFileName();
+            File.WriteAllText(content, "EULA for $product$ ($id$).");
+            task.Contents = new[]
+            {
+                new TaskItem(content, new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.None },
+                    { MetadataName.PackagePath, "license.txt" }
+                }),
+            };
+
+            task.Manifest.SetMetadata("LicenseUrl", "");
+            task.Manifest.SetMetadata("LicenseFile", "license.txt");
+
+            createPackage = true;
+            ExecuteTask(out var manifest);
+
+            Assert.NotNull(manifest);
+
+            Assert.Equal("license.txt", manifest.Metadata.LicenseMetadata.License);
+            Assert.Equal(LicenseType.File, manifest.Metadata.LicenseMetadata.Type);
+
+            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.LicenseMetadata.License);
+            Assert.NotNull(file);
+            Assert.True(File.Exists(file.Source));
+
+            var eula = File.ReadAllText(file.Source);
+
+            Assert.Equal("EULA for NuGetizer (package).", eula);
+        }
+
+        [Fact]
+        public void when_readme_has_include_and_tokens_then_replacements_applied()
+        {
+            var content = Path.GetTempFileName();
+            File.WriteAllText(content, "<!-- include https://github.com/devlooped/.github/blob/807335297e28cfe5a6dd00ecd72b2ca32c0f1ed8/osmf.md -->");
+            task.Contents = new[]
+            {
+                new TaskItem(content, new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.None },
+                    { MetadataName.PackagePath, "readme.md" }
+                }),
+            };
+
+            task.Manifest.SetMetadata("Readme", "readme.md");
+
+            createPackage = true;
+            ExecuteTask(out var manifest);
+
+            Assert.NotNull(manifest);
+
+            Assert.Equal("readme.md", manifest.Metadata.Readme);
+
+            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
+            Assert.NotNull(file);
+            Assert.True(File.Exists(file.Source));
+
+            var readme = File.ReadAllText(file.Source);
+
+            Assert.Contains("NuGetizer", readme);
         }
 
         [Fact]

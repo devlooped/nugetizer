@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using NuGet.Frameworks;
@@ -21,7 +22,9 @@ namespace NuGetizer.Tasks
         public ITaskItem Manifest { get; set; }
 
         [Required]
-        public ITaskItem[] Contents { get; set; } = Array.Empty<ITaskItem>();
+        public ITaskItem[] Contents { get; set; } = [];
+
+        public ITaskItem[] ReplacementTokens { get; set; } = [];
 
         [Required]
         public string TargetPath { get; set; }
@@ -39,6 +42,8 @@ namespace NuGetizer.Tasks
         public ITaskItem OutputPackage { get; set; }
 
         Manifest manifest;
+        Dictionary<string, string> tokens;
+        Regex tokensExpr;
 
         public override bool Execute()
         {
@@ -68,13 +73,17 @@ namespace NuGetizer.Tasks
             }
         }
 
+        public Manifest Execute(Stream output) => Execute(output, out _);
+
         // Implementation for testing to avoid I/O
-        public Manifest Execute(Stream output)
+        public Manifest Execute(Stream output, out Manifest manifest)
         {
             GeneratePackage(output);
+            manifest = this.manifest;
 
             output.Seek(0, SeekOrigin.Begin);
             using var reader = new PackageArchiveReader(output);
+
             return reader.GetManifest();
         }
 
@@ -92,13 +101,13 @@ namespace NuGetizer.Tasks
                 metadata.DevelopmentDependency = true;
 
             if (Manifest.TryGetMetadata("Title", out var title))
-                metadata.Title = title.TrimIndent();
+                metadata.Title = ReplaceTokens(title.TrimIndent());
 
             if (Manifest.TryGetMetadata("Description", out var description))
-                metadata.Description = description.TrimIndent();
+                metadata.Description = ReplaceTokens(description.TrimIndent());
 
             if (Manifest.TryGetMetadata("Summary", out var summary))
-                metadata.Summary = summary.TrimIndent();
+                metadata.Summary = ReplaceTokens(summary.TrimIndent());
 
             if (Manifest.TryGetMetadata("Readme", out var readme))
                 metadata.Readme = readme;
@@ -107,17 +116,17 @@ namespace NuGetizer.Tasks
                 metadata.Language = language;
 
             if (Manifest.TryGetMetadata("Copyright", out var copyright))
-                metadata.Copyright = copyright;
+                metadata.Copyright = ReplaceTokens(copyright);
 
             if (Manifest.TryGetBoolMetadata("RequireLicenseAcceptance", out var requireLicenseAcceptance) &&
                 requireLicenseAcceptance)
                 metadata.RequireLicenseAcceptance = requireLicenseAcceptance;
 
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("Authors")))
-                metadata.Authors = Manifest.GetMetadata("Authors").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                metadata.Authors = Manifest.GetMetadata("Authors").Split([','], StringSplitOptions.RemoveEmptyEntries);
 
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("Owners")))
-                metadata.Owners = Manifest.GetMetadata("Owners").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                metadata.Owners = Manifest.GetMetadata("Owners").Split([','], StringSplitOptions.RemoveEmptyEntries);
 
             if (!string.IsNullOrEmpty(Manifest.GetMetadata("LicenseUrl")))
                 metadata.SetLicenseUrl(Manifest.GetMetadata("LicenseUrl"));
@@ -171,7 +180,7 @@ namespace NuGetizer.Tasks
                 metadata.Icon = icon;
 
             if (Manifest.TryGetMetadata("ReleaseNotes", out var releaseNotes))
-                metadata.ReleaseNotes = releaseNotes.TrimIndent();
+                metadata.ReleaseNotes = ReplaceTokens(releaseNotes.TrimIndent());
 
             if (Manifest.TryGetMetadata("Tags", out var tags))
                 metadata.Tags = tags;
@@ -190,6 +199,21 @@ namespace NuGetizer.Tasks
             return manifest;
         }
 
+        string? ReplaceTokens(string? text)
+        {
+            tokens ??= ReplacementTokens
+                .Select(x => (x.ItemSpec.ToLowerInvariant(), x.GetMetadata("Value")))
+                .GroupBy(t => t.Item1)
+                .ToDictionary(g => g.Key, g => g.Last().Item2);
+
+            tokensExpr ??= new Regex(@"\$(" + string.Join("|", tokens.Keys.Select(Regex.Escape)) + @")\$", RegexOptions.IgnoreCase);
+
+            if (string.IsNullOrEmpty(text) || tokens.Count == 0)
+                return text;
+
+            return tokensExpr.Replace(text, match => tokens[match.Groups[1].Value.ToLower()]);
+        }
+
         void GeneratePackage(Stream output = null)
         {
             manifest ??= CreateManifest();
@@ -205,10 +229,27 @@ namespace NuGetizer.Tasks
                 File.Exists(readmeFile.Source))
             {
                 // replace readme with includes replaced.
-                var replaced = IncludesResolver.Process(readmeFile.Source, message => Log.LogWarningCode("NG001", message));
-                var temp = Path.GetTempFileName();
-                File.WriteAllText(temp, replaced);
-                readmeFile.Source = temp;
+                var replaced = ReplaceTokens(IncludesResolver.Process(readmeFile.Source, message => Log.LogWarningCode("NG001", message)));
+                if (!replaced.Equals(File.ReadAllText(readmeFile.Source), StringComparison.Ordinal))
+                {
+                    var temp = Path.GetTempFileName();
+                    File.WriteAllText(temp, replaced);
+                    readmeFile.Source = temp;
+                }
+            }
+
+            if (manifest.Metadata.LicenseMetadata?.Type == LicenseType.File &&
+                manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.LicenseMetadata.License) is ManifestFile licenseFile &&
+                File.Exists(licenseFile.Source))
+            {
+                // replace readme with includes replaced.
+                var replaced = ReplaceTokens(IncludesResolver.Process(licenseFile.Source, message => Log.LogWarningCode("NG001", message)));
+                if (!replaced.Equals(File.ReadAllText(licenseFile.Source), StringComparison.Ordinal))
+                {
+                    var temp = Path.GetTempFileName();
+                    File.WriteAllText(temp, replaced);
+                    licenseFile.Source = temp;
+                }
             }
 
             builder.Files.AddRange(manifest.Files.Select(file =>

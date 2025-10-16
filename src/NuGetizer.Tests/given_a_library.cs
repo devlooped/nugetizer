@@ -51,5 +51,23 @@ namespace NuGetizer
 
             Assert.Single(compile);
         }
+
+        [Fact]
+        public void when_packing_performs_token_replacement()
+        {
+            var result = Builder.BuildScenario(nameof(given_a_library),
+                new { PackCompile = "true", PackOnlyApi = "true" },
+                target: "Build,GetPackageContents,Pack");
+
+            Assert.True(result.BuildResult.HasResultsForTarget("GetPackageContents"));
+
+            var items = result.BuildResult.ResultsByTarget["GetPackageContents"];
+            var compile = items.Items.Where(item => item.Matches(new
+            {
+                BuildAction = "Compile",
+            })).ToArray();
+
+            Assert.Single(compile);
+        }
     }
 }
