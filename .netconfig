@@ -86,7 +86,6 @@
     skip
 [file ".github/workflows/includes.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/includes.yml
-	skip
 [file ".github/workflows/combine-prs.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/combine-prs.yml
 	sha = c1610886eba42cb250e3894aed40c0a258cd383d
