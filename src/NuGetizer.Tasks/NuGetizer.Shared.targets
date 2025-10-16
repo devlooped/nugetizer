@@ -320,12 +320,23 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ItemGroup Condition="'@(NuspecFile)' == ''">
       <NuspecFile Include="$(NuspecFile)" />
     </ItemGroup>
+    <ItemGroup>
+      <PackageReplacementToken Include="Id" Value="$(PackageId)" />
+      <PackageReplacementToken Include="Version" Value="$(PackageVersion)" />
+      <PackageReplacementToken Include="Authors" Value="$(Authors)" Condition="'$(Authors)' != ''" />
+      <PackageReplacementToken Include="Title" Value="$(Title)" Condition="'$(Title)' != ''" />
+      <PackageReplacementToken Include="Description" Value="$(Description)" Condition="'$(Description)' != ''" />
+      <PackageReplacementToken Include="Copyright" Value="$(Copyright)" Condition="'$(Copyright)' != ''" />
+      <PackageReplacementToken Include="Configuration" Value="$(Configuration)" />
+      <PackageReplacementToken Include="Product" Value="$(Product)" Condition="'$(Product)' != ''" />
+    </ItemGroup>
     <PropertyGroup>
       <_NuspecFile>%(NuspecFile.FullPath)</_NuspecFile>
     </PropertyGroup>
     <CreatePackage Manifest="@(PackageTargetPath)" NuspecFile="$(_NuspecFile)" Contents="@(_PackageContent)"
                    EmitPackage="$(EmitPackage)" EmitNuspec="$(EmitNuspec)"
-                   TargetPath="@(PackageTargetPath->'%(FullPath)')">
+                   TargetPath="@(PackageTargetPath->'%(FullPath)')"
+                   ReplacementTokens="@(PackageReplacementToken)">
       <Output TaskParameter="OutputPackage" ItemName="_PackageTargetPath" />
       <Output TaskParameter="OutputPackage" ItemName="FileWrites" Condition="'$(EmitPackage)' == 'true'" />
       <Output TaskParameter="NuspecFile" ItemName="FileWrites" Condition="'$(EmitNuspec)' == 'true'" />

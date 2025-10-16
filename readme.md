@@ -107,6 +107,22 @@ When the `.nupkg` is created, these includes are resolved automatically so you k
 minimum. Nested includes are also supported (i.e. `footer.md` might in turn include a `sponsors.md` file or 
 a fragment of it).
 
+## Replacement Tokens
+
+NuGetizer supports all the [replacement tokens](https://learn.microsoft.com/en-us/nuget/reference/nuspec#replacement-tokens) 
+provided by NuGet, such as `$id$`, `$version$`, `$author$` and so on. Replacements are applied to license 
+file, readme file (post-inclusions, if any) and string-based properties such as description, title and summary. 
+
+Morever, this replacement mechanism is extensible via MSBuild items `@(PackageReplacementToken)`, for example:
+
+```xml
+<ItemGroup>
+  <PackageReplacementToken Include="Company" Value="$(Company)" />
+</ItemGroup>
+```
+
+The newly added token can be used (case-insensitively) in your license file or readme file as `$company$`.
+
 ## dotnet-nugetize
 
 Carefully tweaking your packages until they look exactly the way you want them should not be a tedious and slow process. Even requiring your project to be built between changes can be costly and reduce the speed at which you can iterate on the packaging aspects of the project. Also, generating the final `.nupkg`, opening it in a tool and inspecting its content, is also not ideal for rapid iteration.
