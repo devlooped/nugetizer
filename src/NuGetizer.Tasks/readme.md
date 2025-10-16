@@ -100,7 +100,7 @@ And produce the following `nugetize`  tool output:
 [Learn more about NuGetizer](https://www.clarius.org/nugetizer/) and its capabilities from the project 
 documentation site.
 
-<!-- include https://github.com/devlooped/.github/blob/main/osmf.md -->
+<!-- include https://github.com/devlooped/.github/raw/main/osmf.md -->
 
 <!-- include https://github.com/devlooped/sponsors/raw/main/footer.md -->
 <!-- exclude -->
