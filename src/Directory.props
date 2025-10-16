@@ -2,7 +2,7 @@
   <!-- Extend Directory.Build.props -->
 
   <PropertyGroup>
-    <RestoreSources>https://pkg.kzu.app/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
+    <RestoreSources>https://api.nuget.org/v3/index.json</RestoreSources>
 
     <DefaultItemExcludes>$(DefaultItemExcludes);nugetize.*</DefaultItemExcludes>
 
