@@ -24,8 +24,8 @@
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.11.6" PrivateAssets="all" />
     <PackageReference Include="NuGet.Packaging" Version="6.12.1" PrivateAssets="all" />
     <PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Project" Version="2.0.14" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Strings" Version="2.0.14" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="2.1.2" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Strings" Version="2.1.2" PrivateAssets="all" />
     <PackageReference Include="Minimatch" Version="2.0.0" PrivateAssets="all" />
   </ItemGroup>
 
