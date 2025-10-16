@@ -72,29 +72,11 @@ namespace NuGetizer.Tests
                 var output = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
 
-                // Parse the output to get SDK paths, prefer SDK 8.x for net8.0 compatibility
-                // Output format: "8.0.100 [/usr/share/dotnet/sdk]"
+                // Parse the output to get SDK paths, use the latest SDK
+                // Output format: "9.0.100 [/usr/share/dotnet/sdk]"
                 var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-                // Look for an SDK version 8.x first (matches our target framework net8.0)
-                foreach (var line in lines)
-                {
-                    if (line.StartsWith("8."))
-                    {
-                        var startIndex = line.IndexOf('[');
-                        var endIndex = line.IndexOf(']');
-                        if (startIndex >= 0 && endIndex > startIndex)
-                        {
-                            var sdkBase = line.Substring(startIndex + 1, endIndex - startIndex - 1);
-                            var version = line.Substring(0, startIndex).Trim();
-                            var sdkPath = Path.Combine(sdkBase, version);
-                            File.AppendAllText(logFile, $"Found SDK 8.x at {sdkPath}\r\n");
-                            return sdkPath;
-                        }
-                    }
-                }
-
-                // Fallback to latest SDK if no 8.x found
+                // Use the latest SDK (last line)
                 if (lines.Length > 0)
                 {
                     var lastLine = lines.Last();
