@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.4.0](https://github.com/devlooped/nugetizer/tree/v1.4.0) (2025-10-16)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.3.1...v1.4.0)
+
+:sparkles: Implemented enhancements:
+
+- Add support for repository url relative URLs in readme [\#641](https://github.com/devlooped/nugetizer/issues/641)
+- Add support for repository url relative URLs in readme [\#649](https://github.com/devlooped/nugetizer/pull/649) (@kzu)
+- Add support for replacement tokens in key files and props [\#648](https://github.com/devlooped/nugetizer/pull/648) (@kzu)
+
+:hammer: Other:
+
+- Add support for readme/eula token replacements [\#642](https://github.com/devlooped/nugetizer/issues/642)
+
 ## [v1.3.1](https://github.com/devlooped/nugetizer/tree/v1.3.1) (2025-09-28)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.3.0...v1.3.1)
