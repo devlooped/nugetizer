@@ -71,6 +71,8 @@ in your package. This gives you ultimate control without having to understand an
 
 All [inference rules are laid out in a single .targets](src/NuGetizer.Tasks/NuGetizer.Inference.targets) file that's easy to inspect them to learn more, and the file is not imported at all when `EnablePackInference=false`.
 
+<!-- include https://github.com/devlooped/.github/blob/main/osmf.md -->
+
 ## Package Readme
 
 Since the introduction of [package readme on nuget.org](https://docs.microsoft.com/en-us/nuget/nuget-org/package-readme-on-nuget-org), 

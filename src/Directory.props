@@ -17,6 +17,7 @@
     <NoWarn>NU1701</NoWarn>
 
     <PackageProjectUrl>https://clarius.org/nugetizer</PackageProjectUrl>
+    <Product>NuGetizer</Product>
   </PropertyGroup>
 
   <Target Name="Pack" />
