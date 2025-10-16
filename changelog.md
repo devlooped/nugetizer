@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.4.2](https://github.com/devlooped/nugetizer/tree/v1.4.2) (2025-10-16)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.1...v1.4.2)
+
+:bug: Fixed bugs:
+
+- Fix markdown link replacement: use raw URLs, preserve tooltips, and handle absolute URLs correctly [\#655](https://github.com/devlooped/nugetizer/pull/655) (@Copilot)
+
 ## [v1.4.1](https://github.com/devlooped/nugetizer/tree/v1.4.1) (2025-10-16)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.0...v1.4.1)
