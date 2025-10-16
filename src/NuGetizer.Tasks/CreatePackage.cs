@@ -237,16 +237,25 @@ namespace NuGetizer.Tasks
                     Uri.TryCreate(manifest.Metadata.Repository.Url, UriKind.Absolute, out var uri) &&
                     uri.Host.EndsWith("github.com"))
                 {
-                    // expr to match markdown links. use named groups to capture the link text and url.
-                    linkExpr ??= new Regex(@"\[(?<text>[^\]]+)\]\((?<url>[^)]+)\)", RegexOptions.None);
+                    // expr to match markdown links with optional title. use named groups to capture the link text, url and optional title.
+                    linkExpr ??= new Regex(@"\[(?<text>[^\]]+)\]\((?<url>[^\s)]+)(?:\s+""(?<title>[^""]*)"")?\)", RegexOptions.None);
                     var repoUrl = manifest.Metadata.Repository.Url.TrimEnd('/');
                     replaced = linkExpr.Replace(replaced, match =>
                     {
                         var url = match.Groups["url"].Value;
+                        var title = match.Groups["title"].Value;
+                        
+                        // Check if the URL is already absolute
                         if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                             return match.Value;
 
-                        var newUrl = $"{repoUrl}/blob/{manifest.Metadata.Repository.Commit}/{url.TrimStart('/')}";
+                        // Use 'raw' instead of 'blob' for proper image display on nuget.org
+                        var newUrl = $"{repoUrl}/raw/{manifest.Metadata.Repository.Commit}/{url.TrimStart('/')}";
+                        
+                        // Preserve the title if present
+                        if (!string.IsNullOrEmpty(title))
+                            return $"[{match.Groups["text"].Value}]({newUrl} \"{title}\")";
+                        
                         return $"[{match.Groups["text"].Value}]({newUrl})";
                     });
                 }
