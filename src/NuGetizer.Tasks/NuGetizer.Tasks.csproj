@@ -16,6 +16,7 @@
     </Description>
     <PackageTags>dotnet tool nuget pack packaging</PackageTags>
     <DevelopmentDependency>true</DevelopmentDependency>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>OSMFEULA.txt</PackageLicenseFile>
   </PropertyGroup>
 
