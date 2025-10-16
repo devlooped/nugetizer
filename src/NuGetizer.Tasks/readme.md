@@ -1,3 +1,7 @@
+[![EULA](https://img.shields.io/badge/EULA-OSMF-blue?labelColor=black&color=C9FF30)](osmfeula.txt)
+[![OSS](https://img.shields.io/github/license/devlooped/oss.svg?color=blue)](license.txt) 
+[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/devlooped/nugetizer)
+
 NuGetizer is a drop-in replacement for the .NET SDK built-in Pack (a.k.a. "SDK Pack") which instantly supercharges your ability to customize and extend the packing process in a consistent and easy to understand process designed and centered around best practices in MSBuild design and extensibility.
 
 Yes, this means you'll never need to write a `.nuspec` by hand ever again, no matter how complicated or advanced your packing scenarios are.
