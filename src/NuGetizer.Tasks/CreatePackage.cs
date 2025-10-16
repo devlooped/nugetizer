@@ -238,7 +238,8 @@ namespace NuGetizer.Tasks
                     uri.Host.EndsWith("github.com"))
                 {
                     // expr to match markdown links with optional title. use named groups to capture the link text, url and optional title.
-                    linkExpr ??= new Regex(@"\[(?<text>[^\]]+)\]\((?<url>[^\s)]+)(?:\s+""(?<title>[^""]*)"")?\)", RegexOptions.None);
+                    // Handle image links inside clickable badges: [![alt](img)](url) by explicitly matching the image pattern
+                    linkExpr ??= new Regex(@"\[(?<text>!\[[^\]]*\]\([^\)]*\)|[^\]]+)\]\((?<url>[^\s)]+)(?:\s+""(?<title>[^""]*)"")?\)", RegexOptions.None);
                     var repoUrl = manifest.Metadata.Repository.Url.TrimEnd('/');
 
                     // Extract owner and repo from URL for raw.githubusercontent.com format

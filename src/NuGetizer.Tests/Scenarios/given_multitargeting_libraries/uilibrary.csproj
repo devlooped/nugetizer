@@ -5,6 +5,7 @@
     <TargetFrameworks>net8.0;net8.0-windows;net8.0-maccatalyst</TargetFrameworks>
     <PackOnBuild>true</PackOnBuild>
     <IsPackable>true</IsPackable>
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net8.0-maccatalyst'">14.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
