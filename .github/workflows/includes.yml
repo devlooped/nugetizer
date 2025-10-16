@@ -31,6 +31,9 @@ jobs:
 
       - name: +Mᐁ includes
         uses: devlooped/actions-includes@v1
+        with:
+          recurse: false
+          validate: false
 
       - name: 📝 OSMF EULA
         shell: pwsh
