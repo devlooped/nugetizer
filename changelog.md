@@ -1,5 +1,18 @@
 # Changelog
 
+## [v1.4.3](https://github.com/devlooped/nugetizer/tree/v1.4.3) (2025-10-16)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.2...v1.4.3)
+
+:bug: Fixed bugs:
+
+- Relative links used after an image link aren't properly replaced with full URLs [\#656](https://github.com/devlooped/nugetizer/issues/656)
+- Markdown link replacement in readme causes broken image links [\#654](https://github.com/devlooped/nugetizer/issues/654)
+
+:twisted_rightwards_arrows: Merged:
+
+- Fix regex pattern to handle clickable image badges with relative URLs [\#657](https://github.com/devlooped/nugetizer/pull/657) (@Copilot)
+
 ## [v1.4.2](https://github.com/devlooped/nugetizer/tree/v1.4.2) (2025-10-16)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.1...v1.4.2)
