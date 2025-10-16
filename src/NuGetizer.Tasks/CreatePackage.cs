@@ -240,6 +240,11 @@ namespace NuGetizer.Tasks
                     // expr to match markdown links with optional title. use named groups to capture the link text, url and optional title.
                     linkExpr ??= new Regex(@"\[(?<text>[^\]]+)\]\((?<url>[^\s)]+)(?:\s+""(?<title>[^""]*)"")?\)", RegexOptions.None);
                     var repoUrl = manifest.Metadata.Repository.Url.TrimEnd('/');
+                    
+                    // Extract owner and repo from URL for raw.githubusercontent.com format
+                    var repoPath = uri.AbsolutePath.TrimStart('/');
+                    var rawBaseUrl = $"https://raw.githubusercontent.com/{repoPath}";
+                    
                     replaced = linkExpr.Replace(replaced, match =>
                     {
                         var url = match.Groups["url"].Value;
@@ -249,8 +254,8 @@ namespace NuGetizer.Tasks
                         if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                             return match.Value;
 
-                        // Use 'raw' instead of 'blob' for proper image display on nuget.org
-                        var newUrl = $"{repoUrl}/raw/{manifest.Metadata.Repository.Commit}/{url.TrimStart('/')}";
+                        // Use raw.githubusercontent.com format for proper image display on nuget.org
+                        var newUrl = $"{rawBaseUrl}/{manifest.Metadata.Repository.Commit}/{url.TrimStart('/')}";
                         
                         // Preserve the title if present
                         if (!string.IsNullOrEmpty(title))

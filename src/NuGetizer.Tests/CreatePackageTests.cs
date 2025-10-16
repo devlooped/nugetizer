@@ -333,7 +333,7 @@ namespace NuGetizer
 
             var readme = File.ReadAllText(file.Source);
 
-            Assert.Contains("[license](https://github.com/devlooped/nugetizer/raw/9dc2cb5de/license.txt)", readme);
+            Assert.Contains("[license](https://raw.githubusercontent.com/devlooped/nugetizer/9dc2cb5de/license.txt)", readme);
         }
 
         [Fact]
@@ -367,7 +367,7 @@ namespace NuGetizer
 
             var readme = File.ReadAllText(file.Source);
 
-            Assert.Contains("[avatar](https://github.com/devlooped/nugetizer/raw/abc123def/avatars/user.png \"User Avatar\")", readme);
+            Assert.Contains("[avatar](https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/avatars/user.png \"User Avatar\")", readme);
         }
 
         [Fact]
@@ -402,7 +402,7 @@ namespace NuGetizer
             var readme = File.ReadAllText(file.Source);
 
             // Should NOT prepend repository URL to absolute URLs
-            Assert.DoesNotContain("https://github.com/devlooped/nugetizer/raw/abc123def/https://raw.githubusercontent.com", readme);
+            Assert.DoesNotContain("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/https://raw.githubusercontent.com", readme);
             // Should preserve the original absolute URL
             Assert.Contains("https://raw.githubusercontent.com/devlooped/sponsors/main/.github/avatars/user.png", readme);
         }
@@ -438,8 +438,8 @@ namespace NuGetizer
 
             var readme = File.ReadAllText(file.Source);
 
-            // Should use 'raw' instead of 'blob' for proper image display
-            Assert.Contains("https://github.com/devlooped/nugetizer/raw/abc123def/img/logo.png", readme);
+            // Should use raw.githubusercontent.com format for proper image display
+            Assert.Contains("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/img/logo.png", readme);
             Assert.DoesNotContain("/blob/", readme);
         }
 
