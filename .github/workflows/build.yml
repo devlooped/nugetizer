@@ -46,6 +46,7 @@ jobs:
         working-directory: src/NuGetizer.Tests
         run: |
           dotnet restore Scenarios/given_a_packaging_project/a.nuproj
+          dotnet workload restore Scenarios/given_multitargeting_libraries/uilibrary.csproj
           # THIS IS IMPORTANT: WE NEED TO BUILD WITH DESKTOP MSBUILD
           msbuild -r
 
