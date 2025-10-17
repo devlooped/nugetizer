@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.4.5](https://github.com/devlooped/nugetizer/tree/v1.4.5) (2025-10-17)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.4...v1.4.5)
+
+:sparkles: Implemented enhancements:
+
+- Expand image url as well as link url, use robust Markdig [\#662](https://github.com/devlooped/nugetizer/pull/662) (@kzu)
+
 ## [v1.4.4](https://github.com/devlooped/nugetizer/tree/v1.4.4) (2025-10-16)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.3...v1.4.4)
