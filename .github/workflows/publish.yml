@@ -31,7 +31,7 @@ jobs:
           dotnet restore Scenarios/given_a_packaging_project/a.nuproj
           dotnet workload restore Scenarios/given_multitargeting_libraries/uilibrary.csproj
 
-      - name: 🙏 buildwhen_getting_content_then_multitargets 
+      - name: 🙏 build 
         shell: pwsh
         working-directory: src/NuGetizer.Tests
         run: |
