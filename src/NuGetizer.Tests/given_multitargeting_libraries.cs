@@ -55,14 +55,14 @@ namespace NuGetizer
 
             Assert.Contains(result.Items, item => item.Matches(new
             {
-                PackagePath = "lib/net8.0/uilibrary.dll"
+                PackagePath = "lib/net9.0/uilibrary.dll"
             }));
 
             Assert.Contains(result.Items, item => item.TryGetMetadata("PackagePath", out var path) &&
-                path.StartsWith("lib/net8.0-windows") && path.EndsWith("uilibrary.dll"));
+                path.StartsWith("lib/net9.0-windows") && path.EndsWith("uilibrary.dll"));
 
             Assert.Contains(result.Items, item => item.TryGetMetadata("PackagePath", out var path) &&
-                path.StartsWith("lib/net8.0-maccatalyst") && path.EndsWith("uilibrary.dll"));
+                path.StartsWith("lib/net9.0-maccatalyst") && path.EndsWith("uilibrary.dll"));
         }
     }
 }

@@ -4,7 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
+using Markdig;
+using Markdig.Renderers.Normalize;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using NuGet.Frameworks;
@@ -44,7 +49,6 @@ namespace NuGetizer.Tasks
         Manifest manifest;
         Dictionary<string, string> tokens;
         Regex tokensExpr;
-        Regex linkExpr;
 
         public override bool Execute()
         {
@@ -237,33 +241,33 @@ namespace NuGetizer.Tasks
                     Uri.TryCreate(manifest.Metadata.Repository.Url, UriKind.Absolute, out var uri) &&
                     uri.Host.EndsWith("github.com"))
                 {
-                    // expr to match markdown links with optional title. use named groups to capture the link text, url and optional title.
-                    // Handle image links inside clickable badges: [![alt](img)](url) by explicitly matching the image pattern
-                    linkExpr ??= new Regex(@"\[(?<text>!\[[^\]]*\]\([^\)]*\)|[^\]]+)\]\((?<url>[^\s)]+)(?:\s+""(?<title>[^""]*)"")?\)", RegexOptions.None);
-                    var repoUrl = manifest.Metadata.Repository.Url.TrimEnd('/');
-
                     // Extract owner and repo from URL for raw.githubusercontent.com format
                     var repoPath = uri.AbsolutePath.TrimStart('/');
                     var rawBaseUrl = $"https://raw.githubusercontent.com/{repoPath}";
 
-                    replaced = linkExpr.Replace(replaced, match =>
+                    var document = Markdown.Parse(replaced);
+                    var links = document.Descendants<LinkInline>().ToList();
+
+                    foreach (var link in links)
                     {
-                        var url = match.Groups["url"].Value;
-                        var title = match.Groups["title"].Value;
+                        if (string.IsNullOrEmpty(link.Url) || Uri.IsWellFormedUriString(link.Url, UriKind.Absolute))
+                            continue;
 
-                        // Check if the URL is already absolute
-                        if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                            return match.Value;
+                        link.Url = $"{rawBaseUrl}/{manifest.Metadata.Repository.Commit}/{link.Url.TrimStart('/')}";
 
-                        // Use raw.githubusercontent.com format for proper image display on nuget.org
-                        var newUrl = $"{rawBaseUrl}/{manifest.Metadata.Repository.Commit}/{url.TrimStart('/')}";
+                        if (link.FirstChild is LinkInline img &&
+                            !string.IsNullOrEmpty(img.Url) &&
+                            !Uri.IsWellFormedUriString(img.Url, UriKind.Absolute))
+                        {
+                            img.Url = $"{rawBaseUrl}/{manifest.Metadata.Repository.Commit}/{img.Url.TrimStart('/')}";
+                        }
+                    }
 
-                        // Preserve the title if present
-                        if (!string.IsNullOrEmpty(title))
-                            return $"[{match.Groups["text"].Value}]({newUrl} \"{title}\")";
-
-                        return $"[{match.Groups["text"].Value}]({newUrl})";
-                    });
+                    // render the document to console
+                    using var writer = new StringWriter();
+                    var renderer = new NormalizeRenderer(writer);
+                    renderer.Render(document);
+                    replaced = writer.ToString();
                 }
 
                 if (!replaced.Equals(File.ReadAllText(readmeFile.Source), StringComparison.Ordinal))
