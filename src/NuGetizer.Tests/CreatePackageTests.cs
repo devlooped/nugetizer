@@ -444,6 +444,44 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_readme_has_relative_image_url_and_link_then_expands_both()
+        {
+            var content = Path.GetTempFileName();
+            File.WriteAllText(content, "[![Image](img/logo.png)](osmf.txt)");
+            task.Contents = new[]
+            {
+                new TaskItem(content, new Metadata
+                {
+                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
+                    { MetadataName.PackFolder, PackFolderKind.None },
+                    { MetadataName.PackagePath, "readme.md" }
+                }),
+            };
+
+            task.Manifest.SetMetadata("Readme", "readme.md");
+            task.Manifest.SetMetadata("RepositoryType", "git");
+            task.Manifest.SetMetadata("RepositoryUrl", "https://github.com/devlooped/nugetizer");
+            task.Manifest.SetMetadata("RepositorySha", "abc123def");
+
+            createPackage = true;
+            ExecuteTask(out var manifest);
+
+            Assert.NotNull(manifest);
+
+            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
+            Assert.NotNull(file);
+            Assert.True(File.Exists(file.Source));
+
+            var readme = File.ReadAllText(file.Source);
+
+            // Should use raw.githubusercontent.com format for proper image display
+            Assert.Contains("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/img/logo.png", readme);
+            Assert.Contains("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/osmf.txt", readme);
+            Assert.DoesNotContain("/blob/", readme);
+        }
+
+
+        [Fact]
         public void when_readme_has_clickable_image_badge_with_relative_url_then_replaces_url()
         {
             var content = Path.GetTempFileName();
