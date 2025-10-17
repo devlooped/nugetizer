@@ -1,12 +1,16 @@
-<Project>
+ <Project>
   <!--
   ILRepack.targets provides MSBuild integration for ILRepack, allowing merging of assemblies into a single output.
 
   Extension Points:
   - Property 'ILRepack': Set to 'true' to enable ILRepack (default: true in Release, false otherwise).
-  - Item 'ILRepackInclude': list of assembly filenames to explicitly include in merging.
-  - Item 'ILRepackExclude': list of assembly filenames to exclude from merging.
-  - Item 'ILRepackPreserve': Assemblies that should not be deleted after merging, even if merged.
+  - Items:
+      * ILRepackInclude: assemblies to include 
+      * ILRepackExclude: assemblies to exclude
+      * ILRepackPreserve: assemblies to preserve after merging (otherwise, they are deleted from output)
+  
+  Items can have metadata 'StartsWith' set to 'true' to indicate prefix matching rather than 
+  exact matching.
   -->
 
   <PropertyGroup>
@@ -36,6 +40,8 @@
       <ILRepackIncludeExact Include="@(ILRepackInclude)" Exclude="@(ILRepackIncludeWildcard)" />
       <ILRepackExcludeWildcard Include="@(ILRepackExclude -> WithMetadataValue('StartsWith', 'true'))" />
       <ILRepackExcludeExact Include="@(ILRepackExclude)" Exclude="@(ILRepackExcludeWildcard)" />
+      <ILRepackPreserveWildcard Include="@(ILRepackPreserve -> WithMetadataValue('StartsWith', 'true'))"/>
+      <ILRepackPreserveExact Include="@(ILRepackPreserve)" Exclude="@(ILRepackPreserveWildcard)" />
     </ItemGroup>
   </Target>
 
@@ -91,7 +97,7 @@
         Condition="Exists(@(IntermediateAssembly -&gt; '%(FullPath)')) And '$(ILRepack)' == 'true'">
 
     <ItemGroup>
-      <MergedAssemblies Include="@(ILRepackCandidate)" />
+      <MergedAssemblies Include="@(ILRepackCandidate -&gt; Distinct())" />
     </ItemGroup>
     <ItemGroup>
       <ReferenceCopyLocalDirs Include="@(ReferenceCopyLocalPaths -&gt; '%(RootDir)%(Directory)')" />
@@ -120,10 +126,32 @@
     <Touch AlwaysCreate="true" Files="$(IntermediateOutputPath)ilrepack.txt" Condition="'$(ExitCode)' == '0'" />
     <Error Text="$(ILRepackOutput)" Condition="'$(ExitCode)' != '0' And '$(ContinueOnError)' != 'true'" />
     <ItemGroup>
-      <MergedAssembliesToRemove Include="@(MergedAssemblies)" />
-      <MergedAssembliesToRemove Remove="@(ILRepackPreserve)" />
+      <ILRepackCleanup Include="@(MergedAssemblies)" />
     </ItemGroup>
-    <Delete Files="@(MergedAssembliesToRemove -&gt; '$(MSBuildProjectDirectory)\$(OutputPath)%(Filename)%(Extension)')" Condition="Exists('$(MSBuildProjectDirectory)\$(OutputPath)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="ILRepackPreserveStartsWith" DependsOnTargets="ILRepack"
+          Inputs="@(ILRepackPreserveWildcard)" Outputs="|%(ILRepackPreserveWildcard.Identity)|">
+    <PropertyGroup>
+      <LocalFilter>%(ILRepackPreserveWildcard.Identity)</LocalFilter>
+    </PropertyGroup>
+    <ItemGroup>
+      <ILRepackCleanup Remove="@(ILRepackCleanup)" Condition="$([MSBuild]::ValueOrDefault('%(FileName)', '').StartsWith('$(LocalFilter)'))" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ILRepackPreserve" DependsOnTargets="ILRepack">
+    <PropertyGroup>
+      <ILRepackPreserve>;@(ILRepackPreserveExact, ';');</ILRepackPreserve>
+    </PropertyGroup>
+    <ItemGroup>
+      <ILRepackCleanup Remove="@(ILRepackCleanup)" Condition="$(ILRepackPreserve.Contains(';%(FileName);'))" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ILRepackCleanup" AfterTargets="ILRepack" DependsOnTargets="ILRepackPreserveStartsWith;ILRepackPreserve" Returns="@(ILRepackCleanup)">
+    <Delete Files="@(ILRepackCleanup -&gt; '$(MSBuildProjectDirectory)\$(OutputPath)%(Filename)%(Extension)')" 
+            Condition="Exists('$(MSBuildProjectDirectory)\$(OutputPath)%(Filename)%(Extension)')" />
   </Target>
 
 </Project>
