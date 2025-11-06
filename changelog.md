@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.4.6](https://github.com/devlooped/nugetizer/tree/v1.4.6) (2025-11-06)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.5...v1.4.6)
+
+:bug: Fixed bugs:
+
+- Fix rendering in nugetize of multiple packages [\#672](https://github.com/devlooped/nugetizer/pull/672) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- Add support for SLNX format when running nugetize [\#671](https://github.com/devlooped/nugetizer/pull/671) (@kzu)
+
 ## [v1.4.5](https://github.com/devlooped/nugetizer/tree/v1.4.5) (2025-10-17)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.4...v1.4.5)
