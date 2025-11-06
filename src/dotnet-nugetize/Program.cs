@@ -111,10 +111,15 @@ class Program
         var project = extra.Where(arg => arg.IndexOfAny(invalidChars) == -1).FirstOrDefault(File.Exists) ?? "";
         var file = items ?? Path.GetTempFileName();
 
+        if (debug)
+            Debugger.Launch();
+
         if (string.IsNullOrEmpty(project))
         {
             var projects = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.*proj").ToList();
-            var solutions = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.sln").ToList();
+            var solutions = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.sln")
+                .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.slnx"))
+                .ToList();
 
             // TODO: allow specifying which project.
             if (solutions.Count == 1)
@@ -130,13 +135,16 @@ class Program
         if (File.Exists(file))
             File.Delete(file);
 
-        var slnTargets = $"after.{Path.GetFileName(project)}.targets";
+        var slnTargets = $"after.{Path.GetFileNameWithoutExtension(project)}.sln.targets";
         var deleteSlnTargets = false;
         var contentsOnly = false;
 
+        bool isSolution(string file) => file.EndsWith(".sln", StringComparison.OrdinalIgnoreCase) ||
+                                        file.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase);
+
         try
         {
-            if (project.EndsWith(".sln") && !File.Exists(slnTargets))
+            if (isSolution(project) && !File.Exists(slnTargets))
             {
                 File.WriteAllText(slnTargets, EmbeddedResource.GetContent("after.sln.targets"), Encoding.UTF8);
                 deleteSlnTargets = true;
@@ -146,7 +154,7 @@ class Program
             if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents;Pack\""))
             {
                 // The error might have been caused by us not being able to write our slnTargets
-                if (project.EndsWith(".sln") && !deleteSlnTargets)
+                if (isSolution(project) && !deleteSlnTargets)
                     AnsiConsole.Write(new Paragraph($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.", warningStyle));
 
                 if (binlog)
@@ -161,7 +169,7 @@ class Program
                 if (!Execute(DotnetMuxer.Path.FullName, $"msbuild {project} {string.Join(' ', extra)} -p:dotnet-nugetize-contents=true -p:dotnet-nugetize=\"{file}\" -t:\"GetPackageContents\""))
                 {
                     // The error might have been caused by us not being able to write our slnTargets
-                    if (project.EndsWith(".sln") && !deleteSlnTargets)
+                    if (isSolution(project) && !deleteSlnTargets)
                         AnsiConsole.Write(new Paragraph($"Solution targets '{slnTargets}' already exists. NuGetizing all projects in the solution is therefore required.", warningStyle));
 
                     if (binlog)
