@@ -194,11 +194,10 @@ class Program
         }
 
         var doc = XDocument.Load(file);
-        Tree? root = default;
 
         if (contentsOnly)
         {
-            root = new Tree("[yellow]Package Contents[/]");
+            var root = new Tree("[yellow]Package Contents[/]");
 
             if (project.EndsWith(".sln"))
                 AnsiConsole.Write(new Paragraph($"Solution {Path.GetFileName(project)} contains only non-packable project(s), rendering contributed package contents.", errorStyle));
@@ -225,6 +224,7 @@ class Program
                 .ThenBy(x => x.Element("PackagePath").Value);
 
             AddContents(root.AddNode("[yellow]Contents:[/]"), contents.ToList());
+            AnsiConsole.Write(root);
         }
         else
         {
@@ -254,7 +254,7 @@ class Program
                     .AddRow(new Text(specFile,
                         new Style(Color.Blue, decoration: Decoration.Underline, link: new FileInfo(metadata.Element("Nuspec").Value).FullName))));
 
-                root = new Tree(grid);
+                var root = new Tree(grid);
 
                 var width = metadata.Elements()
                     .Select(x => x.Name.LocalName.Length)
@@ -312,8 +312,7 @@ class Program
                     .ThenBy(x => x.Element("PackagePath").Value);
 
                 AddContents(root.AddNode("[yellow]Contents:[/]"), contents.ToList());
-                //Render(contents.ToList(), 0, 0, "");
-                //Console.WriteLine();
+                AnsiConsole.Write(new Padder(root));
             }
 
             if (!foundPackage)
@@ -322,9 +321,6 @@ class Program
                 return -1;
             }
         }
-
-        if (root != null)
-            AnsiConsole.Write(root);
 
         AnsiConsole.WriteLine();
         if (items != null)
