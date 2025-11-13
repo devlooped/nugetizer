@@ -57,6 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.StringTools" Version="18.0.2" />
     <EmbeddedResource Update="Resources.resx" Generator="" />
   </ItemGroup>
   
