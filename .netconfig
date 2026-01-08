@@ -50,9 +50,9 @@
 	sha = 0683ee777d7d878d4bf013d7deea352685135a05
 [file "src/Directory.Build.props"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.props
-	etag = cbbdc1a4d3030f353f3e5306a6c380238dd4ed0945aad2d56ba87b49fcfcd66d
+	etag = 3ebde0a8630d526b80f15801179116e17a857ff880a4442e7db7b075efa4fd63
 	weak
-	sha = c509be4378ff6789df4f66338cb88119453c0975
+	sha = 0ff8b7b79a82112678326d1dc5543ed890311366
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
 	etag = 8b4492765755c030c4c351e058a92f53ab493cab440c1c0ef431f6635c4dae0e
@@ -86,8 +86,8 @@
     skip
 [file ".github/workflows/includes.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/includes.yml
-	sha = 2d1fb4ed52b63689f2b20b994512ebac28721243
-	etag = 34ade86f020dea717c6a27ad7dcd0069c35be2832c58b0ba961278a1efe34089
+	sha = 06628725a6303bb8c4cf3076a384fc982a91bc0b
+	etag = 478f91d4126230e57cc601382da1ba23f9daa054645b4af89800d8dd862e64fd
 	weak
 [file ".github/workflows/combine-prs.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/combine-prs.yml
