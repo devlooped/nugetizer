@@ -349,5 +349,47 @@ namespace NuGetizer
                 Version = "4.4.1"
             }));
         }
+
+        [Fact]
+        public void when_centrally_managed_with_version_override_then_uses_override()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include='Newtonsoft.Json' VersionOverride='11.0.2' />
+    <PackageReference Include='Castle.Core' />
+  </ItemGroup>
+</Project>",
+                output: output,
+                files: ("Directory.Packages.props", @"
+<Project>
+    <ItemGroup>
+        <PackageVersion Include='Newtonsoft.Json' Version='12.0.3' />
+        <PackageVersion Include='Castle.Core' Version='4.4.1' />
+    </ItemGroup>
+</Project>
+"));
+
+            result.AssertSuccess(output);
+            // VersionOverride should take precedence over the centrally managed version
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Dependency,
+                Identity = "Newtonsoft.Json",
+                Version = "11.0.2"
+            }));
+            // Castle.Core should use the centrally managed version
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Dependency,
+                Identity = "Castle.Core",
+                Version = "4.4.1"
+            }));
+        }
     }
 }

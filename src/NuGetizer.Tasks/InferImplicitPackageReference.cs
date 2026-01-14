@@ -48,7 +48,11 @@ namespace NuGetizer.Tasks
                     // the right version if the project is using centrally managed versions
                     var primaryReference = PackageReferences.FirstOrDefault(x => x.ItemSpec == identity.Id);
                     if (primaryReference != null && primaryReference.GetNullableMetadata("Version") == null)
-                        primaryReference.SetMetadata("Version", identity.Version);
+                    {
+                        // If VersionOverride is specified (CPM feature), use it instead of the resolved version
+                        var versionOverride = primaryReference.GetNullableMetadata("VersionOverride");
+                        primaryReference.SetMetadata("Version", versionOverride ?? identity.Version);
+                    }
                 }
             }
 
