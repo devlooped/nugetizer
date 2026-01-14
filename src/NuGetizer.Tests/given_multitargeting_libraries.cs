@@ -14,7 +14,7 @@ namespace NuGetizer
         [InlineData("common.csproj")]
         [InlineData("uilibrary.csproj")]
         [InlineData("uishared.csproj")]
-        [Theory]
+        [RuntimeTheory("Windows")]
         public void when_packing_on_build_then_succeeds(string projectName)
         {
             Builder.BuildScenario(

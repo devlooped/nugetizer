@@ -840,7 +840,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_validating_package_then_succeeds()
         {
             var result = Builder.BuildProject(
@@ -896,13 +896,13 @@ namespace NuGetizer
                   <PropertyGroup>
                     <TargetFramework>netstandard2.0</TargetFramework>
                     <IsPackable>true</IsPackable>
-                    <PackageIcon>assets\icon.png</PackageIcon>
+                    <PackageIcon>assets/icon.png</PackageIcon>
                     <EnableDefaultItems>true</EnableDefaultItems>
                   </PropertyGroup>
                 </Project>  
                 """
                 , output: output,
-                files: ("assets\\icon.png", ""));
+                files: ("assets/icon.png", ""));
 
             result.AssertSuccess(output);
 
@@ -1004,7 +1004,7 @@ namespace NuGetizer
                     <IsPackable>true</IsPackable>
                   </PropertyGroup>
                   <ItemGroup>
-                    <PackageFile Include="..\img\**\*.*" PackagePath="assets\" />
+                    <PackageFile Include="../img/**/*.*" PackagePath="assets/" />
                   </ItemGroup>
                 </Project>  
                 """
@@ -1035,7 +1035,7 @@ namespace NuGetizer
                     <IsPackable>true</IsPackable>
                   </PropertyGroup>
                   <ItemGroup>
-                    <PackageFile Include="..\img\**\*.*" PackagePath="assets\" />
+                    <PackageFile Include="../img/**/*.*" PackagePath="assets/" />
                   </ItemGroup>
                 </Project>  
                 """
