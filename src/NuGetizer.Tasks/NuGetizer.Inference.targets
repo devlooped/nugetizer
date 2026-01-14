@@ -183,6 +183,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </_ReferenceRelatedPaths>
     <PackageDependencies>
       <ParentPackage />
+      <ParentTarget />
     </PackageDependencies>
   </ItemDefinitionGroup>
 
@@ -445,14 +446,22 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PropertyGroup>
       <_CandidatePackageId>%(PackageReference.Identity)</_CandidatePackageId>
       <_CandidatePackageVersion>%(PackageReference.Version)</_CandidatePackageVersion>
+      <_CandidatePackageVersionOverride>%(PackageReference.VersionOverride)</_CandidatePackageVersionOverride>
       <_CandidatePackageIsImplicit>%(PackageReference.IsImplicitlyDefined)</_CandidatePackageIsImplicit>
     </PropertyGroup>
 
+    <!-- If VersionOverride is set (CPM feature), use it directly -->
+    <ItemGroup Condition="$(_CandidatePackageIsImplicit) != 'true' and '$(_CandidatePackageVersionOverride)' != ''">
+      <PackageReference Update="$(_CandidatePackageId)" Version="$(_CandidatePackageVersionOverride)" />
+    </ItemGroup>
+
     <ItemGroup Condition="$(_CandidatePackageIsImplicit) != 'true' and 
+                          '$(_CandidatePackageVersionOverride)' == '' and
                           ($(_CandidatePackageVersion) == '' or $(_CandidatePackageVersion.Contains('*')))">
       <_ResolvedPackageDependency Include="@(PackageDependencies)"
                                   Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').StartsWith('$(_CandidatePackageId)/')) and 
-                                             $([MSBuild]::ValueOrDefault('%(ParentPackage)', '')) == ''" />
+                                             $([MSBuild]::ValueOrDefault('%(ParentPackage)', '')) == '' and
+                                             $([MSBuild]::ValueOrDefault('%(ParentTarget)', '')) == '$(TargetFramework)'" />
     </ItemGroup>
 
     <PropertyGroup Condition="'@(_ResolvedPackageDependency)' != ''">
