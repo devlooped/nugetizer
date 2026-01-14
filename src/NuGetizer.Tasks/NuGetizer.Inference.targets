@@ -238,6 +238,28 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
   </Target>
 
+  <!-- 
+    When PackReadme=false, explicitly exclude the readme file from being packed as a None item.
+    This is necessary because PackNone=true in packaging projects would otherwise include it.
+  -->
+  <Target Name="_ExcludeReadmeWhenPackReadmeFalse" 
+          BeforeTargets="_CollectInferenceCandidates"
+          Condition="'$(PackReadme)' == 'false'">
+    <PropertyGroup>
+      <!-- Compute the readme filename, defaulting to readme.md if not specified -->
+      <_PackageReadmeFilename Condition="'$(PackageReadmeFile)' != ''">$(PackageReadmeFile)</_PackageReadmeFilename>
+      <_PackageReadmeFilename Condition="'$(PackageReadmeFile)' == ''">readme.md</_PackageReadmeFilename>
+    </PropertyGroup>
+    <ItemGroup>
+      <None Update="@(None)"
+            Pack="false"
+            Condition="%(None.Identity) == '$(_PackageReadmeFilename)'" />
+      <Content Update="@(Content)"
+               Pack="false"
+               Condition="%(Content.Identity) == '$(_PackageReadmeFilename)'" />
+    </ItemGroup>
+  </Target>
+
   <Target Name="_CollectInferenceCandidates" Inputs="@(PackInference)" Outputs="|%(PackInference.Identity)|">
     <PropertyGroup>
       <PackExclude>%(PackInference.PackExclude)</PackExclude>
