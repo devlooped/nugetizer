@@ -986,14 +986,14 @@ namespace NuGetizer
                     { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
                     { MetadataName.PackFolder, PackFolderKind.ContentFiles },
                     { MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
-                    { MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
+                    { MetadataName.PackagePath, "contentFiles/any/any/readme.txt" }
                 }),
             };
 
             var manifest = ExecuteTask();
 
-            Assert.Contains(manifest.Files, file => file.Target == @"contentFiles\any\any\readme.txt");
-            Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include == @"any\any\readme.txt");
+            Assert.Contains(manifest.Files, file => file.Target == "contentFiles/any/any/readme.txt");
+            Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include == "any/any/readme.txt");
         }
 
         [Fact]
@@ -1030,14 +1030,14 @@ namespace NuGetizer
                     { MetadataName.PackFolder, PackFolderKind.ContentFiles },
                     { MetadataName.PackageFolder, PackagingConstants.Folders.ContentFiles },
                     { MetadataName.ContentFile.BuildAction, "EmbeddedResource" },
-                    { MetadataName.PackagePath, @"contentFiles\any\any\readme.txt" }
+                    { MetadataName.PackagePath, "contentFiles/any/any/readme.txt" }
                 }),
             };
 
             var manifest = ExecuteTask();
 
-            Assert.Contains(manifest.Files, file => file.Target == @"contentFiles\any\any\readme.txt");
-            Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include == @"any\any\readme.txt" && file.BuildAction == "EmbeddedResource");
+            Assert.Contains(manifest.Files, file => file.Target == "contentFiles/any/any/readme.txt");
+            Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include == "any/any/readme.txt" && file.BuildAction == "EmbeddedResource");
         }
 
         [Fact]

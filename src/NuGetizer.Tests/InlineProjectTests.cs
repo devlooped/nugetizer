@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Linq;
 using Microsoft.Build.Execution;
 using NuGet.Packaging;
+using NuGetizer.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -239,7 +240,7 @@ namespace NuGetizer
             Assert.All(result.Items, item => Assert.Equal("Foo", item.GetMetadata("PackageId")));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_package_contents_then_includes_framework_reference()
         {
             var result = Builder.BuildProject(@"
@@ -264,7 +265,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_include_framework_references_in_package_is_false_then_does_not_include_framework_reference()
         {
             var result = Builder.BuildProject(@"
@@ -472,7 +473,7 @@ namespace NuGetizer
             Assert.True(File.Exists(icon.GetMetadata("FullPath")));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_pack_on_build_multitargeting_then_contains_all_targets()
         {
             var result = Builder.BuildProject(@"
@@ -501,7 +502,7 @@ namespace NuGetizer
             Assert.Contains(files, file => file.StartsWith("lib/netstandard2.0"));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_generate_package_on_build_multitargeting_then_contains_all_targets()
         {
             var result = Builder.BuildProject(@"
@@ -634,7 +635,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_transitive_dependency_then_retargets_to_main_project()
         {
             var result = Builder.BuildProject(@"
@@ -681,7 +682,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_multi_targeting_packing_transitive_dependency_then_retargets_to_main_project()
         {
             var result = Builder.BuildProject(@"
@@ -723,7 +724,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_with_refs_then_includes_runtime_libs_for_private()
         {
             var result = Builder.BuildProject(
@@ -753,7 +754,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_dependencies_then_can_include_exclude_assets()
         {
             var result = Builder.BuildProject(
