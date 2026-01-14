@@ -59,7 +59,7 @@ static partial class Builder
         return Build(projectInstance, targets, properties, loggers);
     }
 
-    public static string TestOutputPath([CallerMemberName] string testName = null) => "bin\\" + testName + "\\";
+    public static string TestOutputPath([CallerMemberName] string testName = null) => Path.Combine("bin", testName) + Path.DirectorySeparatorChar;
 
     static void AddSolutionConfiguration(string projectFile, Dictionary<string, string> properties)
     {
