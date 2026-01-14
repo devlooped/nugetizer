@@ -499,5 +499,61 @@ namespace NuGetizer
                 Readme = "readme.txt",
             }));
         }
+
+        [Fact]
+        public void when_packaging_project_then_none_items_pack_by_default()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
+  <PropertyGroup>
+    <PackageId>Packer</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <!-- Only needed since for scenarios we set this to false. -->
+    <EnableDefaultItems>true</EnableDefaultItems>
+  </PropertyGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: ("Packer.targets", @"<Project />"));
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "Packer",
+                Extension = ".targets",
+            }));
+        }
+
+        [Fact]
+        public void when_packaging_project_with_none_item_then_packs_without_explicit_packnone()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.Build.NoTargets/3.7.0'>
+  <PropertyGroup>
+    <PackageId>MyPackage</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include='MyPackage.targets' />
+    <None Include='tools\install.ps1' />
+  </ItemGroup>
+</Project>",
+                "GetPackageContents", output,
+                files: [
+                    ("MyPackage.targets", @"<Project />"),
+                    ("tools\\install.ps1", @"# Install script")
+                ]);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "MyPackage",
+                Extension = ".targets",
+            }));
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Filename = "install",
+                Extension = ".ps1",
+            }));
+        }
     }
 }
