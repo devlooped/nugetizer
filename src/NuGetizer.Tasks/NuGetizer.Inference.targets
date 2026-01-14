@@ -451,9 +451,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <!-- If VersionOverride is set (CPM feature), use it directly -->
     <ItemGroup Condition="$(_CandidatePackageIsImplicit) != 'true' and '$(_CandidatePackageVersionOverride)' != ''">
-      <PackageReference Update="@(PackageReference)" 
-                        Condition="'%(Identity)' == '$(_CandidatePackageId)'"
-                        Version="$(_CandidatePackageVersionOverride)" />
+      <PackageReference Update="$(_CandidatePackageId)" Version="$(_CandidatePackageVersionOverride)" />
     </ItemGroup>
 
     <ItemGroup Condition="$(_CandidatePackageIsImplicit) != 'true' and 
