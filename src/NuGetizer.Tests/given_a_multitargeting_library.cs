@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using NuGetizer.Tests;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
@@ -10,13 +11,14 @@ namespace NuGetizer
         public given_a_multitargeting_library(ITestOutputHelper output)
         {
             this.output = output;
-            Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Restore", output: output)
-                .AssertSuccess(output);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_gettingcontents_then_includes_content_from_all_frameworks()
         {
+            Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Restore", output: output)
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_multitargeting_library), output: output);
             result.AssertSuccess(output);
 
@@ -31,9 +33,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_gettingcontents_then_includes_single_metadata()
         {
+            Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Restore", output: output)
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_multitargeting_library), output: output);
             result.AssertSuccess(output);
 
@@ -44,16 +49,22 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_then_succeeds()
         {
+            Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Restore", output: output)
+                .AssertSuccess(output);
+
             Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Pack", output: output)
                 .AssertSuccess(output);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_customizing_item_definition_then_adds_package_metadata()
         {
+            Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Restore", output: output)
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_multitargeting_library), new
             {
                 CustomizeItemDefinition = "true"
@@ -67,9 +78,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_customizing_item_then_adds_package_metadata()
         {
+            Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Restore", output: output)
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_multitargeting_library), new
             {
                 CustomizeItem = "true",
@@ -85,9 +99,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_target_path_then_includes_all_frameworks()
         {
+            Builder.BuildScenario(nameof(given_a_multitargeting_library), target: "Restore", output: output)
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(
                 nameof(given_a_multitargeting_library), target: "GetTargetPath", output: output);
 

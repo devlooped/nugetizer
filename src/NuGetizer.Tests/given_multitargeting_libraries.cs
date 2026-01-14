@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using NuGetizer.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -38,7 +39,7 @@ namespace NuGetizer
             Assert.True(File.Exists(result.Items[0].GetMetadata("FullPath")));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_content_then_multitargets()
         {
             Builder.BuildScenario(

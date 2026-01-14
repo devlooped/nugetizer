@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using NuGetizer.Tests;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
@@ -11,7 +12,7 @@ namespace NuGetizer
 
         public given_a_packaging_project_with_netstandard(ITestOutputHelper output) => this.output = output;
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void can_get_content_from_referenced_single_targeting_netstandard()
         {
             Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
@@ -30,7 +31,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void can_get_content_from_referenced_cross_targeting_netstandard()
         {
             Builder.BuildScenario(nameof(given_a_packaging_project_with_netstandard),
