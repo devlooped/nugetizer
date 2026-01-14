@@ -42,6 +42,8 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(IsPackagingProject)' != 'true' and '$(PackFolder)' == 'lib'">true</PackFrameworkReferences>
     <!-- When PackFolder is build/buildTransitive, we default to packing None since it's most intuitive in that case -->
     <PackNone Condition="'$(PackNone)' == '' and ('$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive')">true</PackNone>
+    <!-- When in a packaging project, default to packing None since it's most intuitive for authoring/packaging projects -->
+    <PackNone Condition="'$(PackNone)' == '' and '$(IsPackagingProject)' == 'true'">true</PackNone>
 
     <_OutputFullPath Condition="$([System.IO.Path]::IsPathRooted($(OutputPath)))">$(OutputPath)</_OutputFullPath>
     <_OutputFullPath Condition="'$(_OutputFullPath)' == ''">$(MSBuildProjectDirectory.TrimEnd('\'))\$(OutputPath)</_OutputFullPath>
