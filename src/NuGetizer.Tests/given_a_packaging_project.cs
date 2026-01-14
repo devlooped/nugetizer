@@ -520,6 +520,7 @@ namespace NuGetizer
             {
                 Filename = "Packer",
                 Extension = ".targets",
+                PackFolder = "None",
             }));
         }
 
