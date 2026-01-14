@@ -186,5 +186,27 @@ namespace NuGetizer
             Assert.Equal(Microsoft.Build.Execution.BuildResultCode.Failure, result.BuildResult.OverallResult);
         }
 
+        [Fact]
+        public void when_pack_as_tool_then_sets_dotnet_tool_package_type()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <AssemblyName>MyTool</AssemblyName>
+    <PackageId>MyTool</PackageId>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackFolder>tools</PackFolder>
+    <PackAsTool>true</PackAsTool>
+  </PropertyGroup>
+</Project>",
+                "GetPackageContents", output);
+
+            result.AssertSuccess(output);
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackageTypes = "DotnetTool"
+            }));
+        }
+
     }
 }

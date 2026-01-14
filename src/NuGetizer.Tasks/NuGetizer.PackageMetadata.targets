@@ -74,6 +74,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       <Tags Condition="'$(PackageTags)' != ''">$(PackageTags)</Tags>
       <ProjectUrl Condition="'$(PackageProjectUrl)' != ''">$(PackageProjectUrl)</ProjectUrl>
       <PackageTypes Condition="'$(PackageType)' != ''">$(PackageType)</PackageTypes>
+      <PackageTypes Condition="'$(PackageType)' == '' and '$(PackAsTool)' == 'true'">DotnetTool</PackageTypes>
 
       <RepositoryType Condition="'$(RepositoryType)' != ''">$(RepositoryType)</RepositoryType>
       <RepositoryUrl Condition="'$(RepositoryUrl)' != ''">$(RepositoryUrl)</RepositoryUrl>
