@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.4.7](https://github.com/devlooped/nugetizer/tree/v1.4.7) (2026-01-14)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.6...v1.4.7)
+
+:twisted_rightwards_arrows: Merged:
+
+- Set DotnetTool package type when PackAsTool=true [\#681](https://github.com/devlooped/nugetizer/pull/681) (@Copilot)
+
 ## [v1.4.6](https://github.com/devlooped/nugetizer/tree/v1.4.6) (2025-11-06)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.5...v1.4.6)
