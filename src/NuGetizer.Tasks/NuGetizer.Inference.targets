@@ -183,6 +183,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </_ReferenceRelatedPaths>
     <PackageDependencies>
       <ParentPackage />
+      <ParentTarget />
     </PackageDependencies>
   </ItemDefinitionGroup>
 
@@ -459,7 +460,8 @@ Copyright (c) .NET Foundation. All rights reserved.
                           ($(_CandidatePackageVersion) == '' or $(_CandidatePackageVersion.Contains('*')))">
       <_ResolvedPackageDependency Include="@(PackageDependencies)"
                                   Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').StartsWith('$(_CandidatePackageId)/')) and 
-                                             $([MSBuild]::ValueOrDefault('%(ParentPackage)', '')) == ''" />
+                                             $([MSBuild]::ValueOrDefault('%(ParentPackage)', '')) == '' and
+                                             $([MSBuild]::ValueOrDefault('%(ParentTarget)', '')) == '$(TargetFramework)'" />
     </ItemGroup>
 
     <PropertyGroup Condition="'@(_ResolvedPackageDependency)' != ''">
