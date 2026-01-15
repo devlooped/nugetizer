@@ -227,6 +227,7 @@ When an item specifies *FrameworkSpecific=true*, the project's target framework 
 |------------------|-------------------|
 | content (*)      | true              |
 | lib              | true              |
+| ref              | true              |
 | dependency (**)  | true              |
 | frameworkReference (**) | true       |
 | build            | false             |
@@ -236,7 +237,7 @@ When an item specifies *FrameworkSpecific=true*, the project's target framework 
 
 \** *dependency* and *frameworkReference* are pseudo folders containing the package references and framework (`<Reference ...`) references.
 
-\** tool(s), native, runtime(s), ref, analyzer(s), source/src, any custom folder.
+\*** tool(s), native, runtime(s), analyzer(s), source/src, any custom folder.
 
 The `PackFolder` property (at the project level) determines the *PackFolder* metadata value for the build outputs of the project (and its xml docs, pdb and other related files like satellite assemblies). It defaults to `lib`.
 
@@ -260,7 +261,8 @@ Whether items are packed by default or not is controlled by properties named aft
 | PackReadme      | true |
 | PackSymbols     | true if PackBuildOutput=true (*) |
 | PackSatelliteDlls | true if PackBuildOutput=true (**) |
-| PackDependencies| empty (***) |
+| PackRefAssembly | true if PackBuildOutput=true and ProduceReferenceAssembly=true (***) |
+| PackDependencies| empty (****) |
 | PackFrameworkReferences | true if PackFolder=lib, false if PackDependencies=false |
 | PackProjectReferences | true |
 
@@ -272,7 +274,9 @@ Whether items are packed by default or not is controlled by properties named aft
 \** Satellite resources can come from the main project or from dependencies, if those PackageReferences 
     have `PrivateAssets=all`.
 
-\*** In some scenarios, you might want to turn off packing behavior for all PackageReference and FrameworkReferences alike. Setting PackDependencies=false achieves that.
+\*** When [ProduceReferenceAssembly](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/output#producereferenceassembly) is enabled, the reference assembly is automatically included in the `ref/[tfm]` folder alongside the implementation in `lib/[tfm]`.
+
+\**** In some scenarios, you might want to turn off packing behavior for all PackageReference and FrameworkReferences alike. Setting PackDependencies=false achieves that.
 
 
 The various supported item inference are surfaced as `<PackInference Include="Compile;Content;None;..." />` items, which are ultimately evaluated together with the metadata for the individual items. These make the package inference candidates. You can also provide an exclude expression for that evaluation so that certain items are excluded by default, even if every other item of the same type is included. For example, to pack all `Content` items, except those in the `docs` folder, you can simply update the inference item like so:
