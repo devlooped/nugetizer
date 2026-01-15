@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Build.Execution;
 using NuGet.Frameworks;
+using NuGetizer.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,13 +15,14 @@ namespace NuGetizer
         public given_a_complex_pack(ITestOutputHelper output)
         {
             this.output = output;
-            Builder.BuildScenario(nameof(given_a_complex_pack), target: "Restore", output: output)
-                .AssertSuccess(output);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_package_target_path_then_gets_package_metadata()
         {
+            Builder.BuildScenario(nameof(given_a_complex_pack), target: "Restore", output: output)
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "a", target: "GetPackageTargetPath", output: output);
 
             result.AssertSuccess(output);
@@ -33,7 +35,7 @@ namespace NuGetizer
             Assert.Equal("NuGet", metadata.GetMetadata("Authors"));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_preparing_a_then_contains_assemblies_and_direct_dependency()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "a", target: "GetPackageContents", output: output);
@@ -69,7 +71,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_preparing_b_then_contains_assemblies_and_direct_dependency()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "b", target: "GetPackageContents", output: output);
@@ -105,7 +107,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_preparing_c_then_contains_external_dependency()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), new { Configuration = "Release" }, projectName: "c", target: "GetPackageContents", output: output);
@@ -133,7 +135,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_preparing_d_without_package_id_then_does_not_set_package_path()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "d", target: "GetPackageContents", output: output);
@@ -156,7 +158,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_a_then_contains_assemblies_and_direct_dependency()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "a", target: "Pack", output: output);
@@ -175,7 +177,7 @@ namespace NuGetizer
                 group.Packages.Any(dep => dep.Id == "B" && dep.VersionRange.OriginalString == "2.0.0"));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_b_then_contains_assemblies_and_direct_dependency()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "b", target: "Pack", output: output);
@@ -194,7 +196,7 @@ namespace NuGetizer
                 group.Packages.Any(dep => dep.Id == "C" && dep.VersionRange.OriginalString == "3.0.0"));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_c_then_contains_external_dependency()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "c", target: "Pack", output: output);
@@ -211,7 +213,7 @@ namespace NuGetizer
                 group.Packages.Any(dep => dep.Id == "Foo" && dep.VersionRange.OriginalString == "1.0.0"));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_d_without_package_id_then_target_is_skipped()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack), projectName: "d", target: "Pack", output: output);
@@ -219,7 +221,7 @@ namespace NuGetizer
             Assert.Equal(TargetResultCode.Skipped, result.ResultCode);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_pack_with_emit_nuspec_but_not_package_then_creates_nuspec_but_not_package()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack),
@@ -241,7 +243,7 @@ namespace NuGetizer
             Assert.True(File.Exists(Path.Combine(Path.GetDirectoryName(pkgFile), "A.nuspec")));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_pack_with_emit_package_but_not_nuspec_then_creates_package_but_not_nuspec()
         {
             var result = Builder.BuildScenario(nameof(given_a_complex_pack),

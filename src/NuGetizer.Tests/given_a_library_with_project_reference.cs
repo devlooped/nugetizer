@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NuGetizer.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,13 +12,14 @@ namespace NuGetizer
         public given_a_library_with_project_reference(ITestOutputHelper output)
         {
             this.output = output;
-            Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, target: "Restore")
-                .AssertSuccess(output);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_package_contents_then_retrieves_main_assembly_transitively()
         {
+            Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output);
 
             result.AssertSuccess(output);
@@ -27,9 +29,12 @@ namespace NuGetizer
             Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".dll" && i.GetMetadata("PackFolder") == PackFolderKind.Lib), "Did not include referenced project output as Library");
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_package_contents_then_retrieves_symbols_transitively()
         {
+            Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output);
 
             result.AssertSuccess(output);
@@ -39,9 +44,12 @@ namespace NuGetizer
             Assert.True(result.Items.Any(i => i.GetMetadata("FileName") == "b" && i.GetMetadata("Extension") == ".pdb" && i.GetMetadata("PackFolder") == PackFolderKind.Lib), "Did not include referenced project symbols");
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_include_in_package_false_then_does_not_include_referenced_project_outputs()
         {
+            Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference),
                 properties: new { IncludeInPackage = "false" },
                 output: output);
@@ -56,9 +64,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_include_outputs_in_package_false_then_can_include_referenced_project_outputs()
         {
+            Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference),
                 properties: new
                 {
@@ -77,9 +88,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_include_outputs_in_package_false_then_can_include_referenced_projects_outputs()
         {
+            Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_library_with_project_reference),
                 properties: new
                 {
@@ -98,9 +112,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact(Skip = "Doesn't work running from test, but does from CLI :(")]
+        [RuntimeFact("Windows", Skip = "Doesn't work running from test, but does from CLI :(")]
         public void when_pack_no_build_then_does_not_fail()
         {
+            Builder.BuildScenario(nameof(given_a_library_with_project_reference), output: output, target: "Restore")
+                .AssertSuccess(output);
+
             // Build once, to simulate a previous step in a CI pipeline.
             Builder.BuildScenario(nameof(given_a_library_with_project_reference),
                 target: "Build",

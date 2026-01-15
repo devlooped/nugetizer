@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using NuGetizer.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,13 +12,14 @@ namespace NuGetizer
         public given_a_packaging_project(ITestOutputHelper output)
         {
             this.output = output;
-            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
-                .AssertSuccess(output);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_includes_referenced_project_outputs()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -36,9 +38,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_can_augment_package_metadata()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -50,9 +55,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_includes_referenced_project_satellite_assembly()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -63,9 +71,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_includes_referenced_project_dependencies()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -80,9 +91,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_includes_referenced_project_dependency_satellite_assembly()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -93,9 +107,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_includes_referenced_packagable_project_as_dependency()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -107,9 +124,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_does_not_include_referenced_project_nuget_assembly_reference()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -120,9 +140,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_from_packaging_project_then_referenced_outputs_have_original_tfm_path()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -137,9 +160,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_transitive_content_is_made_full_path()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), output: output);
 
             result.AssertSuccess(output);
@@ -151,9 +177,12 @@ namespace NuGetizer
             }) && Path.IsPathRooted(item.ItemSpec));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_contents_then_transitive_content_can_opt_out_of_full_path()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), properties: new { AddAsIs = "true" }, output: output);
 
             result.AssertSuccess(output);
@@ -165,15 +194,18 @@ namespace NuGetizer
             }) && !Path.IsPathRooted(item.ItemSpec));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_then_succeeeds()
         {
+            Builder.BuildScenario(nameof(given_a_packaging_project), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_packaging_project), target: "Pack", output: output);
 
             result.AssertSuccess(output);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_framework_specific_then_retargets_direct_and_referenced_content()
         {
             var result = Builder.BuildProject(@"
@@ -217,7 +249,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_referenced_project_has_packfolder_then_preserves_it()
         {
             var result = Builder.BuildProject(@"
@@ -262,7 +294,7 @@ namespace NuGetizer
         }
 
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_project_reference_packfolder_additional_properties_then_overrides_project_pack_folder()
         {
             var result = Builder.BuildProject(@"
@@ -291,7 +323,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_project_reference_packfolder_then_overrides_project_pack_folder()
         {
             var result = Builder.BuildProject(@"
@@ -320,7 +352,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_pack_folder_build_then_none_packs_as_build()
         {
             var result = Builder.BuildProject(@"
@@ -343,7 +375,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_readme_found_but_pack_readme_false_then_does_not_add_it()
         {
             var result = Builder.BuildProject(@"
@@ -375,7 +407,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_readme_found_but_project_not_packable_then_does_not_add_content()
         {
             var result = Builder.BuildProject(@"
@@ -406,7 +438,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_readme_found_then_adds_metadata_and_content()
         {
             var result = Builder.BuildProject(@"
@@ -437,7 +469,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_multiple_readmes_found_then_adds_metadata_and_content_for_root()
         {
             var result = Builder.BuildProject(@"
@@ -468,7 +500,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_readme_custom_extension_specified_then_adds_metadata_and_content()
         {
             var result = Builder.BuildProject(@"

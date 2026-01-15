@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using NuGetizer.Tests;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
@@ -10,13 +11,14 @@ namespace NuGetizer
         public given_a_framework_library(ITestOutputHelper output)
         {
             this.output = output;
-            Builder.BuildScenario(nameof(given_a_framework_library), target: "Restore")
-                .AssertSuccess(output);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_getting_package_contents_then_includes_framework_references_by_default()
         {
+            Builder.BuildScenario(nameof(given_a_framework_library), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_framework_library));
 
             result.AssertSuccess(output);
@@ -27,9 +29,12 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_include_outputs_in_package_is_false_then_does_not_include_main_assembly()
         {
+            Builder.BuildScenario(nameof(given_a_framework_library), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_a_framework_library), new
             {
                 IncludeWPF = false,

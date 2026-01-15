@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.Build.Execution;
+using NuGetizer.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -12,13 +13,14 @@ namespace NuGetizer
         public given_duplicate_package_files(ITestOutputHelper output)
         {
             this.output = output;
-            Builder.BuildScenario(nameof(given_duplicate_package_files), target: "Restore")
-                .AssertSuccess(output);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void exact_duplicates_are_removed()
         {
+            Builder.BuildScenario(nameof(given_duplicate_package_files), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_duplicate_package_files),
                 new { ReadmeA = "This is a readme", ReadmeB = "This is a readme" },
                 target: "Pack");
@@ -26,9 +28,12 @@ namespace NuGetizer
             Assert.Equal(TargetResultCode.Success, result.ResultCode);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void same_source_different_target_are_preserved()
         {
+            Builder.BuildScenario(nameof(given_duplicate_package_files), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_duplicate_package_files), target: "GetPackageContents");
             Assert.Equal(TargetResultCode.Success, result.ResultCode);
 
@@ -57,9 +62,12 @@ namespace NuGetizer
             Assert.Equal(TargetResultCode.Success, result.ResultCode);
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void real_duplicates_fail()
         {
+            Builder.BuildScenario(nameof(given_duplicate_package_files), target: "Restore")
+                .AssertSuccess(output);
+
             var result = Builder.BuildScenario(nameof(given_duplicate_package_files),
                 new { ReadmeA = "First Readme", ReadmeB = "Second Readme" },
                 target: "Pack");
