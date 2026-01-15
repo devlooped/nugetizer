@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <!-- Use net472 on Windows (for Desktop MSBuild compatibility), net10.0 on Linux -->
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">net472</TargetFrameworks>
-    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('Windows'))">net10.0</TargetFrameworks>
+    <TargetFramework Condition="$([MSBuild]::IsOSPlatform('Windows'))">net472</TargetFramework>
+    <TargetFramework Condition="!$([MSBuild]::IsOSPlatform('Windows'))">net10.0</TargetFramework>
     <DefaultItemExcludes>$(DefaultItemExcludes);Scenarios\**\*</DefaultItemExcludes>
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
