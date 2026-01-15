@@ -134,6 +134,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     </PackFolderKind>
     <PackFolderKind Include="Ref">
       <PackageFolder>ref</PackageFolder>
+      <FrameworkSpecific>true</FrameworkSpecific>
     </PackFolderKind>
     <PackFolderKind Include="Analyzer;Analyzers">
       <PackageFolder>analyzers</PackageFolder>

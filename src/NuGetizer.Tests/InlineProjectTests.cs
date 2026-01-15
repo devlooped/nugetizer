@@ -1097,5 +1097,148 @@ namespace NuGetizer
                 Assert.Equal("ThisAssembly.Constants", manifest.Metadata.DependencyGroups.First().Packages.First().Id);
             }
         }
+
+        [Fact]
+        public void when_produce_reference_assembly_then_includes_ref_assembly()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>net8.0</TargetFramework>
+                    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+                  </PropertyGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            // Should have the main assembly in lib
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Extension = ".dll",
+                PackFolder = PackFolderKind.Lib
+            }));
+
+            // Should also have the reference assembly in ref
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Extension = ".dll",
+                PackFolder = PackFolderKind.Ref
+            }));
+        }
+
+        [Fact]
+        public void when_produce_reference_assembly_false_then_does_not_include_ref_assembly()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>net8.0</TargetFramework>
+                    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+                  </PropertyGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            // Should have the main assembly in lib
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Extension = ".dll",
+                PackFolder = PackFolderKind.Lib
+            }));
+
+            // Should NOT have a reference assembly in ref
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Ref
+            }));
+        }
+
+        [Fact]
+        public void when_produce_reference_assembly_but_pack_build_output_false_then_does_not_include_ref_assembly()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>net8.0</TargetFramework>
+                    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+                    <PackBuildOutput>false</PackBuildOutput>
+                  </PropertyGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            // Should NOT have the main assembly in lib
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                Extension = ".dll",
+                PackFolder = PackFolderKind.Lib
+            }));
+
+            // Should NOT have a reference assembly in ref either
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Ref
+            }));
+        }
+
+        [Fact]
+        public void when_produce_reference_assembly_can_opt_out_with_pack_ref_assembly_false()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>net8.0</TargetFramework>
+                    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+                    <PackRefAssembly>false</PackRefAssembly>
+                  </PropertyGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            // Should have the main assembly in lib
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                Extension = ".dll",
+                PackFolder = PackFolderKind.Lib
+            }));
+
+            // Should NOT have a reference assembly in ref
+            Assert.DoesNotContain(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Ref
+            }));
+        }
+
+        [Fact]
+        public void when_produce_reference_assembly_then_ref_assembly_is_framework_specific()
+        {
+            var result = Builder.BuildProject(
+                """
+                <Project Sdk="Microsoft.NET.Sdk">
+                  <PropertyGroup>
+                    <TargetFramework>net8.0</TargetFramework>
+                    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+                    <IsPackable>true</IsPackable>
+                  </PropertyGroup>
+                </Project>
+                """, output: output);
+
+            result.AssertSuccess(output);
+
+            // The ref assembly should have a package path that includes the TFM
+            Assert.Contains(result.Items, item => item.Matches(new
+            {
+                PackFolder = PackFolderKind.Ref,
+                PackagePath = "ref/net8.0/scenario.dll"
+            }));
+        }
     }
 }

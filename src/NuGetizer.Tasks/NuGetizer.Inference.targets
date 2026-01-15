@@ -36,6 +36,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <!-- Whether to include @(DebugSymbolsProjectOutputGroupOutput) items in the package -->
     <PackSymbols Condition="'$(PackSymbols)' == '' and '$(PackBuildOutput)' == 'true'">true</PackSymbols>
 
+    <!-- Whether to include the reference assembly ($(TargetRefPath)) in the package when ProduceReferenceAssembly=true -->
+    <PackRefAssembly Condition="'$(PackRefAssembly)' == '' and '$(PackBuildOutput)' == 'true' and '$(ProduceReferenceAssembly)' == 'true'">true</PackRefAssembly>
+
     <!-- Whether to include framework references (%(ReferencePath.ResolvedFrom)' == '{TargetFrameworkDirectory}') in the package -->
     <PackFrameworkReferences Condition="'$(PackFrameworkReferences)' == '' and '$(PackDependencies)' == 'false'">false</PackFrameworkReferences>
     <!-- Only default to true if the project isn't a nuget packaging project itself and its primary output is lib. -->
@@ -400,6 +403,14 @@ Copyright (c) .NET Foundation. All rights reserved.
       </_InferredProjectOutput>
 
       <_InferredPackageFile Include="@(_InferredProjectOutput -> Distinct())" />
+    </ItemGroup>
+
+    <ItemGroup Label="Reference Assembly Inference" Condition="'$(PackRefAssembly)' == 'true' and '$(PackAsPublish)' != 'true' and '$(TargetRefPath)' != ''">
+      <!-- Include the reference assembly in the ref folder when ProduceReferenceAssembly=true -->
+      <_InferredPackageFile Include="$(TargetRefPath)">
+        <PackFolder>Ref</PackFolder>
+        <FrameworkSpecific>true</FrameworkSpecific>
+      </_InferredPackageFile>
     </ItemGroup>
 
     <ItemGroup Label="SatelliteDll Resources from Dependencies" Condition="'$(PackBuildOutput)' == 'true' and '$(PackAsPublish)' != 'true'">
