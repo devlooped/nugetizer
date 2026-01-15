@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using NuGetizer.Tests;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NuGetizer
@@ -12,7 +13,7 @@ namespace NuGetizer
             this.output = output;
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packing_then_can_include_content()
         {
             var result = Builder.BuildScenario(nameof(given_a_custom_build_project), output: output);

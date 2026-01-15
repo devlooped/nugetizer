@@ -992,8 +992,8 @@ namespace NuGetizer
 
             var manifest = ExecuteTask();
 
-            Assert.Contains(manifest.Files, file => file.Target == "contentFiles/any/any/readme.txt");
-            Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include == "any/any/readme.txt");
+            Assert.Contains(manifest.Files, file => file.Target.Replace('\\', '/') == "contentFiles/any/any/readme.txt");
+            Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include.Replace('\\', '/') == "any/any/readme.txt");
         }
 
         [Fact]
@@ -1036,8 +1036,8 @@ namespace NuGetizer
 
             var manifest = ExecuteTask();
 
-            Assert.Contains(manifest.Files, file => file.Target == "contentFiles/any/any/readme.txt");
-            Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include == "any/any/readme.txt" && file.BuildAction == "EmbeddedResource");
+            Assert.Contains(manifest.Files, file => file.Target.Replace('\\', '/') == "contentFiles/any/any/readme.txt");
+            Assert.Contains(manifest.Metadata.ContentFiles, file => file.Include.Replace('\\', '/') == "any/any/readme.txt" && file.BuildAction == "EmbeddedResource");
         }
 
         [Fact]
