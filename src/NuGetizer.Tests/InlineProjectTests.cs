@@ -887,7 +887,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_package_icon_relative_folder_default_then_packs_icon()
         {
             var result = Builder.BuildProject(
@@ -896,13 +896,13 @@ namespace NuGetizer
                   <PropertyGroup>
                     <TargetFramework>netstandard2.0</TargetFramework>
                     <IsPackable>true</IsPackable>
-                    <PackageIcon>assets/icon.png</PackageIcon>
+                    <PackageIcon>assets\icon.png</PackageIcon>
                     <EnableDefaultItems>true</EnableDefaultItems>
                   </PropertyGroup>
                 </Project>  
                 """
                 , output: output,
-                files: ("assets/icon.png", ""));
+                files: ("assets\\icon.png", ""));
 
             result.AssertSuccess(output);
 
@@ -993,7 +993,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packagepath_ends_in_path_then_packs_recursive_dir()
         {
             var result = Builder.BuildProject(
@@ -1004,7 +1004,7 @@ namespace NuGetizer
                     <IsPackable>true</IsPackable>
                   </PropertyGroup>
                   <ItemGroup>
-                    <PackageFile Include="../img/**/*.*" PackagePath="assets/" />
+                    <PackageFile Include="..\img\**\*.*" PackagePath="assets\" />
                   </ItemGroup>
                 </Project>  
                 """
@@ -1024,7 +1024,7 @@ namespace NuGetizer
             }));
         }
 
-        [Fact]
+        [RuntimeFact("Windows")]
         public void when_packagepath_ends_in_path_then_packs_basedir_dir()
         {
             var result = Builder.BuildProject(
@@ -1035,7 +1035,7 @@ namespace NuGetizer
                     <IsPackable>true</IsPackable>
                   </PropertyGroup>
                   <ItemGroup>
-                    <PackageFile Include="../img/**/*.*" PackagePath="assets/" />
+                    <PackageFile Include="..\img\**\*.*" PackagePath="assets\" />
                   </ItemGroup>
                 </Project>  
                 """
