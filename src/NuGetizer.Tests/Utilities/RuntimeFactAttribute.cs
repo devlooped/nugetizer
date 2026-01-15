@@ -25,6 +25,7 @@ public class RuntimeFactAttribute : FactAttribute
     /// </summary>
     public RuntimeFactAttribute() { }
 
+#if !NET472
     /// <summary>
     /// Sets the runtime identifier the test requires to run.
     /// </summary>
@@ -37,6 +38,7 @@ public class RuntimeFactAttribute : FactAttribute
                 Skip += $"Requires {value} but was {RuntimeInformation.RuntimeIdentifier}.";
         }
     }
+#endif
 }
 
 public class RuntimeTheoryAttribute : TheoryAttribute
@@ -61,6 +63,7 @@ public class RuntimeTheoryAttribute : TheoryAttribute
     /// </summary>
     public RuntimeTheoryAttribute() { }
 
+#if !NET472
     /// <summary>
     /// Sets the runtime identifier the test requires to run.
     /// </summary>
@@ -73,4 +76,5 @@ public class RuntimeTheoryAttribute : TheoryAttribute
                 Skip += $"Requires {value} but was {RuntimeInformation.RuntimeIdentifier}.";
         }
     }
+#endif
 }
