@@ -604,6 +604,75 @@ You can turn this off by setting the following property at the project level:
 </PropertyGroup>
 ```
 
+### MSBuild Properties Reference
+
+NuGetizer provides many MSBuild properties to control how packages are created. Here's a comprehensive reference:
+
+#### Core Packing Control
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| **EnablePackInference** | `true` | Controls whether to automatically infer package contents from project items. Set to `false` to only include explicit `PackageFile` items. |
+| **EnablePackCleanup** | `true` | Controls whether to cleanup package output folder and NuGet caches on pack. Only active outside of CI environments. |
+| **PackProjectReferences** | `true` | Whether to include referenced projects' contents in the package. |
+| **EmitPackage** | `true` | Whether to emit the final `.nupkg` file for packable projects. |
+| **EmitNuspec** | `false` | Whether to emit the `.nuspec` file that's used to create the final package. |
+| **PackageOutputPath** | `$(BaseOutputPath)` | Directory where the `.nupkg` will be saved. |
+
+#### Build & Pack Workflow
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| **PackOnBuild** | `false` | Whether to automatically pack after building. Defaults to `true` for `Release` configuration builds. |
+| **BuildOnPack** | `true` | Whether to build before packing. Set to `false` to skip building if you've already built separately. |
+
+#### Content Selection
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| **PackBuildOutput** | `true` | Include build output (assemblies) in package. Set to `false` for packages that don't contain libraries (e.g., tools-only or build-only packages). |
+| **PackReadme** | `true` | Automatically include and pack the readme file (`readme.md` by default, or the file specified by `PackageReadmeFile`). |
+| **PackSymbols** | `true` | Include debug symbols (PDB files) in package when `PackBuildOutput=true`. |
+| **PackSatelliteDlls** | `true` | Include satellite resource assemblies in package when `PackBuildOutput=true`. |
+| **PackDependencies** | `true` | Include NuGet package dependencies in the package metadata. Set to `false` to exclude all dependencies. |
+| **PackFrameworkReferences** | `true` | Include framework (`<Reference>`) references in package metadata. Defaults based on `PackFolder` setting. |
+
+#### Source Control & Versioning
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| **UseShortSourceRevisionId** | `true` | Use 9-character short SHA instead of the full 40-character commit hash for the `SourceRevisionId`. When `true`, automatically shortens `$(SourceRevisionId)` to `$(SourceRevisionId.Substring(0, 9))` for the package's repository commit metadata and `AssemblyInformationalVersion` attribute. Set to `false` to use the full commit hash. |
+
+#### Advanced Scenarios
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| **PackAsTool** | Auto-detected | Pack as a .NET CLI tool. Automatically set to `true` when `ToolCommandName` is specified. |
+| **PackAsPublish** | Auto-detected | For `Exe` projects, pack the published output instead of build output. Automatically enabled for executables unless `PackAsTool=true`. Set to `false` to pack as a regular library. |
+
+#### Item-Specific Packing
+
+You can control packing for specific item types by setting `Pack[ItemType]` properties:
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `PackNone` | `false` | Pack `<None>` items. |
+| `PackContent` | `false` | Pack `<Content>` items (items with `CopyToOutputDirectory` are packed by default). |
+| `PackCompile` | `false` | Pack `<Compile>` source files. |
+
+All item types respect the `Pack="true"` or `Pack="false"` metadata to override the defaults.
+
+#### SDK Pack Compatibility
+
+For compatibility with the built-in SDK Pack, NuGetizer also recognizes these properties:
+
+| NuGetizer Property | SDK Pack Equivalent |
+|-------------------|---------------------|
+| `PackBuildOutput` | `IncludeBuildOutput` |
+| `PackSymbols` | `IncludeSymbols` |
+| `PackContent` | `IncludeContentInPack` |
+| `PackCompile` | `IncludeSource` |
+
 ## Dogfooding
 
 [![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.app/vpre/nugetizer/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.app/index.json) 
