@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- Use net472 on Windows (for Desktop MSBuild compatibility), net10.0 on Linux -->
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">net472</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('Windows'))">net10.0</TargetFrameworks>
     <DefaultItemExcludes>$(DefaultItemExcludes);Scenarios\**\*</DefaultItemExcludes>
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
@@ -15,6 +17,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" Condition="'$(TargetFramework)' == 'net472'" />
     <PackageReference Include="Microsoft.Build" Version="17.14.28" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.10.46" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.9.1" />
@@ -30,7 +33,8 @@
     <None Include="Scenarios\**\*.*" Exclude="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Content\**\*.*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\NuGetizer.Tasks\bin\$(Configuration)\*.*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
-    <Compile Remove="ModuleInitializerAttribute.cs" />
+    <!-- ModuleInitializerAttribute is built-in for net5.0+ -->
+    <Compile Remove="ModuleInitializerAttribute.cs" Condition="'$(TargetFramework)' != 'net472'" />
   </ItemGroup>  
   <ItemGroup>
     <EmbeddedResource Include="..\NuGetizer.Tasks\Resources.resx" Link="Resources.resx" />
