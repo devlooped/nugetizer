@@ -89,14 +89,12 @@ jobs:
           path: msbuild.binlog
 
       - name: 🚀 sleet
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-latest' && env.SLEET_CONNECTION != ''
         env:
           SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
         run: |
-          if [ -n "$SLEET_CONNECTION" ]; then
-            dotnet tool install -g --version 4.0.18 sleet 
-            sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
-          fi
+          dotnet tool install -g --version 4.0.18 sleet 
+          sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
 
   dotnet-format:
     runs-on: ubuntu-latest
