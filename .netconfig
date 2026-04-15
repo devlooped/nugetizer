@@ -32,9 +32,9 @@
 	sha = e733294084fb3e75d517a2e961e87df8faae7dc6
 [file ".gitignore"]
 	url = https://github.com/devlooped/oss/blob/main/.gitignore
-	etag = 11767f73556aa4c6c8bcc153b77ee8e8114f99fa3b885b0a7d66d082f91e77b3
+	etag = 20a8b49d57024abbd85aac5b0020c30e5eb68e0384b2761e93727c8780c4a991
 	weak
-	sha = 3776526342afb3f57da7e80f2095e5fdca3c31c9
+	sha = a225b7a9f609f26bcc24e0d84f663387be251a7d
 [file "Directory.Build.rsp"]
 	url = https://github.com/devlooped/oss/blob/main/Directory.Build.rsp
 	etag = 0ccae83fc51f400bfd7058170bfec7aba11455e24a46a0d7e6a358da6486e255
@@ -50,14 +50,14 @@
 	sha = 0683ee777d7d878d4bf013d7deea352685135a05
 [file "src/Directory.Build.props"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.props
-	etag = 3ebde0a8630d526b80f15801179116e17a857ff880a4442e7db7b075efa4fd63
+	etag = bd05f9f240823c0ac79ddfefe654061550c36f82dd94fa513b82900e92686a5f
 	weak
-	sha = 0ff8b7b79a82112678326d1dc5543ed890311366
+	sha = dd13ed3334135c30dcb1e3b2295dc7622de298d9
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
-	etag = 8b4492765755c030c4c351e058a92f53ab493cab440c1c0ef431f6635c4dae0e
+	etag = 907682e5632a2ba430357e6e042a4ca33cb8c94a3a215d3091aa03f5958a4877
 	weak
-	sha = 4339749ef4b8f66def75931df09ef99c149f8421
+	sha = 083a37bd9307ec820bac6ee3c7384083151d36d8
 [file "src/kzu.snk"]
 	url = https://github.com/devlooped/oss/blob/main/src/kzu.snk
 	etag = b8d789b5b6bea017cdcc8badcea888ad78de3e34298efca922054e9fb0e7b6b9
@@ -116,8 +116,8 @@
 	weak
 [file ".github/workflows/triage.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/triage.yml
-	sha = 33000c0c4ab4eb4e0e142fa54515b811a189d55c
-	etag = 013a47739e348f06891f37c45164478cca149854e6cd5c5158e6f073f852b61a
+	sha = 61a602fc61eedbdae235f01e93657a6219ac2427
+	etag = 152cd3a559c08da14d1da12a5262ba1d2e0ed6bed6d2eabf5bd209b0c35d8a75
 	weak
 [file ".github/workflows/dotnet-file-core.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/dotnet-file-core.yml
@@ -139,4 +139,15 @@
 	url = https://github.com/devlooped/catbag/blob/main/MSBuild/ILRepack.targets
 	sha = 04f82bd24a0c01503e33d3fe45d6de1935e0d2eb
 	etag = 5d3c3772b11e579ae9cbde8731ff3f9bbd97c166f7b159e03530a3ac8bd8c0bf
+	weak
+[file "readme.tmp.md"]
+	url = https://github.com/devlooped/oss/blob/main/readme.tmp.md
+	skip
+[file "oss.cs"]
+	url = https://github.com/devlooped/oss/blob/main/oss.cs
+	skip
+[file ".github/copilot-instructions.md"]
+	url = https://github.com/devlooped/oss/blob/main/.github/copilot-instructions.md
+	sha = e616d89d9537c4b8ccf1c20dd277ab82104167c4
+	etag = 6ee650d118a57494d3545d54718ccaa5257b09d54504e9c21514fe596edd9678
 	weak
