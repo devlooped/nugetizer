@@ -1,17 +1,20 @@
 bin
 obj
+out
 artifacts
 pack
 TestResults
 results
 BenchmarkDotNet.Artifacts
 /app
+/mcps
 .vs
 .vscode
 .genaiscript
 .idea
 local.settings.json
 .env
+.next
 *.local
 
 *.suo
@@ -26,6 +29,7 @@ local.settings.json
 *.binlog
 *.zip
 __azurite*.*
+AzuriteConfig
 __*__
 
 .nuget
