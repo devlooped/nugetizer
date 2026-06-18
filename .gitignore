@@ -6,8 +6,9 @@ pack
 TestResults
 results
 BenchmarkDotNet.Artifacts
+mcps
 /app
-/mcps
+/temp
 .vs
 .vscode
 .genaiscript
