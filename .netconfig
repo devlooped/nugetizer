@@ -32,9 +32,9 @@
 	sha = 387f0616b2c56adc4f33f2858da818f7e0d92ef3
 [file ".gitignore"]
 	url = https://github.com/devlooped/oss/blob/main/.gitignore
-	etag = f502a2be3b4155fd86675ef45a4364e598979738128a612deb7db59074f93a51
+	etag = cdf95c41f5d77e89beb6656b30b72426169a5cfcbb2873705d2557d4eb0c364a
 	weak
-	sha = c1d29fbde52b1505288e3392e7f5fdcb2299f322
+	sha = 11680ae93d19eb536a8d903f191dfee5a351238a
 [file "Directory.Build.rsp"]
 	url = https://github.com/devlooped/oss/blob/main/Directory.Build.rsp
 	etag = 0ccae83fc51f400bfd7058170bfec7aba11455e24a46a0d7e6a358da6486e255
