@@ -12,6 +12,12 @@ Copyright (c) .NET Foundation. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup Label="Hidden">
+    <!-- If this file is the configured SDK pack targets import and it was imported manually
+         first, prevent Microsoft.NET.Sdk\Sdk.targets from importing the same file again. -->
+    <ImportNuGetBuildTasksPackTargetsFromSdk
+        Condition="'$(NuGetBuildTasksPackTargets)' != '' and
+                   '$([System.IO.Path]::GetFullPath(`$(NuGetBuildTasksPackTargets)`))' == '$(MSBuildThisFileFullPath)'">false</ImportNuGetBuildTasksPackTargetsFromSdk>
+
     <!-- Matches the SDK Pack default when set to true. -->
     <PackageId Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''">$(AssemblyName)</PackageId>
     <PackageId Condition="'$(IsPackable)' == 'true' and '$(PackageId)' == ''">$(MSBuildProjectName)</PackageId>

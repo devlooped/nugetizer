@@ -12,6 +12,29 @@ namespace NuGetizer
         public given_packinference(ITestOutputHelper output) => this.output = output;
 
         [Fact]
+        public void when_pack_metadata_is_imported_from_directory_targets_then_does_not_warn_on_duplicate_import()
+        {
+            var result = Builder.BuildProject(@"
+<Project Sdk='Microsoft.NET.Sdk'>
+  <PropertyGroup>
+    <PackageId>Library</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+</Project>",
+                "GetPackageContents", output, null,
+                ("Directory.Build.targets", @"
+<Project>
+  <Import Project='$(NuGetTargetsPath)\NuGetizer.PackageMetadata.targets'
+          Condition=""Exists('$(NuGetTargetsPath)\NuGetizer.PackageMetadata.targets')"" />
+</Project>"));
+
+            result.AssertSuccess(output);
+            Assert.DoesNotContain(result.Logger.Warnings, warning =>
+                warning.Code == "MSB4011" &&
+                warning.Message.Contains("NuGetizer.PackageMetadata.targets"));
+        }
+
+        [Fact]
         public void when_none_has_PackagePath_then_packs()
         {
             var result = Builder.BuildProject(@"
