@@ -1,5 +1,28 @@
 # Changelog
 
+## [v1.4.8](https://github.com/devlooped/nugetizer/tree/v1.4.8) (2026-06-19)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.7...v1.4.8)
+
+:sparkles: Implemented enhancements:
+
+- Add/Improve support for Central Package Management [\#544](https://github.com/devlooped/nugetizer/issues/544)
+- Packing reference assemblies generated at compile time is valid. [\#480](https://github.com/devlooped/nugetizer/issues/480)
+- PackNone should default to 'true' in authoring/packaging projects [\#346](https://github.com/devlooped/nugetizer/issues/346)
+- Add support for packing reference assemblies [\#690](https://github.com/devlooped/nugetizer/pull/690) (@Copilot)
+- Add VersionOverride support for Central Package Management [\#683](https://github.com/devlooped/nugetizer/pull/683) (@Copilot)
+- Default PackNone to true in packaging projects [\#682](https://github.com/devlooped/nugetizer/pull/682) (@Copilot)
+
+:hammer: Other:
+
+- Enable tests to be run using dotnet test on linux [\#658](https://github.com/devlooped/nugetizer/issues/658)
+- Re-enable build/tests on macOS/linux [\#174](https://github.com/devlooped/nugetizer/issues/174)
+
+:twisted_rightwards_arrows: Merged:
+
+- Avoid duplicate NuGet pack targets import [\#718](https://github.com/devlooped/nugetizer/pull/718) (@kzu)
+- Enable cross-platform testing with dotnet test on Linux [\#684](https://github.com/devlooped/nugetizer/pull/684) (@Copilot)
+
 ## [v1.4.7](https://github.com/devlooped/nugetizer/tree/v1.4.7) (2026-01-14)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.6...v1.4.7)
