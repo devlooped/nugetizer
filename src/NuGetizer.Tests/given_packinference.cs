@@ -20,9 +20,10 @@ namespace NuGetizer
     <PackageId>Library</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+  <Import Project='manual-import.targets' Condition=""Exists('manual-import.targets')"" />
 </Project>",
                 "GetPackageContents", output, null,
-                ("Directory.Build.targets", @"
+                ("manual-import.targets", @"
 <Project>
   <Import Project='$(NuGetTargetsPath)\NuGetizer.PackageMetadata.targets'
           Condition=""Exists('$(NuGetTargetsPath)\NuGetizer.PackageMetadata.targets')"" />
