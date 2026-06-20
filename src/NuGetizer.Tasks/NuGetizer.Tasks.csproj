@@ -60,7 +60,6 @@
     <EmbeddedResource Update="Resources.resx" Generator="" />
   </ItemGroup>
   
-  <Import Project="NuGetizer.Tasks.Pack.targets" Condition="'$(GeneratePackageOnBuild)' == 'false' AND '$(NuGetize)' != 'true'" />
   <Import Project="NuGetizer.Tasks.targets" />
   <Import Project="..\ILRepack.targets" />
 </Project>

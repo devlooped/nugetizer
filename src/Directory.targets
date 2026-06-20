@@ -9,6 +9,10 @@
   <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets"
           Condition="($(IsPackable) == 'true' OR $(PackFolder) != '') AND $(NuGetize) == 'true'" />
 
+  <!-- Imported last so it overrides SDK Pack's Pack target for NuGetizer.Tasks self-pack. -->
+  <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\NuGetizer.Tasks.Pack.targets"
+          Condition="'$(MSBuildProjectName)' == 'NuGetizer.Tasks' and '$(NuGetize)' != 'true'" />
+
   <PropertyGroup>
     <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
   </PropertyGroup>
