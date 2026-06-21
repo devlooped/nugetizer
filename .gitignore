@@ -3,6 +3,8 @@ obj
 out
 artifacts
 pack
+agent-tools
+terminals
 TestResults
 results
 BenchmarkDotNet.Artifacts
