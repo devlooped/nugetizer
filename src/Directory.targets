@@ -13,4 +13,24 @@
     <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
   </PropertyGroup>
 
+  <!-- 
+    Robust Pack delegation for NuGetizer itself (and similar PackFolder=build projects).
+    "dotnet pack" (and GeneratePackageOnBuild=true scenarios) must go through NuGetize=true
+    so that NuGetizer's inference + PackFolder=build logic classifies the *.props/*.targets
+    into build/ + buildMultiTargeting/ instead of the SDK pack's default content/contentFiles handling.
+    This definition is late (in Directory.targets) so it wins over the SDK pack target's definition
+    that was forcibly imported to workaround PackageId defaults.
+  -->
+  <Target Name="Pack"
+          Condition="'$(NuGetize)' != 'true' and ('$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive' or '$(MSBuildProjectName)' == 'NuGetizer.Tasks')"
+          Returns="@(PackOutput)">
+    <MSBuild Projects="$(MSBuildProjectFullPath)"
+             UnloadProjectsOnCompletion="true"
+             UseResultsCache="false"
+             Properties="NuGetize=true;GeneratePackageOnBuild=false"
+             Targets="Pack">
+      <Output TaskParameter="TargetOutputs" ItemName="PackOutput" />
+    </MSBuild>
+  </Target>
+
 </Project>
