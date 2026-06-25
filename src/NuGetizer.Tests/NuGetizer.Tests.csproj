@@ -9,10 +9,39 @@
     <DisableMSBuildAssemblyCopyCheck>true</DisableMSBuildAssemblyCopyCheck>
     <NoWarn>$(NoWarn);1705</NoWarn>
     <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3277</MSBuildWarningsAsMessages>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);1705;MSB3277</WarningsNotAsErrors>
   </PropertyGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\NuGetizer.Tasks\NuGetizer.Tasks.csproj" />
+  </ItemGroup>
+  
+  <!-- Conditional direct References (for net10.0 / !net472 path) using HintPath to the *exact* NuGet.*.dll
+       copied/built alongside NuGetizer.Tasks.dll. This ensures the compiler sees the same assembly version
+       (e.g. 7.6.0.59) that NuGetizer.Tasks was built against, bypassing the TFM-specific asm version skew
+       (net8/net10 -> 7.6.0.0) from the NuGet.Packaging 7.6.0 package + WarningsAsErrors in CI.
+       Keep the PackageReference for NuGet.Packaging as base. -->
+  <ItemGroup Condition="'$(TargetFramework)' != 'net472'">
+    <Reference Include="NuGet.Packaging">
+      <HintPath>..\NuGetizer.Tasks\bin\$(Configuration)\NuGet.Packaging.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="NuGet.Frameworks">
+      <HintPath>..\NuGetizer.Tasks\bin\$(Configuration)\NuGet.Frameworks.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="NuGet.Versioning">
+      <HintPath>..\NuGetizer.Tasks\bin\$(Configuration)\NuGet.Versioning.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="NuGet.Configuration">
+      <HintPath>..\NuGetizer.Tasks\bin\$(Configuration)\NuGet.Configuration.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="NuGet.Common">
+      <HintPath>..\NuGetizer.Tasks\bin\$(Configuration)\NuGet.Common.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
   </ItemGroup>
   
   <ItemGroup>
