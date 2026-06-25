@@ -7,6 +7,8 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);Scenarios\**\*</DefaultItemExcludes>
     <LangVersion>Preview</LangVersion>
     <DisableMSBuildAssemblyCopyCheck>true</DisableMSBuildAssemblyCopyCheck>
+    <NoWarn>$(NoWarn);1705</NoWarn>
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3277</MSBuildWarningsAsMessages>
   </PropertyGroup>
   
   <ItemGroup>
