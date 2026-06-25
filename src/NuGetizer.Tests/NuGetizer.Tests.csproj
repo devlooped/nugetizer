@@ -20,7 +20,9 @@
        copied/built alongside NuGetizer.Tasks.dll. This ensures the compiler sees the same assembly version
        (e.g. 7.6.0.59) that NuGetizer.Tasks was built against, bypassing the TFM-specific asm version skew
        (net8/net10 -> 7.6.0.0) from the NuGet.Packaging 7.6.0 package + WarningsAsErrors in CI.
-       Keep the PackageReference for NuGet.Packaging as base. -->
+       The PackageReference below is conditioned with ExcludeAssets=compile on net10 to prevent it from
+       injecting the package's net8.0 (7.6.0.0) reference for compile; these manual References supply
+       the matching .59 versions. -->
   <ItemGroup Condition="'$(TargetFramework)' != 'net472'">
     <Reference Include="NuGet.Packaging">
       <HintPath>..\NuGetizer.Tasks\bin\$(Configuration)\NuGet.Packaging.dll</HintPath>
@@ -56,7 +58,11 @@
     <PackageReference Include="MSBuild.StructuredLogger" Version="2.3.204" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
-    <PackageReference Include="NuGet.Packaging" Version="7.6.0" />
+    <!-- Condition the NuGet.Packaging ref: for net472 keep normal (picks .59 likely), for net10.0 exclude compile assets
+         so it does not inject the package net8.0 (asm 7.6.0.0) reference. The conditional References above provide
+         the matching .59 dlls from the Tasks build output. -->
+    <PackageReference Include="NuGet.Packaging" Version="7.6.0" Condition="'$(TargetFramework)' == 'net472'" />
+    <PackageReference Include="NuGet.Packaging" Version="7.6.0" ExcludeAssets="compile" Condition="'$(TargetFramework)' != 'net472'" />
     <PackageReference Include="ThisAssembly.Project" Version="2.1.2" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Strings" Version="2.1.2" PrivateAssets="all" />
   </ItemGroup>
