@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.4.9](https://github.com/devlooped/nugetizer/tree/v1.4.9) (2026-06-25)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.8...v1.4.9)
+
+:bug: Fixed bugs:
+
+- fix: make NuGetizer self-pack robust so build/ assets always land correctly [\#726](https://github.com/devlooped/nugetizer/pull/726) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- fix: ensure NuGetizer dogfooding package is always produced by CI pack + sleet [\#728](https://github.com/devlooped/nugetizer/pull/728) (@kzu)
+
 ## [v1.4.8](https://github.com/devlooped/nugetizer/tree/v1.4.8) (2026-06-19)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.7...v1.4.8)
