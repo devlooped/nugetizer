@@ -6,9 +6,6 @@
     <ImportNuGetBuildTasksPackTargetsFromSdk Condition="'$(NuGetize)' == 'true' or '$(GeneratePackageOnBuild)' != ''">false</ImportNuGetBuildTasksPackTargetsFromSdk>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets"
-          Condition="($(IsPackable) == 'true' OR $(PackFolder) != '') AND $(NuGetize) == 'true'" />
-
   <PropertyGroup>
     <PackFolderKindFile>$(IntermediateOutputPath)PackFolderKind.g$(DefaultLanguageSourceExtension)</PackFolderKindFile>
   </PropertyGroup>
@@ -20,6 +17,9 @@
     into build/ + buildMultiTargeting/ instead of the SDK pack's default content/contentFiles handling.
     This definition is late (in Directory.targets) so it wins over the SDK pack target's definition
     that was forcibly imported to workaround PackageId defaults.
+    IMPORTANT: declare the delegator BEFORE the conditional engine import below. When NuGetize=true
+    the engine import brings in the real Pack target later in processing, so it wins. When not NuGetize,
+    the delegator is the active definition and redirects.
   -->
   <Target Name="Pack"
           Condition="'$(NuGetize)' != 'true' and ('$(PackFolder)' == 'build' or '$(PackFolder)' == 'buildTransitive' or '$(MSBuildProjectName)' == 'NuGetizer.Tasks')"
@@ -32,5 +32,8 @@
       <Output TaskParameter="TargetOutputs" ItemName="PackOutput" />
     </MSBuild>
   </Target>
+
+  <Import Project="$(MSBuildThisFileDirectory)NuGetizer.Tasks\$(OutputPath)NuGetizer.targets"
+          Condition="($(IsPackable) == 'true' OR $(PackFolder) != '') AND $(NuGetize) == 'true'" />
 
 </Project>
