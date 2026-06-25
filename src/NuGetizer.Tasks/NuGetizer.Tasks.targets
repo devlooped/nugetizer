@@ -36,7 +36,8 @@
     <PropertyGroup>
       <XmlNs>&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;</XmlNs>
     </PropertyGroup>
-    <XmlPoke Namespaces="$(XmlNs)"
+    <XmlPoke Condition="Exists('$(OutputPath)NuGetizer.Version.props')"
+				 Namespaces="$(XmlNs)"
 				 XmlInputPath="$(OutputPath)NuGetizer.Version.props"
 				 Query="/msb:Project/msb:PropertyGroup/msb:PackVersion"
 				 Value="$(Version)"/>
