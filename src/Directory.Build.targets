@@ -41,6 +41,13 @@
 
   <Import Project="$(NuGetBuildTasksPackTargets)" Condition="Exists('$(NuGetBuildTasksPackTargets)') And '$(NuGetize)' != 'true'" />
 
+  <!-- Fix for hardcoded assumption in SDK: <GenerateStaticWebAssetsManifest Source="$(PackageId)" -->
+  <Target Name="EnsureStaticWebAssetsSource" BeforeTargets="GenerateStaticWebAssetsManifest">
+    <PropertyGroup>
+      <PackageId Condition="'$(PackageId)' == ''">$(MSBuildProjectName)</PackageId>
+    </PropertyGroup>
+  </Target>
+
   <PropertyGroup>
     <!-- Revert the forced PackageId by the NuGet SDK targets for non-packable projects, see https://github.com/NuGet/Home/issues/14928 -->
     <PackageId Condition="'$(IsPackable)' == 'false'">$(_PackageId)</PackageId>
