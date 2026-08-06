@@ -22,6 +22,10 @@
     <ILRepack>true</ILRepack>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <ReadmePackageVersion Condition="'$(ReadmePackageVersion)' == ''">1.2.0</ReadmePackageVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.11.6" PrivateAssets="all" />
     <PackageReference Include="NuGet.Packaging" Version="7.6.0" PrivateAssets="all" />
@@ -29,16 +33,19 @@
     <PackageReference Include="ThisAssembly.Project" Version="2.1.2" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Strings" Version="2.1.2" PrivateAssets="all" />
     <PackageReference Include="Minimatch" Version="2.0.0" PrivateAssets="all" />
-    <PackageReference Include="Markdig" Version="1.3.2" PrivateAssets="all" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" PrivateAssets="all" />
+    <!--
+      Readme provides pack-time include resolution, tokens, and GitHub relative URL expansion.
+      It self-sets PrivateAssets=all Pack=false so it never becomes a dependency
+      (https://github.com/devlooped/readme/commit/7d092d51ffed815c3c9870365b620573d0c6a385).
+      Force it as an explicit PackageFile dependency so NuGetizer consumers still get it.
+    -->
+    <PackageReference Include="Readme" Version="$(ReadmePackageVersion)" />
+    <PackageFile Include="Readme" Version="$(ReadmePackageVersion)" PackFolder="Dependency" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectCapability Include="Pack" />
-    <ILRepackInclude Include="Markdig" />
-    <ILRepackInclude Include="System.Buffers" />
-    <ILRepackInclude Include="System.Memory" />
-    <ILRepackInclude Include="System.Numerics.Vectors" />
     <ILRepackInclude Include="System.Runtime.CompilerServices.Unsafe" />
     <ILRepackInclude Include="Microsoft.NET.StringTools" />
   </ItemGroup>

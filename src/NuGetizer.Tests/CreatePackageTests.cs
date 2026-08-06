@@ -268,10 +268,12 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_readme_has_include_and_tokens_then_replacements_applied()
+        public void when_readme_has_tokens_then_createpackage_does_not_replace_them()
         {
+            // Readme tokens/includes/GH URLs are owned by the Readme package; CreatePackage
+            // must leave the packed readme content untouched.
             var content = Path.GetTempFileName();
-            File.WriteAllText(content, "<!-- include https://github.com/devlooped/.github/blob/807335297e28cfe5a6dd00ecd72b2ca32c0f1ed8/osmf.md -->");
+            File.WriteAllText(content, "Package $product$ ($id$).");
             task.Contents = new[]
             {
                 new TaskItem(content, new Metadata
@@ -297,11 +299,11 @@ namespace NuGetizer
 
             var readme = File.ReadAllText(file.Source);
 
-            Assert.Contains("NuGetizer", readme);
+            Assert.Equal("Package $product$ ($id$).", readme);
         }
 
         [Fact]
-        public void when_readme_has_relativeurl_then_expands_github_url()
+        public void when_readme_has_relativeurl_then_createpackage_does_not_expand_it()
         {
             var content = Path.GetTempFileName();
             File.WriteAllText(content, "See [license](license.txt).");
@@ -325,197 +327,14 @@ namespace NuGetizer
 
             Assert.NotNull(manifest);
 
-            Assert.Equal("readme.md", manifest.Metadata.Readme);
-
             var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
             Assert.NotNull(file);
             Assert.True(File.Exists(file.Source));
 
             var readme = File.ReadAllText(file.Source);
 
-            Assert.Contains("[license](https://raw.githubusercontent.com/devlooped/nugetizer/9dc2cb5de/license.txt)", readme);
-        }
-
-        [Fact]
-        public void when_readme_has_link_with_tooltip_then_preserves_tooltip()
-        {
-            var content = Path.GetTempFileName();
-            File.WriteAllText(content, "See ![avatar](avatars/user.png \"User Avatar\").");
-            task.Contents = new[]
-            {
-                new TaskItem(content, new Metadata
-                {
-                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-                    { MetadataName.PackFolder, PackFolderKind.None },
-                    { MetadataName.PackagePath, "readme.md" }
-                }),
-            };
-
-            task.Manifest.SetMetadata("Readme", "readme.md");
-            task.Manifest.SetMetadata("RepositoryType", "git");
-            task.Manifest.SetMetadata("RepositoryUrl", "https://github.com/devlooped/nugetizer");
-            task.Manifest.SetMetadata("RepositorySha", "abc123def");
-
-            createPackage = true;
-            ExecuteTask(out var manifest);
-
-            Assert.NotNull(manifest);
-
-            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
-            Assert.NotNull(file);
-            Assert.True(File.Exists(file.Source));
-
-            var readme = File.ReadAllText(file.Source);
-
-            Assert.Contains("[avatar](https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/avatars/user.png \"User Avatar\")", readme);
-        }
-
-        [Fact]
-        public void when_readme_has_absolute_url_then_does_not_replace()
-        {
-            var content = Path.GetTempFileName();
-            File.WriteAllText(content, "[![badge](https://raw.githubusercontent.com/devlooped/sponsors/main/.github/avatars/user.png \"User\")](https://github.com/user)");
-            task.Contents = new[]
-            {
-                new TaskItem(content, new Metadata
-                {
-                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-                    { MetadataName.PackFolder, PackFolderKind.None },
-                    { MetadataName.PackagePath, "readme.md" }
-                }),
-            };
-
-            task.Manifest.SetMetadata("Readme", "readme.md");
-            task.Manifest.SetMetadata("RepositoryType", "git");
-            task.Manifest.SetMetadata("RepositoryUrl", "https://github.com/devlooped/nugetizer");
-            task.Manifest.SetMetadata("RepositorySha", "abc123def");
-
-            createPackage = true;
-            ExecuteTask(out var manifest);
-
-            Assert.NotNull(manifest);
-
-            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
-            Assert.NotNull(file);
-            Assert.True(File.Exists(file.Source));
-
-            var readme = File.ReadAllText(file.Source);
-
-            // Should NOT prepend repository URL to absolute URLs
-            Assert.DoesNotContain("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/https://raw.githubusercontent.com", readme);
-            // Should preserve the original absolute URL
-            Assert.Contains("https://raw.githubusercontent.com/devlooped/sponsors/main/.github/avatars/user.png", readme);
-        }
-
-        [Fact]
-        public void when_readme_has_image_link_then_uses_raw_url()
-        {
-            var content = Path.GetTempFileName();
-            File.WriteAllText(content, "![Image](img/logo.png)");
-            task.Contents = new[]
-            {
-                new TaskItem(content, new Metadata
-                {
-                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-                    { MetadataName.PackFolder, PackFolderKind.None },
-                    { MetadataName.PackagePath, "readme.md" }
-                }),
-            };
-
-            task.Manifest.SetMetadata("Readme", "readme.md");
-            task.Manifest.SetMetadata("RepositoryType", "git");
-            task.Manifest.SetMetadata("RepositoryUrl", "https://github.com/devlooped/nugetizer");
-            task.Manifest.SetMetadata("RepositorySha", "abc123def");
-
-            createPackage = true;
-            ExecuteTask(out var manifest);
-
-            Assert.NotNull(manifest);
-
-            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
-            Assert.NotNull(file);
-            Assert.True(File.Exists(file.Source));
-
-            var readme = File.ReadAllText(file.Source);
-
-            // Should use raw.githubusercontent.com format for proper image display
-            Assert.Contains("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/img/logo.png", readme);
-            Assert.DoesNotContain("/blob/", readme);
-        }
-
-        [Fact]
-        public void when_readme_has_relative_image_url_and_link_then_expands_both()
-        {
-            var content = Path.GetTempFileName();
-            File.WriteAllText(content, "[![Image](img/logo.png)](osmf.txt)");
-            task.Contents = new[]
-            {
-                new TaskItem(content, new Metadata
-                {
-                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-                    { MetadataName.PackFolder, PackFolderKind.None },
-                    { MetadataName.PackagePath, "readme.md" }
-                }),
-            };
-
-            task.Manifest.SetMetadata("Readme", "readme.md");
-            task.Manifest.SetMetadata("RepositoryType", "git");
-            task.Manifest.SetMetadata("RepositoryUrl", "https://github.com/devlooped/nugetizer");
-            task.Manifest.SetMetadata("RepositorySha", "abc123def");
-
-            createPackage = true;
-            ExecuteTask(out var manifest);
-
-            Assert.NotNull(manifest);
-
-            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
-            Assert.NotNull(file);
-            Assert.True(File.Exists(file.Source));
-
-            var readme = File.ReadAllText(file.Source);
-
-            // Should use raw.githubusercontent.com format for proper image display
-            Assert.Contains("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/img/logo.png", readme);
-            Assert.Contains("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/osmf.txt", readme);
-            Assert.DoesNotContain("/blob/", readme);
-        }
-
-
-        [Fact]
-        public void when_readme_has_clickable_image_badge_with_relative_url_then_replaces_url()
-        {
-            var content = Path.GetTempFileName();
-            File.WriteAllText(content, "[![EULA](https://img.shields.io/badge/EULA-OSMF-blue)](osmfeula.txt)");
-            task.Contents = new[]
-            {
-                new TaskItem(content, new Metadata
-                {
-                    { MetadataName.PackageId, task.Manifest.GetMetadata("Id") },
-                    { MetadataName.PackFolder, PackFolderKind.None },
-                    { MetadataName.PackagePath, "readme.md" }
-                }),
-            };
-
-            task.Manifest.SetMetadata("Readme", "readme.md");
-            task.Manifest.SetMetadata("RepositoryType", "git");
-            task.Manifest.SetMetadata("RepositoryUrl", "https://github.com/devlooped/nugetizer");
-            task.Manifest.SetMetadata("RepositorySha", "abc123def");
-
-            createPackage = true;
-            ExecuteTask(out var manifest);
-
-            Assert.NotNull(manifest);
-
-            var file = manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme);
-            Assert.NotNull(file);
-            Assert.True(File.Exists(file.Source));
-
-            var readme = File.ReadAllText(file.Source);
-
-            // Should replace the relative URL in the clickable image badge
-            Assert.Contains("https://raw.githubusercontent.com/devlooped/nugetizer/abc123def/osmfeula.txt", readme);
-            // Should preserve the absolute image URL
-            Assert.Contains("https://img.shields.io/badge/EULA-OSMF-blue", readme);
+            Assert.Equal("See [license](license.txt).", readme);
+            Assert.DoesNotContain("raw.githubusercontent.com", readme);
         }
 
         [Fact]
@@ -941,12 +760,15 @@ namespace NuGetizer
         }
 
         [Fact]
-        public void when_creating_package_with_readme_then_resolves_includes()
+        public void when_creating_package_with_readme_then_does_not_resolve_includes()
         {
+            // Include resolution moved to the Readme package dependency; CreatePackage
+            // must leave include markers untouched so double-processing never happens.
             var readme = Path.GetTempFileName();
             var footer = Path.GetTempFileName();
             File.WriteAllText(footer, "footer");
-            File.WriteAllText(readme, $"<!-- include {Path.GetFileName(footer)} -->");
+            var includeMarker = $"<!-- include {Path.GetFileName(footer)} -->";
+            File.WriteAllText(readme, includeMarker);
 
             task.Manifest.SetMetadata("Readme", "readme.md");
             task.Contents = new[]
@@ -972,7 +794,8 @@ namespace NuGetizer
             entry.ExtractToFile(updated, true);
             var content = File.ReadAllText(updated);
 
-            Assert.Contains("footer", content);
+            Assert.Contains(includeMarker, content);
+            Assert.DoesNotContain("footer", content);
         }
 
         [Fact]

@@ -70,7 +70,12 @@
   <ItemGroup>
     <None Include="Scenarios\**\*.*" Exclude="Scenarios\**\obj\**\*.*;Scenarios\**\bin\**\*.*" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Content\**\*.*" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="..\NuGetizer.Tasks\bin\$(Configuration)\*.*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <!-- Exclude MSBuild host assemblies so scenario builds load them from VS/MSBuild path
+         (stale System.Resources.Extensions from Tasks can break GenerateResource / MSB3554). -->
+    <Content Include="..\NuGetizer.Tasks\bin\$(Configuration)\*.*"
+             Exclude="..\NuGetizer.Tasks\bin\$(Configuration)\Microsoft.Build*.dll;
+                      ..\NuGetizer.Tasks\bin\$(Configuration)\System.Resources.Extensions.dll"
+             CopyToOutputDirectory="PreserveNewest" Visible="false" />
     <!-- ModuleInitializerAttribute is built-in for net5.0+ -->
     <Compile Remove="ModuleInitializerAttribute.cs" Condition="'$(TargetFramework)' != 'net472'" />
   </ItemGroup>  
@@ -101,6 +106,8 @@
   <Target Name="ClearMSBuild" AfterTargets="Build">
     <ItemGroup>
       <MSBuildAssembly Include="$(OutputPath)\Microsoft.Build*.dll" Exclude="$(OutputPath)\Microsoft.Build.Locator.dll" />
+      <!-- Host-owned; wrong version breaks scenario GenerateResource (MSB3554). -->
+      <MSBuildAssembly Include="$(OutputPath)\System.Resources.Extensions.dll" />
     </ItemGroup>
     <Delete Files="@(MSBuildAssembly)">
       <Output TaskParameter="DeletedFiles" ItemName="DeletedFiles" />
