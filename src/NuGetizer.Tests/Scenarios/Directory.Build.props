@@ -18,7 +18,7 @@
     <!-- Avoids architecture mismatch warnings -->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 
-    <RestoreSources>https://api.nuget.org/v3/index.json</RestoreSources>
+    <RestoreSources>https://pkg.kzu.app/index.json;https://api.nuget.org/v3/index.json</RestoreSources>
   </PropertyGroup>
   
 </Project>

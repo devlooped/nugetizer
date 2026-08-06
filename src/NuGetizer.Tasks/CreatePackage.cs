@@ -4,12 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
-using Markdig;
-using Markdig.Renderers.Normalize;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using NuGet.Frameworks;
@@ -229,62 +224,16 @@ namespace NuGetizer.Tasks
             // We don't use PopulateFiles because that performs search expansion, base path 
             // extraction and the like, which messes with our determined files to include.
 
-            if (!string.IsNullOrEmpty(manifest.Metadata.Readme) &&
-                manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.Readme) is ManifestFile readmeFile &&
-                File.Exists(readmeFile.Source))
-            {
-                // replace readme with includes replaced.
-                var replaced = ReplaceTokens(IncludesResolver.Process(readmeFile.Source, message => Log.LogWarningCode("NG001", message)));
-
-                if (manifest.Metadata.Repository?.Type == "git" &&
-                    !string.IsNullOrEmpty(manifest.Metadata.Repository?.Commit) &&
-                    Uri.TryCreate(manifest.Metadata.Repository.Url, UriKind.Absolute, out var uri) &&
-                    uri.Host.EndsWith("github.com"))
-                {
-                    // Extract owner and repo from URL for raw.githubusercontent.com format
-                    var repoPath = uri.AbsolutePath.TrimStart('/');
-                    var rawBaseUrl = $"https://raw.githubusercontent.com/{repoPath}";
-
-                    var document = Markdown.Parse(replaced);
-                    var links = document.Descendants<LinkInline>().ToList();
-
-                    foreach (var link in links)
-                    {
-                        if (string.IsNullOrEmpty(link.Url) || Uri.IsWellFormedUriString(link.Url, UriKind.Absolute))
-                            continue;
-
-                        link.Url = $"{rawBaseUrl}/{manifest.Metadata.Repository.Commit}/{link.Url.TrimStart('/')}";
-
-                        if (link.FirstChild is LinkInline img &&
-                            !string.IsNullOrEmpty(img.Url) &&
-                            !Uri.IsWellFormedUriString(img.Url, UriKind.Absolute))
-                        {
-                            img.Url = $"{rawBaseUrl}/{manifest.Metadata.Repository.Commit}/{img.Url.TrimStart('/')}";
-                        }
-                    }
-
-                    // render the document to console
-                    using var writer = new StringWriter();
-                    var renderer = new NormalizeRenderer(writer);
-                    renderer.Render(document);
-                    replaced = writer.ToString();
-                }
-
-                if (!replaced.Equals(File.ReadAllText(readmeFile.Source), StringComparison.Ordinal))
-                {
-                    var temp = Path.GetTempFileName();
-                    File.WriteAllText(temp, replaced);
-                    readmeFile.Source = temp;
-                }
-            }
-
+            // Readme includes, tokens, and GitHub relative URL expansion are owned by the
+            // Readme package dependency. Only license (and similar non-readme) files still
+            // get token replacement here.
             if (manifest.Metadata.LicenseMetadata?.Type == LicenseType.File &&
                 manifest.Files.FirstOrDefault(f => Path.GetFileName(f.Target) == manifest.Metadata.LicenseMetadata.License) is ManifestFile licenseFile &&
                 File.Exists(licenseFile.Source))
             {
-                // replace readme with includes replaced.
-                var replaced = ReplaceTokens(IncludesResolver.Process(licenseFile.Source, message => Log.LogWarningCode("NG001", message)));
-                if (!replaced.Equals(File.ReadAllText(licenseFile.Source), StringComparison.Ordinal))
+                var source = File.ReadAllText(licenseFile.Source);
+                var replaced = ReplaceTokens(source);
+                if (!replaced.Equals(source, StringComparison.Ordinal))
                 {
                     var temp = Path.GetTempFileName();
                     File.WriteAllText(temp, replaced);
