@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.5.0](https://github.com/devlooped/nugetizer/tree/v1.5.0) (2026-08-06)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.9...v1.5.0)
+
+:sparkles: Implemented enhancements:
+
+- Replace readme token replacement with the Readme package [\#737](https://github.com/devlooped/nugetizer/pull/737) (@kzu)
+
+:bug: Fixed bugs:
+
+- 1.4.8 producing empty nupkg file [\#723](https://github.com/devlooped/nugetizer/issues/723)
+
 ## [v1.4.9](https://github.com/devlooped/nugetizer/tree/v1.4.9) (2026-06-25)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.8...v1.4.9)
