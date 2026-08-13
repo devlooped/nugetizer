@@ -55,7 +55,7 @@
     <PackageReference Include="Microsoft.Build" Version="18.4.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.10.46" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.11.2" />
-    <PackageReference Include="MSBuild.StructuredLogger" Version="2.3.213" />
+    <PackageReference Include="MSBuild.StructuredLogger" Version="2.3.244" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     <!-- Condition the NuGet.Packaging ref: for net472 keep normal (picks .59 likely), for net10.0 exclude compile assets
