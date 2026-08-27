@@ -26,8 +26,8 @@
     <PackageReference Include="PolySharp" Version="1.16.0" PrivateAssets="all" />
     <PackageReference Include="Spectre.Console" Version="0.57.2" />
     <PackageReference Include="Spectre.Console.Analyzer" Version="1.0.0" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Project" Version="2.1.2" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Strings" Version="2.1.2" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="2.1.5" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Strings" Version="2.1.5" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.WinHttpHandler" Version="8.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
   </ItemGroup>
