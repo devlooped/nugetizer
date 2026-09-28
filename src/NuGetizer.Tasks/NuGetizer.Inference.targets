@@ -535,7 +535,8 @@ Copyright (c) .NET Foundation. All rights reserved.
     </ItemGroup>
     <InferImplicitPackageReference Condition="'@(_TransitivePackageReference)' != '' and '@(PackageDependencies)' != ''"
                                    PackageReferences="@(_TransitivePackageReference)"
-                                   PackageDependencies="@(PackageDependencies)">
+                                   PackageDependencies="@(PackageDependencies)"
+                                   PackageDefinitions="@(PackageDefinitions)">
       <Output TaskParameter="ImplicitPackageReferences" ItemName="ImplicitPackageReference" />
     </InferImplicitPackageReference>
 

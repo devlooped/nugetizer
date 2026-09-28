@@ -717,6 +717,76 @@ namespace NuGetizer
         }
 
         [Fact]
+        public void when_ignore_file_is_outside_the_project_then_package_path_is_not_absolute()
+        {
+            var directory = Path.GetTempPath();
+            var task = new AssignPackagePath
+            {
+                BuildEngine = engine,
+                KnownFolders = Kinds,
+                Files = new ITaskItem[]
+                {
+                    new TaskItem(Path.Combine(directory, "Microsoft.CSharp.dll"), new Metadata
+                    {
+                        { "PackageId", "Stunts" },
+                        { "PackFolder", "Ignore" },
+                        { "RelativeDir", directory },
+                    })
+                }
+            };
+
+            Assert.True(task.Execute());
+            Assert.Equal("", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+        }
+
+        [Fact]
+        public void when_lib_file_target_path_is_absolute_then_package_path_stays_under_lib()
+        {
+            var targetPath = Path.Combine(Path.GetTempPath(), "microsoft.csharp", "lib", "netstandard2.0", "Microsoft.CSharp.dll");
+            var task = new AssignPackagePath
+            {
+                BuildEngine = engine,
+                KnownFolders = Kinds,
+                Files = new ITaskItem[]
+                {
+                    new TaskItem(targetPath, new Metadata
+                    {
+                        { "PackageId", "Stunts" },
+                        { "PackFolder", "lib" },
+                        { "DefaultTargetFramework", "netstandard2.0" },
+                        { "TargetPath", targetPath },
+                    })
+                }
+            };
+
+            Assert.True(task.Execute());
+            Assert.Equal("lib/netstandard2.0/Microsoft.CSharp.dll", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+        }
+
+        [Fact]
+        public void when_file_has_relative_target_path_and_rooted_relative_dir_then_target_path_is_kept()
+        {
+            var task = new AssignPackagePath
+            {
+                BuildEngine = engine,
+                KnownFolders = Kinds,
+                Files = new ITaskItem[]
+                {
+                    new TaskItem(Path.Combine(Path.GetTempPath(), "readme.txt"), new Metadata
+                    {
+                        { "PackageId", "A" },
+                        { "PackFolder", "none" },
+                        { "RelativeDir", Path.GetTempPath() },
+                        { "TargetPath", "docs/readme.txt" },
+                    })
+                }
+            };
+
+            Assert.True(task.Execute());
+            Assert.Equal("docs/readme.txt", task.AssignedFiles[0].GetMetadata(MetadataName.PackagePath));
+        }
+
+        [Fact]
         public void when_file_has_none_kind_then_assigned_file_has_no_target_framework_in_package_path()
         {
             var task = new AssignPackagePath
