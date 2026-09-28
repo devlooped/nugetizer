@@ -63,8 +63,8 @@
          the matching .59 dlls from the Tasks build output. -->
     <PackageReference Include="NuGet.Packaging" Version="7.6.0" Condition="'$(TargetFramework)' == 'net472'" />
     <PackageReference Include="NuGet.Packaging" Version="7.6.0" ExcludeAssets="compile" Condition="'$(TargetFramework)' != 'net472'" />
-    <PackageReference Include="ThisAssembly.Project" Version="2.1.2" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Strings" Version="2.1.2" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="2.1.5" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Strings" Version="2.1.5" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
