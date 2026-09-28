@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.5.1](https://github.com/devlooped/nugetizer/tree/v1.5.1) (2026-09-28)
+
+[Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.5.0...v1.5.1)
+
+:sparkles: Implemented enhancements:
+
+- Avoid packing absolute paths and development dependencies [\#746](https://github.com/devlooped/nugetizer/pull/746) (@kzu)
+
+:hammer: Other:
+
+- Snyk unknown license [\#703](https://github.com/devlooped/nugetizer/issues/703)
+
 ## [v1.5.0](https://github.com/devlooped/nugetizer/tree/v1.5.0) (2026-08-06)
 
 [Full Changelog](https://github.com/devlooped/nugetizer/compare/v1.4.9...v1.5.0)
