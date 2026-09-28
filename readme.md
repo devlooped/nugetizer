@@ -325,7 +325,7 @@ Package references are turned into package dependencies by default (essentially 
 
 Build-only dependencies that don't contribute assemblies to the output (i.e. analyzers or things like [GitInfo](https://github.com/devlooped/GitInfo) or [ThisAssembly](https://github.com/devlooped/ThisAssembly) won't cause any extra items.
 
-This even works transitively, so if you use *PrivateAssets=all* on package reference *A*, which in turn has a package dependency on *B* and *B* in turn depends on *C*, all of *A*, *B* and *C* assets will be packed. You can opt out of the transitive packing with `PackTransitive=false` metadata on the `PackageReference`.
+This even works transitively, so if you use *PrivateAssets=all* on package reference *A*, which in turn has a package dependency on *B* and *B* in turn depends on *C*, all of *A*, *B* and *C* assets will be packed. You can opt out of the transitive packing with `PackTransitive=false` metadata on the `PackageReference`. Packages marked as [development dependencies](https://learn.microsoft.com/en-us/nuget/reference/nuspec#developmentdependency) (such as analyzers and source generators) are always excluded from transitive packing, along with their own dependencies.
 
 As usual, you can change this default behavior by using `Pack=false` metadata.
 

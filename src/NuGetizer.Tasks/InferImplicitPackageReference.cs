@@ -2,9 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using NuGet.Packaging;
 
 namespace NuGetizer.Tasks
 {
@@ -15,6 +17,13 @@ namespace NuGetizer.Tasks
 
         [Required]
         public ITaskItem[] PackageDependencies { get; set; } = Array.Empty<ITaskItem>();
+
+        /// <summary>
+        /// Optional package definitions (from the SDK's ResolvePackageDependencies), used 
+        /// to locate each package's nuspec and skip development dependencies (and their 
+        /// own dependencies) from transitive inference.
+        /// </summary>
+        public ITaskItem[] PackageDefinitions { get; set; } = Array.Empty<ITaskItem>();
 
         [Output]
         public ITaskItem[] ImplicitPackageReferences { get; set; } = Array.Empty<ITaskItem>();
@@ -56,12 +65,23 @@ namespace NuGetizer.Tasks
                 }
             }
 
+            foreach (var definition in PackageDefinitions.Where(x => x.ItemSpec.Contains('/')))
+            {
+                var path = definition.GetMetadata("ResolvedPath");
+                if (!string.IsNullOrEmpty(path))
+                    paths[parse(definition.ItemSpec)] = path;
+            }
+
             var inferred = new Dictionary<PackageIdentity, ITaskItem>();
             var direct = new HashSet<string>(PackageReferences.Select(x => x.ItemSpec));
 
             foreach (var reference in PackageReferences)
             {
                 var identity = new PackageIdentity(reference.ItemSpec, reference.GetMetadata("Version"));
+                // Development dependencies are build-only, so their dependencies should never be packed.
+                if (IsDevelopmentDependency(identity))
+                    continue;
+
                 var originalMetadata = (IDictionary<string, string>)reference.CloneCustomMetadata();
                 foreach (var dependency in FindDependencies(identity, packages))
                 {
@@ -88,6 +108,9 @@ namespace NuGetizer.Tasks
             {
                 foreach (var dependency in dependencies)
                 {
+                    if (IsDevelopmentDependency(dependency))
+                        continue;
+
                     yield return dependency;
                     foreach (var child in FindDependencies(dependency, packages))
                     {
@@ -96,6 +119,32 @@ namespace NuGetizer.Tasks
                 }
             }
         }
+
+        bool IsDevelopmentDependency(PackageIdentity identity)
+        {
+            if (developmentDependencies.TryGetValue(identity, out var value))
+                return value;
+
+            value = false;
+            if (paths.TryGetValue(identity, out var path) && Directory.Exists(path) &&
+                Directory.EnumerateFiles(path, "*.nuspec").FirstOrDefault() is string nuspec)
+            {
+                try
+                {
+                    value = new NuspecReader(nuspec).GetDevelopmentDependency();
+                }
+                catch (Exception e)
+                {
+                    Log.LogMessage(MessageImportance.Low, $"Failed to read nuspec '{nuspec}': {e.Message}");
+                }
+            }
+
+            developmentDependencies[identity] = value;
+            return value;
+        }
+
+        readonly Dictionary<PackageIdentity, string> paths = new();
+        readonly Dictionary<PackageIdentity, bool> developmentDependencies = new();
 
         class PackageIdentity
         {

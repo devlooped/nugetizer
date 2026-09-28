@@ -205,21 +205,37 @@ namespace NuGetizer.Tasks
                 output.SetMetadata(MetadataName.TargetFramework, targetFramework);
             }
 
+            var fileName = file.GetMetadata("FileName") + file.GetMetadata("Extension");
             var targetPath = file.GetMetadata("TargetPath");
             // Linked files already have the desired target path specified by the user
             if (string.IsNullOrEmpty(targetPath))
                 targetPath = file.GetMetadata("Link");
+
+            // AssignTargetPath yields an absolute path when the file is on another drive than the
+            // project (typical for assemblies resolved from the NuGet global packages folder).
+            // RelativeDir is likewise absolute when the item include is a full path. Neither is a
+            // location inside the package; packing it makes the entry unsafe for extraction (NU1402).
+            var rootedLocation = IsRootedPath(targetPath);
+            if (rootedLocation)
+                targetPath = "";
 
             // NOTE: TargetPath allows a framework-specific file to still specify its relative 
             // location without hardcoding the target framework (useful for multi-targetting and 
             // P2P references).
             if (string.IsNullOrEmpty(targetPath))
             {
+                var relativeDir = file.GetMetadata("RelativeDir");
+                if (IsRootedPath(relativeDir))
+                {
+                    rootedLocation = true;
+                    relativeDir = "";
+                }
+
                 targetPath = string.IsNullOrEmpty(packageFolder) ?
-                    Path.Combine(file.GetMetadata("RelativeDir"), file.GetMetadata("FileName") + file.GetMetadata("Extension")) :
+                    Path.Combine(relativeDir, fileName) :
                     // Well-known folders only get root-level files by default. Can be overriden with PackagePath or TargetPath 
                     // explicitly, of course
-                    file.GetMetadata("FileName") + file.GetMetadata("Extension");
+                    fileName;
             }
 
             if (!string.IsNullOrEmpty(packageFolder) &&
@@ -234,11 +250,12 @@ namespace NuGetizer.Tasks
 
             // If we have no known package folder, files go to their RelativeDir location.
             // This allows custom packaging paths such as "workbooks", "docs" or whatever, which aren't prohibited by 
-            // the format.
+            // the format. An absolute source path has no relative landing place, so leave it unpacked
+            // rather than embedding the filesystem path (NU1402).
             if (string.IsNullOrEmpty(packageFolder))
             {
                 // File goes to the determined target path (or the root of the package), such as a readme.txt
-                packagePath = targetPath;
+                packagePath = rootedLocation ? "" : targetPath;
             }
             else
             {
@@ -256,9 +273,22 @@ namespace NuGetizer.Tasks
                 }
             }
 
+            // Path.Combine drops every segment before a rooted one (a drive letter or a leading slash),
+            // so a leftover absolute target would replace the package folder with the filesystem path.
+            if (IsRootedPath(packagePath))
+            {
+                packagePath = string.IsNullOrEmpty(packageFolder) ? "" :
+                    frameworkSpecific && !string.IsNullOrEmpty(targetFramework) ?
+                        Path.Combine(packageFolder, targetFramework, fileName) :
+                        Path.Combine(packageFolder, fileName);
+            }
+
             output.SetMetadata(MetadataName.PackagePath, packagePath.Replace('\\', '/'));
 
             return output;
         }
+
+        static bool IsRootedPath(string path) =>
+            !string.IsNullOrEmpty(path) && Path.IsPathRooted(path);
     }
 }
